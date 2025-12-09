@@ -1,0 +1,82 @@
+# =====================================
+# GENERAL
+# =====================================
+# System files
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# =====================================
+# MAVEN / GRADLE
+# =====================================
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# =====================================
+# IDE / EDITORS
+# =====================================
+# IntelliJ
+.idea/
+*.iml
+*.iws
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# VSCode
+.vscode/
+
+# =====================================
+# DOCKER
+# =====================================
+# Local docker-compose files and overrides
+docker/*.env
+docker-compose.override.yml
+
+# =====================================
+# LOGS / TEMP
+# =====================================
+logs/
+*.log
+tmp/
+*.pid
+
+# =====================================
+# ENV / SECRETS
+# =====================================
+.env
+*.env
+secrets/
+*.key
+*.pem
+
+# =====================================
+# KUBERNETES
+# =====================================
+*.kubeconfig
+*.yaml.local
+*.yaml.override
+
+# =====================================
+# OTHERS
+# =====================================
+*.swp
+*~
