@@ -38,13 +38,47 @@ services:
         condition: service_healthy
     networks:
       - erp-net
-
+    # -----------------------------
+    # Customer Service
+    # -----------------------------
+  customer-sv:
+    build:
+      context: ../microservices/customer-sv
+    container_name: customer-sv
+    env_file:
+      - .env
+      - ../microservices/customer-sv/.env
+    ports:
+      - "${CUSTOMER_SV_PORT}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp-net
+  # -----------------------------
+  # Sales Service
+  # -----------------------------
+  sale-sv:
+    build:
+      context: ../microservices/sales-sv
+    container_name: sales-sv
+    env_file:
+      - .env
+      - ../microservices/sales-sv/.env
+    ports:
+      - "${SALES_SV_PORT}:8080"
+    depends_on:
+      - product-sv
+      - customer-sv
+    networks:
+      - erp-net
 networks:
   erp-net:
     driver: bridge
 
 volumes:
   postgres_data:
+
   # -----------------------------
   # Zookeeper
   # -----------------------------
@@ -55,7 +89,6 @@ volumes:
 #      ZOOKEEPER_CLIENT_PORT: 2181
 #    networks:
 #      - ${NETWORK_NAME}
-
 
   # -----------------------------
   # Kafka
@@ -105,42 +138,5 @@ volumes:
 #      - product-service
 #      - customer-service
 #      - sales-service
-#    networks:
-#      - ${NETWORK_NAME}
-
-  # -----------------------------
-  # Customer Service
-  # -----------------------------
-#  customer-service:
-#    build:
-#      context: ../microservices/customer-service
-#    container_name: customer-service
-#    env_file:
-#      - .env
-#      - ../microservices/customer-service/.env
-#    ports:
-#      - "${CUSTOMER_SERVICE_PORT}:8080"
-#    depends_on:
-#      - postgres
-#    networks:
-#      - ${NETWORK_NAME}
-
-
-  # -----------------------------
-  # Sales Service
-  # -----------------------------
-#  sales-service:
-#    build:
-#      context: ../microservices/sales-service
-#    container_name: sales-service
-#    env_file:
-#      - .env
-#      - ../microservices/sales-service/.env
-#    ports:
-#      - "${SALES_SERVICE_PORT}:8080"
-#    depends_on:
-#      - product-service
-#      - customer-service
-#      - postgres
 #    networks:
 #      - ${NETWORK_NAME}
