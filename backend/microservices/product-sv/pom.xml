@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.retailManager</groupId>
     <artifactId>product-sv</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>product-sv</name>
     <description>product-sv</description>
     <url/>
