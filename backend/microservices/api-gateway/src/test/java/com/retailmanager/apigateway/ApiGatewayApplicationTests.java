@@ -1,10 +1,10 @@
-package com.retailmanager.productsv;
+package com.retailmanager.apigateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ProductSvApplicationTests {
+class ApiGatewayApplicationTests {
 
     @Test
     void contextLoads() {
