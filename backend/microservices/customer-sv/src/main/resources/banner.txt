@@ -11,6 +11,6 @@
 Microservice: Customer Service
 Version: 1.0.0
 Author: Cristian H.
-Description: This microservice handles product-related operations.
+Description: This microservice handles customer-related operations.
 © 2025 Cristian Hoffmann. All rights reserved.
 ===============================================
