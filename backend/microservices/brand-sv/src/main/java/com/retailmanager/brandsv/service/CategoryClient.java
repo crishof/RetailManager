@@ -14,7 +14,7 @@ public class CategoryClient {
 
     public String getCategoryStatus() {
         return webClient.get()
-                .uri("http://category-sv:9002/api/categories/status")
+                .uri("http://category-sv:8080/api/categories/status")
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();

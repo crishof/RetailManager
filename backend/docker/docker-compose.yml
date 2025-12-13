@@ -16,7 +16,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -64,6 +64,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
   # -----------------------------
   # Customer Service
   # -----------------------------
@@ -86,9 +87,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    # -----------------------------
-    # Image Service
-    # -----------------------------
+  # -----------------------------
+  # Image Service
+  # -----------------------------
   image-sv:
     build:
       context: ../microservices/image-sv
@@ -218,20 +219,21 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
   # -----------------------------
   # Nginx Gateway
   # -----------------------------
-  nginx-gateway:
+  nginx:
     build:
       context: ./nginx
     container_name: nginx
     ports:
       - "80:80"
     depends_on:
-      - product-sv
-      - customer-sv
       - brand-sv
       - category-sv
+      - product-sv
+      - customer-sv
       - image-sv
       - inventory-sv
       - supplier-sv
@@ -241,40 +243,48 @@ services:
       - erp-net
 networks:
   erp-net:
+    name: erp-net
     driver: bridge
 volumes:
   postgres_data:
 
+
+
+
+
+
+
+
   # -----------------------------
   # Zookeeper
   # -----------------------------
-#  zookeeper:
-#    image: confluentinc/cp-zookeeper:latest
-#    container_name: zookeeper
-#    environment:
-#      ZOOKEEPER_CLIENT_PORT: 2181
-#    networks:
-#      - ${NETWORK_NAME}
+  #  zookeeper:
+  #    image: confluentinc/cp-zookeeper:latest
+  #    container_name: zookeeper
+  #    environment:
+  #      ZOOKEEPER_CLIENT_PORT: 2181
+  #    networks:
+  #      - ${NETWORK_NAME}
 
   # -----------------------------
   # Kafka
   # -----------------------------
-#  kafka:
-#    image: confluentinc/cp-kafka:latest
-#    container_name: kafka
-#    depends_on:
-#      - zookeeper
-#    env_file:
-#      - .env
-#    environment:
-#      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID}
-#      KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER}
-#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${KAFKA_ADVERTISED_LISTENER}
-#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-#    ports:
-#      - "9092:9092"
-#    networks:
-#      - ${NETWORK_NAME}
+  #  kafka:
+  #    image: confluentinc/cp-kafka:latest
+  #    container_name: kafka
+  #    depends_on:
+  #      - zookeeper
+  #    env_file:
+  #      - .env
+  #    environment:
+  #      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID}
+  #      KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER}
+  #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${KAFKA_ADVERTISED_LISTENER}
+  #      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  #    ports:
+  #      - "9092:9092"
+  #    networks:
+  #      - ${NETWORK_NAME}
 
 
   # -----------------------------
