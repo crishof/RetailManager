@@ -1,0 +1,9 @@
+CREATE DATABASE pricing_db;
+CREATE DATABASE brand_db;
+CREATE DATABASE image_db;
+CREATE DATABASE category_db;
+CREATE DATABASE customer_db;
+CREATE DATABASE product_db;
+CREATE DATABASE supplier_db;
+CREATE DATABASE inventory_db;
+CREATE DATABASE sales_db;
