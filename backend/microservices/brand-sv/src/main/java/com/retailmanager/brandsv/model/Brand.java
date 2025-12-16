@@ -28,4 +28,18 @@ public class Brand {
 
     @Column(name = "logo_url")
     private String logoUrl;
+
+    // =========================
+    // SOFT DELETE
+    // =========================
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
+
+    public void restore() {
+        this.deleted = false;
+    }
+
+    public void softDelete() {
+        this.deleted = true;
+    }
 }

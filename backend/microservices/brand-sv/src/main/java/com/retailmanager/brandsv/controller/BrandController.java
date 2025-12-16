@@ -23,8 +23,6 @@ public class BrandController {
 
     private final BrandService brandService;
 
-    //TODO: Secure endpoints with proper authentication and authorization
-
     @Operation(summary = "Check service status")
     @GetMapping("/status")
     public ResponseEntity<String> root() {
@@ -32,7 +30,6 @@ public class BrandController {
     }
 
     @Operation(summary = "Create a new brand")
-//    @PostMapping("/create")
     @PostMapping
     public BrandResponse create(@RequestParam @NotBlank String name,
                                 @RequestPart(required = false) MultipartFile logo) {
@@ -69,7 +66,6 @@ public class BrandController {
     public void delete(@PathVariable UUID id) {
         brandService.delete(id);
     }
-    //TODO: Add soft delete functionality
 
     @Operation(summary = "Get total count of brands")
     @GetMapping("/count")
@@ -78,9 +74,4 @@ public class BrandController {
     }
 
     //TODO: Write unit and integration tests for the controller methods
-
-    //TODO Get brands by name (search functionality)
-    //TODO Get brand id by name
-    //TODO Get all by filer
-
 }

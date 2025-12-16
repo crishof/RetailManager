@@ -71,6 +71,8 @@ public class BrandServiceImpl implements BrandService {
     @Transactional
     public BrandResponse update(UUID id, String name, MultipartFile logo) {
 
+        //TODO: Add soft delete functionality
+
         log.info("Updating brand | id={} | updateName={} | updateLogo={}",
                 id,
                 name != null,
