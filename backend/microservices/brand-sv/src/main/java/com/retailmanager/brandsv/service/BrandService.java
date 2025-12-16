@@ -16,4 +16,6 @@ public interface BrandService {
     BrandResponse update(UUID id, String name, MultipartFile logo);
 
     void delete(UUID id);
+
+    Long getBrandCount();
 }

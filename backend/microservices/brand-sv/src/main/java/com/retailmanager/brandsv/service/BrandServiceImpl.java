@@ -128,6 +128,11 @@ public class BrandServiceImpl implements BrandService {
         log.info("Brand deleted successfully | id={}", id);
     }
 
+    @Override
+    public Long getBrandCount() {
+        return brandRepository.count();
+    }
+
     // =========================
     // PRIVATE HELPERS
     // =========================
