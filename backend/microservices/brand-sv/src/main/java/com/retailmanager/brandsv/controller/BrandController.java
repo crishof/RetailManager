@@ -23,6 +23,8 @@ public class BrandController {
 
     private final BrandService brandService;
 
+    //TODO: Secure endpoints with proper authentication and authorization
+
     @Operation(summary = "Check service status")
     @GetMapping("/status")
     public ResponseEntity<String> root() {
@@ -42,6 +44,7 @@ public class BrandController {
     public List<BrandResponse> findAll() {
         return brandService.findAll();
     }
+    //TODO: Add pagination to findAll method
 
     @Operation(summary = "Get brand by ID")
     @GetMapping("/{id}")
@@ -58,24 +61,26 @@ public class BrandController {
     ) {
         return brandService.update(id, name, logo);
     }
+    //TODO Update only brand logo
+    //TODO Update only brand name
 
     @Operation(summary = "Delete a brand by ID")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         brandService.delete(id);
     }
+    //TODO: Add soft delete functionality
 
-    //TODO: Secure endpoints with proper authentication and authorization
+    @Operation(summary = "Get total count of brands")
+    @GetMapping("/count")
+    public ResponseEntity<Long> getBrandCount() {
+        return ResponseEntity.ok().body(brandService.getBrandCount());
+    }
+
     //TODO: Write unit and integration tests for the controller methods
-    //TODO: Add pagination to findAll method
 
-
-    //TODO Get brand name by id
-    //TODO Update only brand logo
-    //TODO Update only brand name
     //TODO Get brands by name (search functionality)
     //TODO Get brand id by name
     //TODO Get all by filer
-    //TODO Get all count
 
 }
