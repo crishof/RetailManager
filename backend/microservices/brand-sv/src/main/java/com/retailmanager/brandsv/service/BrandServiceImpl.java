@@ -31,15 +31,19 @@ public class BrandServiceImpl implements BrandService {
     @Transactional
     public BrandResponse create(String name, MultipartFile logo) {
 
+        log.info("Creating brand | name={} | hasLogo={}", name, logo != null);
+
         Brand brand = new Brand();
+        brand.setName(name);
+
         if (logo != null) {
+            log.debug("Uploading logo for brand '{}'", name);
             String logoUrl = imageClient.uploadImage(logo, ENTITY_NAME);
             brand.setLogoUrl(logoUrl);
         }
-        brand.setName(name);
         Brand saved = brandRepository.save(brand);
 
-        log.info("Brand created | id={} | name={}", saved.getId(), saved.getName());
+        log.info("Brand created successfully | id={} | name={}", saved.getId(), saved.getName());
 
         return brandMapper.toDto(saved);
     }
@@ -47,6 +51,9 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional(readOnly = true)
     public List<BrandResponse> findAll() {
+
+        log.debug("Fetching all brands");
+
         return brandRepository.findAll()
                 .stream()
                 .map(brandMapper::toDto)
@@ -64,24 +71,41 @@ public class BrandServiceImpl implements BrandService {
     @Transactional
     public BrandResponse update(UUID id, String name, MultipartFile logo) {
 
-        Brand brand = brandRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                String.format(BRAND_NOT_FOUND, id)
-                        )
-                );
+        log.info("Updating brand | id={} | updateName={} | updateLogo={}",
+                id,
+                name != null,
+                logo != null
+        );
+
+        Brand brand = getBrandOrThrow(id);
 
         if (logo != null) {
-            String logoUrl = imageClient.replaceImage(logo, ENTITY_NAME, brand.getLogoUrl());
+
+            String logoUrl;
+
+            if (brand.getLogoUrl() == null) {
+                log.debug("Uploading new logo for brand | id={}", id);
+                logoUrl = imageClient.uploadImage(logo, ENTITY_NAME);
+            } else {
+                log.debug("Replacing logo for brand | id={}", id);
+                logoUrl = imageClient.replaceImage(
+                        logo,
+                        ENTITY_NAME,
+                        brand.getLogoUrl()
+                );
+            }
+
             brand.setLogoUrl(logoUrl);
         }
+
         if (name != null) {
+            log.debug("Updating brand name | id={} | newName={}", id, name);
             brand.setName(name);
         }
 
         Brand updated = brandRepository.save(brand);
 
-        log.info("Brand updated | id={}", id);
+        log.info("Brand updated successfully | id={}", id);
 
         return brandMapper.toDto(updated);
     }
@@ -89,14 +113,19 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional
     public void delete(UUID id) {
+
+        log.info("Deleting brand | id={}", id);
+
         Brand brand = getBrandOrThrow(id);
 
         if (brand.getLogoUrl() != null) {
+            log.debug("Deleting brand logo | id={}", id);
             imageClient.deleteImageByUrl(brand.getLogoUrl(), ENTITY_NAME);
         }
+
         brandRepository.delete(brand);
 
-        log.info("Brand deleted | id={}", id);
+        log.info("Brand deleted successfully | id={}", id);
     }
 
     // =========================
