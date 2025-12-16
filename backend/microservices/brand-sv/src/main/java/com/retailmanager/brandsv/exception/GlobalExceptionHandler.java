@@ -33,6 +33,19 @@ public class GlobalExceptionHandler {
                 request.getRequestURI());
     }
 
+    @ExceptionHandler(InvalidImageResponseException.class)
+    public ApiError handleInvalidImageResponse(
+            InvalidImageResponseException ex,
+            HttpServletRequest request
+    ) {
+        return new ApiError(
+                Instant.now(),
+                HttpStatus.BAD_GATEWAY.value(),
+                "Image service returned an error",
+                ex.getMessage(),
+                request.getRequestURI());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleGeneric(
