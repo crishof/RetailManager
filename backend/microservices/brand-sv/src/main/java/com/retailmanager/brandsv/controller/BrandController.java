@@ -4,8 +4,10 @@ import com.retailmanager.brandsv.dto.BrandResponse;
 import com.retailmanager.brandsv.service.BrandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Brands", description = "Brand management APIs")
+@Validated
 @RestController
 @RequestMapping("/api/v1/brands")
 @RequiredArgsConstructor
@@ -27,26 +30,27 @@ public class BrandController {
     }
 
     @Operation(summary = "Create a new brand")
-    @PostMapping("/create")
-    public BrandResponse create(@RequestParam String name,
+//    @PostMapping("/create")
+    @PostMapping
+    public BrandResponse create(@RequestParam @NotBlank String name,
                                 @RequestPart(required = false) MultipartFile logo) {
         return brandService.create(name, logo);
     }
 
     @Operation(summary = "Get all brands")
-    @GetMapping("/getAll")
+    @GetMapping
     public List<BrandResponse> findAll() {
         return brandService.findAll();
     }
 
     @Operation(summary = "Get brand by ID")
-    @GetMapping("/getById/{id}")
+    @GetMapping("/{id}")
     public BrandResponse findById(@PathVariable UUID id) {
         return brandService.findById(id);
     }
 
     @Operation(summary = "Update an existing brand")
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public BrandResponse update(
             @PathVariable UUID id,
             @RequestPart(required = false) String name,
@@ -56,8 +60,22 @@ public class BrandController {
     }
 
     @Operation(summary = "Delete a brand by ID")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         brandService.delete(id);
     }
+
+    //TODO: Secure endpoints with proper authentication and authorization
+    //TODO: Write unit and integration tests for the controller methods
+    //TODO: Add pagination to findAll method
+
+
+    //TODO Get brand name by id
+    //TODO Update only brand logo
+    //TODO Update only brand name
+    //TODO Get brands by name (search functionality)
+    //TODO Get brand id by name
+    //TODO Get all by filer
+    //TODO Get all count
+
 }
