@@ -1,4 +1,9 @@
 package com.retailmanager.categorysv.dto;
 
-public record ImageResponse() {
+public record ImageResponse(
+        String filename,
+        String entityName,
+        String url
+) {
 }
+
