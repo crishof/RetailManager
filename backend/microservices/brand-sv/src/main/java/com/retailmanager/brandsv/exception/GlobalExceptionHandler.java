@@ -46,6 +46,20 @@ public class GlobalExceptionHandler {
                 request.getRequestURI());
     }
 
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
+    public ApiError handleBusinessException(
+            BusinessException ex,
+            HttpServletRequest request
+    ) {
+        return new ApiError(
+                Instant.now(),
+                HttpStatus.UNPROCESSABLE_CONTENT.value(), "Business Rule Violation",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleGeneric(
