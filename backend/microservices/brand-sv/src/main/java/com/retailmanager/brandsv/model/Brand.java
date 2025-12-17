@@ -2,7 +2,9 @@ package com.retailmanager.brandsv.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SoftDelete;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -17,6 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SoftDelete
 public class Brand {
 
     @Id
@@ -29,17 +32,26 @@ public class Brand {
     @Column(name = "logo_url")
     private String logoUrl;
 
-    // =========================
-    // SOFT DELETE
-    // =========================
-    @Column(name = "deleted", nullable = false)
-    private boolean deleted = false;
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 
-    public void restore() {
-        this.deleted = false;
+    // CAMPO CONTROLADO POR HIBERNATE
+    @Column(name = "deleted", insertable = false, updatable = false)
+    private boolean deleted;
+
+    // ======================
+    // SOFT DELETE HELPERS
+    // ======================
+    @PreRemove
+    protected void onSoftDelete() {
+        this.deletedAt = Instant.now();
     }
 
-    public void softDelete() {
-        this.deleted = true;
+    public void restore() {
+        this.deletedAt = null;
+    }
+
+    public boolean isDeleted() {
+        return deletedAt != null;
     }
 }

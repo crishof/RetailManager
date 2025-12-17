@@ -18,4 +18,6 @@ public interface BrandService {
     void delete(UUID id);
 
     Long getBrandCount();
+
+    BrandResponse restore(UUID id);
 }

@@ -5,6 +5,7 @@ import com.retailmanager.brandsv.service.BrandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -65,6 +66,12 @@ public class BrandController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         brandService.delete(id);
+    }
+
+    @Operation(summary = "Restore a deleted brand by ID")
+    @PatchMapping("/{id}/restore")
+    public BrandResponse restore(@PathVariable @NotNull UUID id) {
+        return brandService.restore(id);
     }
 
     @Operation(summary = "Get total count of brands")

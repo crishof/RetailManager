@@ -1,6 +1,7 @@
 package com.retailmanager.brandsv.service;
 
 import com.retailmanager.brandsv.dto.BrandResponse;
+import com.retailmanager.brandsv.exception.BusinessException;
 import com.retailmanager.brandsv.exception.ResourceNotFoundException;
 import com.retailmanager.brandsv.mapper.BrandMapper;
 import com.retailmanager.brandsv.model.Brand;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -26,12 +28,27 @@ public class BrandServiceImpl implements BrandService {
     private final BrandMapper brandMapper;
     private final ImageClient imageClient;
 
-
     @Override
     @Transactional
     public BrandResponse create(String name, MultipartFile logo) {
 
         log.info("Creating brand | name={} | hasLogo={}", name, logo != null);
+
+        Optional<Brand> existing = brandRepository.findByNameIncludingDeleted(name);
+
+        if (existing.isPresent()) {
+            Brand brand = existing.get();
+            if (brand.isDeleted()) {
+                log.info("Restoring previously deleted brand | id={} | name={}", brand.getId(), name);
+                brand.restore();
+
+                if (logo != null && brand.getLogoUrl() != null) {
+                    brand.setLogoUrl(imageClient.replaceImage(logo, ENTITY_NAME, brand.getLogoUrl()));
+                }
+                return brandMapper.toDto(brandRepository.save(brand));
+            }
+            throw new IllegalArgumentException("Brand with name '" + name + "' already exists.");
+        }
 
         Brand brand = new Brand();
         brand.setName(name);
@@ -70,8 +87,6 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional
     public BrandResponse update(UUID id, String name, MultipartFile logo) {
-
-        //TODO: Add soft delete functionality
 
         log.info("Updating brand | id={} | updateName={} | updateLogo={}",
                 id,
@@ -128,6 +143,47 @@ public class BrandServiceImpl implements BrandService {
         brandRepository.delete(brand);
 
         log.info("Brand deleted successfully | id={}", id);
+    }
+
+    @Override
+    @Transactional
+    public BrandResponse restore(UUID id) {
+
+        log.info("Restoring brand | id={}", id);
+
+        // Buscar la marca sin filtros
+        brandRepository.findByIdIncludingDeleted(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format(BRAND_NOT_FOUND, id)
+                        )
+                );
+
+        // Verificar si realmente está soft deleted usando DB
+        if (!brandRepository.existsDeletedById(id)) {
+            throw new BusinessException(
+                    "Brand with id '" + id + "' is not deleted."
+            );
+        }
+
+        // Restaurar
+        int updated = brandRepository.restoreById(id);
+
+        if (updated == 0) {
+            throw new BusinessException(
+                    "Failed to restore brand with id '" + id + "'"
+            );
+        }
+
+        log.info("Brand restored successfully | id={}", id);
+
+        // Recargar la entidad restaurada
+        Brand restored = brandRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalStateException("Brand restored but not found")
+                );
+
+        return brandMapper.toDto(restored);
     }
 
     @Override
