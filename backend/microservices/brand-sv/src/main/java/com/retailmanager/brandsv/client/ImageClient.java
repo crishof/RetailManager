@@ -1,4 +1,4 @@
-package com.retailmanager.brandsv.service;
+package com.retailmanager.brandsv.client;
 
 import com.retailmanager.brandsv.dto.ImageResponse;
 import com.retailmanager.brandsv.exception.InvalidImageResponseException;

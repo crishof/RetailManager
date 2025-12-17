@@ -1,5 +1,6 @@
 package com.retailmanager.brandsv.service;
 
+import com.retailmanager.brandsv.client.ImageClient;
 import com.retailmanager.brandsv.dto.BrandResponse;
 import com.retailmanager.brandsv.exception.BusinessException;
 import com.retailmanager.brandsv.exception.ResourceNotFoundException;
