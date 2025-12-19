@@ -12,5 +12,5 @@ import org.mapstruct.ReportingPolicy;
 public interface PriceItemMapper {
 
     PriceItemResponse toDto(SupplierPriceItem supplierPriceItem);
-    
+
 }
