@@ -13,40 +13,43 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/price-items")
 @RequiredArgsConstructor
-public class PriceListController {
+public class PriceItemController {
 
     private final PriceItemService priceItemService;
 
+    // Import price list
     @PostMapping("/import")
     public ImportResult importPriceList(
             @RequestParam MultipartFile file,
             @RequestParam UUID supplierId,
-            @RequestParam boolean updateExisting
+            @RequestParam(defaultValue = "false") boolean updateExisting
     ) {
         return priceItemService.importFile(file, supplierId, updateExisting);
     }
 
-    @GetMapping("/getAllByFilter")
-    public List<PriceItemResponse> getAllByFilter(
+    // Query price items
+    @GetMapping
+    public List<PriceItemResponse> findAll(
             @RequestParam(required = false) UUID supplierId,
             @RequestParam(required = false) String brand,
-            @RequestParam(required = false) String filter) {
-
+            @RequestParam(required = false) String filter
+    ) {
         return priceItemService.getAllByFilter(supplierId, brand, filter);
     }
 
+    // Get by ID
     @GetMapping("/{id}")
-    public PriceItemResponse getById(@PathVariable UUID id) {
+    public PriceItemResponse findById(@PathVariable UUID id) {
         return priceItemService.getById(id);
     }
 
-    @GetMapping("/getBrandsBySupplier")
-    public List<String> getBrandsBySupplier(@RequestParam UUID supplierId) {
-        return priceItemService.getBrandsBySupplier(supplierId);
-    }
-
-    @GetMapping("/getAllBrands")
-    public List<String> getAllBrands() {
-        return priceItemService.getAllBrands();
+    // Distinct brands by supplier
+    @GetMapping("/brands")
+    public List<String> getBrands(
+            @RequestParam(required = false) UUID supplierId
+    ) {
+        return supplierId == null
+                ? priceItemService.getAllBrands()
+                : priceItemService.getBrandsBySupplier(supplierId);
     }
 }

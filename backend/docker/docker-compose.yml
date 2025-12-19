@@ -66,6 +66,29 @@ services:
       retries: 5
 
   # -----------------------------
+  # Price List Service
+  # -----------------------------
+  priceList-sv:
+    build:
+      context: ../microservices/supplier-price-list-sv
+    container_name: priceList-sv
+    ports:
+      - "${PRICE_LIST_SV_PORT}:8080"
+    env_file:
+      - ../docker/.env
+      - ../microservices/supplier-price-list-sv/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -----------------------------
   # Customer Service
   # -----------------------------
   customer-sv:
