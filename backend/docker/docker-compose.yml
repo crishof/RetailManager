@@ -68,10 +68,10 @@ services:
   # -----------------------------
   # Price List Service
   # -----------------------------
-  priceList-sv:
+  price-item-sv:
     build:
       context: ../microservices/supplier-price-list-sv
-    container_name: priceList-sv
+    container_name: supplier-price-list-sv
     ports:
       - "${PRICE_LIST_SV_PORT}:8080"
     env_file:
@@ -262,6 +262,7 @@ services:
       - supplier-sv
       - pricing-sv
       - sales-sv
+      - price-item-sv
     networks:
       - erp-net
 networks:
