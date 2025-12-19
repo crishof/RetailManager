@@ -7,3 +7,6 @@ CREATE DATABASE product_db;
 CREATE DATABASE supplier_db;
 CREATE DATABASE inventory_db;
 CREATE DATABASE sales_db;
+CREATE DATABASE price_list_db;
+
+
