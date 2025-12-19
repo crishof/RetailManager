@@ -13,7 +13,7 @@ import java.util.UUID;
 @Repository
 public interface SupplierPriceItemRepository extends JpaRepository<SupplierPriceItem, UUID> {
 
-    SupplierPriceItem findProductByBrandAndCodeAndSupplierId(String brand, String code, UUID supplierId);
+    SupplierPriceItem findProductByBrandAndModelAndSupplierId(String brand, String model, UUID supplierId);
 
     @Query(value = "SELECT * FROM tbl_supplier_price_item " +
             "WHERE brand ILIKE CONCAT('%', :filter, '%') " +

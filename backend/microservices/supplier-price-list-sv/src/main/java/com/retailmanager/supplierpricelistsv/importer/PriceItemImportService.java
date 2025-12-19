@@ -32,9 +32,9 @@ public class PriceItemImportService {
         for (SupplierPriceItem item : items) {
 
             SupplierPriceItem existing =
-                    repository.findProductByBrandAndCodeAndSupplierId(
+                    repository.findProductByBrandAndModelAndSupplierId(
                             item.getBrand(),
-                            item.getSupplierCode(),
+                            item.getModel(),
                             supplierId
                     );
 
