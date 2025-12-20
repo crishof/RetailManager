@@ -24,10 +24,11 @@ public class ExcelPriceItemReader {
 
     private static final int MAX_LENGTH = 255;
     private static final BigDecimal DEFAULT_TAX_RATE = new BigDecimal("0.21");
-    private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
+    private static final String DEFAULT_CURRENCY = "$"; // Peso Argentino
 
     public List<SupplierPriceItem> read(MultipartFile file) {
 
+        log.info("Reading excel file: {}", file.getOriginalFilename());
         try (InputStream is = file.getInputStream();
              Workbook workbook = WorkbookFactory.create(is)) {
 
@@ -48,29 +49,37 @@ public class ExcelPriceItemReader {
         }
     }
 
-    // ---------------- PRIVATE ----------------
+    // =========================
+    // PRIVATE
+    // =========================
 
     private List<String> extractHeaders(Row headerRow) {
+        if (headerRow == null) {
+            throw new ImportFileException("Excel file has no header row");
+        }
+
         List<String> headers = new ArrayList<>();
         headerRow.forEach(cell ->
-                headers.add(cell.getStringCellValue().toLowerCase().trim())
+                headers.add(cell.getStringCellValue().toLowerCase().trim().replace(" ", "-").replace(",", ""))
         );
         return headers;
     }
 
     private void validateHeaders(List<String> headers) {
+
         Set<String> headerSet = new HashSet<>(headers);
 
-        List<String> required = List.of("brand", "code", "price");
+        List<String> required = List.of("brand", "model", "price");
 
         if (!headerSet.containsAll(required)) {
             throw new ImportFileException(
-                    "Missing required columns: " + required
+                    "Missing required columns. Required: " + required
             );
         }
     }
 
     private List<SupplierPriceItem> parseRows(Sheet sheet, List<String> headers) {
+
         List<SupplierPriceItem> items = new ArrayList<>();
         DataFormatter formatter = new DataFormatter();
 
@@ -80,10 +89,14 @@ public class ExcelPriceItemReader {
 
             SupplierPriceItem item = new SupplierPriceItem();
             parseRow(row, headers, formatter, item);
-            item.setLastUpdate(Instant.now());
 
+            // defaults de seguridad
+            applyDefaults(item);
+
+            item.setLastUpdate(Instant.now());
             items.add(item);
         }
+
         return items;
     }
 
@@ -94,8 +107,9 @@ public class ExcelPriceItemReader {
             SupplierPriceItem item
     ) {
         for (int col = 0; col < headers.size(); col++) {
+
             Cell cell = row.getCell(col);
-            String value = formatter.formatCellValue(cell);
+            String value = formatter.formatCellValue(cell).trim();
 
             applyCell(item, headers.get(col), value);
         }
@@ -104,7 +118,7 @@ public class ExcelPriceItemReader {
     private void applyCell(SupplierPriceItem item, String header, String value) {
 
         switch (header) {
-            case "brand" -> item.setBrand(value);
+            case "brand" -> item.setBrand(emptyToNull(value));
             case "code" -> item.setSupplierCode(emptyToNull(value));
             case "model" -> item.setModel(emptyToNull(value));
             case "description" -> item.setDescription(truncate(value));
@@ -114,39 +128,77 @@ public class ExcelPriceItemReader {
             case "suggested-price" -> item.setSuggestedPrice(parseBigDecimal(value));
             case "suggested-web-price" -> item.setSuggestedWebPrice(parseBigDecimal(value));
             case "stock" -> item.setStockRaw(emptyToNull(value));
-            case "bar-code" -> item.setBarcode(emptyToNull(value));
-            case "currency" -> item.setCurrency(value.isBlank() ? "$" : value);
-            default -> log.debug("Skipping unmapped column: {}", value);
+            case "barcode" -> item.setBarcode(emptyToNull(value));
+            case "currency" -> item.setCurrency(emptyToNull(value));
+            default -> log.debug("Skipping unmapped column: {}", header);
+        }
+    }
+
+    // =========================
+    // HELPERS
+    // =========================
+
+    private void applyDefaults(SupplierPriceItem item) {
+
+        if (item.getCurrency() == null) {
+            item.setCurrency(DEFAULT_CURRENCY);
+        }
+
+        if (item.getTaxRate() == null) {
+            item.setTaxRate(DEFAULT_TAX_RATE);
+        }
+
+        if (item.getPrice() == null) {
+            item.setPrice(BigDecimal.ZERO);
         }
     }
 
     private String emptyToNull(String value) {
-        return value == null || value.isBlank() ? null : value;
+        return (value == null || value.isBlank()) ? null : value;
     }
 
     private String truncate(String value) {
         if (value == null) return null;
-        return value.length() > MAX_LENGTH ? value.substring(0, MAX_LENGTH) : value;
+        return value.length() > MAX_LENGTH
+                ? value.substring(0, MAX_LENGTH)
+                : value;
     }
 
-    private BigDecimal parseBigDecimal(String value) {
-        if (value == null || value.isBlank()) return BigDecimal.ZERO;
+    private BigDecimal parseBigDecimal(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return BigDecimal.ZERO;
+        }
+
+        // Eliminar todos excepto dígitos, coma, punto y signo negativo
+        String cleaned = raw.replaceAll("[^0-9,.-]", "").trim();
+
+        // Detectar si la coma es decimal (LATAM) o punto decimal (US)
+        if (cleaned.contains(",") && cleaned.lastIndexOf(",") > cleaned.lastIndexOf(".")) {
+            // Formato LATAM: 1.234,56 -> 1234.56
+            cleaned = cleaned.replace(".", "");   // quitar separadores de miles
+            cleaned = cleaned.replace(",", ".");  // reemplazar coma decimal
+        } else {
+            // Formato US: 1,234.56 -> 1234.56
+            cleaned = cleaned.replace(",", "");   // quitar separador de miles
+        }
+
         try {
-            return new BigDecimal(value.replace(",", "").trim());
-        } catch (NumberFormatException _) {
+            return new BigDecimal(cleaned);
+        } catch (NumberFormatException e) {
+            log.warn("Invalid numeric value '{}', defaulting to 0", raw);
             return BigDecimal.ZERO;
         }
     }
 
-    private BigDecimal parseTaxRate(String rawValue) {
+    private BigDecimal parseTaxRate(String raw) {
 
-        if (rawValue == null || rawValue.isBlank()) {
-            return DEFAULT_TAX_RATE;
+        if (raw == null || raw.isBlank()) {
+            return DEFAULT_TAX_RATE; // 0.21
         }
 
-        boolean isPercentage = rawValue.contains("%");
+        boolean isPercentage = raw.contains("%");
 
-        String normalized = rawValue
+        String normalized = raw
                 .replace("%", "")
                 .replace(",", ".")
                 .trim();
@@ -155,12 +207,17 @@ public class ExcelPriceItemReader {
             BigDecimal rate = new BigDecimal(normalized);
 
             if (isPercentage) {
-                return rate.divide(ONE_HUNDRED, 4, RoundingMode.HALF_UP);
+                return rate.divide(
+                        BigDecimal.valueOf(100),
+                        4,
+                        RoundingMode.HALF_UP
+                );
             }
 
             return rate;
 
         } catch (NumberFormatException _) {
+            log.warn("Invalid tax rate '{}', defaulting to {}", raw, DEFAULT_TAX_RATE);
             return DEFAULT_TAX_RATE;
         }
     }

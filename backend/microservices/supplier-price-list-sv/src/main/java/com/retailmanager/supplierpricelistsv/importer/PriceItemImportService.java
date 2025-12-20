@@ -32,9 +32,9 @@ public class PriceItemImportService {
         for (SupplierPriceItem item : items) {
 
             SupplierPriceItem existing =
-                    repository.findProductByBrandAndModelAndSupplierId(
+                    repository.findProductByBrandAndSupplierCodeAndSupplierId(
                             item.getBrand(),
-                            item.getModel(),
+                            item.getSupplierCode(),
                             supplierId
                     );
 
@@ -45,7 +45,6 @@ public class PriceItemImportService {
                 merge(existing, item);
                 repository.save(existing);
                 updated++;
-
             } else {
                 item.setSupplierId(supplierId);
                 repository.save(item);
@@ -57,13 +56,18 @@ public class PriceItemImportService {
     }
 
     private void merge(SupplierPriceItem target, SupplierPriceItem source) {
-
-        target.setPrice(source.getPrice());
-        target.setTaxRate(source.getTaxRate());
-        target.setSuggestedPrice(source.getSuggestedPrice());
-        target.setSuggestedWebPrice(source.getSuggestedWebPrice());
-        target.setStockRaw(source.getStockRaw());
-        target.setCurrency(source.getCurrency());
+        if (source.getSupplierCode() != null) target.setSupplierCode(source.getSupplierCode());
+        if (source.getBrand() != null) target.setBrand(source.getBrand());
+        if (source.getModel() != null) target.setModel(source.getModel());
+        if (source.getBarcode() != null) target.setBarcode(source.getBarcode());
+        if (source.getDescription() != null) target.setDescription(source.getDescription());
+        if (source.getCategory() != null) target.setCategory(source.getCategory());
+        if (source.getPrice() != null) target.setPrice(source.getPrice());
+        if (source.getSuggestedPrice() != null) target.setSuggestedPrice(source.getSuggestedPrice());
+        if (source.getSuggestedWebPrice() != null) target.setSuggestedWebPrice(source.getSuggestedWebPrice());
+        if (source.getCurrency() != null) target.setCurrency(source.getCurrency());
+        if (source.getTaxRate() != null) target.setTaxRate(source.getTaxRate());
+        if (source.getStockRaw() != null) target.setStockRaw(source.getStockRaw());
         target.setLastUpdate(Instant.now());
     }
 }
