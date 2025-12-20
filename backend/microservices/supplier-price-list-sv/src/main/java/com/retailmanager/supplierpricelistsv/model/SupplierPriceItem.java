@@ -72,14 +72,14 @@ public class SupplierPriceItem {
     @Column(name = "currency", nullable = false, length = 3)
     private String currency;
 
-    @Column(name = "tax_rate", precision = 5, scale = 2)
+    @Column(name = "tax_rate", precision = 5, scale = 4)
     private BigDecimal taxRate;
 
     // =========================
     // STOCK
     // =========================
     @Column(name = "stock_raw", length = 50)
-    private String stockRaw;
+    private String stockRaw;// "> 10", "NO", "< 5"
 
     // =========================
     // FECHA DE ACTUALIZACIÓN

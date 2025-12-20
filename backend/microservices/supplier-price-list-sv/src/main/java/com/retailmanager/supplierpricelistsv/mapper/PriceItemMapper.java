@@ -3,6 +3,7 @@ package com.retailmanager.supplierpricelistsv.mapper;
 import com.retailmanager.supplierpricelistsv.dto.PriceItemResponse;
 import com.retailmanager.supplierpricelistsv.model.SupplierPriceItem;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
@@ -11,6 +12,7 @@ import org.mapstruct.ReportingPolicy;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PriceItemMapper {
 
+    @Mapping(target = "stockAvailable", source = "stockRaw")
     PriceItemResponse toDto(SupplierPriceItem supplierPriceItem);
 
 }
