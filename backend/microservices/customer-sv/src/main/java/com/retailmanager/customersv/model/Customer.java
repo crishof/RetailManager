@@ -1,0 +1,56 @@
+package com.retailmanager.customersv.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.Instant;
+import java.util.UUID;
+
+@Entity
+@Table(
+        name = "tbl_customers",
+        indexes = {
+                @Index(name = "idx_customer_dni", columnList = "dni"),
+        }
+)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    @Column(nullable = false, length = 100)
+    private String name;
+    @Column(nullable = false, length = 100)
+    private String lastname;
+    @Column(nullable = false, unique = true, length = 20)
+    private String dni;
+    @Column(length = 20)
+    private String taxId;
+    @Column(length = 150)
+    private String email;
+    @Column(length = 30)
+    private String phone;
+
+    private UUID addressId;
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
+
+    @PreRemove
+    protected void onSoftDelete() {
+        this.deletedAt = Instant.now();
+    }
+
+    public void restore() {
+        this.deletedAt = null;
+    }
+
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
+}
