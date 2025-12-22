@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tbl_supplier",
+@Table(name = "tbl_suppliers",
         indexes = {
                 @Index(name = "idx_supplier_tax_id", columnList = "taxId")
         }
