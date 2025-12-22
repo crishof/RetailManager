@@ -1,4 +1,4 @@
-package com.retailmanager.customersv.exception;
+package com.retailmanager.suppliersv.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
