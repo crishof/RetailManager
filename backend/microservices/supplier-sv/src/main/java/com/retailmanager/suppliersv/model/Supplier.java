@@ -2,8 +2,8 @@ package com.retailmanager.suppliersv.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SoftDelete;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -17,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SoftDelete
 public class Supplier {
 
     @Id
@@ -29,20 +30,4 @@ public class Supplier {
     private String legalName;
 
     private UUID addressId;
-
-    @Column(name = "deleted_at")
-    private Instant deletedAt;
-
-    @PreRemove
-    protected void onSoftDelete() {
-        this.deletedAt = Instant.now();
-    }
-
-    public void restore() {
-        this.deletedAt = null;
-    }
-
-    public boolean isDeleted() {
-        return deletedAt != null;
-    }
 }

@@ -33,16 +33,18 @@ public class SupplierServiceImpl implements SupplierService {
         log.info("Creating supplier | name={}", supplierRequest.getName());
 
         Optional<Supplier> existing = supplierRepository.findByNameIncludingDeleted(supplierRequest.getName());
+
         if (existing.isPresent()) {
             Supplier supplier = existing.get();
-            if (supplier.isDeleted()) {
+            if (supplierRepository.existsById(supplier.getId())) {
                 log.info("Restoring previously deleted supplier | id={} | name={}", supplier.getId(), supplierRequest.getName());
-                supplier.restore();
+                supplierRepository.restoreById(supplier.getId());
                 return supplierMapper.toDto(supplierRepository.save(supplier));
             }
             throw new IllegalArgumentException("Supplier with name '" + supplierRequest.getName() + "' already exists.");
         }
         Supplier supplier = supplierMapper.toEntity(supplierRequest);
+
         Supplier saved = supplierRepository.save(supplier);
         log.info("Supplier created | id={} | name={}", saved.getId(), saved.getName());
         return supplierMapper.toDto(saved);
@@ -90,11 +92,14 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     @Transactional
     public SupplierResponse restore(UUID id) {
+
         log.info("Restoring supplier | id={}", id);
-        supplierRepository.findByIdIncludingDeleted(id).orElseThrow(() -> new ResourceNotFoundException(
-                        String.format(SUPPLIER_NOT_FOUND, id)
-                )
-        );
+        supplierRepository.findByIdIncludingDeleted(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format(SUPPLIER_NOT_FOUND, id)
+                        )
+                );
         if (!supplierRepository.existsById(id)) {
             throw new BusinessException(
                     "Supplier with id '" + id + "' is not deleted or does not exist."
@@ -109,10 +114,16 @@ public class SupplierServiceImpl implements SupplierService {
         }
         log.info("Supplier restored | id={}", id);
 
-        Supplier restored = getSupplierOrThrow(id);
+        Supplier restored = supplierRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Supplier restored but not found with id '" + id + "'.")
+                );
         return supplierMapper.toDto(restored);
     }
 
+    // =========================
+    // PRIVATE HELPERS
+    // =========================
     private Supplier getSupplierOrThrow(UUID id) {
         return supplierRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format(SUPPLIER_NOT_FOUND, id)));
