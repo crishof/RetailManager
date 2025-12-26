@@ -68,6 +68,12 @@ public class BrandController {
         brandService.delete(id);
     }
 
+    @Operation(summary = "Delete brand logo")
+    @DeleteMapping("/{id}/logo")
+    public void deleteLogo(@PathVariable UUID id) {
+        brandService.deleteBrandLogo(id);
+    }
+
     @Operation(summary = "Restore a deleted brand by ID")
     @PatchMapping("/{id}/restore")
     public BrandResponse restore(@PathVariable @NotNull UUID id) {

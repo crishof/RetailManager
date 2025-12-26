@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface BrandService {
+
     BrandResponse create(String name, MultipartFile logo);
 
     List<BrandResponse> findAll();
@@ -18,6 +19,8 @@ public interface BrandService {
     void delete(UUID id);
 
     Long getBrandCount();
+
+    void deleteBrandLogo(UUID id);
 
     BrandResponse restore(UUID id);
 }

@@ -1,6 +1,7 @@
 package com.retailmanager.brandsv.repository;
 
 import com.retailmanager.brandsv.model.Brand;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,34 +14,21 @@ import java.util.UUID;
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, UUID> {
 
-    @Query(value = """
-        SELECT * FROM tbl_brands
-        WHERE name = :name
-        """, nativeQuery = true)
+    // Find including deleted brands by name
+    @Query(value = "SELECT * FROM tbl_brands WHERE name = :name", nativeQuery = true)
     Optional<Brand> findByNameIncludingDeleted(@Param("name") String name);
-    // Para restaurar, incluir registros deleted
-    @Query(value = """
-        SELECT * FROM tbl_brands
-        WHERE id = :id
-        """, nativeQuery = true)
+
+    // Find including deleted brands by id
+    @Query(value = "SELECT * FROM tbl_brands WHERE id = :id", nativeQuery = true)
     Optional<Brand> findByIdIncludingDeleted(@Param("id") UUID id);
 
-    // Validar si realmente está deleted
-    @Query(value = """
-        SELECT EXISTS (
-            SELECT 1 FROM tbl_brands
-            WHERE id = :id AND deleted = true
-        )
-        """, nativeQuery = true)
+    // Validate if a deleted brand exists by id
+    @Query(value = "SELECT EXISTS (SELECT 1 FROM tbl_brands WHERE id = :id AND deleted = true)", nativeQuery = true)
     boolean existsDeletedById(@Param("id") UUID id);
 
-    // Restaurar soft delete
+    // Restore a deleted brand by id
     @Modifying
-    @Query(value = """
-        UPDATE tbl_brands
-        SET deleted = false,
-            deleted_at = NULL
-        WHERE id = :id
-        """, nativeQuery = true)
+    @Transactional
+    @Query(value = "UPDATE tbl_brands SET deleted = false WHERE id = :id", nativeQuery = true)
     int restoreById(@Param("id") UUID id);
 }

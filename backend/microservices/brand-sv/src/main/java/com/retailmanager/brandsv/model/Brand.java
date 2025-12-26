@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SoftDelete;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -32,26 +31,4 @@ public class Brand {
     @Column(name = "logo_url")
     private String logoUrl;
 
-    @Column(name = "deleted_at")
-    private Instant deletedAt;
-
-    // CAMPO CONTROLADO POR HIBERNATE
-    @Column(name = "deleted", insertable = false, updatable = false)
-    private boolean deleted;
-
-    // ======================
-    // SOFT DELETE HELPERS
-    // ======================
-    @PreRemove
-    protected void onSoftDelete() {
-        this.deletedAt = Instant.now();
-    }
-
-    public void restore() {
-        this.deletedAt = null;
-    }
-
-    public boolean isDeleted() {
-        return deletedAt != null;
-    }
 }
