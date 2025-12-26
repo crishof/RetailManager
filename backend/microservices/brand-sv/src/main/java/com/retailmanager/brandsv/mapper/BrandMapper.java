@@ -19,7 +19,7 @@ public interface BrandMapper {
     // READ
     BrandResponse toDto(Brand brand);
 
-    // UPDATE (PATCH / PUT partial)
+    // UPDATE (PATCH / PUT - partial / full)
     @Mapping(target = "id", ignore = true)
     void updateEntityFromRequest(
             BrandRequest request,

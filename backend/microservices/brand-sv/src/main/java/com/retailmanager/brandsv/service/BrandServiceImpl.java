@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,9 +40,9 @@ public class BrandServiceImpl implements BrandService {
 
         if (existing.isPresent()) {
             Brand brand = existing.get();
-            if (brand.isDeleted()) {
+            if (brandRepository.existsDeletedById(brand.getId())) {
                 log.info("Restoring previously deleted brand | id={} | name={}", brand.getId(), name);
-                brand.restore();
+                brandRepository.restoreById(brand.getId());
 
                 if (logo != null && brand.getLogoUrl() != null) {
                     brand.setLogoUrl(imageClient.replaceImage(logo, ENTITY_NAME, brand.getLogoUrl()));
@@ -73,7 +74,7 @@ public class BrandServiceImpl implements BrandService {
         log.debug("Fetching all brands");
 
         return brandRepository.findAll()
-                .stream()
+                .stream().sorted(Comparator.comparing(Brand::getName))
                 .map(brandMapper::toDto)
                 .toList();
     }
@@ -81,8 +82,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional(readOnly = true)
     public BrandResponse findById(UUID id) {
-        Brand brand = getBrandOrThrow(id);
-        return brandMapper.toDto(brand);
+        return brandMapper.toDto(getBrandOrThrow(id));
     }
 
     @Override
@@ -136,14 +136,25 @@ public class BrandServiceImpl implements BrandService {
 
         Brand brand = getBrandOrThrow(id);
 
-        if (brand.getLogoUrl() != null) {
-            log.debug("Deleting brand logo | id={}", id);
-            imageClient.deleteImageByUrl(brand.getLogoUrl(), ENTITY_NAME);
-        }
+        //TODO Verify if brand is used in products before deleting
 
         brandRepository.delete(brand);
 
         log.info("Brand deleted successfully | id={}", id);
+    }
+
+    @Override
+    public void deleteBrandLogo(UUID id) {
+
+        Brand brand = getBrandOrThrow(id);
+        log.info("Deleting logo for brand | name={}", brand.getName());
+
+        if (brand.getLogoUrl() != null) {
+            log.debug("Deleting brand logo ");
+            imageClient.deleteImageByUrl(brand.getLogoUrl(), ENTITY_NAME);
+        }
+
+        log.info("Brand logo deleted successfully | id={}", id);
     }
 
     @Override
@@ -152,7 +163,6 @@ public class BrandServiceImpl implements BrandService {
 
         log.info("Restoring brand | id={}", id);
 
-        // Buscar la marca sin filtros
         brandRepository.findByIdIncludingDeleted(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
@@ -160,14 +170,12 @@ public class BrandServiceImpl implements BrandService {
                         )
                 );
 
-        // Verificar si realmente está soft deleted usando DB
         if (!brandRepository.existsDeletedById(id)) {
             throw new BusinessException(
                     "Brand with id '" + id + "' is not deleted."
             );
         }
 
-        // Restaurar
         int updated = brandRepository.restoreById(id);
 
         if (updated == 0) {
@@ -178,7 +186,6 @@ public class BrandServiceImpl implements BrandService {
 
         log.info("Brand restored successfully | id={}", id);
 
-        // Recargar la entidad restaurada
         Brand restored = brandRepository.findById(id)
                 .orElseThrow(() ->
                         new IllegalStateException("Brand restored but not found")
