@@ -13,20 +13,21 @@ import java.util.UUID;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
+    // Find including deleted categories by name
     @Query(value = """
             SELECT * FROM tbl_categories
             WHERE name = :name
             """, nativeQuery = true)
     Optional<Category> findByNameIncludingDeleted(@Param("name") String name);
 
-    // Para restaurar, incluir registros deleted
+    // Find including deleted categories by id
     @Query(value = """
             SELECT * FROM tbl_categories
             WHERE id = :id
             """, nativeQuery = true)
     Optional<Category> findByIdIncludingDeleted(@Param("id") UUID id);
 
-    // Validar si realmente está deleted
+    // Validate if a deleted category exists by id
     @Query(value = """
             SELECT EXISTS (
                 SELECT 1 FROM tbl_categories
@@ -35,7 +36,7 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
             """, nativeQuery = true)
     boolean existsDeletedById(@Param("id") UUID id);
 
-    // Restaurar soft delete
+    // Restore a deleted category by id
     @Modifying
     @Query(value = """
             UPDATE tbl_categories

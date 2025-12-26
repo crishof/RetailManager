@@ -39,9 +39,9 @@ public class CategoryServiceImpl implements CategoryService {
 
         if (existing.isPresent()) {
             Category category = existing.get();
-            if (category.isDeleted()) {
+            if (categoryRepository.existsDeletedById(category.getId())) {
                 log.info("Restoring previously deleted category | id={} | name={}", category.getId(), name);
-                category.restore();
+                categoryRepository.restoreById(category.getId());
 
                 if (image != null && category.getImageUrl() != null) {
                     category.setImageUrl(imageClient.replaceImage(image, ENTITY_NAME, category.getImageUrl()));
@@ -81,8 +81,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     @Override
     public CategoryResponse findById(UUID id) {
-        Category category = getCategoryOrThrow(id);
-        return categoryMapper.toDto(category);
+        return categoryMapper.toDto(getCategoryOrThrow(id));
     }
 
     @Transactional
@@ -136,14 +135,27 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = getCategoryOrThrow(id);
 
-        if (category.getImageUrl() != null) {
-            log.debug("Deleting category image | id={}", id);
-            imageClient.deleteImageByUrl(category.getImageUrl(), ENTITY_NAME);
-        }
+        //TODO Verify if category is used in products before deleting
 
         categoryRepository.delete(category);
 
         log.info("Category deleted successfully | id={}", id);
+    }
+
+    @Transactional
+    @Override
+    public void deleteCategoryImage(UUID id) {
+
+        Category category = getCategoryOrThrow(id);
+        log.info("Deleting image for category | name={}", category.getName());
+
+        if (category.getImageUrl() != null) {
+            log.debug("Deleting category image ");
+            imageClient.deleteImageByUrl(category.getImageUrl(), ENTITY_NAME);
+        }
+        category.setImageUrl(null);
+        categoryRepository.save(category);
+        log.info("Category image deleted successfully | id={}", id);
     }
 
     @Override
@@ -152,7 +164,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         log.info("Restoring category | id={}", id);
 
-        // Buscar la marca sin filtros
         categoryRepository.findByIdIncludingDeleted(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
@@ -160,14 +171,12 @@ public class CategoryServiceImpl implements CategoryService {
                         )
                 );
 
-        // Verificar si realmente está soft deleted usando DB
         if (!categoryRepository.existsDeletedById(id)) {
             throw new BusinessException(
                     "Category with id '" + id + "' is not deleted."
             );
         }
 
-        // Restaurar
         int updated = categoryRepository.restoreById(id);
 
         if (updated == 0) {
@@ -178,7 +187,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         log.info("Category restored successfully | id={}", id);
 
-        // Recargar la entidad restaurada
         Category restored = categoryRepository.findById(id)
                 .orElseThrow(() ->
                         new IllegalStateException("Category restored but not found")

@@ -68,6 +68,12 @@ public class CategoryController {
         categoryService.delete(id);
     }
 
+    @Operation(summary = "Delete category image")
+    @PatchMapping("/{id}/image")
+    public void deleteImage(@PathVariable UUID id) {
+        categoryService.deleteImage(id);
+    }
+
     @Operation(summary = "Restore a deleted category by ID")
     @PatchMapping("/{id}/restore")
     public CategoryResponse restore(@PathVariable @NotNull UUID id) {
