@@ -34,11 +34,12 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("Creating customer | lastname={} | name={}", customerRequest.getLastname(), customerRequest.getName());
 
         Optional<Customer> existing = customerRepository.findByDniIncludingDeleted(customerRequest.getDni());
+
         if (existing.isPresent()) {
             Customer customer = existing.get();
-            if (customer.isDeleted()) {
+            if (customerRepository.existsDeletedById(customer.getId())) {
                 log.info("Restoring previously deleted customer | id={} | dni={}", customer.getId(), customerRequest.getDni());
-                customer.restore();
+                customerRepository.restoreById(customer.getId());
                 return customerMapper.toDto(customerRepository.save(customer));
             }
             throw new IllegalArgumentException("Customer with DNI '" + customerRequest.getDni() + "' already exists.");
@@ -48,7 +49,6 @@ public class CustomerServiceImpl implements CustomerService {
         Customer saved = customerRepository.save(customer);
         log.info("Customer created | id={} | dni={}", saved.getId(), saved.getDni());
         return customerMapper.toDto(saved);
-
     }
 
     @Override
@@ -85,21 +85,19 @@ public class CustomerServiceImpl implements CustomerService {
     public void delete(UUID id) {
 
         log.info("Deleting customer | id={}", id);
-
         Customer customer = getCustomerOrThrow(id);
-
         customerRepository.delete(customer);
-
         log.info("Customer deleted | id={}", id);
-
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Long getCustomerCount() {
         return customerRepository.count();
     }
 
     @Override
+    @Transactional
     public CustomerResponse restore(UUID id) {
 
         log.info("Restoring customer | id={}", id);
@@ -123,10 +121,16 @@ public class CustomerServiceImpl implements CustomerService {
         }
         log.info("Customer restored | id={}", id);
 
-        Customer restored = getCustomerOrThrow(id);
+        Customer restored = customerRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalStateException("Customer restored but not found")
+                );
         return customerMapper.toDto(restored);
     }
 
+    // =========================
+    // PRIVATE HELPERS
+    // =========================
     private Customer getCustomerOrThrow(UUID id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format(CUSTOMER_NOT_FOUND, id)));
