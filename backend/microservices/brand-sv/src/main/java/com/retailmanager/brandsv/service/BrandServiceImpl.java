@@ -144,6 +144,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    @Transactional
     public void deleteBrandLogo(UUID id) {
 
         Brand brand = getBrandOrThrow(id);
@@ -153,6 +154,8 @@ public class BrandServiceImpl implements BrandService {
             log.debug("Deleting brand logo ");
             imageClient.deleteImageByUrl(brand.getLogoUrl(), ENTITY_NAME);
         }
+        brand.setLogoUrl(null);
+        brandRepository.save(brand);
 
         log.info("Brand logo deleted successfully | id={}", id);
     }

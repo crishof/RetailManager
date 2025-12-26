@@ -69,7 +69,7 @@ public class BrandController {
     }
 
     @Operation(summary = "Delete brand logo")
-    @DeleteMapping("/{id}/logo")
+    @PatchMapping("/{id}/logo")
     public void deleteLogo(@PathVariable UUID id) {
         brandService.deleteBrandLogo(id);
     }
