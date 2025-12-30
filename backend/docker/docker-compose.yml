@@ -260,6 +260,28 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  # -----------------------------
+  # Exchange Service
+  # -----------------------------
+  exchange-sv:
+    build:
+      context: ../microservices/exchange-sv
+    container_name: exchange-sv
+    ports:
+      - "${EXCHANGE_SV_PORT}:8080"
+    env_file:
+      - ../docker/.env
+      - ../microservices/exchange-sv/.env
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # -----------------------------
   # Nginx Gateway
@@ -281,6 +303,7 @@ services:
       - pricing-sv
       - sales-sv
       - price-item-sv
+      - exchange-sv
     networks:
       - erp-net
 networks:
