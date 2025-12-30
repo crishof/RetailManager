@@ -1,0 +1,14 @@
+ __  .___  ___.      ___       _______  _______           _______.____    ____
+|  | |   \/   |     /   \     /  _____||   ____|         /       |\   \  /   /
+|  | |  \  /  |    /  ^  \   |  |  __  |  |__    ______ |   (----` \   \/   /
+|  | |  |\/|  |   /  /_\  \  |  | |_ | |   __|  |______| \   \      \      /
+|  | |  |  |  |  /  _____  \ |  |__| | |  |____      .----)   |      \    /
+|__| |__|  |__| /__/     \__\ \______| |_______|     |_______/        \__/
+
+
+Microservice: Brand Service
+Version: 1.0.0
+Author: Cristian H.
+Description: This microservice handles images-related operations.
+© 2025 Cristian Hoffmann. All rights reserved.
+===============================================

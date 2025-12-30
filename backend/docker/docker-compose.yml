@@ -8,19 +8,192 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5433:5432"   # host:container
     networks:
       - erp-net
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d/
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 5s
       timeout: 5s
       retries: 5
+  # -----------------------------
+  # PG Admin
+  # -----------------------------
+  pg-admin:
+    image: dpage/pgadmin4:latest
+    container_name: pg-admin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@local.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp-net
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+  # -----------------------------
+  # Brand Service
+  # -----------------------------
+  brand-sv:
+    build:
+      context: ../microservices/brand-sv
+    container_name: brand-sv
+    ports:
+      - "${BRAND_SV_PORT}:8080"
+    env_file:
+      - ../docker/.env
+      - ../microservices/brand-sv/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # -----------------------------
+  # Category Service
+  # -----------------------------
+  category-sv:
+    build:
+      context: ../microservices/category-sv
+    container_name: category-sv
+    ports:
+      - "${CATEGORY_SV_PORT}:8080"
+    env_file:
+      - ../docker/.env
+      - ../microservices/category-sv/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # -----------------------------
+  # Price List Service
+  # -----------------------------
+  price-item-sv:
+    build:
+      context: ../microservices/supplier-price-list-sv
+    container_name: supplier-price-list-sv
+    ports:
+      - "${PRICE_LIST_SV_PORT}:8080"
+    env_file:
+      - ../docker/.env
+      - ../microservices/supplier-price-list-sv/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -----------------------------
+  # Customer Service
+  # -----------------------------
+  customer-sv:
+    build:
+      context: ../microservices/customer-sv
+    container_name: customer-sv
+    env_file:
+      - .env
+      - ../microservices/customer-sv/.env
+    ports:
+      - "${CUSTOMER_SV_PORT}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # -----------------------------
+  # Image Service
+  # -----------------------------
+  image-sv:
+    build:
+      context: ../microservices/image-sv
+    container_name: image-sv
+    env_file:
+      - .env
+      - ../microservices/image-sv/.env
+    ports:
+      - "${IMAGE_SV_PORT}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # -----------------------------
+  # Inventory Service
+  # -----------------------------
+  inventory-sv:
+    build:
+      context: ../microservices/inventory-sv
+    container_name: inventory-sv
+    ports:
+      - "${INVENTORY_SV_PORT}:8080"
+    env_file:
+      - ../docker/.env
+      - ../microservices/inventory-sv/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # -----------------------------
+  # Pricing Service
+  # -----------------------------
+  pricing-sv:
+    build:
+      context: ../microservices/pricing-sv
+    container_name: pricing-sv
+    ports:
+      - "${PRICING_SV_PORT}:8080"
+    env_file:
+      - ../docker/.env
+      - ../microservices/pricing-sv/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   # -----------------------------
   # Product Service
   # -----------------------------
@@ -38,27 +211,15 @@ services:
         condition: service_healthy
     networks:
       - erp-net
-    # -----------------------------
-    # Customer Service
-    # -----------------------------
-  customer-sv:
-    build:
-      context: ../microservices/customer-sv
-    container_name: customer-sv
-    env_file:
-      - .env
-      - ../microservices/customer-sv/.env
-    ports:
-      - "${CUSTOMER_SV_PORT}:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   # -----------------------------
   # Sales Service
   # -----------------------------
-  sale-sv:
+  sales-sv:
     build:
       context: ../microservices/sales-sv
     container_name: sales-sv
@@ -72,43 +233,124 @@ services:
       - customer-sv
     networks:
       - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # -----------------------------
+  # Supplier Service
+  # -----------------------------
+  supplier-sv:
+    build:
+      context: ../microservices/supplier-sv
+    container_name: supplier-sv
+    ports:
+      - "${SUPPLIER_SV_PORT}:8080"
+    env_file:
+      - ../docker/.env
+      - ../microservices/supplier-sv/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # -----------------------------
+  # Exchange Service
+  # -----------------------------
+  exchange-sv:
+    build:
+      context: ../microservices/exchange-sv
+    container_name: exchange-sv
+    ports:
+      - "${EXCHANGE_SV_PORT}:8080"
+    env_file:
+      - ../docker/.env
+      - ../microservices/exchange-sv/.env
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -----------------------------
+  # Nginx Gateway
+  # -----------------------------
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - brand-sv
+      - category-sv
+      - product-sv
+      - customer-sv
+      - image-sv
+      - inventory-sv
+      - supplier-sv
+      - pricing-sv
+      - sales-sv
+      - price-item-sv
+      - exchange-sv
+    networks:
+      - erp-net
 networks:
   erp-net:
+    name: erp-net
     driver: bridge
-
 volumes:
   postgres_data:
+  pgadmin_data:
+
+
+
+
+
+
+
 
   # -----------------------------
   # Zookeeper
   # -----------------------------
-#  zookeeper:
-#    image: confluentinc/cp-zookeeper:latest
-#    container_name: zookeeper
-#    environment:
-#      ZOOKEEPER_CLIENT_PORT: 2181
-#    networks:
-#      - ${NETWORK_NAME}
+  #  zookeeper:
+  #    image: confluentinc/cp-zookeeper:latest
+  #    container_name: zookeeper
+  #    environment:
+  #      ZOOKEEPER_CLIENT_PORT: 2181
+  #    networks:
+  #      - ${NETWORK_NAME}
 
   # -----------------------------
   # Kafka
   # -----------------------------
-#  kafka:
-#    image: confluentinc/cp-kafka:latest
-#    container_name: kafka
-#    depends_on:
-#      - zookeeper
-#    env_file:
-#      - .env
-#    environment:
-#      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID}
-#      KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER}
-#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${KAFKA_ADVERTISED_LISTENER}
-#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-#    ports:
-#      - "9092:9092"
-#    networks:
-#      - ${NETWORK_NAME}
+  #  kafka:
+  #    image: confluentinc/cp-kafka:latest
+  #    container_name: kafka
+  #    depends_on:
+  #      - zookeeper
+  #    env_file:
+  #      - .env
+  #    environment:
+  #      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID}
+  #      KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER}
+  #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${KAFKA_ADVERTISED_LISTENER}
+  #      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  #    ports:
+  #      - "9092:9092"
+  #    networks:
+  #      - ${NETWORK_NAME}
 
 
   # -----------------------------
@@ -119,24 +361,5 @@ volumes:
 #    container_name: redis
 #    ports:
 #      - "${REDIS_PORT}:6379"
-#    networks:
-#      - ${NETWORK_NAME}
-
-
-  # -----------------------------
-  # API Gateway
-  # -----------------------------
-#  api-gateway:
-#    build:
-#      context: ../api-gateway
-#    container_name: api-gateway
-#    ports:
-#      - "${GATEWAY_PORT}:8080"
-#    env_file:
-#      - .env
-#    depends_on:
-#      - product-service
-#      - customer-service
-#      - sales-service
 #    networks:
 #      - ${NETWORK_NAME}
