@@ -11,20 +11,21 @@ import java.util.UUID;
 
 public interface SupplierRepository extends JpaRepository<Supplier, UUID> {
 
+    // Find by name including deleted records
     @Query(value = """
             SELECT * FROM tbl_suppliers
             WHERE name = :name
             """, nativeQuery = true)
     Optional<Supplier> findByNameIncludingDeleted(@Param("name") String name);
 
-    // Para restaurar, incluir registros deleted
+    // Find by id including deleted records
     @Query(value = """
             SELECT * FROM tbl_suppliers
             WHERE id = :id
             """, nativeQuery = true)
     Optional<Supplier> findByIdIncludingDeleted(@Param("id") UUID id);
 
-    // Validar si realmente está deleted
+    // Validate if a deleted supplier exists by id
     @Query(value = """
             SELECT EXISTS (
                 SELECT 1 FROM tbl_suppliers
@@ -33,7 +34,7 @@ public interface SupplierRepository extends JpaRepository<Supplier, UUID> {
             """, nativeQuery = true)
     boolean existsDeletedById(@Param("id") UUID id);
 
-    // Restaurar soft delete
+    // Restore a deleted supplier by id
     @Modifying
     @Query(value = """
             UPDATE tbl_suppliers

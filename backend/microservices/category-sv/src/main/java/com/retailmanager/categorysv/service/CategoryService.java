@@ -25,6 +25,9 @@ public interface CategoryService {
     void delete(UUID id);
 
     @Transactional
+    void deleteCategoryImage(UUID id);
+
+    @Transactional
     CategoryResponse restore(UUID id);
 
     Long getCategoryCount();

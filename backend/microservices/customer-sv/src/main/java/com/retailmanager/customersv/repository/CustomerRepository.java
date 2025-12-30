@@ -13,20 +13,21 @@ import java.util.UUID;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, UUID> {
 
+    // Find including deleted customers by dni
     @Query(value = """
             SELECT * FROM tbl_customers
             WHERE dni = :dni
             """, nativeQuery = true)
     Optional<Customer> findByDniIncludingDeleted(@Param("dni") String dni);
 
-    // Para restaurar, incluir registros deleted
+    // Find including deleted customers by id
     @Query(value = """
             SELECT * FROM tbl_customers
             WHERE id = :id
             """, nativeQuery = true)
     Optional<Customer> findByIdIncludingDeleted(@Param("id") UUID id);
 
-    // Validar si realmente está deleted
+    // Validate if a deleted customer exists by id
     @Query(value = """
             SELECT EXISTS (
                 SELECT 1 FROM tbl_customers
@@ -35,7 +36,7 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
             """, nativeQuery = true)
     boolean existsDeletedById(@Param("id") UUID id);
 
-    // Restaurar soft delete
+    // Restore a deleted customer by id
     @Modifying
     @Query(value = """
             UPDATE tbl_customers
