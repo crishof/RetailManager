@@ -1,4 +1,9 @@
 package com.retailmanager.productsv.dto;
 
-public record CategoryReplaceRequest() {
+import java.util.UUID;
+
+public record CategoryReplaceRequest(
+        UUID from,
+        UUID to
+) {
 }
