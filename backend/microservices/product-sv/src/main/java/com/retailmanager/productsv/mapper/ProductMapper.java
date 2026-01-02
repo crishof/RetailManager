@@ -3,11 +3,7 @@ package com.retailmanager.productsv.mapper;
 import com.retailmanager.productsv.dto.ProductRequest;
 import com.retailmanager.productsv.dto.ProductResponse;
 import com.retailmanager.productsv.model.Product;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
-import org.springframework.web.bind.annotation.Mapping;
+import org.mapstruct.*;
 
 @Mapper(
         componentModel = "spring",
