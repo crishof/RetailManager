@@ -1,4 +1,4 @@
-package com.retailmanager.brandsv.exception;
+package com.retailmanager.productsv.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

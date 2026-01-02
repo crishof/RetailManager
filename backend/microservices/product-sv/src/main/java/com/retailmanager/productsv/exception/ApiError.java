@@ -1,4 +1,4 @@
-package com.retailmanager.brandsv.exception;
+package com.retailmanager.productsv.exception;
 
 import java.time.Instant;
 
