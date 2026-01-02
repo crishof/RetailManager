@@ -23,7 +23,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    /* 
+    /*
         Actuator endpoints:
         Health: /products/actuator/health
         Info: /products/actuator/info

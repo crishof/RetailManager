@@ -9,12 +9,12 @@ import com.retailmanager.brandsv.model.Brand;
 import com.retailmanager.brandsv.repository.BrandRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -69,19 +69,17 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BrandResponse> findAll() {
+    public Page<BrandResponse> getAll(Pageable pageable) {
 
-        log.debug("Fetching all brands");
+        log.debug("Fetching brands | page={} size={}", pageable.getPageNumber(), pageable.getPageSize());
 
-        return brandRepository.findAll()
-                .stream().sorted(Comparator.comparing(Brand::getName))
-                .map(brandMapper::toDto)
-                .toList();
+        return brandRepository.findAll(pageable)
+                .map(brandMapper::toDto);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public BrandResponse findById(UUID id) {
+    public BrandResponse getById(UUID id) {
         return brandMapper.toDto(getBrandOrThrow(id));
     }
 
