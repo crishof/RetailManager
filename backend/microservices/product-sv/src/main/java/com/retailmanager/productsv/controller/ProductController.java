@@ -23,10 +23,13 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/status")
-    public String status() {
-        return "Product Service is up";
-    }
+    /* 
+        Actuator endpoints:
+        Health: /products/actuator/health
+        Info: /products/actuator/info
+        Metrics: /products/actuator/metrics
+        Prometheus: /products/actuator/prometheus
+    */
 
     @Operation(summary = "Get all products with optional filters")
     @GetMapping
