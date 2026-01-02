@@ -1,7 +1,8 @@
-package com.retailmanager.brandsv.client;
+package com.retailmanager.productsv.client;
 
-import com.retailmanager.brandsv.dto.ImageResponse;
-import com.retailmanager.brandsv.exception.InvalidImageResponseException;
+
+import com.retailmanager.productsv.dto.ImageResponse;
+import com.retailmanager.productsv.exception.InvalidImageResponseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;

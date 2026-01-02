@@ -1,4 +1,4 @@
-package com.retailmanager.brandsv.dto;
+package com.retailmanager.productsv.dto;
 
 public record ImageResponse(
         String filename,
