@@ -1,4 +1,7 @@
 package com.retailmanager.productsv.service;
 
-public class ProductImportServiceImpl {
+import org.springframework.stereotype.Service;
+
+@Service
+public class ProductImportServiceImpl implements ProductImportService {
 }
