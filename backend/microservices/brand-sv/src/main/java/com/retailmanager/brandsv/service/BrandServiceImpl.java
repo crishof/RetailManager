@@ -1,6 +1,7 @@
 package com.retailmanager.brandsv.service;
 
 import com.retailmanager.brandsv.client.ImageClient;
+import com.retailmanager.brandsv.client.ProductClient;
 import com.retailmanager.brandsv.dto.BrandResponse;
 import com.retailmanager.brandsv.exception.BusinessException;
 import com.retailmanager.brandsv.exception.ResourceNotFoundException;
@@ -29,6 +30,7 @@ public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
     private final ImageClient imageClient;
+    private final ProductClient productClient;
 
     @Override
     @Transactional
@@ -36,7 +38,12 @@ public class BrandServiceImpl implements BrandService {
 
         log.info("Creating brand | name={} | hasLogo={}", name, logo != null);
 
-        Optional<Brand> existing = brandRepository.findByNameIncludingDeleted(name);
+        if (name == null || name.isEmpty()) {
+            throw new BusinessException("Brand name cannot be empty");
+        }
+        String normalizedName = name.trim();
+        Optional<Brand> existing = brandRepository.findByNameIncludingDeleted(normalizedName);
+
 
         if (existing.isPresent()) {
             Brand brand = existing.get();
@@ -49,11 +56,11 @@ public class BrandServiceImpl implements BrandService {
                 }
                 return brandMapper.toDto(brandRepository.save(brand));
             }
-            throw new IllegalArgumentException("Brand with name '" + name + "' already exists.");
+            throw new BusinessException("Brand with name '" + name + "' already exists.");
         }
 
         Brand brand = new Brand();
-        brand.setName(name);
+        brand.setName(normalizedName);
 
         if (logo != null) {
             log.debug("Uploading logo for brand '{}'", name);
@@ -115,8 +122,12 @@ public class BrandServiceImpl implements BrandService {
         }
 
         if (name != null) {
-            log.debug("Updating brand name | id={} | newName={}", id, name);
-            brand.setName(name);
+            String normalizedName = name.trim();
+            if (normalizedName.isBlank()) {
+                throw new BusinessException("Brand name cannot be empty");
+            }
+            log.debug("Updating brand | id={} | to newName={}", id, name);
+            brand.setName(normalizedName);
         }
 
         Brand updated = brandRepository.save(brand);
@@ -134,7 +145,9 @@ public class BrandServiceImpl implements BrandService {
 
         Brand brand = getBrandOrThrow(id);
 
-        //TODO Verify if brand is used in products before deleting
+        if (productClient.existsProductsByBrand(id)) {
+            throw new BusinessException("Cannot delete brand because it is used by products");
+        }
 
         brandRepository.delete(brand);
 
@@ -196,6 +209,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Long getBrandCount() {
         return brandRepository.count();
     }
