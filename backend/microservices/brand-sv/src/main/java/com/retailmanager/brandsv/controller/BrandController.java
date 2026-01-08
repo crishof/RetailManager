@@ -89,7 +89,7 @@ public class BrandController {
     }
 
     // ============================
-    // DELETE BRAND
+    // SOFT DELETE BRAND
     // ============================
     @Operation(summary = "Soft delete a brand by ID")
     @ApiResponse(responseCode = "204", description = "Brand deleted successfully")
@@ -149,4 +149,6 @@ public class BrandController {
         log.info("Getting total count of brands");
         return ResponseEntity.ok(brandService.getBrandCount());
     }
+
+    //TODO: Write unit and integration tests for the controller methods
 }

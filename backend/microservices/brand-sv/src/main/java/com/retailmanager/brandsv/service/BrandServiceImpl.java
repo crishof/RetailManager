@@ -108,7 +108,11 @@ public class BrandServiceImpl implements BrandService {
                 logoUrl = imageClient.uploadImage(logo, ENTITY_NAME);
             } else {
                 log.debug("Replacing logo for brand | id={}", id);
-                logoUrl = imageClient.replaceImage(logo, ENTITY_NAME, brand.getLogoUrl());
+                logoUrl = imageClient.replaceImage(
+                        logo,
+                        ENTITY_NAME,
+                        brand.getLogoUrl()
+                );
             }
 
             brand.setLogoUrl(logoUrl);
