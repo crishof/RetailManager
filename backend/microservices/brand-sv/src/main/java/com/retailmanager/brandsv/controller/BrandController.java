@@ -95,9 +95,22 @@ public class BrandController {
     @ApiResponse(responseCode = "204", description = "Brand deleted successfully")
     @ApiResponse(responseCode = "404", description = "Brand not found")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable @NotNull UUID id) {
+    public ResponseEntity<Void> softDelete(@PathVariable @NotNull UUID id) {
         log.info("Soft deleting brand id={}", id);
         brandService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // ============================
+    // FORCE DELETE BRAND
+    // ============================
+    @Operation(summary = "Hard delete a brand by ID")
+    @ApiResponse(responseCode = "204", description = "Brand deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Brand not found")
+    @DeleteMapping("/{id}/force")
+    public ResponseEntity<Void> forceDelete(@PathVariable @NotNull UUID id) {
+        log.info("Hard deleting brand id={}", id);
+        brandService.forceDelete(id);
         return ResponseEntity.noContent().build();
     }
 

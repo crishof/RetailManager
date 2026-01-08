@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SoftDelete;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -30,5 +31,11 @@ public class Brand {
 
     @Column(name = "logo_url")
     private String logoUrl;
+
+    @Column(name = "deleted", insertable = false, updatable = false)
+    private boolean deleted;
+
+    @Column(name = "deleted_at", insertable = false, updatable = false)
+    private Instant deletedAt;
 
 }

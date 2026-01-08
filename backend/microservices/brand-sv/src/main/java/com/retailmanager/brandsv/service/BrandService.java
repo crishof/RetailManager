@@ -19,6 +19,8 @@ public interface BrandService {
 
     void delete(UUID id);
 
+    void forceDelete(UUID id);
+
     Long getBrandCount();
 
     void deleteBrandLogo(UUID id);

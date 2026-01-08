@@ -26,6 +26,8 @@ public class BrandServiceImpl implements BrandService {
 
     private static final String BRAND_NOT_FOUND = "Brand with id %s not found";
     private static final String ENTITY_NAME = "brands";
+    private static final String DELETING = "Deleting brand | id={}";
+    private static final String DELETED = "Brand deleted successfully | id={}";
 
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
@@ -80,8 +82,7 @@ public class BrandServiceImpl implements BrandService {
 
         log.debug("Fetching brands | page={} size={}", pageable.getPageNumber(), pageable.getPageSize());
 
-        return brandRepository.findAll(pageable)
-                .map(brandMapper::toDto);
+        return brandRepository.findAll(pageable).map(brandMapper::toDto);
     }
 
     @Override
@@ -94,11 +95,7 @@ public class BrandServiceImpl implements BrandService {
     @Transactional
     public BrandResponse update(UUID id, String name, MultipartFile logo) {
 
-        log.info("Updating brand | id={} | updateName={} | updateLogo={}",
-                id,
-                name != null,
-                logo != null
-        );
+        log.info("Updating brand | id={} | updateName={} | updateLogo={}", id, name != null, logo != null);
 
         Brand brand = getBrandOrThrow(id);
 
@@ -111,11 +108,7 @@ public class BrandServiceImpl implements BrandService {
                 logoUrl = imageClient.uploadImage(logo, ENTITY_NAME);
             } else {
                 log.debug("Replacing logo for brand | id={}", id);
-                logoUrl = imageClient.replaceImage(
-                        logo,
-                        ENTITY_NAME,
-                        brand.getLogoUrl()
-                );
+                logoUrl = imageClient.replaceImage(logo, ENTITY_NAME, brand.getLogoUrl());
             }
 
             brand.setLogoUrl(logoUrl);
@@ -141,17 +134,41 @@ public class BrandServiceImpl implements BrandService {
     @Transactional
     public void delete(UUID id) {
 
-        log.info("Deleting brand | id={}", id);
+        deleteLog(DELETING, id);
 
         Brand brand = getBrandOrThrow(id);
 
-        if (productClient.existsProductsByBrand(id)) {
+        boolean hasProducts = productClient.existsProductsByBrand(id);
+        if (hasProducts) {
             throw new BusinessException("Cannot delete brand because it is used by products");
         }
 
         brandRepository.delete(brand);
+        //TODO replace both delete and setDeletedAt for a one action method
+        int deleted = brandRepository.setDeletedAt(id);
 
-        log.info("Brand deleted successfully | id={}", id);
+        if (deleted > 0) {
+            deleteLog(DELETED, id);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void forceDelete(UUID id) {
+
+        deleteLog(DELETING, id);
+
+        getBrandOrThrow(id);
+
+        boolean hasProducts = productClient.existsProductsByBrand(id);
+        if (hasProducts) {
+            throw new BusinessException("Cannot delete brand because it is used by products");
+        }
+        int deleted = brandRepository.forceDelete(id);
+
+        if (deleted > 0) {
+            deleteLog(DELETED, id);
+        }
     }
 
     @Override
@@ -177,33 +194,23 @@ public class BrandServiceImpl implements BrandService {
 
         log.info("Restoring brand | id={}", id);
 
-        brandRepository.findByIdIncludingDeleted(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                String.format(BRAND_NOT_FOUND, id)
-                        )
-                );
+        brandRepository.findByIdIncludingDeleted(id).orElseThrow(
+                () -> new ResourceNotFoundException(String.format(BRAND_NOT_FOUND, id)));
 
         if (!brandRepository.existsDeletedById(id)) {
-            throw new BusinessException(
-                    "Brand with id '" + id + "' is not deleted."
-            );
+            throw new BusinessException("Brand with id '" + id + "' is not deleted.");
         }
 
         int updated = brandRepository.restoreById(id);
 
         if (updated == 0) {
-            throw new BusinessException(
-                    "Failed to restore brand with id '" + id + "'"
-            );
+            throw new BusinessException("Failed to restore brand with id '" + id + "'");
         }
 
         log.info("Brand restored successfully | id={}", id);
 
-        Brand restored = brandRepository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalStateException("Brand restored but not found")
-                );
+        Brand restored = brandRepository.findById(id).orElseThrow(
+                () -> new IllegalStateException("Brand restored but not found"));
 
         return brandMapper.toDto(restored);
     }
@@ -218,11 +225,16 @@ public class BrandServiceImpl implements BrandService {
     // PRIVATE HELPERS
     // =========================
     private Brand getBrandOrThrow(UUID id) {
-        return brandRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                String.format(BRAND_NOT_FOUND, id)
-                        )
-                );
+        return brandRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(String.format(BRAND_NOT_FOUND, id)));
+    }
+
+    private void deleteLog(String status, UUID id) {
+
+        if (DELETING.equals(status)) {
+            log.info(DELETING, id);
+        } else {
+            log.info(DELETED, id);
+        }
     }
 }
