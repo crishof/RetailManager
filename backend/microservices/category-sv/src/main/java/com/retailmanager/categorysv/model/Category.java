@@ -2,7 +2,6 @@ package com.retailmanager.categorysv.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SoftDelete;
 
 import java.util.UUID;
 
@@ -18,7 +17,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@SoftDelete
 public class Category {
 
     @Id
