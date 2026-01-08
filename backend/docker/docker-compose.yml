@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5433:5432"   # host:container
+      - "5544:5432"   # host:container
     networks:
       - erp-net
     volumes:
@@ -272,9 +272,9 @@ services:
     env_file:
       - ../docker/.env
       - ../microservices/exchange-sv/.env
-#    depends_on:
-#      postgres:
-#        condition: service_healthy
+    #    depends_on:
+    #      postgres:
+    #        condition: service_healthy
     networks:
       - erp-net
     healthcheck:

@@ -59,8 +59,8 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-<!--            <scope>test</scope> -->
-<!-- TODO: Enable scope test after resolving compatibility issues -->
+            <!--            <scope>test</scope> -->
+            <!-- TODO: Enable scope test after resolving compatibility issues -->
         </dependency>
 
         <!-- WebFlux -->
@@ -87,6 +87,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Prometheus -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
 
         <!-- MapStruct -->

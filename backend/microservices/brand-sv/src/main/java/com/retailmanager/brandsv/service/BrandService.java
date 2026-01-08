@@ -1,22 +1,25 @@
 package com.retailmanager.brandsv.service;
 
 import com.retailmanager.brandsv.dto.BrandResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface BrandService {
 
     BrandResponse create(String name, MultipartFile logo);
 
-    List<BrandResponse> findAll();
+    Page<BrandResponse> getAll(Pageable pageable);
 
-    BrandResponse findById(UUID id);
+    BrandResponse getById(UUID id);
 
     BrandResponse update(UUID id, String name, MultipartFile logo);
 
     void delete(UUID id);
+
+    void forceDelete(UUID id);
 
     Long getBrandCount();
 
