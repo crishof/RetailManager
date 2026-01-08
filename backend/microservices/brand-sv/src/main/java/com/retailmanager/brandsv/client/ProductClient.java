@@ -21,6 +21,7 @@ public class ProductClient {
     }
 
     public Boolean existsProductsByBrand(UUID id) {
-        return true;
+        //TODO implement method
+        return false;
     }
 }
