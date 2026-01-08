@@ -1,6 +1,7 @@
 package com.retailmanager.categorysv.service;
 
 import com.retailmanager.categorysv.client.ImageClient;
+import com.retailmanager.categorysv.client.ProductClient;
 import com.retailmanager.categorysv.dto.CategoryResponse;
 import com.retailmanager.categorysv.exception.BusinessException;
 import com.retailmanager.categorysv.exception.ResourceNotFoundException;
@@ -9,11 +10,12 @@ import com.retailmanager.categorysv.model.Category;
 import com.retailmanager.categorysv.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,6 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final ImageClient imageClient;
+    private final ProductClient productClient;
 
     @Transactional
     @Override
@@ -35,19 +38,13 @@ public class CategoryServiceImpl implements CategoryService {
 
         log.info("Creating category | name={} | hasLogo={}", name, image != null);
 
-        Optional<Category> existing = categoryRepository.findByNameIncludingDeleted(name);
+        if (name == null || name.isEmpty()) {
+            throw new BusinessException("Category name cannot be empty");
+        }
+        String normalizedName = name.trim();
+        Optional<Category> existing = categoryRepository.findByName(normalizedName);
 
         if (existing.isPresent()) {
-            Category category = existing.get();
-            if (categoryRepository.existsDeletedById(category.getId())) {
-                log.info("Restoring previously deleted category | id={} | name={}", category.getId(), name);
-                categoryRepository.restoreById(category.getId());
-
-                if (image != null && category.getImageUrl() != null) {
-                    category.setImageUrl(imageClient.replaceImage(image, ENTITY_NAME, category.getImageUrl()));
-                }
-                return categoryMapper.toDto(categoryRepository.save(category));
-            }
             throw new IllegalArgumentException("Category with name '" + name + "' already exists.");
         }
 
@@ -68,19 +65,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<CategoryResponse> findAll() {
+    public Page<CategoryResponse> getAll(Pageable pageable) {
 
-        log.debug("Fetching all categories");
+        log.debug("Fetching categories | page={} size{}", pageable.getPageNumber(), pageable.getPageSize());
 
-        return categoryRepository.findAll()
-                .stream()
-                .map(categoryMapper::toDto)
-                .toList();
+        return categoryRepository.findAll(pageable)
+                .map(categoryMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public CategoryResponse findById(UUID id) {
+    public CategoryResponse getById(UUID id) {
         return categoryMapper.toDto(getCategoryOrThrow(id));
     }
 
@@ -116,7 +111,11 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         if (name != null) {
-            log.debug("Updating category name | id={} | newName={}", id, name);
+            String normalizedName = name.trim();
+            if (normalizedName.isBlank()) {
+                throw new BusinessException("Category name cannot be empty");
+            }
+            log.debug("Updating category name | id={} | to newName={}", id, name);
             category.setName(name);
         }
 
@@ -135,8 +134,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = getCategoryOrThrow(id);
 
-        //TODO Verify if category is used in products before deleting
-
+        productClient.deleteProductsCategory(category.getId());
+        // TODO validate if category has been successfully removed from products
         categoryRepository.delete(category);
 
         log.info("Category deleted successfully | id={}", id);
@@ -156,43 +155,6 @@ public class CategoryServiceImpl implements CategoryService {
         category.setImageUrl(null);
         categoryRepository.save(category);
         log.info("Category image deleted successfully | id={}", id);
-    }
-
-    @Override
-    @Transactional
-    public CategoryResponse restore(UUID id) {
-
-        log.info("Restoring category | id={}", id);
-
-        categoryRepository.findByIdIncludingDeleted(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                String.format(CATEGORY_NOT_FOUND, id)
-                        )
-                );
-
-        if (!categoryRepository.existsDeletedById(id)) {
-            throw new BusinessException(
-                    "Category with id '" + id + "' is not deleted."
-            );
-        }
-
-        int updated = categoryRepository.restoreById(id);
-
-        if (updated == 0) {
-            throw new BusinessException(
-                    "Failed to restore category with id '" + id + "'"
-            );
-        }
-
-        log.info("Category restored successfully | id={}", id);
-
-        Category restored = categoryRepository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalStateException("Category restored but not found")
-                );
-
-        return categoryMapper.toDto(restored);
     }
 
     @Override
