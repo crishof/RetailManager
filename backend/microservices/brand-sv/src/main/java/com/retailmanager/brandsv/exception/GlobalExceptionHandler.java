@@ -16,7 +16,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleBadRequest(InvalidRequestException ex, HttpServletRequest request) {
+    public ApiError handleBadRequest(
+            InvalidRequestException ex,
+            HttpServletRequest request) {
         log.warn("Bad request: {}", ex.getMessage());
         return build(HttpStatus.BAD_REQUEST, "Bad Request", ex, request);
     }
