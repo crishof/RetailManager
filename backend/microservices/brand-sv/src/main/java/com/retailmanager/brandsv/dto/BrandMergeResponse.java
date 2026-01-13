@@ -1,4 +1,10 @@
 package com.retailmanager.brandsv.dto;
 
-public record BrandMergeResponse() {
+import java.util.UUID;
+
+public record BrandMergeResponse(
+        UUID sourceBrandId,
+        UUID targetBrandId,
+        long productsReassigned
+) {
 }
