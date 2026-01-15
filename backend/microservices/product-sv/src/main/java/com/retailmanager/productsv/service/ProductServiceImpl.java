@@ -11,6 +11,8 @@ import com.retailmanager.productsv.repository.ProductSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,22 +33,10 @@ public class ProductServiceImpl implements ProductService {
     private final ImageClient imageClient;
 
     @Override
-    public List<ProductResponse> findAll(
-            UUID brandId,
-            UUID categoryId,
-            UUID supplierId,
-            Boolean highlighted,
-            Boolean published,
-            String search
-    ) {
-        Specification<Product> spec = ProductSpecifications.filter(
-                brandId, categoryId, supplierId, highlighted, published, search
-        );
+    public Page<ProductResponse> findAll(UUID brandId, UUID categoryId, UUID supplierId, Boolean highlighted, Boolean published, String search, Pageable pageable) {
+        Specification<Product> spec = ProductSpecifications.filter(brandId, categoryId, supplierId, highlighted, published, search);
 
-        return productRepository.findAll(spec)
-                .stream()
-                .map(productMapper::toResponse)
-                .toList();
+        return productRepository.findAll(spec, pageable).map(productMapper::toResponse);
     }
 
     @Override
@@ -95,18 +85,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean existsByBrand(UUID brandId) {
+    public boolean hasProductsForBrand(UUID brandId) {
         List<Product> products = productRepository.findAllByBrandId(brandId);
         return !products.isEmpty();
     }
 
 
     private Product getProductOrThrow(UUID id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                                String.format(PRODUCT_NOT_FOUND, id)
-                        )
-                );
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format(PRODUCT_NOT_FOUND, id)));
     }
 
     @Transactional
@@ -124,6 +110,22 @@ public class ProductServiceImpl implements ProductService {
         if (updated == 0) {
             throw new EntityNotFoundException("No products found for category " + from);
         }
+    }
+
+    @Override
+    public int replaceBrand(UUID brandId, UUID newBrandId) {
+        int updated = productRepository.replaceBrand(brandId, newBrandId);
+
+        if (updated == 0) {
+            throw new EntityNotFoundException("No products found for brand " + brandId);
+        }
+        return updated;
+    }
+
+    @Transactional
+    @Override
+    public int clearCategory(UUID categoryId) {
+        return productRepository.clearCategory(categoryId);
     }
 }
 
