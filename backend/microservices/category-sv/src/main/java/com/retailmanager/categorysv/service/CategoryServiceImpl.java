@@ -3,11 +3,13 @@ package com.retailmanager.categorysv.service;
 import com.retailmanager.categorysv.client.ImageClient;
 import com.retailmanager.categorysv.client.ProductClient;
 import com.retailmanager.categorysv.dto.CategoryResponse;
+import com.retailmanager.categorysv.dto.CategoryTreeResponse;
 import com.retailmanager.categorysv.exception.BusinessException;
 import com.retailmanager.categorysv.exception.ResourceNotFoundException;
 import com.retailmanager.categorysv.mapper.CategoryMapper;
 import com.retailmanager.categorysv.model.Category;
 import com.retailmanager.categorysv.repository.CategoryRepository;
+import com.retailmanager.categorysv.utils.SlugUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,33 +36,42 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     @Override
-    public CategoryResponse create(String name, MultipartFile image) {
+    public CategoryResponse create(String name, UUID parentId, MultipartFile image) {
 
-        log.info("Creating category | name={} | hasLogo={}", name, image != null);
-
-        if (name == null || name.isEmpty()) {
+        if (name == null || name.isBlank()) {
             throw new BusinessException("Category name cannot be empty");
         }
-        String normalizedName = name.trim();
-        Optional<Category> existing = categoryRepository.findByName(normalizedName);
 
-        if (existing.isPresent()) {
-            throw new IllegalArgumentException("Category with name '" + name + "' already exists.");
+        Category parent = null;
+        if (parentId != null) {
+            parent = getCategoryOrThrow(parentId);
+        }
+
+        String normalizedName = name.trim();
+        String baseSlug = SlugUtils.toSlug(normalizedName);
+
+        String slug = baseSlug;
+        int counter = 1;
+        while (categoryRepository.existsBySlug(slug)) {
+            slug = baseSlug + "-" + counter++;
         }
 
         Category category = new Category();
-        category.setName(name);
+        category.setName(normalizedName);
+        category.setSlug(slug);
+        category.setParent(parent);
+        category.setLevel(parent == null ? 0 : parent.getLevel() + 1);
+        category.setLeaf(true);
+
+        if (parent != null) {
+            parent.setLeaf(false);
+        }
 
         if (image != null) {
-            log.debug("Uploading image for category '{}'", name);
-            String imageUrl = imageClient.uploadImage(image, ENTITY_NAME);
-            category.setImageUrl(imageUrl);
+            category.setImageUrl(imageClient.uploadImage(image, ENTITY_NAME));
         }
-        Category saved = categoryRepository.save(category);
 
-        log.info("Category created successfully | id={} | name={}", saved.getId(), saved.getName());
-
-        return categoryMapper.toDto(saved);
+        return categoryMapper.toDto(categoryRepository.save(category));
     }
 
     @Transactional(readOnly = true)
@@ -69,8 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         log.debug("Fetching categories | page={} size{}", pageable.getPageNumber(), pageable.getPageSize());
 
-        return categoryRepository.findAll(pageable)
-                .map(categoryMapper::toDto);
+        return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
     }
 
     @Transactional(readOnly = true)
@@ -83,11 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse update(UUID id, String name, MultipartFile image) {
 
-        log.info("Updating category | id={} | updateName={} | updateLogo={}",
-                id,
-                name != null,
-                image != null
-        );
+        log.info("Updating category | id={} | updateName={} | updateLogo={}", id, name != null, image != null);
 
         Category category = getCategoryOrThrow(id);
 
@@ -100,11 +106,7 @@ public class CategoryServiceImpl implements CategoryService {
                 imageUrl = imageClient.uploadImage(image, ENTITY_NAME);
             } else {
                 log.debug("Replacing image for category | id={}", id);
-                imageUrl = imageClient.replaceImage(
-                        image,
-                        ENTITY_NAME,
-                        category.getImageUrl()
-                );
+                imageUrl = imageClient.replaceImage(image, ENTITY_NAME, category.getImageUrl());
             }
 
             category.setImageUrl(imageUrl);
@@ -134,8 +136,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = getCategoryOrThrow(id);
 
-        productClient.deleteProductsCategory(category.getId());
-        // TODO validate if category has been successfully removed from products
+        int affected = productClient.clearCategory(category.getId());
+        log.info("Cleared category {} from {} products", id, affected);
+
+        if (categoryRepository.existsByParent(category)) {
+            throw new BusinessException("Cannot delete category with subcategories");
+        }
         categoryRepository.delete(category);
 
         log.info("Category deleted successfully | id={}", id);
@@ -162,15 +168,66 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.count();
     }
 
+    @Transactional
+    @Override
+    public CategoryResponse changeParent(UUID id, UUID newParentId) {
+
+        Category category = getCategoryOrThrow(id);
+        Category newParent = newParentId == null ? null : getCategoryOrThrow(newParentId);
+
+        if (newParent != null) {
+
+            if (category.getId().equals(newParent.getId())) {
+                throw new BusinessException("Category cannot be its own parent");
+            }
+
+            if (isDescendant(category, newParent)) {
+                throw new BusinessException("Cannot move category under its own descendant");
+            }
+        }
+
+        category.setParent(newParent);
+        return categoryMapper.toDto(categoryRepository.save(category));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CategoryTreeResponse> getTree() {
+
+        List<Category> roots = categoryRepository.findByParentIsNull();
+
+        return roots.stream().map(this::mapToTree).toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public CategoryTreeResponse getSubTree(UUID id) {
+        Category root = getCategoryOrThrow(id);
+        return mapToTree(root);
+    }
+
     // =========================
     // PRIVATE HELPERS
     // =========================
     private Category getCategoryOrThrow(UUID id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                String.format(CATEGORY_NOT_FOUND, id)
-                        )
-                );
+        return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format(CATEGORY_NOT_FOUND, id)));
+    }
+
+    private boolean isDescendant(Category category, Category possibleChild) {
+        Category current = possibleChild;
+        while (current != null) {
+            if (current.getId().equals(category.getId())) {
+                return true;
+            }
+            current = current.getParent();
+        }
+        return false;
+    }
+
+    private CategoryTreeResponse mapToTree(Category category) {
+
+        List<CategoryTreeResponse> children = category.getChildren().stream().map(this::mapToTree).toList();
+
+        return new CategoryTreeResponse(category.getId(), category.getName(), category.getImageUrl(), children);
     }
 }

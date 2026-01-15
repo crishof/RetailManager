@@ -17,7 +17,9 @@ public class PriceItemController {
 
     private final PriceItemService priceItemService;
 
-    // Import price list
+    // ============================
+    // IMPORT PRICE LIST
+    // ============================
     @PostMapping("/import")
     public ImportResult importPriceList(
             @RequestParam MultipartFile file,
@@ -27,7 +29,9 @@ public class PriceItemController {
         return priceItemService.importFile(file, supplierId, updateExisting);
     }
 
-    // Query price items
+    // ============================
+    // SEARCH FILTERED ITEMS
+    // ============================
     @GetMapping
     public List<PriceItemResponse> findAll(
             @RequestParam(required = false) UUID supplierId,
@@ -37,13 +41,17 @@ public class PriceItemController {
         return priceItemService.getAllByFilter(supplierId, brand, filter);
     }
 
-    // Get by ID
+    // ============================
+    // GET ITEM BY ID
+    // ============================
     @GetMapping("/{id}")
     public PriceItemResponse findById(@PathVariable UUID id) {
         return priceItemService.getById(id);
     }
 
-    // Distinct brands by supplier
+    // ============================
+    // GET BRANDS BY SUPPLIER
+    // ============================
     @GetMapping("/brands")
     public List<String> getBrands(
             @RequestParam(required = false) UUID supplierId

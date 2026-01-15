@@ -1,6 +1,7 @@
 package com.retailmanager.categorysv.controller;
 
 import com.retailmanager.categorysv.dto.CategoryResponse;
+import com.retailmanager.categorysv.dto.CategoryTreeResponse;
 import com.retailmanager.categorysv.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Categories", description = "Category management APIs")
@@ -33,17 +35,14 @@ public class CategoryController {
     // ============================
     // CREATE CATEGORY
     // ============================
-    @Operation(summary = "Create a new category")
+    @Operation(summary = "Create a new category (root or child)")
     @ApiResponse(responseCode = "201", description = "Category created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid input")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<CategoryResponse> create(
-            @RequestParam @NotBlank String name,
-            @RequestPart(required = false) MultipartFile logo
-    ) {
-        log.info("Creating new category {}", name);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(categoryService.create(name, logo));
+    public ResponseEntity<CategoryResponse> create(@RequestParam @NotBlank String name,
+                                                   @RequestParam(required = false) UUID parentId,
+                                                   @RequestPart(required = false) MultipartFile logo) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(name, parentId, logo));
     }
 
     // ============================
@@ -66,7 +65,7 @@ public class CategoryController {
     @ApiResponse(responseCode = "400", description = "Category not found")
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getById(@PathVariable @NotNull UUID id) {
-        log.info("Fetching category by id={}",id);
+        log.info("Fetching category by id={}", id);
         return ResponseEntity.ok(categoryService.getById(id));
     }
 
@@ -77,13 +76,11 @@ public class CategoryController {
     @ApiResponse(responseCode = "200", description = "Category updated successfully")
     @ApiResponse(responseCode = "400", description = "Invalid input")
     @ApiResponse(responseCode = "400", description = "Category not found")
-    @PatchMapping(value = "/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<CategoryResponse> update(
-            @PathVariable @NotNull UUID id,
-            @RequestPart(required = false) String name,
-            @RequestPart(required = false) MultipartFile logo
-    ) {
-        log.info("Updating category id={} | name present={}",id, name == null);
+    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CategoryResponse> update(@PathVariable @NotNull UUID id,
+                                                   @RequestPart(required = false) String name,
+                                                   @RequestPart(required = false) MultipartFile logo) {
+        log.info("Updating category id={} | name present={}", id, name == null);
         return ResponseEntity.ok(categoryService.update(id, name, logo));
     }
 
@@ -91,11 +88,11 @@ public class CategoryController {
     // DELETE CATEGORY
     // ============================
     @Operation(summary = "Delete a category by ID")
-    @ApiResponse(responseCode = "204",description = "Category deleted successfully")
-    @ApiResponse(responseCode = "404",description = "Category not found")
+    @ApiResponse(responseCode = "204", description = "Category deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Category not found")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable @NotNull UUID id) {
-        log.info("Deleting category id={}",id);
+        log.info("Deleting category id={}", id);
         categoryService.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -104,11 +101,11 @@ public class CategoryController {
     // DELETE CATEGORY IMAGE
     // ============================
     @Operation(summary = "Delete category image")
-    @ApiResponse(responseCode = "204",description = "Category image deleted successfully")
+    @ApiResponse(responseCode = "204", description = "Category image deleted successfully")
     @ApiResponse(responseCode = "404", description = "Category not found")
     @PatchMapping("/{id}/image")
     public ResponseEntity<Void> deleteImage(@PathVariable @NotNull UUID id) {
-        log.info("Deleting category image={}",id);
+        log.info("Deleting category image={}", id);
         categoryService.deleteCategoryImage(id);
         return ResponseEntity.noContent().build();
     }
@@ -117,11 +114,40 @@ public class CategoryController {
     // COUNT CATEGORIES
     // ============================
     @Operation(summary = "Get total count of categories")
-    @ApiResponse(responseCode = "200",description = "Category count retrieved successfully")
+    @ApiResponse(responseCode = "200", description = "Category count retrieved successfully")
     @GetMapping("/count")
     public ResponseEntity<Long> getCategoryCount() {
         log.info("Getting total count of categories");
         return ResponseEntity.ok(categoryService.getCategoryCount());
+    }
+
+    // ============================
+    // CHANGE CATEGORY LEVEL
+    // ============================
+    @Operation(summary = "Move a category to a new parent")
+    @PatchMapping("/{id}/parent")
+    public ResponseEntity<CategoryResponse> changeParent(@PathVariable UUID id,
+                                                         @RequestParam(required = false) UUID newParentId) {
+        log.info("Moving category {} under parent {}", id, newParentId);
+        return ResponseEntity.ok(categoryService.changeParent(id, newParentId));
+    }
+
+    // ============================
+    // GET CATEGORY TREE
+    // ============================
+    @Operation(summary = "Get full category tree")
+    @GetMapping("/tree")
+    public ResponseEntity<List<CategoryTreeResponse>> getTree() {
+        return ResponseEntity.ok(categoryService.getTree());
+    }
+
+    // ============================
+    // GET SUB CATEGORY TREE
+    // ============================
+    @Operation(summary = "Get category subtree")
+    @GetMapping("/{id}/tree")
+    public ResponseEntity<CategoryTreeResponse> getSubTree(@PathVariable UUID id) {
+        return ResponseEntity.ok(categoryService.getSubTree(id));
     }
 
     //TODO: Write unit and integration tests for the controller methods
