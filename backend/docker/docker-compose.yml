@@ -45,20 +45,6 @@ services:
     networks:
       - erp-net
 
-  # -----------------------------
-  # Swagger Service
-  # -----------------------------
-  swagger-sv:
-    build:
-      context: ../microservices/swagger-sv
-    container_name: swagger-sv
-    ports:
-      - "${SWAGGER_SV_PORT}:8080"
-    networks:
-      - erp-net
-    depends_on:
-      - brand-sv
-
   # =========================================================
   # CORE MICROSERVICES
   # =========================================================
