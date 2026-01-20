@@ -2,7 +2,9 @@ package com.retailmanager.brandsv.service;
 
 import com.retailmanager.brandsv.client.ImageClient;
 import com.retailmanager.brandsv.client.ProductClient;
+import com.retailmanager.brandsv.dto.BrandMergeResponse;
 import com.retailmanager.brandsv.dto.BrandResponse;
+import com.retailmanager.brandsv.dto.ReassignBrandResponse;
 import com.retailmanager.brandsv.exception.BusinessException;
 import com.retailmanager.brandsv.exception.ResourceNotFoundException;
 import com.retailmanager.brandsv.mapper.BrandMapper;
@@ -33,6 +35,8 @@ public class BrandServiceImpl implements BrandService {
     private final BrandMapper brandMapper;
     private final ImageClient imageClient;
     private final ProductClient productClient;
+    private final BrandDeletionService brandDeletionService;
+
 
     @Override
     @Transactional
@@ -138,7 +142,7 @@ public class BrandServiceImpl implements BrandService {
 
         Brand brand = getBrandOrThrow(id);
 
-        boolean hasProducts = productClient.existsProductsByBrand(id);
+        boolean hasProducts = productClient.hasProductsForBrand(id);
         if (hasProducts) {
             throw new BusinessException("Cannot delete brand because it is used by products");
         }
@@ -158,12 +162,14 @@ public class BrandServiceImpl implements BrandService {
 
         deleteLog(DELETING, id);
 
-        getBrandOrThrow(id);
+        Brand brand = getBrandOrThrow(id);
 
-        boolean hasProducts = productClient.existsProductsByBrand(id);
+        boolean hasProducts = productClient.hasProductsForBrand(id);
         if (hasProducts) {
             throw new BusinessException("Cannot delete brand because it is used by products");
         }
+
+        deleteBrandLogoInternal(brand);
         int deleted = brandRepository.forceDelete(id);
 
         if (deleted > 0) {
@@ -216,6 +222,33 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    @Transactional
+    public BrandMergeResponse mergeBrandInto(UUID sourceBrandId, UUID targetBrandId) {
+
+        if (sourceBrandId.equals(targetBrandId)) {
+            throw new BusinessException("Source and target brand must be different");
+        }
+
+        getBrandOrThrow(sourceBrandId);
+        getBrandOrThrow(targetBrandId);
+
+        log.info("Merging brand {} into {}", sourceBrandId, targetBrandId);
+
+        ReassignBrandResponse result = productClient.replaceBrand(sourceBrandId, targetBrandId);
+
+        if (result == null || result.affectedProducts() == 0) {
+            throw new BusinessException("No products were reassigned");
+        }
+
+        brandDeletionService.forceDelete(sourceBrandId);
+
+        log.info("Brand merged successfully | source={} target={} productsMoved={}",
+                sourceBrandId, targetBrandId, result.affectedProducts());
+
+        return new BrandMergeResponse(sourceBrandId, targetBrandId, result.affectedProducts());
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Long getBrandCount() {
         return brandRepository.count();
@@ -235,6 +268,16 @@ public class BrandServiceImpl implements BrandService {
             log.info(DELETING, id);
         } else {
             log.info(DELETED, id);
+        }
+    }
+
+    private void deleteBrandLogoInternal(Brand brand) {
+
+        if (brand.getLogoUrl() != null) {
+            log.debug("Deleting brand logo | brandId={}", brand.getId());
+            imageClient.deleteImageByUrl(brand.getLogoUrl(), ENTITY_NAME);
+            brand.setLogoUrl(null);
+            brandRepository.save(brand);
         }
     }
 }

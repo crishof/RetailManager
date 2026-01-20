@@ -1,6 +1,9 @@
 package com.retailmanager.categorysv.service;
 
 import com.retailmanager.categorysv.dto.CategoryResponse;
+import com.retailmanager.categorysv.dto.CategoryTreeResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,13 +13,13 @@ import java.util.UUID;
 public interface CategoryService {
 
     @Transactional
-    CategoryResponse create(String name, MultipartFile image);
+    CategoryResponse create(String name, UUID parentId, MultipartFile image);
 
     @Transactional(readOnly = true)
-    List<CategoryResponse> findAll();
+    Page<CategoryResponse> getAll(Pageable pageable);
 
     @Transactional(readOnly = true)
-    CategoryResponse findById(UUID id);
+    CategoryResponse getById(UUID id);
 
     @Transactional
     CategoryResponse update(UUID id, String name, MultipartFile image);
@@ -27,8 +30,12 @@ public interface CategoryService {
     @Transactional
     void deleteCategoryImage(UUID id);
 
-    @Transactional
-    CategoryResponse restore(UUID id);
-
+    @Transactional(readOnly = true)
     Long getCategoryCount();
+
+    CategoryResponse changeParent(UUID id, UUID newParentId);
+
+    List<CategoryTreeResponse> getTree();
+
+    CategoryTreeResponse getSubTree(UUID id);
 }

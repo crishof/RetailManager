@@ -2,13 +2,15 @@ package com.retailmanager.productsv.service;
 
 import com.retailmanager.productsv.dto.ProductRequest;
 import com.retailmanager.productsv.dto.ProductResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ProductService {
 
-    List<ProductResponse> findAll(UUID brandId, UUID categoryId, UUID supplierId, Boolean highlighted, Boolean published, String search);
+    Page<ProductResponse> findAll(UUID brandId, UUID categoryId, UUID supplierId, Boolean highlighted, Boolean published, String search, Pageable pageable);
 
     ProductResponse getById(UUID id);
 
@@ -22,9 +24,14 @@ public interface ProductService {
 
     long count(UUID brandId, UUID categoryId, UUID supplierId);
 
-    boolean existsByBrand(UUID brandId);
+    boolean hasProductsForBrand(UUID brandId);
 
     void removeCategory(UUID categoryId);
 
     void replaceCategory(UUID from, UUID uuid);
+
+    int replaceBrand(UUID brandId, UUID newBrandId);
+
+    @Transactional
+    int clearCategory(UUID categoryId);
 }

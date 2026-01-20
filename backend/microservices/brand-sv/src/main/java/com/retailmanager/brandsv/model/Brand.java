@@ -8,12 +8,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(
-        name = "tbl_brands",
-        indexes = {
-                @Index(name = "idx_brand_name", columnList = "name")
-        }
-)
+@Table(name = "tbl_brands", indexes = {@Index(name = "idx_brand_name", columnList = "name")})
 @Getter
 @Setter
 @NoArgsConstructor

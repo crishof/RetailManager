@@ -1,5 +1,6 @@
 package com.retailmanager.suppliersv.service;
 
+import com.retailmanager.suppliersv.client.ProductClient;
 import com.retailmanager.suppliersv.dto.SupplierRequest;
 import com.retailmanager.suppliersv.dto.SupplierResponse;
 import com.retailmanager.suppliersv.exception.BusinessException;
@@ -22,9 +23,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SupplierServiceImpl implements SupplierService {
 
+    private static final String DELETING = "Deleting brand | id={}";
+    private static final String DELETED = "Brand deleted successfully | id={}";
+
     private static final String SUPPLIER_NOT_FOUND = "Supplier with id %s not found";
     private final SupplierRepository supplierRepository;
     private final SupplierMapper supplierMapper;
+    private final ProductClient productClient;
 
     @Override
     @Transactional
@@ -84,6 +89,25 @@ public class SupplierServiceImpl implements SupplierService {
 
     }
 
+    @Transactional
+    @Override
+    public void forceDelete(UUID id) {
+
+        deleteLog(DELETING, id);
+
+        getSupplierOrThrow(id);
+
+        boolean hasProducts = productClient.existsProductsBySupplier(id);
+        if (hasProducts) {
+            throw new BusinessException("Cannot delete supplier because it has products");
+        }
+        int deleted = supplierRepository.forceDelete(id);
+
+        if (deleted > 0) {
+            deleteLog(DELETED, id);
+        }
+    }
+
     @Override
     public Long getSupplierCount() {
         return supplierRepository.count();
@@ -127,5 +151,14 @@ public class SupplierServiceImpl implements SupplierService {
     private Supplier getSupplierOrThrow(UUID id) {
         return supplierRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format(SUPPLIER_NOT_FOUND, id)));
+    }
+
+    private void deleteLog(String status, UUID id) {
+
+        if (DELETING.equals(status)) {
+            log.info(DELETING, id);
+        } else {
+            log.info(DELETED, id);
+        }
     }
 }

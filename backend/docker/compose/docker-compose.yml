@@ -1,6 +1,11 @@
 services:
+
+  # =========================================================
+  # INFRASTRUCTURE
+  # =========================================================
+
   # -----------------------------
-  # Postgres
+  # PostgreSQL Database
   # -----------------------------
   postgres:
     image: postgres:17
@@ -9,19 +14,20 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5544:5432"   # host:container
-    networks:
-      - erp-net
+      - "5544:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./postgres/init:/docker-entrypoint-initdb.d/
+      - ../postgres/init:/docker-entrypoint-initdb.d/
+    networks:
+      - erp-net
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 5s
       timeout: 5s
       retries: 5
+
   # -----------------------------
-  # PG Admin
+  # PgAdmin
   # -----------------------------
   pg-admin:
     image: dpage/pgadmin4:latest
@@ -34,74 +40,98 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    networks:
-      - erp-net
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - erp-net
+
+  # -----------------------------
+  # SonarQube
+  # -----------------------------
+  sonar:
+    image: sonarqube:10.4-community
+    container_name: sonar
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    volumes:
+      - sonar_data:/opt/sonarqube/data
+      - sonar_logs:/opt/sonarqube/logs
+      - sonar_extensions:/opt/sonarqube/extensions
+    networks:
+      - erp-net
+  # =========================================================
+  # CORE MICROSERVICES
+  # =========================================================
+
   # -----------------------------
   # Brand Service
   # -----------------------------
   brand-sv:
     build:
-      context: ../microservices/brand-sv
+      context: ../../microservices/brand-sv
     container_name: brand-sv
+    env_file:
+      - .env
+      - ../../microservices/brand-sv/.env
     ports:
       - "${BRAND_SV_PORT}:8080"
-    env_file:
-      - ../docker/.env
-      - ../microservices/brand-sv/.env
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - erp-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL",
+              "wget -qO- http://localhost:8080/brands/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
+
+
   # -----------------------------
   # Category Service
   # -----------------------------
   category-sv:
     build:
-      context: ../microservices/category-sv
+      context: ../../microservices/category-sv
     container_name: category-sv
+    env_file:
+      - .env
+      - ../../microservices/category-sv/.env
     ports:
       - "${CATEGORY_SV_PORT}:8080"
-    env_file:
-      - ../docker/.env
-      - ../microservices/category-sv/.env
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - erp-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/categories/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
   # -----------------------------
-  # Price List Service
+  # Supplier Price List Service
   # -----------------------------
   price-item-sv:
     build:
-      context: ../microservices/supplier-price-list-sv
+      context: ../../microservices/supplier-price-list-sv
     container_name: supplier-price-list-sv
+    env_file:
+      - .env
+      - ../../microservices/supplier-price-list-sv/.env
     ports:
       - "${PRICE_LIST_SV_PORT}:8080"
-    env_file:
-      - ../docker/.env
-      - ../microservices/supplier-price-list-sv/.env
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - erp-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/price-items/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -111,11 +141,11 @@ services:
   # -----------------------------
   customer-sv:
     build:
-      context: ../microservices/customer-sv
+      context: ../../microservices/customer-sv
     container_name: customer-sv
     env_file:
       - .env
-      - ../microservices/customer-sv/.env
+      - ../../microservices/customer-sv/.env
     ports:
       - "${CUSTOMER_SV_PORT}:8080"
     depends_on:
@@ -124,20 +154,21 @@ services:
     networks:
       - erp-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/customers/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
+
   # -----------------------------
   # Image Service
   # -----------------------------
   image-sv:
     build:
-      context: ../microservices/image-sv
+      context: ../../microservices/image-sv
     container_name: image-sv
     env_file:
       - .env
-      - ../microservices/image-sv/.env
+      - ../../microservices/image-sv/.env
     ports:
       - "${IMAGE_SV_PORT}:8080"
     depends_on:
@@ -146,86 +177,90 @@ services:
     networks:
       - erp-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/images/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
+
   # -----------------------------
   # Inventory Service
   # -----------------------------
   inventory-sv:
     build:
-      context: ../microservices/inventory-sv
+      context: ../../microservices/inventory-sv
     container_name: inventory-sv
+    env_file:
+      - .env
+      - ../../microservices/inventory-sv/.env
     ports:
       - "${INVENTORY_SV_PORT}:8080"
-    env_file:
-      - ../docker/.env
-      - ../microservices/inventory-sv/.env
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - erp-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/inventory/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
+
   # -----------------------------
   # Pricing Service
   # -----------------------------
   pricing-sv:
     build:
-      context: ../microservices/pricing-sv
+      context: ../../microservices/pricing-sv
     container_name: pricing-sv
+    env_file:
+      - .env
+      - ../../microservices/pricing-sv/.env
     ports:
       - "${PRICING_SV_PORT}:8080"
-    env_file:
-      - ../docker/.env
-      - ../microservices/pricing-sv/.env
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - erp-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/pricing/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
+
   # -----------------------------
   # Product Service
   # -----------------------------
   product-sv:
     build:
-      context: ../microservices/product-sv
+      context: ../../microservices/product-sv
     container_name: product-sv
+    env_file:
+      - .env
+      - ../../microservices/product-sv/.env
     ports:
       - "${PRODUCT_SV_PORT}:8080"
-    env_file:
-      - ../docker/.env
-      - ../microservices/product-sv/.env
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - erp-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/products/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
+
   # -----------------------------
   # Sales Service
   # -----------------------------
   sales-sv:
     build:
-      context: ../microservices/sales-sv
+      context: ../../microservices/sales-sv
     container_name: sales-sv
     env_file:
       - .env
-      - ../microservices/sales-sv/.env
+      - ../../microservices/sales-sv/.env
     ports:
       - "${SALES_SV_PORT}:8080"
     depends_on:
@@ -234,92 +269,95 @@ services:
     networks:
       - erp-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/sales/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
+
   # -----------------------------
   # Supplier Service
   # -----------------------------
   supplier-sv:
     build:
-      context: ../microservices/supplier-sv
+      context: ../../microservices/supplier-sv
     container_name: supplier-sv
+    env_file:
+      - .env
+      - ../../microservices/supplier-sv/.env
     ports:
       - "${SUPPLIER_SV_PORT}:8080"
-    env_file:
-      - ../docker/.env
-      - ../microservices/supplier-sv/.env
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - erp-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-  # -----------------------------
-  # Exchange Service
-  # -----------------------------
-  exchange-sv:
-    build:
-      context: ../microservices/exchange-sv
-    container_name: exchange-sv
-    ports:
-      - "${EXCHANGE_SV_PORT}:8080"
-    env_file:
-      - ../docker/.env
-      - ../microservices/exchange-sv/.env
-    #    depends_on:
-    #      postgres:
-    #        condition: service_healthy
-    networks:
-      - erp-net
-    healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/suppliers/actuator/health | grep UP || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
   # -----------------------------
-  # Nginx Gateway
+  # Exchange Service
   # -----------------------------
+  exchange-sv:
+    build:
+      context: ../../microservices/exchange-sv
+    container_name: exchange-sv
+    env_file:
+      - .env
+      - ../../microservices/exchange-sv/.env
+    ports:
+      - "${EXCHANGE_SV_PORT}:8080"
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/exchange/actuator/health | grep UP || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # =========================================================
+  # GATEWAY
+  # =========================================================
+
   nginx:
     build:
-      context: ./nginx
+      context: ../nginx
     container_name: nginx
     ports:
       - "80:80"
     depends_on:
       - brand-sv
       - category-sv
-      - product-sv
       - customer-sv
       - image-sv
       - inventory-sv
-      - supplier-sv
-      - pricing-sv
-      - sales-sv
       - price-item-sv
+      - pricing-sv
+      - product-sv
+      - sales-sv
+      - supplier-sv
       - exchange-sv
+
     networks:
       - erp-net
+
+# =========================================================
+# NETWORKS & VOLUMES
+# =========================================================
+
 networks:
   erp-net:
     name: erp-net
     driver: bridge
+
 volumes:
   postgres_data:
   pgadmin_data:
-
-
-
-
-
-
-
+  sonar_data:
+  sonar_logs:
+  sonar_extensions:
 
   # -----------------------------
   # Zookeeper

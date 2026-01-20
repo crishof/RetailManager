@@ -1,20 +1,24 @@
 package com.retailmanager.categorysv.service;
 
 import com.retailmanager.categorysv.client.ImageClient;
+import com.retailmanager.categorysv.client.ProductClient;
 import com.retailmanager.categorysv.dto.CategoryResponse;
+import com.retailmanager.categorysv.dto.CategoryTreeResponse;
 import com.retailmanager.categorysv.exception.BusinessException;
 import com.retailmanager.categorysv.exception.ResourceNotFoundException;
 import com.retailmanager.categorysv.mapper.CategoryMapper;
 import com.retailmanager.categorysv.model.Category;
 import com.retailmanager.categorysv.repository.CategoryRepository;
+import com.retailmanager.categorysv.utils.SlugUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,59 +32,60 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final ImageClient imageClient;
+    private final ProductClient productClient;
 
     @Transactional
     @Override
-    public CategoryResponse create(String name, MultipartFile image) {
+    public CategoryResponse create(String name, UUID parentId, MultipartFile image) {
 
-        log.info("Creating category | name={} | hasLogo={}", name, image != null);
+        if (name == null || name.isBlank()) {
+            throw new BusinessException("Category name cannot be empty");
+        }
 
-        Optional<Category> existing = categoryRepository.findByNameIncludingDeleted(name);
+        Category parent = null;
+        if (parentId != null) {
+            parent = getCategoryOrThrow(parentId);
+        }
 
-        if (existing.isPresent()) {
-            Category category = existing.get();
-            if (categoryRepository.existsDeletedById(category.getId())) {
-                log.info("Restoring previously deleted category | id={} | name={}", category.getId(), name);
-                categoryRepository.restoreById(category.getId());
+        String normalizedName = name.trim();
+        String baseSlug = SlugUtils.toSlug(normalizedName);
 
-                if (image != null && category.getImageUrl() != null) {
-                    category.setImageUrl(imageClient.replaceImage(image, ENTITY_NAME, category.getImageUrl()));
-                }
-                return categoryMapper.toDto(categoryRepository.save(category));
-            }
-            throw new IllegalArgumentException("Category with name '" + name + "' already exists.");
+        String slug = baseSlug;
+        int counter = 1;
+        while (categoryRepository.existsBySlug(slug)) {
+            slug = baseSlug + "-" + counter++;
         }
 
         Category category = new Category();
-        category.setName(name);
+        category.setName(normalizedName);
+        category.setSlug(slug);
+        category.setParent(parent);
+        category.setLevel(parent == null ? 0 : parent.getLevel() + 1);
+        category.setLeaf(true);
+
+        if (parent != null) {
+            parent.setLeaf(false);
+        }
 
         if (image != null) {
-            log.debug("Uploading image for category '{}'", name);
-            String imageUrl = imageClient.uploadImage(image, ENTITY_NAME);
-            category.setImageUrl(imageUrl);
+            category.setImageUrl(imageClient.uploadImage(image, ENTITY_NAME));
         }
-        Category saved = categoryRepository.save(category);
 
-        log.info("Category created successfully | id={} | name={}", saved.getId(), saved.getName());
-
-        return categoryMapper.toDto(saved);
+        return categoryMapper.toDto(categoryRepository.save(category));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<CategoryResponse> findAll() {
+    public Page<CategoryResponse> getAll(Pageable pageable) {
 
-        log.debug("Fetching all categories");
+        log.debug("Fetching categories | page={} size{}", pageable.getPageNumber(), pageable.getPageSize());
 
-        return categoryRepository.findAll()
-                .stream()
-                .map(categoryMapper::toDto)
-                .toList();
+        return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public CategoryResponse findById(UUID id) {
+    public CategoryResponse getById(UUID id) {
         return categoryMapper.toDto(getCategoryOrThrow(id));
     }
 
@@ -88,11 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse update(UUID id, String name, MultipartFile image) {
 
-        log.info("Updating category | id={} | updateName={} | updateLogo={}",
-                id,
-                name != null,
-                image != null
-        );
+        log.info("Updating category | id={} | updateName={} | updateLogo={}", id, name != null, image != null);
 
         Category category = getCategoryOrThrow(id);
 
@@ -105,18 +106,18 @@ public class CategoryServiceImpl implements CategoryService {
                 imageUrl = imageClient.uploadImage(image, ENTITY_NAME);
             } else {
                 log.debug("Replacing image for category | id={}", id);
-                imageUrl = imageClient.replaceImage(
-                        image,
-                        ENTITY_NAME,
-                        category.getImageUrl()
-                );
+                imageUrl = imageClient.replaceImage(image, ENTITY_NAME, category.getImageUrl());
             }
 
             category.setImageUrl(imageUrl);
         }
 
         if (name != null) {
-            log.debug("Updating category name | id={} | newName={}", id, name);
+            String normalizedName = name.trim();
+            if (normalizedName.isBlank()) {
+                throw new BusinessException("Category name cannot be empty");
+            }
+            log.debug("Updating category name | id={} | to newName={}", id, name);
             category.setName(name);
         }
 
@@ -135,8 +136,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = getCategoryOrThrow(id);
 
-        //TODO Verify if category is used in products before deleting
+        int affected = productClient.clearCategory(category.getId());
+        log.info("Cleared category {} from {} products", id, affected);
 
+        if (categoryRepository.existsByParent(category)) {
+            throw new BusinessException("Cannot delete category with subcategories");
+        }
         categoryRepository.delete(category);
 
         log.info("Category deleted successfully | id={}", id);
@@ -159,56 +164,70 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
-    public CategoryResponse restore(UUID id) {
-
-        log.info("Restoring category | id={}", id);
-
-        categoryRepository.findByIdIncludingDeleted(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                String.format(CATEGORY_NOT_FOUND, id)
-                        )
-                );
-
-        if (!categoryRepository.existsDeletedById(id)) {
-            throw new BusinessException(
-                    "Category with id '" + id + "' is not deleted."
-            );
-        }
-
-        int updated = categoryRepository.restoreById(id);
-
-        if (updated == 0) {
-            throw new BusinessException(
-                    "Failed to restore category with id '" + id + "'"
-            );
-        }
-
-        log.info("Category restored successfully | id={}", id);
-
-        Category restored = categoryRepository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalStateException("Category restored but not found")
-                );
-
-        return categoryMapper.toDto(restored);
-    }
-
-    @Override
     public Long getCategoryCount() {
         return categoryRepository.count();
+    }
+
+    @Transactional
+    @Override
+    public CategoryResponse changeParent(UUID id, UUID newParentId) {
+
+        Category category = getCategoryOrThrow(id);
+        Category newParent = newParentId == null ? null : getCategoryOrThrow(newParentId);
+
+        if (newParent != null) {
+
+            if (category.getId().equals(newParent.getId())) {
+                throw new BusinessException("Category cannot be its own parent");
+            }
+
+            if (isDescendant(category, newParent)) {
+                throw new BusinessException("Cannot move category under its own descendant");
+            }
+        }
+
+        category.setParent(newParent);
+        return categoryMapper.toDto(categoryRepository.save(category));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CategoryTreeResponse> getTree() {
+
+        List<Category> roots = categoryRepository.findByParentIsNull();
+
+        return roots.stream().map(this::mapToTree).toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public CategoryTreeResponse getSubTree(UUID id) {
+        Category root = getCategoryOrThrow(id);
+        return mapToTree(root);
     }
 
     // =========================
     // PRIVATE HELPERS
     // =========================
     private Category getCategoryOrThrow(UUID id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                String.format(CATEGORY_NOT_FOUND, id)
-                        )
-                );
+        return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format(CATEGORY_NOT_FOUND, id)));
+    }
+
+    private boolean isDescendant(Category category, Category possibleChild) {
+        Category current = possibleChild;
+        while (current != null) {
+            if (current.getId().equals(category.getId())) {
+                return true;
+            }
+            current = current.getParent();
+        }
+        return false;
+    }
+
+    private CategoryTreeResponse mapToTree(Category category) {
+
+        List<CategoryTreeResponse> children = category.getChildren().stream().map(this::mapToTree).toList();
+
+        return new CategoryTreeResponse(category.getId(), category.getName(), category.getImageUrl(), children);
     }
 }

@@ -13,9 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ProductRepository extends
-        JpaRepository<Product, UUID>,
-        JpaSpecificationExecutor<Product> {
+public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpecificationExecutor<Product> {
 
     // TODO Find including deleted products by id
     @Query(value = "SELECT * FROM tbl_products WHERE id = :id", nativeQuery = true)
@@ -38,4 +36,12 @@ public interface ProductRepository extends
     int replaceCategory(@Param("from") UUID from, @Param("to") UUID to);
 
     List<Product> findAllByBrandId(UUID brandId);
+
+    @Modifying
+    @Query("update Product p set p.brandId = :newBrandId where p.brandId = :brandId")
+    int replaceBrand(UUID brandId, UUID newBrandId);
+
+    @Modifying
+    @Query("update Product p set p.categoryId = null where p.categoryId = :categoryId")
+    int clearCategory(@Param("categoryId") UUID categoryId);
 }

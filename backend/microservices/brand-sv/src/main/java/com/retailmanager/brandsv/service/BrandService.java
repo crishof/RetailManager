@@ -1,6 +1,8 @@
 package com.retailmanager.brandsv.service;
 
+import com.retailmanager.brandsv.dto.BrandMergeResponse;
 import com.retailmanager.brandsv.dto.BrandResponse;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,4 +28,6 @@ public interface BrandService {
     void deleteBrandLogo(UUID id);
 
     BrandResponse restore(UUID id);
+
+    BrandMergeResponse mergeBrandInto(@NotNull UUID id, @NotNull UUID targetBrandId);
 }

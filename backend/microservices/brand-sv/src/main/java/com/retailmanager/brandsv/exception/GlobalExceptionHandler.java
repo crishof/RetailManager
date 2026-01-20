@@ -45,10 +45,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        String message = ex.getBindingResult().getFieldErrors().stream()
-                .map(err -> err.getField() + " " + err.getDefaultMessage())
-                .findFirst()
-                .orElse("Validation failed");
+        String message = ex.getBindingResult().getFieldErrors().stream().map(err -> err.getField() + " " + err.getDefaultMessage()).findFirst().orElse("Validation failed");
 
         log.warn("Validation error: {}", message);
 
@@ -71,12 +68,6 @@ public class GlobalExceptionHandler {
     }
 
     private ApiError build(HttpStatus status, String error, String message, HttpServletRequest request) {
-        return new ApiError(
-                Instant.now(),
-                status.value(),
-                error,
-                message,
-                request.getRequestURI()
-        );
+        return new ApiError(Instant.now(), status.value(), error, message, request.getRequestURI());
     }
 }
