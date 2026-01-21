@@ -20,18 +20,12 @@ public class ProductClient {
 
     public ProductClient(WebClient.Builder builder) {
 
-        this.webClient = builder
-                .baseUrl(BASE_URL)
-                .build();
+        this.webClient = builder.baseUrl(BASE_URL).build();
     }
 
     public boolean hasProductsForBrand(UUID brandId) {
         try {
-            return Boolean.TRUE.equals(webClient.get()
-                    .uri("/brand/{brandId}/exists", brandId)
-                    .retrieve()
-                    .bodyToMono(Boolean.class)
-                    .block());
+            return Boolean.TRUE.equals(webClient.get().uri("/brand/{brandId}/exists", brandId).retrieve().bodyToMono(Boolean.class).block());
         } catch (Exception e) {
             log.error("Error calling product-sv for brand {}", brandId, e);
             throw new BusinessException("Failed to verify if brand has products");
@@ -42,13 +36,7 @@ public class ProductClient {
         try {
             log.info("Calling product-sv to replace brand {} with {}", brandId, newBrandId);
 
-            return webClient.patch()
-                    .uri(uriBuilder -> uriBuilder.path("/brand")
-                            .queryParam("brandId", brandId).queryParam("newBrandId", newBrandId)
-                            .build())
-                    .retrieve()
-                    .bodyToMono(ReassignBrandResponse.class)
-                    .block();
+            return webClient.patch().uri(uriBuilder -> uriBuilder.path("/brand").queryParam("brandId", brandId).queryParam("newBrandId", newBrandId).build()).retrieve().bodyToMono(ReassignBrandResponse.class).block();
 
         } catch (Exception e) {
             log.error("Failed to replace brand in product-sv", e);

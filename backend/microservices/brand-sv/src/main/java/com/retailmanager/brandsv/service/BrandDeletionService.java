@@ -28,8 +28,7 @@ public class BrandDeletionService {
 
         log.info("Force deleting brand | id={}", id);
 
-        Brand brand = brandRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Brand with id %s not found".formatted(id)));
+        Brand brand = brandRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Brand with id %s not found".formatted(id)));
 
         boolean hasProducts = productClient.hasProductsForBrand(id);
         if (hasProducts) {
