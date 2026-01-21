@@ -1,6 +1,7 @@
 package com.retailmanager.imagesv.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -9,20 +10,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.Instant;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleInvalidRequest(
             InvalidRequestException ex,
-            HttpServletRequest request
-    ) {
-        return new ApiError(
-                Instant.now(),
-                HttpStatus.BAD_REQUEST.value(),
+            HttpServletRequest request) {
+        log.warn("Bad request: {}", ex.getMessage());
+        return build(
+                HttpStatus.BAD_REQUEST,
                 "Bad Request",
-                ex.getMessage(),
-                request.getRequestURI()
+                ex,
+                request
         );
     }
 
@@ -32,12 +33,12 @@ public class GlobalExceptionHandler {
             FileDeletionException ex,
             HttpServletRequest request
     ) {
-        return new ApiError(
-                Instant.now(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+        log.warn("Image deletion failed: {}", ex.getMessage());
+        return build(
+                HttpStatus.INTERNAL_SERVER_ERROR,
                 "Image deletion failed",
-                ex.getMessage(),
-                request.getRequestURI()
+                ex,
+                request
         );
     }
 
@@ -47,13 +48,12 @@ public class GlobalExceptionHandler {
             FileUploadException ex,
             HttpServletRequest request
     ) {
-
-        return new ApiError(
-                Instant.now(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                ex.getMessage(),
-                request.getRequestURI()
+        log.warn("File upload failed: {}", ex.getMessage());
+        return build(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "File upload failed",
+                ex,
+                request
         );
     }
 
@@ -63,11 +63,28 @@ public class GlobalExceptionHandler {
             Exception ex,
             HttpServletRequest request
     ) {
+        log.warn("Internal server error: {}", ex.getMessage());
+        return build(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Internal Server Error",
+                ex,
+                request
+        );
+    }
+// ======================
+    // Helper
+    // ======================
+
+    private ApiError build(HttpStatus status, String error, Exception ex, HttpServletRequest request) {
+        return build(status, error, ex.getMessage(), request);
+    }
+
+    private ApiError build(HttpStatus status, String error, String message, HttpServletRequest request) {
         return new ApiError(
                 Instant.now(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
-                ex.getMessage(),
+                status.value(),
+                error,
+                message,
                 request.getRequestURI()
         );
     }

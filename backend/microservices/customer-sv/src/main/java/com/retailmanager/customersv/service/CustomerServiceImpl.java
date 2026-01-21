@@ -1,7 +1,10 @@
 package com.retailmanager.customersv.service;
 
+import com.retailmanager.customersv.client.OrderClient;
+import com.retailmanager.customersv.dto.CustomerMergeResponse;
 import com.retailmanager.customersv.dto.CustomerRequest;
 import com.retailmanager.customersv.dto.CustomerResponse;
+import com.retailmanager.customersv.dto.ReassignCustomerResponse;
 import com.retailmanager.customersv.exception.BusinessException;
 import com.retailmanager.customersv.exception.ResourceNotFoundException;
 import com.retailmanager.customersv.mapper.CustomerMapper;
@@ -9,11 +12,11 @@ import com.retailmanager.customersv.model.Customer;
 import com.retailmanager.customersv.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,9 +26,12 @@ import java.util.UUID;
 public class CustomerServiceImpl implements CustomerService {
 
     private static final String CUSTOMER_NOT_FOUND = "Customer with id %s not found";
-
+    private static final String DELETING = "Deleting customer | id={}";
+    private static final String DELETED = "Customer deleted successfully | id={}";
     private final CustomerRepository customerRepository;
+    private final CustomerDeletionService customerDeletionService;
     private final CustomerMapper customerMapper;
+    private final OrderClient orderClient;
 
     @Override
     @Transactional
@@ -52,21 +58,16 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<CustomerResponse> findAll() {
+    public Page<CustomerResponse> getAll(Pageable pageable) {
 
-        log.debug("Fetching all customers");
+        log.debug("Fetching customers | page={} size={}", pageable.getPageNumber(), pageable.getPageSize());
 
-        return customerRepository.findAll()
-                .stream()
-                .sorted(Comparator
-                        .comparing(Customer::getLastname)
-                        .thenComparing(Customer::getName))
-                .map(customerMapper::toDto)
-                .toList();
+        //TODO Sort customers by name
+        return customerRepository.findAll(pageable).map(customerMapper::toDto);
     }
 
     @Override
-    public CustomerResponse findById(UUID id) {
+    public CustomerResponse getById(UUID id) {
         Customer customer = getCustomerOrThrow(id);
         return customerMapper.toDto(customer);
     }
@@ -84,10 +85,41 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public void delete(UUID id) {
 
-        log.info("Deleting customer | id={}", id);
+        deleteLog(DELETING, id);
+
         Customer customer = getCustomerOrThrow(id);
+
+        boolean hasOrders = orderClient.hasOrdersForCustomer(id);
+        if (hasOrders) {
+            throw new BusinessException("Cannot delete customer because it has orders");
+        }
+
         customerRepository.delete(customer);
-        log.info("Customer deleted | id={}", id);
+        int deleted = customerRepository.setDeletedAt(id);
+
+        if (deleted > 0) {
+            deleteLog(DELETED, id);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void forceDelete(UUID id) {
+
+        deleteLog(DELETING, id);
+
+        getCustomerOrThrow(id);
+
+        boolean hasOrders = orderClient.hasOrdersForCustomer(id);
+        if (hasOrders) {
+            throw new BusinessException("Cannot delete customer because it has orders");
+        }
+
+        int deleted = customerRepository.forceDelete(id);
+
+        if (deleted > 0) {
+            deleteLog(DELETED, id);
+        }
     }
 
     @Override
@@ -101,38 +133,58 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponse restore(UUID id) {
 
         log.info("Restoring customer | id={}", id);
-        customerRepository.findByIdIncludingDeleted(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                String.format(CUSTOMER_NOT_FOUND, id)
-                        )
-                );
+        customerRepository.findByIdIncludingDeleted(id).orElseThrow(() -> new ResourceNotFoundException(String.format(CUSTOMER_NOT_FOUND, id)));
         if (!customerRepository.existsById(id)) {
-            throw new BusinessException(
-                    "Customer with id '" + id + "' is not deleted."
-            );
+            throw new BusinessException("Customer with id '" + id + "' is not deleted.");
         }
         int updated = customerRepository.restoreById(id);
 
         if (updated == 0) {
-            throw new BusinessException(
-                    "Failed to restore customer with id '" + id + "'."
-            );
+            throw new BusinessException("Failed to restore customer with id '" + id + "'.");
         }
         log.info("Customer restored | id={}", id);
 
-        Customer restored = customerRepository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalStateException("Customer restored but not found")
-                );
+        Customer restored = customerRepository.findById(id).orElseThrow(() -> new IllegalStateException("Customer restored but not found"));
         return customerMapper.toDto(restored);
+    }
+
+    @Override
+    public CustomerMergeResponse mergeCustomerInto(UUID sourceCustomerId, UUID targetCustomerId) {
+
+        if (sourceCustomerId.equals(targetCustomerId)) {
+            throw new BusinessException("Source and target customer must be different");
+        }
+
+        getCustomerOrThrow(sourceCustomerId);
+        getCustomerOrThrow(targetCustomerId);
+
+        log.info("Merging customer {} into {}", sourceCustomerId, targetCustomerId);
+
+        ReassignCustomerResponse result = orderClient.replaceCustomer(sourceCustomerId, targetCustomerId);
+
+        if (result == null || result.affectedOrders() == 0) {
+            throw new BusinessException("No orders were reassigned");
+        }
+
+        customerDeletionService.forceDelete(sourceCustomerId);
+
+        log.info("Customer merged successfully | source={} target={} ordersMoved?{}", sourceCustomerId, targetCustomerId, result.affectedOrders());
+        return new CustomerMergeResponse(sourceCustomerId, targetCustomerId, result.affectedOrders());
     }
 
     // =========================
     // PRIVATE HELPERS
     // =========================
     private Customer getCustomerOrThrow(UUID id) {
-        return customerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(String.format(CUSTOMER_NOT_FOUND, id)));
+        return customerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format(CUSTOMER_NOT_FOUND, id)));
+    }
+
+    private void deleteLog(String status, UUID id) {
+
+        if (DELETING.equals(status)) {
+            log.info(DELETING, id);
+        } else {
+            log.info(DELETED, id);
+        }
     }
 }

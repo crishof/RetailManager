@@ -4,15 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SoftDelete;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(
-        name = "tbl_customers",
-        indexes = {
-                @Index(name = "idx_customer_dni", columnList = "dni"),
-        }
-)
+@Table(name = "tbl_customers", indexes = {@Index(name = "idx_customer_dni", columnList = "dni"),})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -38,4 +34,10 @@ public class Customer {
     private String phone;
 
     private UUID addressId;
+
+    @Column(name = "deleted", insertable = false, updatable = false)
+    private boolean deleted;
+
+    @Column(name = "deleted_at", insertable = false, updatable = false)
+    private Instant deletedAt;
 }

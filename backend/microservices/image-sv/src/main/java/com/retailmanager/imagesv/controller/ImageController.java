@@ -1,6 +1,7 @@
 package com.retailmanager.imagesv.controller;
 
 import com.retailmanager.imagesv.dto.ImageResponse;
+import com.retailmanager.imagesv.exception.InvalidImageUrlException;
 import com.retailmanager.imagesv.exception.InvalidRequestException;
 import com.retailmanager.imagesv.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
@@ -55,19 +56,20 @@ public class ImageController {
             throw new InvalidRequestException("oldUrl is required");
         }
 
-        // 1️⃣ Subir primero la nueva imagen
         String newUrl = cloudinaryService.uploadImage(file, entityName);
 
-        // 2️⃣ Borrar la anterior SOLO si el upload fue exitoso
-        cloudinaryService.deleteImageByUrl(oldUrl, entityName);
+        if (newUrl != null && !newUrl.isBlank()) {
+            cloudinaryService.deleteImageByUrl(oldUrl, entityName);
+            log.info("Image replaced successfully for entity '{}'", entityName);
+            return new ImageResponse(
+                    file.getOriginalFilename(),
+                    entityName,
+                    newUrl
+            );
+        }
 
-        log.info("Image replaced successfully for entity '{}'", entityName);
+        throw new InvalidImageUrlException("Image upload failed, no URL returned");
 
-        return new ImageResponse(
-                file.getOriginalFilename(),
-                entityName,
-                newUrl
-        );
     }
 
     @DeleteMapping("/delete")

@@ -43,4 +43,8 @@ public interface SupplierRepository extends JpaRepository<Supplier, UUID> {
             WHERE id = :id
             """, nativeQuery = true)
     int restoreById(@Param("id") UUID id);
+
+    @Modifying
+    @Query(value = "DELETE FROM tbl_suppliers WHERE id = :id", nativeQuery = true)
+    int forceDelete(@Param("id") UUID id);
 }

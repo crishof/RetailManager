@@ -1,7 +1,7 @@
 package com.retailmanager.brandsv.repository;
 
+
 import com.retailmanager.brandsv.model.Brand;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,7 +28,15 @@ public interface BrandRepository extends JpaRepository<Brand, UUID> {
 
     // Restore a deleted brand by id
     @Modifying
-    @Transactional
-    @Query(value = "UPDATE tbl_brands SET deleted = false WHERE id = :id", nativeQuery = true)
+    @Query(value = "UPDATE tbl_brands SET deleted = false, deleted_at = null WHERE id = :id", nativeQuery = true)
     int restoreById(@Param("id") UUID id);
+
+    //Set deleted at to deleted brand
+    @Modifying
+    @Query(value = "UPDATE tbl_brands SET deleted_at = CURRENT_TIMESTAMP WHERE id = :id", nativeQuery = true)
+    int setDeletedAt(@Param("id") UUID id);
+
+    @Modifying
+    @Query(value = "DELETE FROM tbl_brands WHERE id = :id", nativeQuery = true)
+    int forceDelete(@Param("id") UUID id);
 }
