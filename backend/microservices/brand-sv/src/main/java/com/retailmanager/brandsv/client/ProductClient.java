@@ -12,14 +12,10 @@ import java.util.UUID;
 @Service
 public class ProductClient {
 
-    //TODO connect to internal endpoints
-
-    private static final String BASE_URL = "http://product-sv:8080/api/v1/products";
-
+    private static final String BASE_URL = "http://product-sv:8080/internal/products";
     private final WebClient webClient;
 
     public ProductClient(WebClient.Builder builder) {
-
         this.webClient = builder.baseUrl(BASE_URL).build();
     }
 

@@ -11,23 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/images")
+@RequestMapping("/internal/images")
 @RequiredArgsConstructor
 @Slf4j
-public class ImageController {
+public class ImageInternalController {
 
     private final CloudinaryService cloudinaryService;
 
-    @GetMapping("/status")
-    public ResponseEntity<String> root() {
-        return ResponseEntity.ok("Image service is running");
-    }
-
     @PostMapping("/upload")
-    public ResponseEntity<ImageResponse> uploadImage(
-            @RequestParam MultipartFile file,
-            @RequestParam String entityName
-    ) {
+    public ResponseEntity<ImageResponse> uploadImage(@RequestParam MultipartFile file, @RequestParam String entityName) {
         validateFile(file);
         validateEntity(entityName);
 
@@ -35,20 +27,12 @@ public class ImageController {
 
         log.info("Image uploaded successfully for entity '{}'", entityName);
 
-        ImageResponse response = new ImageResponse(
-                file.getOriginalFilename(),
-                entityName,
-                url
-        );
+        ImageResponse response = new ImageResponse(file.getOriginalFilename(), entityName, url);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/replace")
-    public ImageResponse replaceImage(
-            @RequestParam MultipartFile file,
-            @RequestParam String entityName,
-            @RequestParam String oldUrl
-    ) {
+    public ImageResponse replaceImage(@RequestParam MultipartFile file, @RequestParam String entityName, @RequestParam String oldUrl) {
         validateFile(file);
         validateEntity(entityName);
 
@@ -61,11 +45,7 @@ public class ImageController {
         if (newUrl != null && !newUrl.isBlank()) {
             cloudinaryService.deleteImageByUrl(oldUrl, entityName);
             log.info("Image replaced successfully for entity '{}'", entityName);
-            return new ImageResponse(
-                    file.getOriginalFilename(),
-                    entityName,
-                    newUrl
-            );
+            return new ImageResponse(file.getOriginalFilename(), entityName, newUrl);
         }
 
         throw new InvalidImageUrlException("Image upload failed, no URL returned");
@@ -73,10 +53,7 @@ public class ImageController {
     }
 
     @DeleteMapping("/delete")
-    public void deleteImage(
-            @RequestParam("url") String url,
-            @RequestParam("entityName") String entityName
-    ) {
+    public void deleteImage(@RequestParam("url") String url, @RequestParam("entityName") String entityName) {
         if (url == null || url.isBlank()) {
             throw new InvalidRequestException("URL is required");
         }

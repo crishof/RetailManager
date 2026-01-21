@@ -1,14 +1,11 @@
 package com.retailmanager.productsv.controller;
 
-import com.retailmanager.productsv.dto.CategoryReplaceRequest;
 import com.retailmanager.productsv.dto.ProductRequest;
 import com.retailmanager.productsv.dto.ProductResponse;
-import com.retailmanager.productsv.dto.ReassignBrandResponse;
 import com.retailmanager.productsv.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -95,45 +92,5 @@ public class ProductController {
     @GetMapping("/count")
     public long count(@RequestParam(required = false) UUID brandId, @RequestParam(required = false) UUID categoryId, @RequestParam(required = false) UUID supplierId) {
         return productService.count(brandId, categoryId, supplierId);
-    }
-
-    // ============================
-    // HAS PRODUCTS BY BRAND
-    // ============================
-    @Operation(summary = "Check if products exist for a brand")
-    @GetMapping("/brand/{brandId}/exists")
-    public boolean hasProductsForBrand(@PathVariable UUID brandId) {
-        return productService.hasProductsForBrand(brandId);
-    }
-
-    // ============================
-    // REPLACE PRODUCT BRAND
-    // ============================
-    @Operation(summary = "Replace brand for products")
-    @PatchMapping("/brand")
-    public ReassignBrandResponse replaceBrand(@RequestParam UUID brandId, @RequestParam UUID newBrandId) {
-
-        int updated = productService.replaceBrand(brandId, newBrandId);
-        return new ReassignBrandResponse(updated);
-    }
-
-    // ============================
-    // REMOVE CATEGORY
-    // ============================
-    @Operation(summary = "Remove category from product")
-    @PatchMapping("/category/{categoryId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeCategory(@PathVariable UUID categoryId) {
-        productService.removeCategory(categoryId);
-    }
-
-    // ============================
-    // REPLACE PRODUCT CATEGORY
-    // ============================
-    @Operation(summary = "Replace category from product")
-    @PatchMapping("/category")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void replaceCategory(@RequestBody @Valid CategoryReplaceRequest request) {
-        productService.replaceCategory(request.from(), request.to());
     }
 }

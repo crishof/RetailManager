@@ -15,13 +15,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class ImageClient {
 
     private static final String FOLDER = "entityName";
-    private static final String BASE_URL = "http://image-sv:8080/api/v1/images";
+    private static final String BASE_URL = "http://image-sv:8080/internal/images";
     private final WebClient webClient;
 
     public ImageClient(WebClient.Builder builder) {
-        this.webClient = builder
-                .baseUrl(BASE_URL)
-                .build();
+        this.webClient = builder.baseUrl(BASE_URL).build();
     }
 
     public String uploadImage(MultipartFile file, String entityName) {
@@ -30,13 +28,7 @@ public class ImageClient {
         builder.part("file", file.getResource());
         builder.part(FOLDER, entityName);
 
-        ImageResponse response = webClient.post()
-                .uri("/upload")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData(builder.build()))
-                .retrieve()
-                .bodyToMono(ImageResponse.class)
-                .block();
+        ImageResponse response = webClient.post().uri("/upload").contentType(MediaType.MULTIPART_FORM_DATA).body(BodyInserters.fromMultipartData(builder.build())).retrieve().bodyToMono(ImageResponse.class).block();
 
         validate(response);
 
@@ -50,13 +42,7 @@ public class ImageClient {
         bodyBuilder.part(FOLDER, entityName);
         bodyBuilder.part("oldUrl", oldUrl);
 
-        ImageResponse response = webClient.put()
-                .uri("/replace")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
-                .retrieve()
-                .bodyToMono(ImageResponse.class)
-                .block();
+        ImageResponse response = webClient.put().uri("/replace").contentType(MediaType.MULTIPART_FORM_DATA).body(BodyInserters.fromMultipartData(bodyBuilder.build())).retrieve().bodyToMono(ImageResponse.class).block();
 
         validate(response);
 
@@ -64,15 +50,7 @@ public class ImageClient {
     }
 
     public void deleteImageByUrl(String url, String entityName) {
-        webClient.delete()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/delete")
-                        .queryParam("url", url)
-                        .queryParam(FOLDER, entityName)
-                        .build())
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
+        webClient.delete().uri(uriBuilder -> uriBuilder.path("/delete").queryParam("url", url).queryParam(FOLDER, entityName).build()).retrieve().bodyToMono(Void.class).block();
     }
 
     private void validate(ImageResponse response) {
