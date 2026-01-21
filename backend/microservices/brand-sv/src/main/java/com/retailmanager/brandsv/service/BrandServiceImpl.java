@@ -199,14 +199,11 @@ public class BrandServiceImpl implements BrandService {
     public BrandResponse restore(UUID id) {
 
         log.info("Restoring brand | id={}", id);
-
-        brandRepository.findByIdIncludingDeleted(id).orElseThrow(
-                () -> new ResourceNotFoundException(String.format(BRAND_NOT_FOUND, id)));
+        brandRepository.findByIdIncludingDeleted(id).orElseThrow(() -> new ResourceNotFoundException(String.format(BRAND_NOT_FOUND, id)));
 
         if (!brandRepository.existsDeletedById(id)) {
             throw new BusinessException("Brand with id '" + id + "' is not deleted.");
         }
-
         int updated = brandRepository.restoreById(id);
 
         if (updated == 0) {
@@ -215,8 +212,7 @@ public class BrandServiceImpl implements BrandService {
 
         log.info("Brand restored successfully | id={}", id);
 
-        Brand restored = brandRepository.findById(id).orElseThrow(
-                () -> new IllegalStateException("Brand restored but not found"));
+        Brand restored = brandRepository.findById(id).orElseThrow(() -> new IllegalStateException("Brand restored but not found"));
 
         return brandMapper.toDto(restored);
     }
@@ -242,8 +238,7 @@ public class BrandServiceImpl implements BrandService {
 
         brandDeletionService.forceDelete(sourceBrandId);
 
-        log.info("Brand merged successfully | source={} target={} productsMoved={}",
-                sourceBrandId, targetBrandId, result.affectedProducts());
+        log.info("Brand merged successfully | source={} target={} productsMoved={}", sourceBrandId, targetBrandId, result.affectedProducts());
 
         return new BrandMergeResponse(sourceBrandId, targetBrandId, result.affectedProducts());
     }
@@ -258,8 +253,7 @@ public class BrandServiceImpl implements BrandService {
     // PRIVATE HELPERS
     // =========================
     private Brand getBrandOrThrow(UUID id) {
-        return brandRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(String.format(BRAND_NOT_FOUND, id)));
+        return brandRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format(BRAND_NOT_FOUND, id)));
     }
 
     private void deleteLog(String status, UUID id) {

@@ -45,4 +45,13 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
             WHERE id = :id
             """, nativeQuery = true)
     int restoreById(@Param("id") UUID id);
+
+    //Set deleted at to deleted customer
+    @Modifying
+    @Query(value = "UPDATE tbl_customers SET deleted_at = CURRENT_TIMESTAMP WHERE id = :id", nativeQuery = true)
+    int setDeletedAt(@Param("id") UUID id);
+
+    @Modifying
+    @Query(value = "DELETE FROM tbl_customers WHERE id = :id", nativeQuery = true)
+    int forceDelete(@Param("id") UUID id);
 }

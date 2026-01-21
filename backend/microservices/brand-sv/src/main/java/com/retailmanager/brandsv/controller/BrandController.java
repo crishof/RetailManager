@@ -158,7 +158,4 @@ public class BrandController {
         //TODO test with products created
         return ResponseEntity.ok(brandService.mergeBrandInto(id, targetBrandId));
     }
-
-
-    //TODO: Write unit and integration tests for the controller methods
 }
