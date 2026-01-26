@@ -1,0 +1,21 @@
+.icon-small {
+  width: 24px;
+  height: 24px;
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 80%; /* Establece el ancho máximo al 100% del contenedor padre */
+  margin: 0 auto;
+  justify-content: space-between;
+}
+
+.btn-group > button {
+  flex: 1; /* Hace que los botones ocupen el mismo espacio dentro del contenedor */
+  /* margin-right: 5px;  Agrega un margen entre los botones */
+}
+
+.custom-modal-width {
+  max-width: 90%;
+}

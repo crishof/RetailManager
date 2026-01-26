@@ -1,0 +1,45 @@
+<div class="container">
+  <form
+    [formGroup]="brandForm"
+    enctype="multipart/form-data"
+    class="g-3 needs-validation"
+    novalidate
+    (submit)="updateBrand($event)"
+  >
+    <div class="mb-3">
+      <label for="brandNameInput" class="form-label">Brand Name:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="brandNameInput"
+        placeholder="Type new brand name here"
+        formControlName="brandName"
+        [ngClass]="{
+          'is-invalid': hasErrors('brandName', 'required')
+        }"
+      />
+
+      @if (hasErrors('brandName','required')) {
+      <span class="text-danger">Brand name cannot be empty</span>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="formFile" class="form-label">Image: </label>
+      <input
+        class="form-control"
+        type="file"
+        id="formFile"
+        (change)="onFileSelected($event)"
+      />
+    </div>
+
+    @if(errorMessage){
+    <div class="card bg-danger text-light">
+      <h5>{{ errorMessage }}</h5>
+    </div>
+    }
+
+    <button type="submit" class="btn btn-outline-primary btn-sm">Update</button>
+  </form>
+</div>

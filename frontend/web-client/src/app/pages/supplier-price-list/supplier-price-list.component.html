@@ -1,0 +1,194 @@
+<div class="container">
+  <div class="row">
+    <div class="col card shadow m-3 p-3">
+      <h2>Search Products</h2>
+      <form
+        #brandForm="ngForm"
+        (ngSubmit)="searchProducts()"
+        class="mb-3 text-center"
+        >
+        <select
+          class="form-control form-control-sm mb-2"
+          name="supplierId"
+          [ngModel]="selectedSupplierId"
+          (ngModelChange)="onSupplierChange($event)"
+          >
+          <option value="">All Suppliers</option>
+          @for (supplier of suppliers; track supplier) {
+            <option [value]="supplier.id">
+              {{ supplier.name }}
+            </option>
+          }
+        </select>
+
+        <select
+          class="form-control form-control-sm mb-2"
+          name="brand"
+          [(ngModel)]="selectedBrand"
+          >
+          <option value="">All Brands</option>
+          @for (brand of brands; track brand) {
+            <option [value]="brand">
+              {{ brand }}
+            </option>
+          }
+        </select>
+
+        <div class="form-group d-flex">
+          <input
+            type="text"
+            class="form-control row-8 flex-grow-1"
+            id="searchTerm"
+            placeholder="Enter search term and press enter to search"
+            [(ngModel)]="searchTerm"
+            name="searchTerm"
+            (keyup.enter)="searchProducts()"
+            />
+
+          <button type="submit" class="btn btn-outline-primary btn-sm">
+            Search
+          </button>
+        </div>
+      </form>
+
+      <button
+        class="btn btn-outline-success"
+        (click)="importSelectedProducts()"
+        >
+        Import products
+      </button>
+    </div>
+
+    <div class="col card shadow m-3 p-3">
+      <h2>Details</h2>
+      <div class="row">
+        <div class="row">
+          @if(selectedBrand.length > 0){
+            <p class="card bg-secondary text-light">{{ selectedBrand }}</p>
+          }
+        </div>
+        @if(productList.length > 0){
+          <p>{{ productList.length }} products found</p>
+        }
+      </div>
+      @if(successMessage){
+        <div class="card bg-success text-light">
+          <h5>{{ successMessage }}</h5>
+        </div>
+        } @if(errorMessage){
+        <div class="card bg-danger text-light">
+          <h5>{{ errorMessage }}</h5>
+        </div>
+        }@if(warningMessage){
+        <div class="card bg-warning text-light">
+          <h5>{{ warningMessage }}</h5>
+        </div>
+      }
+    </div>
+
+    <div class="col card shadow m-3 p-3">
+      <h2>Upload Price List</h2>
+      <form
+        [formGroup]="fileForm"
+        enctype="multipart/form-data"
+        class="g-3"
+        (submit)="uploadFile($event)"
+        >
+        <div class="mb-3">
+          <select
+            class="form-control form-control-sm mb-2"
+            formControlName="supplierId"
+            >
+            <option value="">All Suppliers</option>
+            @for (supplier of suppliers; track supplier) {
+              <option [value]="supplier.id">
+                {{ supplier.name }}
+              </option>
+            }
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="file" class="form-label">Upload Price List</label>
+          <input
+            type="file"
+            class="form-control"
+            id="file"
+            (change)="onFileSelected($event)"
+            />
+        </div>
+
+        <div class="mb-3 form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="updateExistingProducts"
+            formControlName="updateExistingProducts"
+            />
+          <label class="form-check-label" for="updateExistingProducts"
+            >Update existing products</label
+            >
+          </div>
+
+          <button type="submit" class="btn btn-outline-success">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="table-responsive" id="table-container">
+      <table class="table table-stripped table-hover align-middle table-sm">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">
+              <input type="checkbox" (change)="selectAllProducts($event)" />
+            </th>
+            <th scope="col">#Id</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Code</th>
+            <th scope="col">Model</th>
+            <th scope="col">Description</th>
+            <th scope="col">Category</th>
+            <th scope="col">Date</th>
+            <th scope="col">Price</th>
+            <th scope="col">Selling Price</th>
+            <th scope="col">Web Price</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Barcode</th>
+            <th scope="col">currency</th>
+            <th class="nowrap" scope="col">Tax Rate</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (product of productList; track product; let i = $index) {
+            <tr
+              (click)="selectRow(product)"
+              >
+              <td>
+                <input
+                  type="checkbox"
+                  (change)="toggleSelection($event, product)"
+                  [checked]="isSelected(product)"
+                  />
+              </td>
+              <td id="id">{{ product.id }}</td>
+              <td>{{ product.brand }}</td>
+              <td>{{ product.code }}</td>
+              <td>{{ product.model }}</td>
+              <td class="description-cell">{{ product.description }}</td>
+              <td>{{ product.category }}</td>
+              <td>{{ product.lastUpdate }}</td>
+              <td>{{ product.price }}</td>
+              <td>{{ product.suggestedPrice | currency }}</td>
+              <td>{{ product.suggestedWebPrice | currency }}</td>
+              <td>{{ product.stockAvailable }}</td>
+              <td>{{ product.barcode }}</td>
+              <td>{{ product.currency }}</td>
+              <td>{{ product.taxRate * 100 }} %</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
