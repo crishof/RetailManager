@@ -146,14 +146,12 @@ public class BrandController {
     // ============================
     // MERGE BRANDS
     // ============================
-    @Operation(summary = "Merge this brand into another one",
-            description = "Reassigns all products to the target brand and deletes the source brand. This operation is irreversible.")
+    @Operation(summary = "Merge this brand into another one", description = "Reassigns all products to the target brand and deletes the source brand. This operation is irreversible.")
     @ApiResponse(responseCode = "200", description = "Brands merged successfully")
     @ApiResponse(responseCode = "404", description = "Brand not found")
     @ApiResponse(responseCode = "400", description = "Invalid brand merge request")
     @PutMapping("/{id}/merge")
-    public ResponseEntity<BrandMergeResponse> mergeBrandInto(
-            @PathVariable @NotNull UUID id, @RequestParam @NotNull UUID targetBrandId) {
+    public ResponseEntity<BrandMergeResponse> mergeBrandInto(@PathVariable @NotNull UUID id, @RequestParam @NotNull UUID targetBrandId) {
 
         //TODO test with products created
         return ResponseEntity.ok(brandService.mergeBrandInto(id, targetBrandId));
