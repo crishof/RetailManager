@@ -20,10 +20,13 @@ public class CategoryInternalController {
 
     private final CategoryInternalService categoryInternalService;
 
-    @GetMapping("/getId")
-    public UUID getByNameOrCreate(@RequestParam String name) {
+    // ============================
+    // GET ID BY NAME OR CREATE NEW CATEGORY
+    // ============================
+    @GetMapping("/getByNameOrCreate")
+    public UUID getByNameOrCreate(@RequestParam String categoryName) {
         log.info("Obtaining existing category or creating a new one");
-        return categoryInternalService.getIdOrCreate(name);
+        return categoryInternalService.getIdOrCreate(categoryName);
     }
 
 }
