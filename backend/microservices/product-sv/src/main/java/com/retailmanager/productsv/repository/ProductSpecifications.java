@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ProductSpecifications {
+public final class ProductSpecifications {
+
+    private ProductSpecifications() {
+        // Private constructor to prevent instantiation
+    }
 
     public static Specification<Product> filter(
             UUID brandId,
@@ -18,7 +22,7 @@ public class ProductSpecifications {
             Boolean published,
             String search
     ) {
-        return (root, query, cb) -> {
+        return (root, _, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             if (brandId != null)

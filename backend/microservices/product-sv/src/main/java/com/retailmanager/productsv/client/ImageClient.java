@@ -20,9 +20,7 @@ public class ImageClient {
     private final WebClient webClient;
 
     public ImageClient(WebClient.Builder builder) {
-        this.webClient = builder
-                .baseUrl(BASE_URL)
-                .build();
+        this.webClient = builder.baseUrl(BASE_URL).build();
     }
 
     public String uploadImage(MultipartFile file, String entityName) {
@@ -65,15 +63,7 @@ public class ImageClient {
     }
 
     public void deleteImageByUrl(String url, String entityName) {
-        webClient.delete()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/delete")
-                        .queryParam("url", url)
-                        .queryParam(FOLDER, entityName)
-                        .build())
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
+        webClient.delete().uri(uriBuilder -> uriBuilder.path("/delete").queryParam("url", url).queryParam(FOLDER, entityName).build()).retrieve().bodyToMono(Void.class).block();
     }
 
     private void validate(ImageResponse response) {

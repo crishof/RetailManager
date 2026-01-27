@@ -6,6 +6,7 @@ import com.retailmanager.productsv.service.ProductService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -69,5 +70,14 @@ public class ProductInternalController {
     public int clearCategory(@PathVariable UUID categoryId) {
         log.info("Clearing category {} from products", categoryId);
         return productService.clearCategory(categoryId);
+    }
+
+    // ============================
+    // EXIST PRODUCTS BY SUPPLIER
+    // ============================
+    @GetMapping("/supplier/{id}/exist")
+    public Boolean existsProductsBySupplier(@PathVariable @NotNull UUID id) {
+        log.info("Checking if products exists by supplier {}", id);
+        return productService.existBySupplier(id);
     }
 }
