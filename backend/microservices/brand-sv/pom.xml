@@ -28,8 +28,8 @@
     </scm>
     <properties>
         <java.version>25</java.version>
-        <testcontainers.version>1.19.7</testcontainers.version>
         <lombok.version>1.18.42</lombok.version>
+        <testcontainers.version>1.19.7</testcontainers.version>
         <sonar.projectKey>brand-sv</sonar.projectKey>
         <sonar.projectName>Brand Service</sonar.projectName>
         <sonar.coverage.jacoco.xmlReportPaths>
@@ -59,8 +59,6 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
-
-
         <!-- Spring Web MVC -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
