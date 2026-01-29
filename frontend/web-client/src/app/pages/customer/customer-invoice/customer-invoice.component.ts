@@ -197,8 +197,8 @@ export class CustomerInvoiceComponent implements OnInit {
   }
 
   calculateNetVat(vat: number): number {
-    const discount = parseFloat(this.invoiceForm.get("discount")?.value || "0");
-    const interest = parseFloat(this.invoiceForm.get("interest")?.value || "0");
+    const discount = Number.parseFloat(this.invoiceForm.get("discount")?.value || "0");
+    const interest = Number.parseFloat(this.invoiceForm.get("interest")?.value || "0");
 
     const total = this.invoiceItems.reduce((acc, item) => {
       if (item.taxRate == vat) {
@@ -266,7 +266,9 @@ export class CustomerInvoiceComponent implements OnInit {
     return calculatedVat;
   }
 
-  getInternalTax() {}
+  getInternalTax() {
+    //TODO implement method
+  }
 
   getInvoiceTotal() {
     const total: number =

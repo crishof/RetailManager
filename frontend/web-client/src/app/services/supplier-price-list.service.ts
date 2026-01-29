@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { IProduct } from '../model/product.model';
 import { Observable, catchError, throwError } from 'rxjs';
 import { ISupplierProduct } from '../model/supplierProduct';
 
@@ -8,13 +7,13 @@ import { ISupplierProduct } from '../model/supplierProduct';
   providedIn: 'root',
 })
 export class SupplierPriceListService {
-  private _http = inject(HttpClient);
+  private readonly _http = inject(HttpClient);
 
   //TODO: corregir camelCase de URL
 
-  private _urlBase = 'http://localhost:443/supplierpricelist-sv/priceList';
-  private _urlSupplier = 'http://localhost:443/supplierpricelist-sv/supplier';
-  private _urlProductSv = 'http://localhost:443/product-sv/product';
+  private readonly _urlBase = 'http://localhost:443/supplierpricelist-sv/priceList';
+  private readonly _urlSupplier = 'http://localhost:443/supplierpricelist-sv/supplier';
+  private readonly _urlProductSv = 'http://localhost:443/product-sv/product';
   constructor() {}
 
   uploadFile(file: File, supplierId: string, updateExistingProducts: boolean) {
@@ -54,10 +53,10 @@ export class SupplierPriceListService {
     );
   }
 
-  getBrandsBySupplierId(supplierId: string): Observable<String[]> {
+  getBrandsBySupplierId(supplierId: string): Observable<string[]> {
     let params = new HttpParams();
     params = params.set('supplierId', supplierId);
-    return this._http.get<String[]>(
+    return this._http.get<string[]>(
       `${this._urlSupplier}/getBrandsBySupplier`,
       {
         params: params,
@@ -65,8 +64,8 @@ export class SupplierPriceListService {
     );
   }
 
-  getAllBrands(): Observable<String[]> {
-    return this._http.get<String[]>(`${this._urlSupplier}/getAllBrands`);
+  getAllBrands(): Observable<string[]> {
+    return this._http.get<string[]>(`${this._urlSupplier}/getAllBrands`);
   }
 
   getSupplierProductById(id: string): Observable<ISupplierProduct> {

@@ -29,7 +29,7 @@ import { BrandCreateComponent } from '../brand-create/brand-create.component';
     styleUrl: './brand.component.css'
 })
 export class BrandComponent implements OnInit {
-  private _brandService = inject(BrandService);
+  private readonly _brandService = inject(BrandService);
   brandList: IBrand[] = [];
   filteredBrandList: IBrand[] = [];
   searchTerm: string = '';
@@ -37,18 +37,26 @@ export class BrandComponent implements OnInit {
   isAscendingOrder: boolean = true;
   @Input() selectionMode: 'click' | 'dblclick' = 'click';
   selectedBrand: IBrand | null = null;
-  private _router = inject(Router);
+  private readonly _router = inject(Router);
+  totalElements: number = 0;
   /*
   
   @Output() selectedBrand = new EventEmitter<IBrand>();
   private _sanitizer = inject(DomSanitizer);
 */
   ngOnInit(): void {
-    this._brandService.getBrands().subscribe((data: IBrand[]) => {
-      this.brandList = data;
-      this.filteredBrandList = this.brandList;
-    });
+    this.loadBrands();
   }
+
+  loadBrands() {
+  this._brandService.getBrands().subscribe({
+    next: (page) => {
+      this.brandList = page.content;
+      this.totalElements = page.totalElements;
+    },
+    error: (err) => console.error(err)
+  });
+}
 
   searchBrand() {
     this.filterBrands(this.searchTerm);

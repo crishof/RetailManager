@@ -2,17 +2,20 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IBrand } from '../model/brand.model';
+import { PageResponse } from '../model/PageResponse';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BrandService {
-  private _http = inject(HttpClient);
-  private _urlBase = 'http://localhost:443/brand-sv/brand';
+  private readonly _http = inject(HttpClient);
+  private readonly _urlBase = 'http://localhost:8080/api/v1/brands';
 
-  getBrands(): Observable<IBrand[]> {
-    return this._http.get<IBrand[]>(`${this._urlBase}/getAll`);
-  }
+  getBrands(page = 0, size = 10): Observable<PageResponse<IBrand>> {
+  return this._http.get<PageResponse<IBrand>>(
+    `${this._urlBase}?page=${page}&size=${size}`
+  );
+}
 
   getBrand(id: string): Observable<IBrand> {
     return this._http.get<IBrand>(`${this._urlBase}/getById/${id}`);

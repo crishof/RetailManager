@@ -9,7 +9,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 export class SupplierService {
   readonly _http = inject(HttpClient);
 
-  readonly _urlBase = 'http://localhost/api/v1/suppliers';
+  readonly _urlBase = 'http://localhost:8080/api/v1/suppliers';
 
   getAllByFilter(filter: string): Observable<ISupplier[]> {
     const params = new HttpParams().set('filter', filter);

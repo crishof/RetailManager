@@ -7,16 +7,16 @@ import { IProduct } from '../model/product.model';
   providedIn: 'root',
 })
 export class ProductService {
-  private _http = inject(HttpClient);
+  private readonly _http = inject(HttpClient);
 
-  private _urlBase = 'http://localhost:443/product-sv/product';
+  private readonly _urlBase = 'http://localhost/api/v1/products';
 
   getProducts(): Observable<IProduct[]> {
-    return this._http.get<IProduct[]>(`${this._urlBase}/getAll`);
+    return this._http.get<IProduct[]>(`${this._urlBase}`);
   }
 
   getProduct(id: string): Observable<IProduct> {
-    return this._http.get<IProduct>(`${this._urlBase}/getById/${id}`);
+    return this._http.get<IProduct>(`${this._urlBase}/${id}`);
   }
 
   getAllByFilter(filter: string, supplierId?: string): Observable<IProduct[]> {
