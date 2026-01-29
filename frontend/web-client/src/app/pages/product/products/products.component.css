@@ -1,0 +1,24 @@
+h1 {
+  text-align: center;
+}
+#id {
+  white-space: nowrap;
+  font-size: small;
+}
+#tag-container {
+  height: 233px;
+  overflow: auto;
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 80%; /* Establece el ancho máximo al 100% del contenedor padre */
+  margin: 0 auto;
+  justify-content: space-between;
+}
+
+.btn-group > button {
+  flex: 1; /* Hace que los botones ocupen el mismo espacio dentro del contenedor */
+  /* margin-right: 5px;  Agrega un margen entre los botones */
+}

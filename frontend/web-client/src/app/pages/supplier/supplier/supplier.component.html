@@ -1,0 +1,117 @@
+<app-supplier-navbar></app-supplier-navbar>
+
+<fieldset class="btn-group btn-group-sm" aria-label="Basic outlined example">
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'supplier' }"
+    (click)="selectedComponent = 'supplier'"
+    >
+    Datos Principales
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'margenes' }"
+    (click)="selectedComponent = 'margenes'"
+    >
+    Margenes
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'contactos' }"
+    (click)="selectedComponent = 'contactos'"
+    >
+    Contactos
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'inscripciones' }"
+    (click)="selectedComponent = 'inscripciones'"
+    >
+    Numeros Inscripciones
+  </button>
+</fieldset>
+
+<div class="container" id="tag-container">
+  @switch (selectedComponent) {
+    @case ('supplier') {
+      <app-supplier-details
+        [supplier]="currentSupplier"
+      ></app-supplier-details>
+    }
+    @case ('margenes') {
+      <div>
+        <p>Margenes</p>
+      </div>
+    }
+    @case ('contactos') {
+      <div>
+        <p>Contactos</p>
+      </div>
+    }
+    @case ('inscripciones') {
+      <div>
+        <p>Numero de inscripciones</p>
+      </div>
+    }
+  }
+</div>
+<hr />
+
+<div class="container">
+  <div class="row">
+    <form (ngSubmit)="onFormSubmit()" class="row mb-3 text-center col-md-8">
+      <div class="col-md-8">
+        <input
+          type="text"
+          class="form-control"
+          id="searchTerm"
+          placeholder="Enter search term and press enter"
+          [(ngModel)]="searchTerm"
+          name="searchTerm"
+          (keyup)="onKeyUp($event)"
+          />
+        @if(isFormSubmitted && searchTerm.length < 3){
+          <div class="text-danger">
+            Search term must be at least 3 characters long
+          </div>
+        }
+      </div>
+
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary btn-sm">
+          Search
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="table-responsive" id="table-container">
+    <table class="table table-stripped table-hover align-middle table-sm">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Legal Name</th>
+          <th scope="col">Tax Id</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (supplier of supplierList; track $index) {
+          <tr (click)="selectSupplier(supplier)">
+            <td id="id">{{ supplier.id }}</td>
+            <td>{{ supplier.name }}</td>
+            <td>{{ supplier.legalName }}</td>
+            <td>{{ supplier.taxId }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

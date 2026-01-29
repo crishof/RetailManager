@@ -1,0 +1,32 @@
+.table-responsive {
+  max-width: 100%;
+  overflow-x: scroll;
+}
+#page-title {
+  margin: 30px;
+}
+
+#table-container {
+  height: 400px;
+  overflow-y: auto;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  /*background-color: white; /* Asegúrate de que los encabezados sean visibles */
+}
+
+.nowrap {
+  white-space: nowrap; /* Evita que el contenido se divida en varias líneas */
+  overflow: hidden; /* Oculta el contenido excedente */
+  text-overflow: ellipsis; /* Agrega puntos suspensivos (...) si el contenido se desborda */
+}
+
+.description-cell {
+  white-space: nowrap; /* Evita que el contenido se divida en varias líneas */
+  overflow: hidden; /* Oculta el contenido excedente */
+  text-overflow: ellipsis; /* Agrega puntos suspensivos (...) si el contenido se desborda */
+  max-width: 300px; /* Establece el tamaño máximo para la celda */
+}

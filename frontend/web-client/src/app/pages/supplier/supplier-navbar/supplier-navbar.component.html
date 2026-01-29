@@ -1,0 +1,230 @@
+<nav
+  class="navbar navbar-expand-lg bg-dark border-bottom border-body"
+  data-bs-theme="dark"
+>
+  <div class="container-fluid">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- Alta baja y modificacion -->
+        <li class="nav-item">
+          <a class="nav-link" href="#"
+            ><img
+              class="icon-small"
+              src="../../../../assets/icons/add-48.png"
+              alt="Add"
+            />
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"
+            ><img
+              class="icon-small"
+              src="../../../../assets/icons/cancel-48.png"
+              alt="Delete"
+          /></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"
+            ><img
+              class="icon-small"
+              src="../../../../assets/icons/edit-48.png"
+              alt="Edit"
+          /></a>
+        </li>
+
+        <!-- Listados -->
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            >Listados</a
+          >
+
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="#">Listado de proveedores</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"
+                >Listado de servicios tecnicos</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Listado de profesores</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Listado de Consignatarios</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Listado de extranjeros</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"
+                >Listado de Distribucion propia</a
+              >
+            </li>
+          </ul>
+        </li>
+
+        <!-- Informes -->
+
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            >Informes</a
+          >
+
+          <ul class="dropdown-menu">
+            <li>
+              @if(selectedSupplier){
+              <a
+                class="dropdown-item"
+                (click)="toStatementAccount(selectedSupplier.id)"
+                >Statement of Account</a
+              >
+              }@else{
+              <a class="dropdown-item">Statement of Account</a>
+              }
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"
+                >Cheques entregados al proveedor</a
+              >
+            </li>
+
+            <li><hr class="dropdown-divider" /></li>
+
+            <li>
+              <a class="dropdown-item" href="#"
+                >Saldo de todos los proveedores</a
+              >
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="#"
+                >Estado de deuda a los proveedores</a
+              >
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="#">Factura, Remitos NC y ND</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"
+                >Pagos realizados a los proveedores</a
+              >
+            </li>
+
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                >Pagos Pendientes</a
+              >
+              <ul class="dropdown-menu sub-menu">
+                <li>
+                  <a class="dropdown-item" href="#"
+                    >Listado de pagos pendientes</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#"
+                    >Calendario de pagos pendientes</a
+                  >
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="#">Facturas a cancelar</a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Stock -->
+
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            >Acciones</a
+          >
+
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="#">Pedidos al proveedor</a>
+            </li>
+            <li>
+              <a class="dropdown-item" routerLink="/supplierInvoice"
+                >Ingreso de comprobantes</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"
+                >Ingreso automático de facturas</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Ingreso de remito</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Relacionar proveedores</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Unificar proveedores</a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" href="#"
+                >Actualizar proveedores por grupo de artículos</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"
+                >Importar proveedores desde excel</a
+              >
+            </li>
+          </ul>
+        </li>
+
+        <!-- Viajantes -->
+
+        <li class="nav-item">
+          <a class="nav-link" href="#">Viajantes</a>
+        </li>
+
+        <!-- Modificacion rápida del dolar -->
+
+        <li class="nav-item">
+          <a class="nav-link" href="#"
+            >Modificacion rápida del dolar de los proveedores</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

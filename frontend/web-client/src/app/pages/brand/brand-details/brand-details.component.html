@@ -1,0 +1,59 @@
+@if(!editingMode){
+
+  @if (brand) {
+    <div class="container">
+      <div style="width: 18rem; height: 18rem">
+        <h3>Brand Details</h3>
+        @if (brand.imageUrl != null){
+          <img [src]="brand.imageUrl" alt="" class="brand-image" />
+        } @else{
+          <img
+            src="../../../../assets/images/no-image-100.png"
+            alt=""
+            class="no-image"
+            />
+        }
+        <div>
+          <hr />
+          <h5 class="card-title">{{ brand.name }}</h5>
+          <p>Number of Products: {{ productsQuantity }}</p>
+          <hr />
+          @if(brand != null && brand != undefined && !successMessage ){
+            <fieldset class="btn-group" role="group">
+              <button class="btn btn-outline-primary btn-sm" (click)="startEditing()">
+                Edit
+              </button>
+              <button
+                class="btn btn-outline-danger btn-sm"
+                (click)="confirmDelete(brand.id)"
+                >
+                Delete
+              </button>
+            </fieldset>
+          }
+        </div>
+      </div>
+    </div>
+  }
+  } @if(successMessage){
+  <div class="card bg-success text-light">
+    <h5>{{ successMessage }}</h5>
+  </div>
+  } @if(errorMessage){
+  <div class="card bg-danger text-light">
+    <h5>{{ errorMessage }}</h5>
+  </div>
+  } @if (editingMode){
+  <div class="container text-center m-3">
+    <h5>Brand edit: {{ brand!.name }}</h5>
+  </div>
+
+  <app-brand-edit
+    [brand]="brand || undefined"
+    (onSave)="saveChanges($event)"
+  ></app-brand-edit>
+
+  <button class="btn btn-outline-danger btn-sm" (click)="cancelEditing()">
+    Cancel
+  </button>
+}

@@ -1,7 +1,7 @@
 package com.retailmanager.brandsv.service;
 
-import com.retailmanager.brandsv.client.ImageClient;
-import com.retailmanager.brandsv.client.ProductClient;
+import com.retailmanager.brandsv.client.ImageServiceClient;
+import com.retailmanager.brandsv.client.ProductServiceClient;
 import com.retailmanager.brandsv.exception.BusinessException;
 import com.retailmanager.brandsv.exception.ResourceNotFoundException;
 import com.retailmanager.brandsv.model.Brand;
@@ -20,15 +20,16 @@ public class BrandDeletionService {
 
     private static final String ENTITY_NAME = "brands";
     private final BrandRepository brandRepository;
-    private final ImageClient imageClient;
-    private final ProductClient productClient;
+    private final ImageServiceClient imageClient;
+    private final ProductServiceClient productClient;
 
     @Transactional
     public void forceDelete(UUID id) {
 
         log.info("Force deleting brand | id={}", id);
 
-        Brand brand = brandRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Brand with id %s not found".formatted(id)));
+        Brand brand = brandRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Brand with id %s not found".formatted(id)));
 
         boolean hasProducts = productClient.hasProductsForBrand(id);
         if (hasProducts) {

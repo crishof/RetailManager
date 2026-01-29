@@ -1,6 +1,6 @@
 package com.retailmanager.suppliersv.service;
 
-import com.retailmanager.suppliersv.client.ProductClient;
+import com.retailmanager.suppliersv.client.ProductServiceClient;
 import com.retailmanager.suppliersv.dto.SupplierRequest;
 import com.retailmanager.suppliersv.dto.SupplierResponse;
 import com.retailmanager.suppliersv.exception.BusinessException;
@@ -29,7 +29,7 @@ public class SupplierServiceImpl implements SupplierService {
     private static final String SUPPLIER_NOT_FOUND = "Supplier with id %s not found";
     private final SupplierRepository supplierRepository;
     private final SupplierMapper supplierMapper;
-    private final ProductClient productClient;
+    private final ProductServiceClient productClient;
 
     @Override
     @Transactional
@@ -42,7 +42,8 @@ public class SupplierServiceImpl implements SupplierService {
         if (existing.isPresent()) {
             Supplier supplier = existing.get();
             if (supplierRepository.existsById(supplier.getId())) {
-                log.info("Restoring previously deleted supplier | id={} | name={}", supplier.getId(), supplierRequest.getName());
+                log.info("Restoring previously deleted supplier | id={} | name={}",
+                        supplier.getId(), supplierRequest.getName());
                 supplierRepository.restoreById(supplier.getId());
                 return supplierMapper.toDto(supplierRepository.save(supplier));
             }
@@ -58,8 +59,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public List<SupplierResponse> findAll() {
         return supplierRepository.findAll().stream()
-                .sorted(Comparator.comparing(Supplier::getName))
-                .map(supplierMapper::toDto)
+                .sorted(Comparator.comparing(Supplier::getName)).map(supplierMapper::toDto)
                 .toList();
     }
 
@@ -118,30 +118,20 @@ public class SupplierServiceImpl implements SupplierService {
     public SupplierResponse restore(UUID id) {
 
         log.info("Restoring supplier | id={}", id);
-        supplierRepository.findByIdIncludingDeleted(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                String.format(SUPPLIER_NOT_FOUND, id)
-                        )
-                );
+        supplierRepository.findByIdIncludingDeleted(id).orElseThrow(
+                () -> new ResourceNotFoundException(String.format(SUPPLIER_NOT_FOUND, id)));
         if (!supplierRepository.existsById(id)) {
-            throw new BusinessException(
-                    "Supplier with id '" + id + "' is not deleted or does not exist."
-            );
+            throw new BusinessException("Supplier with id '" + id + "' is not deleted or does not exist.");
         }
         int updated = supplierRepository.restoreById(id);
 
         if (updated == 0) {
-            throw new BusinessException(
-                    "Failed to restore supplier with id '" + id + "'."
-            );
+            throw new BusinessException("Failed to restore supplier with id '" + id + "'.");
         }
         log.info("Supplier restored | id={}", id);
 
-        Supplier restored = supplierRepository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Supplier restored but not found with id '" + id + "'.")
-                );
+        Supplier restored = supplierRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Supplier restored but not found with id '" + id + "'."));
         return supplierMapper.toDto(restored);
     }
 
@@ -149,8 +139,8 @@ public class SupplierServiceImpl implements SupplierService {
     // PRIVATE HELPERS
     // =========================
     private Supplier getSupplierOrThrow(UUID id) {
-        return supplierRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(String.format(SUPPLIER_NOT_FOUND, id)));
+        return supplierRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException(String.format(SUPPLIER_NOT_FOUND, id)));
     }
 
     private void deleteLog(String status, UUID id) {

@@ -1,0 +1,659 @@
+<form
+  [formGroup]="invoiceForm"
+  (submit)="saveInvoice()"
+  class="mb-3 text-center"
+>
+  <!-- PROVEEDOR Y BOTON -->
+  <div class="row">
+    <div class="col-1">
+      <p>Proveedor:</p>
+    </div>
+    <div class="col-5">
+      <select
+        class="form-control form-control-sm mb-2 col-md-4"
+        name="supplierId"
+        id="supplierId"
+        formControlName="supplierId"
+        required
+      >
+        <option value="">Select supplier</option>
+        <option *ngFor="let supplier of suppliers" [value]="supplier.id">
+          {{ supplier.name }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+          invoiceForm.get('supplierId')?.invalid &&
+          invoiceForm.get('supplierId')?.touched
+        "
+        class="text-danger"
+      >
+        Supplier is required
+      </div>
+    </div>
+    <div class="col">
+      <button type="submit" class="btn btn-outline-primary btn-sm">
+        Save Invoice
+      </button>
+    </div>
+  </div>
+
+  <!-- Pestañas -->
+
+  <div
+    class="btn-group btn-group-sm mb-3"
+    role="group"
+    aria-label="Basic outlined example"
+  >
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      [ngClass]="{ active: selectedComponent === 'header' }"
+      (click)="selectedComponent = 'header'"
+    >
+      Header
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      [ngClass]="{ active: selectedComponent === 'items' }"
+      (click)="selectedComponent = 'items'"
+    >
+      Items
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      [ngClass]="{ active: selectedComponent === 'pagos' }"
+      (click)="selectedComponent = 'pagos'"
+    >
+      Pagos
+    </button>
+  </div>
+
+  <div class="container" id="tag-container">
+    <ng-container [ngSwitch]="selectedComponent">
+      <div *ngSwitchCase="'header'">
+        <div class="container">
+          <div class="row mb-3">
+            <!-- Columna 1 -->
+
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label for="invoiceType" class="form-label">Invoice Type</label>
+                <select
+                  class="form-select"
+                  id="invoiceType"
+                  formControlName="invoiceType"
+                >
+                  <option [value]="'invoiceType A'">Factura A</option>
+                  <option [value]="'invoiceType B'">Factura B</option>
+                  <option [value]="'invoiceType C'">Factura C</option>
+                </select>
+                <div
+                  *ngIf="
+                    invoiceForm.get('invoiceType')?.invalid &&
+                    invoiceForm.get('invoiceType')?.touched
+                  "
+                  class="text-danger"
+                >
+                  Invoice Type is required
+                </div>
+              </div>
+              <div class="mb-3">
+                <mat-form-field appearance="fill" class="dateInput">
+                  <mat-label>Fecha de factura</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="picker1"
+                    formControlName="invoiceDate"
+                  />
+                  <mat-datepicker-toggle
+                    matSuffix
+                    [for]="picker1"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+                <div
+                  *ngIf="
+                    invoiceForm.get('invoiceDate')?.invalid &&
+                    invoiceForm.get('invoiceDate')?.touched
+                  "
+                  class="text-danger"
+                >
+                  Date is required
+                </div>
+                <mat-form-field appearance="fill" class="dateInput">
+                  <mat-label>Fecha de recibida</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="picker2"
+                    formControlName="receptionDate"
+                  />
+                  <mat-datepicker-toggle
+                    matSuffix
+                    [for]="picker2"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="fill" class="dateInput">
+                  <mat-label>Fecha de asiento</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="picker3"
+                    formControlName="savedDate"
+                  />
+                  <mat-datepicker-toggle
+                    matSuffix
+                    [for]="picker3"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker #picker3></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Columna 2 -->
+
+            <div class="col-md-3">
+              <div class="mb-3">
+                <select
+                  class="form-control form-control-sm mb-2 col-md-4"
+                  name="branchId"
+                  id="branchId"
+                  formControlName="branchId"
+                  required
+                >
+                  <option value="">Select Branch</option>
+                  <option *ngFor="let branch of branches" [value]="branch.id">
+                    {{ branch.name }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="
+                    invoiceForm.get('branchId')?.invalid &&
+                    invoiceForm.get('branchId')?.touched
+                  "
+                  class="text-danger"
+                >
+                  Branch is required
+                </div>
+              </div>
+              <div class="mb-3">
+                <select
+                  class="form-control form-control-sm mb-2 col-md-4"
+                  name="locationId"
+                  id="locationId"
+                  formControlName="locationId"
+                  required
+                >
+                  <option value="">Select Location</option>
+                  <option
+                    *ngFor="let location of locations"
+                    [value]="location.id"
+                  >
+                    {{ location.name }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="
+                    invoiceForm.get('locationId')?.invalid &&
+                    invoiceForm.get('locationId')?.touched
+                  "
+                  class="text-danger"
+                >
+                  Location is required
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="packingListPrefix" class="form-label"
+                  >N° Remito</label
+                >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control me-3"
+                    id="packingListPrefix"
+                    formControlName="packingListPrefix"
+                    placeholder="001"
+                  />
+                  <span> - </span>
+                  <label for="packingListNumber" class="form-label"></label>
+                  <input
+                    type="text"
+                    class="form-control ms-3"
+                    id="packingListNumber"
+                    formControlName="packingListNumber"
+                    placeholder="0000001"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="invoicePrefix" class="form-label"
+                  >N° Comprobante</label
+                >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control me-3"
+                    id="invoicePrefix"
+                    formControlName="invoicePrefix"
+                    placeholder="001"
+                  />
+                  <span> - </span>
+                  <label for="invoiceNumber" class="form-label"></label>
+                  <input
+                    type="text"
+                    class="form-control ms-3"
+                    id="invoiceNumber"
+                    formControlName="invoiceNumber"
+                    placeholder="000001"
+                  />
+                </div>
+              </div>
+              <div
+                *ngIf="
+                  invoiceForm.get('invoiceType')?.invalid &&
+                  invoiceForm.get('invoiceNumber')?.invalid &&
+                  invoiceForm.get('invoiceType')?.touched &&
+                  invoiceForm.get('invoiceNumber')?.touched
+                "
+                class="text-danger"
+              >
+                Both Invoice Prefix and Number are required
+              </div>
+            </div>
+
+            <!-- Columna 3 -->
+
+            <div class="col-md-3">
+              <div class="mb-3 form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="saveStocks"
+                  checked
+                  formControlName="saveStocks"
+                />
+                <label for="saveStocks" class="form-check-label"
+                  >Save Stock</label
+                >
+              </div>
+              <div class="mb-3 form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="taxSave"
+                  checked
+                  formControlName="taxSave"
+                />
+                <label for="taxSave" class="form-check-label">Tax B/W</label>
+              </div>
+              <div class="mb-3 form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="fixedAsset"
+                  formControlName="fixedAsset"
+                />
+                <label for="fixedAsset" class="form-check-label"
+                  >Fixed Asset</label
+                >
+              </div>
+              <div class="mb-3 form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="askForPriceUpdate"
+                  formControlName="askForPriceUpdate"
+                />
+                <label for="askForPriceUpdate" class="form-check-label"
+                  >Ask for price updating</label
+                >
+              </div>
+              <div class="mb-3">
+                <p class="mb-3">Cantidad de items: {{ invoiceItems.length }}</p>
+                <p class="mb-3">
+                  Cantidad de unidades: {{ totalInvoiceUnits }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Columna 4 -->
+
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label for="observations" class="form-label"
+                  >Observations</label
+                >
+                <textarea
+                  class="form-control"
+                  id="observations"
+                  formControlName="observations"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="'items'">
+        <div class="row mb-3">
+          <div class="col d-flex justify-content-center">
+            <!-- Button trigger modal -->
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+            >
+              Search products
+            </button>
+          </div>
+
+          <!-- BOTONES ALTA Y BAJA -->
+          <div class="col d-flex justify-content-center">
+            <a class="nav-link" href="#">
+              <img
+                class="icon-small"
+                src="../../../../assets/icons/add-48.png"
+                alt="Add"
+              />
+              <span>Alta de artículo</span>
+            </a>
+          </div>
+          <div class="col d-flex justify-content-center">
+            <a class="nav-link" href="#">
+              <img
+                class="icon-small"
+                src="../../../../assets/icons/cancel-48.png"
+                alt="Delete"
+              />
+              <span>Eliminar artículo</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- SEARCH BOX -->
+
+        @if(invoiceItems.length == 0 ){
+        <div class="card bg-light">
+          <h4>Add invoice products</h4>
+          <div class="text-danger">Item list cannot be empty</div>
+        </div>
+        }@else{
+
+        <!-- ITEMS LIST -->
+        <app-invoice-items
+          [invoiceItems]="invoiceItems"
+          (invoiceItemsChange)="onInvoiceItemChange($event)"
+        ></app-invoice-items>
+        }
+      </div>
+
+      <hr />
+
+      <!-- TOTALES -->
+
+      <div class="container">
+        <div class="row mb-3">
+          <!-- Columna 1 -->
+
+          <div class="col-md-2">
+            <div class="mb-3">
+              <p>Subtotal: {{ getSubtotal1() | number : "1.2-2" }}</p>
+            </div>
+            <div class="mb-3 d-flex align-items-center gap-3">
+              <label for="discount" class="form-label">Discount: </label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control me-3"
+                  id="discount"
+                  formControlName="discount"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            <div class="mb-3 d-flex align-items-center gap-3">
+              <label for="interest" class="form-label">Interest: </label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control me-3"
+                  id="interest"
+                  formControlName="interest"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <p>Subtotal: {{ getSubtotal2() | number : "1.2-2" }}</p>
+            </div>
+          </div>
+          <!-- Columna 2 -->
+
+          <div class="col-md-3">
+            <div class="mb-3">
+              <p>Net value Vat 21: {{ getNetVat(vat21) | number : "1.2-2" }}</p>
+            </div>
+            <div class="mb-3">
+              <p>
+                Net value Vat 10,5: {{ getNetVat(vat105) | number : "1.2-2" }}
+              </p>
+            </div>
+            <div class="mb-3">
+              <p>Net value Vat 27: {{ getNetVat(vat27) | number : "1.2-2" }}</p>
+            </div>
+            <div class="mb-3">
+              <p>Net exempt value: {{ getNetVat(vat0) | number : "1.2-2" }}</p>
+            </div>
+          </div>
+          <!-- Columna 3 -->
+
+          <div class="col-md-3">
+            <div class="mb-3">
+              <p>Vat Amount 21: {{ getVatAmount(vat21) | number : "1.2-2" }}</p>
+            </div>
+            <div class="mb-3">
+              <p>
+                Vat Amount 10,5: {{ getVatAmount(vat105) | number : "1.2-2" }}
+              </p>
+            </div>
+            <div class="mb-3">
+              <p>
+                Vat Amount 27:: {{ getVatAmount(vat27) | number : "1.2-2" }}
+              </p>
+            </div>
+            <div class="mb-3">
+              <p>Internal Tax: {{ getInternalTax() }}</p>
+            </div>
+          </div>
+          <!-- Columna 4 -->
+
+          <div class="col-md-3">
+            <div class="mb-3 d-flex align-items-center gap-3">
+              <label for="withholdingVat" class="form-label"
+                >VAT withholding:
+              </label>
+              <div class="input-group">
+                <input
+                  type="withholdingVat"
+                  class="form-control me-3"
+                  id="withholdingVat"
+                  formControlName="withholdingVat"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            <div class="mb-3 d-flex align-items-center gap-3">
+              <label for="withholdingSuss" class="form-label"
+                >SUSS withholding:
+              </label>
+              <div class="input-group">
+                <input
+                  type="withholdingSuss"
+                  class="form-control me-3"
+                  id="withholdingSuss"
+                  formControlName="withholdingSuss"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3 d-flex align-items-center gap-3">
+              <label for="withholdingGrossReceiptsTax" class="form-label"
+                >GrossReceiptsTax withholding:
+              </label>
+              <div class="input-group">
+                <input
+                  type="withholdingGrossReceiptsTax"
+                  class="form-control me-3"
+                  id="withholdingGrossReceiptsTax"
+                  formControlName="withholdingGrossReceiptsTax"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3 d-flex align-items-center gap-3">
+              <label for="withholdingIncome" class="form-label"
+                >Income withholding:
+              </label>
+              <div class="input-group">
+                <input
+                  type="withholdingIncome"
+                  class="form-control me-3"
+                  id="withholdingIncome"
+                  formControlName="withholdingIncome"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3 d-flex align-items-center gap-3">
+              <label for="localTax" class="form-label">Local Tax: </label>
+              <div class="input-group">
+                <input
+                  type="localTax"
+                  class="form-control me-3"
+                  id="localTax"
+                  formControlName="localTax"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3 d-flex align-items-center gap-3">
+              <label for="stateTax" class="form-label">State Tax: </label>
+              <div class="input-group">
+                <input
+                  type="stateTax"
+                  class="form-control me-3"
+                  id="stateTax"
+                  formControlName="stateTax"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+          </div>
+          <!-- Columna 3 -->
+
+          <div class="col-md-3">
+            <div class="mb-3 d-flex align-items-center gap-3">
+              <label for="rounding" class="form-label">Rounding: </label>
+              <div class="input-group">
+                <input
+                  type="rounding"
+                  class="form-control me-3"
+                  id="rounding"
+                  formControlName="rounding"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <h4>TOTAL: ${{ getInvoiceTotal() | number : "1.2-2" }}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog custom-modal-width">
+          <div class="modal-content">
+            <div class="modal-header">
+              <app-product-search
+                class="col"
+                (search)="handleSearch($event)"
+                (searchStock)="handleSearchWithStock($event)"
+              ></app-product-search>
+
+              <div class="form-check me-2">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="thisSupplier"
+                  (ngModel)="(filterByThisSupplier)"
+                  (change)="onThisSupplierChange()"
+                />
+                <label class="form-check-label" for="thisSupplier"
+                  >Solo este proveedor</label
+                >
+              </div>
+
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              @if(productList.length == 0 && isFormSubmitted){
+              <div class="card bg-light">
+                <h4>No elements found in this search</h4>
+              </div>
+              }@else{
+
+              <app-product-list
+                [productList]="productList"
+                selectionMode="dblclick"
+                (selectProduct)="selectProduct($event)"
+              >
+              </app-product-list>
+
+              }
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-primary">
+                Save changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="'pagos'">
+        <p>Pagos</p>
+      </div>
+    </ng-container>
+  </div>
+</form>
+<hr />

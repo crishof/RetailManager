@@ -18,10 +18,10 @@ public class PriceItemController {
     private final PriceItemService priceItemService;
 
     // ============================
-    // IMPORT PRICE LIST
+    // IMPORT PRICE ITEMS
     // ============================
     @PostMapping("/import")
-    public ImportResult importPriceList(
+    public ImportResult importPriceItems(
             @RequestParam MultipartFile file,
             @RequestParam UUID supplierId,
             @RequestParam(defaultValue = "false") boolean updateExisting

@@ -2,8 +2,10 @@ package com.retailmanager.productsv.service;
 
 import com.retailmanager.productsv.dto.ProductRequest;
 import com.retailmanager.productsv.dto.ProductResponse;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
@@ -20,7 +22,13 @@ public interface ProductService {
 
     void delete(UUID id);
 
-    void restore(UUID id);
+    @Transactional
+    void forceDelete(UUID id);
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    void deleteProductImage(String imageUrl);
+
+    ProductResponse restore(UUID id);
 
     long count(UUID brandId, UUID categoryId, UUID supplierId);
 
@@ -34,4 +42,10 @@ public interface ProductService {
 
     @Transactional
     int clearCategory(UUID categoryId);
+
+    Boolean existBySupplier(@NotNull UUID id);
+
+    boolean existsBySupplier(UUID supplierId, UUID productId);
+
+    void attachPrice(UUID productId, UUID priceId);
 }

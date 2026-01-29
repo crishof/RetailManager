@@ -10,15 +10,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(
-        name = "tbl_products",
-        indexes = {
-                @Index(name = "idx_product_code", columnList = "code"),
-                @Index(name = "idx_product_brand", columnList = "brandId"),
-                @Index(name = "idx_product_category", columnList = "categoryId"),
-                @Index(name = "idx_product_active", columnList = "active")
-        }
-)
+@Table(name = "tbl_products", indexes = {
+        @Index(name = "idx_product_code", columnList = "code"),
+        @Index(name = "idx_product_brand", columnList = "brandId"),
+        @Index(name = "idx_product_category", columnList = "categoryId"),
+        @Index(name = "idx_product_active", columnList = "active")})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -43,7 +39,6 @@ public class Product {
     @Column(length = 1000)
     private String description;
 
-    @Column(nullable = false)
     private UUID categoryId;
 
     private UUID dimensionId;
@@ -53,22 +48,21 @@ public class Product {
     private UUID supplierProductId;
 
     @Column(nullable = false)
-    private boolean active;
+    private boolean active = true;
 
     @Column(nullable = false)
-    private boolean published;
+    private boolean published = false;
 
     @Column(nullable = false)
-    private boolean highlighted;
+    private boolean highlighted = false;
 
-    // External references (no JPA relationships for performance and decoupling reasons)
     @ElementCollection
     @CollectionTable(
             name = "tbl_product_images",
             joinColumns = @JoinColumn(name = "product_id")
     )
-    @Column(name = "image_id", nullable = false)
-    private List<UUID> imageIds = new ArrayList<>();
+    @Column(name = "image_url", nullable = false)
+    private List<String> imageUrls = new ArrayList<>();
 
     private UUID priceId;
 
@@ -79,7 +73,7 @@ public class Product {
 
     // ----------- Commercial codes -----------
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column( unique = true, length = 100)
     private String sku;     // Internal code
 
     @Column(length = 14)
