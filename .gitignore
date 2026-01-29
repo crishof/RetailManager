@@ -2,3 +2,7 @@
 backend/assets/
 
 .idea/
+
+frontend/web-client/node_modules/
+
+frontend/web-client/.angular/
