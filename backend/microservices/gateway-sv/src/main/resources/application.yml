@@ -1,0 +1,91 @@
+spring:
+  application:
+    name: gateway-sv
+
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - http://localhost:4200
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+            allowedHeaders:
+              - Authorization
+              - Content-Type
+            allowCredentials: true
+
+      routes:
+
+        # =========================
+        # SWAGGER / OPENAPI
+        # =========================
+
+        - id: brands-swagger
+          uri: http://brand-sv:8080
+          predicates:
+            - Path=/api/v1/brands/v3/api-docs
+          filters:
+            - StripPrefix=3
+
+        - id: suppliers-swagger
+          uri: http://supplier-sv:8080
+          predicates:
+            - Path=/api/v1/suppliers/v3/api-docs
+          filters:
+            - StripPrefix=3
+
+        - id: categories-swagger
+          uri: http://category-sv:8080
+          predicates:
+            - Path=/api/v1/categories/v3/api-docs
+          filters:
+            - StripPrefix=3
+
+        # =========================
+        # BUSINESS ROUTES
+        # =========================
+
+        - id: brands
+          uri: http://brand-sv:8080
+          predicates:
+            - Path=/api/v1/brands/**
+
+        - id: categories
+          uri: http://category-sv:8080
+          predicates:
+            - Path=/api/v1/categories/**
+
+        - id: suppliers
+          uri: http://supplier-sv:8080
+          predicates:
+            - Path=/api/v1/suppliers/**
+
+        - id: images
+          uri: http://brand-sv:8080
+          predicates:
+            - Path=/api/v1/images/**
+
+# =========================
+# SPRINGDOC (GATEWAY)
+# =========================
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    deepLinking: true
+    urls:
+      - name: Brands
+        url: /api/v1/brands/v3/api-docs
+
+      - name: Categories
+        url: /api/v1/categories/v3/api-docs
+
+      - name: Suppliers
+        url: /api/v1/suppliers/v3/api-docs
