@@ -1,6 +1,6 @@
 package com.retailmanager.brandsv.service;
 
-import com.retailmanager.brandsv.client.ProductClient;
+import com.retailmanager.brandsv.client.ProductServiceClient;
 import com.retailmanager.brandsv.dto.BrandMergeResponse;
 import com.retailmanager.brandsv.dto.BrandResponse;
 import com.retailmanager.brandsv.dto.ReassignBrandResponse;
@@ -32,7 +32,7 @@ class BrandServiceImplTest {
     private BrandMapper brandMapper;
 
     @Mock
-    private ProductClient productClient;
+    private ProductServiceClient productClient;
 
     @Mock
     private BrandDeletionService brandDeletionService;
