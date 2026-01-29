@@ -34,6 +34,13 @@ spring:
           filters:
             - StripPrefix=3
 
+        - id: categories-swagger
+          uri: http://category-sv:8080
+          predicates:
+            - Path=/api/v1/categories/v3/api-docs
+          filters:
+            - StripPrefix=3
+
         - id: suppliers-swagger
           uri: http://supplier-sv:8080
           predicates:
@@ -41,10 +48,45 @@ spring:
           filters:
             - StripPrefix=3
 
-        - id: categories-swagger
-          uri: http://category-sv:8080
+        - id: products-swagger
+          uri: http://product-sv:8080
           predicates:
-            - Path=/api/v1/categories/v3/api-docs
+            - Path=/api/v1/products/v3/api-docs
+          filters:
+            - StripPrefix=3
+
+        - id: price-items-swagger
+          uri: http://price-item-sv:8080
+          predicates:
+            - Path=/api/v1/price-items/v3/api-docs
+          filters:
+            - StripPrefix=3
+
+        - id: pricing-swagger
+          uri: http://pricing-sv:8080
+          predicates:
+            - Path=/api/v1/pricing/v3/api-docs
+          filters:
+            - StripPrefix=3
+
+        - id: customers-swagger
+          uri: http://customer-sv:8080
+          predicates:
+            - Path=/api/v1/customers/v3/api-docs
+          filters:
+            - StripPrefix=3
+
+        - id: sales-swagger
+          uri: http://sales-sv:8080
+          predicates:
+            - Path=/api/v1/sales/v3/api-docs
+          filters:
+            - StripPrefix=3
+
+        - id: exchange-swagger
+          uri: http://exchange-sv:8080
+          predicates:
+            - Path=/api/v1/exchange/v3/api-docs
           filters:
             - StripPrefix=3
 
@@ -68,13 +110,44 @@ spring:
             - Path=/api/v1/suppliers/**
 
         - id: images
-          uri: http://brand-sv:8080
+          uri: http://image-sv:8080
           predicates:
             - Path=/api/v1/images/**
 
-# =========================
-# SPRINGDOC (GATEWAY)
-# =========================
+        - id: price-items
+          uri: http://price-item-sv:8080
+          predicates:
+            - Path=/api/v1/price-items/**
+
+        - id: products
+          uri: http://product-sv:8080
+          predicates:
+            - Path=/api/v1/products/**
+
+        - id: pricing
+          uri: http://pricing-sv:8080
+          predicates:
+            - Path=/api/v1/pricing/**
+
+        - id: customers
+          uri: http://customer-sv:8080
+          predicates:
+            - Path=/api/v1/customers/**
+
+        - id: inventory
+          uri: http://inventory-sv:8080
+          predicates:
+            - Path=/api/v1/inventory/**
+
+        - id: sales
+          uri: http://sales-sv:8080
+          predicates:
+            - Path=/api/v1/sales/**
+
+        - id: exchange
+          uri: http://exchange-sv:8080
+          predicates:
+            - Path=/api/v1/exchange/**
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -83,9 +156,19 @@ springdoc:
     urls:
       - name: Brands
         url: /api/v1/brands/v3/api-docs
-
       - name: Categories
         url: /api/v1/categories/v3/api-docs
-
       - name: Suppliers
         url: /api/v1/suppliers/v3/api-docs
+      - name: Price Items
+        url: /api/v1/price-items/v3/api-docs
+      - name: Products
+        url: /api/v1/products/v3/api-docs
+      - name: Pricing
+        url: /api/v1/pricing/v3/api-docs
+      - name: Customers
+        url: /api/v1/customers/v3/api-docs
+      - name: Sales
+        url: /api/v1/sales/v3/api-docs
+      - name: Exchange
+        url: /api/v1/exchange/v3/api-docs
