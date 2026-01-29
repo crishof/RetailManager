@@ -1,14 +1,13 @@
 package com.retailmanager.productsv.controller;
 
-import com.retailmanager.productsv.dto.CategoryReplaceRequest;
 import com.retailmanager.productsv.dto.ProductRequest;
 import com.retailmanager.productsv.dto.ProductResponse;
-import com.retailmanager.productsv.dto.ReassignBrandResponse;
 import com.retailmanager.productsv.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -46,24 +45,33 @@ public class ProductController {
     // GET PRODUCT BY ID
     // ============================
     @Operation(summary = "Get product by ID")
+    @ApiResponse(responseCode = "200", description = "Product retrieved successfully")
+    @ApiResponse(responseCode = "404", description = "Product not found")
     @GetMapping("/{id}")
-    public ProductResponse getById(@PathVariable UUID id) {
-        return productService.getById(id);
+    public ResponseEntity<ProductResponse> getById(@PathVariable UUID id) {
+        log.info("Fetching product | id={}", id);
+        return ResponseEntity.ok(productService.getById(id));
     }
 
     // ============================
     // CREATE NEW PRODUCT
     // ============================
     @Operation(summary = "Create a new product")
+    @ApiResponse(responseCode = "201", description = "Product created successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid input")
     @PostMapping
-    public ResponseEntity<ProductResponse> create(@RequestBody ProductRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(request));
+    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest productRequest) {
+        log.info("Creating new product {}", productRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(productRequest));
     }
 
     // ============================
     // UPDATE PRODUCT
     // ============================
     @Operation(summary = "Update an existing product")
+    @ApiResponse(responseCode = "200", description = "Product updated successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid input")
+    @ApiResponse(responseCode = "404", description = "Product not found")
     @PatchMapping("/{id}")
     public ProductResponse update(@PathVariable UUID id, @RequestBody ProductRequest request) {
         return productService.update(id, request);
@@ -72,10 +80,26 @@ public class ProductController {
     // ============================
     // DELETE PRODUCT
     // ============================
-    @Operation(summary = "Delete a product by ID")
+    @Operation(summary = "Soft delete a product by ID")
+    @ApiResponse(responseCode = "204", description = "Product deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Product not found")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable @NotNull UUID id) {
+        log.info("Deleting product | id={}", id);
         productService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // ============================
+    // FORCE DELETE PRODUCT
+    // ============================
+    @Operation(summary = "Hard delete a product by ID")
+    @ApiResponse(responseCode = "204", description = "Product deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Product not found")
+    @DeleteMapping("/{id}/force")
+    public ResponseEntity<Void> forceDelete(@PathVariable @NotNull UUID id) {
+        log.info("Hard deleting product id={}", id);
+        productService.forceDelete(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -84,8 +108,9 @@ public class ProductController {
     // ============================
     @Operation(summary = "Restore a deleted product by ID")
     @PatchMapping("/{id}/restore")
-    public void restore(@PathVariable UUID id) {
-        productService.restore(id);
+    public ResponseEntity<ProductResponse> restore(@PathVariable UUID id) {
+
+        return ResponseEntity.ok(productService.restore(id));
     }
 
     // ============================
@@ -95,45 +120,5 @@ public class ProductController {
     @GetMapping("/count")
     public long count(@RequestParam(required = false) UUID brandId, @RequestParam(required = false) UUID categoryId, @RequestParam(required = false) UUID supplierId) {
         return productService.count(brandId, categoryId, supplierId);
-    }
-
-    // ============================
-    // HAS PRODUCTS BY BRAND
-    // ============================
-    @Operation(summary = "Check if products exist for a brand")
-    @GetMapping("/brand/{brandId}/exists")
-    public boolean hasProductsForBrand(@PathVariable UUID brandId) {
-        return productService.hasProductsForBrand(brandId);
-    }
-
-    // ============================
-    // REPLACE PRODUCT BRAND
-    // ============================
-    @Operation(summary = "Replace brand for products")
-    @PatchMapping("/brand")
-    public ReassignBrandResponse replaceBrand(@RequestParam UUID brandId, @RequestParam UUID newBrandId) {
-
-        int updated = productService.replaceBrand(brandId, newBrandId);
-        return new ReassignBrandResponse(updated);
-    }
-
-    // ============================
-    // REMOVE CATEGORY
-    // ============================
-    @Operation(summary = "Remove category from product")
-    @PatchMapping("/category/{categoryId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeCategory(@PathVariable UUID categoryId) {
-        productService.removeCategory(categoryId);
-    }
-
-    // ============================
-    // REPLACE PRODUCT CATEGORY
-    // ============================
-    @Operation(summary = "Replace category from product")
-    @PatchMapping("/category")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void replaceCategory(@RequestBody @Valid CategoryReplaceRequest request) {
-        productService.replaceCategory(request.from(), request.to());
     }
 }

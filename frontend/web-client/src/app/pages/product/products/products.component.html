@@ -1,0 +1,136 @@
+<app-product-navbar></app-product-navbar>
+
+<div
+  class="btn-group btn-group-sm"
+  role="group"
+  aria-label="Basic outlined example"
+  >
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'product' }"
+    (click)="selectedComponent = 'product'"
+    >
+    Product
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'fichaTecnica' }"
+    (click)="selectedComponent = 'fichaTecnica'"
+    >
+    Ficha Tecnica
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'proveedor' }"
+    (click)="selectedComponent = 'proveedor'"
+    >
+    Proveedor
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'codigos' }"
+    (click)="selectedComponent = 'codigos'"
+    >
+    Codigos
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'varios' }"
+    (click)="selectedComponent = 'varios'"
+    >
+    Varios
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'stock' }"
+    (click)="selectedComponent = 'stock'"
+    >
+    Stock
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'tarjetas' }"
+    (click)="selectedComponent = 'tarjetas'"
+    >
+    Pago Tarjetas
+  </button>
+  <button
+    type="button"
+    class="btn btn-outline-secondary"
+    [ngClass]="{ active: selectedComponent === 'especificaciones' }"
+    (click)="selectedComponent = 'especificaciones'"
+    >
+    Especificaciones
+  </button>
+</div>
+
+<div class="container" id="tag-container">
+  @switch (selectedComponent) {
+    @case ('product') {
+      <app-product-detail
+        [product]="selectedProduct"
+      ></app-product-detail>
+    }
+    @case ('fichaTecnica') {
+      <div>
+        <p>Ficha Tecnica</p>
+      </div>
+    }
+    @case ('proveedor') {
+      <div>
+        <p>Proveedor</p>
+      </div>
+    }
+    @case ('codigos') {
+      <div>
+        <p>Codigos</p>
+      </div>
+    }
+    @case ('varios') {
+      <div>
+        <p>varios</p>
+      </div>
+    }
+    @case ('stock') {
+      <div>
+        <p>Stock</p>
+      </div>
+    }
+    @case ('tarjetas') {
+      <div>
+        <p>tarjetas</p>
+      </div>
+    }
+    @case ('especificaciones') {
+      <div>
+        <p>especificaciones</p>
+      </div>
+    }
+  }
+</div>
+<hr />
+<div class="container">
+  <app-product-search
+    (search)="handleSearch($event)"
+    (searchStock)="handleSearchWithStock($event)"
+  ></app-product-search>
+  @if(productList.length == 0 && isFormSubmitted){
+    <div class="card bg-light">
+      <h4>No elements found in this search</h4>
+    </div>
+    }@else{
+    <app-product-list
+      [productList]="productList"
+      selectionMode="click"
+      (selectProduct)="selectProduct($event)"
+      >
+    </app-product-list>
+  }
+</div>

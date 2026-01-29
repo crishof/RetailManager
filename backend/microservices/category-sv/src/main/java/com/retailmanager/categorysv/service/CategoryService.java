@@ -38,4 +38,6 @@ public interface CategoryService {
     List<CategoryTreeResponse> getTree();
 
     CategoryTreeResponse getSubTree(UUID id);
+
+    UUID getIdOrCreateByName(String name);
 }

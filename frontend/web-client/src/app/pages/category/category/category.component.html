@@ -1,0 +1,102 @@
+<div class="container">
+  <!--
+
+    <div class="row">
+      <div class="col-8">
+    -->
+  <table class="table table-striped table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">#Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Image</th>
+        <th scope="col">Details</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for ( category of categoryList; track $index){
+
+      <tr (click)="showDetails(category)">
+        <td scope="row">{{ category.id }}</td>
+        <td>{{ category.name }}</td>
+        <td>
+          @if (category.imageUrl != null){
+          <img [src]="category.imageUrl" alt="" width="50px" height="50px" />
+          } @else{
+          <img
+            src="../../../../assets/images/no-image-100.png"
+            alt=""
+            width="50px"
+            height="50px"
+          />
+          }
+        </td>
+        <td>
+          <!--  <button
+                class="btn btn-outline-primary btn-sm"
+                (click)="navegate(category.id)"
+              >
+                Details
+              </button> -->
+
+          <button
+            class="btn btn-outline-primary btn-sm"
+            (click)="openCategoryEditDialog()"
+          >
+            Details
+          </button>
+        </td>
+      </tr>
+
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- 
+    <div class="col-4">
+      <app-category-details
+        [selectedCategory]="selectedCategory"
+        (categoryUpdated)="handleCategoryUpdated()"
+      ></app-category-details>
+    </div>
+  </div>
+  -->
+
+<!-- Modal -->
+<div
+  class="modal fade modal-dialog-scrollable"
+  id="categoryDetailsModal"
+  tabindex="-1"
+  aria-labelledby="categoryDetailsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="categoryDetailsModalLabel">
+          Category Details
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- Aquí colocarás tu componente app-category-details -->
+        <app-category-details
+          [selectedCategory]="selectedCategory"
+          (categoryUpdated)="handleCategoryUpdated()"
+        ></app-category-details>
+      </div>
+    </div>
+  </div>
+</div>
+<!--
+
+    </div>
+  </div>
+-->

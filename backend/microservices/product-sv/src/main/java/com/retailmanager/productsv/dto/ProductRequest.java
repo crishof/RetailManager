@@ -1,7 +1,6 @@
 package com.retailmanager.productsv.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -10,6 +9,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ProductRequest {
 
     private String code;

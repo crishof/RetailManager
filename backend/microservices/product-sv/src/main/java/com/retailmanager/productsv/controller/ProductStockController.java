@@ -17,25 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ProductStockController {
 
-    private final ProductStockService stockService;
+    private final ProductStockService productStockService;
 
     // ============================
     // UPDATE FROM INVOICE
     // ============================
-    @Operation(summary = "update product from supplier invoice")
     @PutMapping("/from-invoice")
+    @Operation(summary = "Update product stock and price from supplier invoice")
     public void updateFromInvoice(@RequestBody InvoiceUpdateRequest request) {
-        log.info("Received request to update product from supplier invoice");
-        stockService.updateFromInvoice(request);
+        log.info("Updating products from supplier invoice");
+        productStockService.updateFromInvoice(request);
     }
 
     // ============================
     // UPDATE FROM ORDER
     // ============================
-    @Operation(summary = "Update stock from order")
     @PutMapping("/from-order")
+    @Operation(summary = "Update product stock from order")
     public void updateFromOrder(@RequestBody OrderUpdateRequest request) {
-        log.info("Received request to update stock from order");
-        stockService.updateStockFromOrder(request);
+        log.info("Updating product stock from order");
+        productStockService.updateFromOrder(request);
     }
 }

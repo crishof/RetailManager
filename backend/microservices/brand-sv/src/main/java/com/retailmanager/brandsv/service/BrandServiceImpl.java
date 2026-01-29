@@ -1,7 +1,7 @@
 package com.retailmanager.brandsv.service;
 
-import com.retailmanager.brandsv.client.ImageClient;
-import com.retailmanager.brandsv.client.ProductClient;
+import com.retailmanager.brandsv.client.ImageServiceClient;
+import com.retailmanager.brandsv.client.ProductServiceClient;
 import com.retailmanager.brandsv.dto.BrandMergeResponse;
 import com.retailmanager.brandsv.dto.BrandResponse;
 import com.retailmanager.brandsv.dto.ReassignBrandResponse;
@@ -33,8 +33,8 @@ public class BrandServiceImpl implements BrandService {
 
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
-    private final ImageClient imageClient;
-    private final ProductClient productClient;
+    private final ImageServiceClient imageClient;
+    private final ProductServiceClient productClient;
     private final BrandDeletionService brandDeletionService;
 
 

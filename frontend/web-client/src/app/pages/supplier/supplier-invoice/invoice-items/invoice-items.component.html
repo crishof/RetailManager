@@ -1,0 +1,66 @@
+<div class="table-responsive" id="table-container">
+  <table class="table table-striped table-hover align-middle table-sm">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">item</th>
+        <th scope="col">Brand</th>
+        <th scope="col">Model</th>
+        <th scope="col">Description</th>
+        <th scope="col">Price</th>
+        <th scope="col">Tax Rate</th>
+        <th scope="col">Discount</th>
+        <th scope="col">Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of invoiceItems; track item; let i = $index) {
+        <tr
+          [formGroup]="itemsGroup"
+          >
+          <td>{{ invoiceItems.indexOf(item) + 1 }}</td>
+          <td>{{ item.brandName }}</td>
+          <td>{{ item.model }}</td>
+          <td class="description-cell">{{ item.description }}</td>
+          <td>
+            <input
+              formControlName="price"
+              name="price"
+              type="number"
+              class="form-control"
+              placeholder="{{ item.price | currency }} "
+              required
+              (ngModelChange)="setItemPrice(i, $event)"
+              />
+          </td>
+          <td>
+            <input
+              formControlName="taxRate"
+              type="number"
+              class="form-control"
+              placeholder="{{ item.taxRate * 100 }}%"
+              (ngModelChange)="setTaxRate(i, $event / 100)"
+              />
+          </td>
+          <td>
+            <input
+              formControlName="discountRate"
+              type="number"
+              class="form-control"
+              placeholder="{{ item.discountRate }}%"
+              (ngModelChange)="setDiscount(i, $event)"
+              />
+          </td>
+          <td>
+            <input
+              formControlName="quantity"
+              type="number"
+              class="form-control"
+              placeholder="{{ item.quantity }}"
+              (ngModelChange)="setQuantity(i, $event)"
+              />
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

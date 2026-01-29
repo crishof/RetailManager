@@ -149,6 +149,4 @@ public class CategoryController {
     public ResponseEntity<CategoryTreeResponse> getSubTree(@PathVariable UUID id) {
         return ResponseEntity.ok(categoryService.getSubTree(id));
     }
-
-    //TODO: Write unit and integration tests for the controller methods
 }

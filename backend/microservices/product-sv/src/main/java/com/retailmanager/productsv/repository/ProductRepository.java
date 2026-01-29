@@ -15,33 +15,62 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpecificationExecutor<Product> {
 
-    // TODO Find including deleted products by id
+    // Find including deleted products by id
     @Query(value = "SELECT * FROM tbl_products WHERE id = :id", nativeQuery = true)
     Optional<Product> findByIdIncludingDeleted(@Param("id") UUID id);
 
-    // TODO Validate if a deleted product exists by id
-    @Query(value = "SELECT EXISTS (SELECT 1 FROM tbl_products WHERE id = :id AND deleted = true)", nativeQuery = true)
+    // Validate if a deleted product exists by id
+    @Query(value = """
+            SELECT EXISTS (
+                        SELECT 1
+                        FROM tbl_products
+                        WHERE id = :id
+                        AND deleted = true)
+            """, nativeQuery = true)
     boolean existsDeletedById(@Param("id") UUID id);
 
-    // TODO Restore a deleted product by id
+    // Restore a deleted product by id
+    @Modifying
     @Query(value = "UPDATE tbl_products SET deleted = false WHERE id = :id", nativeQuery = true)
     int restoreById(@Param("id") UUID id);
 
-    @Modifying
-    @Query("update Product p set p.categoryId = null where p.categoryId = :categoryId")
-    int clearCategoryFromProducts(@Param("categoryId") UUID categoryId);
-
+    // Replace product category id with another one
     @Modifying
     @Query("update Product p set p.categoryId = :to where p.categoryId = :from")
     int replaceCategory(@Param("from") UUID from, @Param("to") UUID to);
 
+    // Find all products by brand
     List<Product> findAllByBrandId(UUID brandId);
 
+    // Replace product brand with another one
     @Modifying
     @Query("update Product p set p.brandId = :newBrandId where p.brandId = :brandId")
     int replaceBrand(UUID brandId, UUID newBrandId);
 
+    // Remove category id from associated products
     @Modifying
     @Query("update Product p set p.categoryId = null where p.categoryId = :categoryId")
     int clearCategory(@Param("categoryId") UUID categoryId);
+
+    // Delete product from database
+    @Modifying
+    @Query(value = "DELETE FROM tbl_products WHERE id = :id", nativeQuery = true)
+    int forceDelete(@Param("id") UUID id);
+
+    @Query(value = """
+            SELECT EXISTS (
+                SELECT 1
+                FROM tbl_products
+                WHERE supplier_id = :supplierId
+            )
+            """, nativeQuery = true)
+    boolean existsBySupplierIdIncludingDeleted(@Param("supplierId") UUID supplierId);
+
+    @Query(value = """
+            SELECT EXISTS (
+            SELECT 1
+            FROM tbl_products
+            WHERE supplier_id = :supplierId and supplier_product_id = :productId)
+            """, nativeQuery = true)
+    boolean existBySupplier(UUID supplierId, UUID productId);
 }

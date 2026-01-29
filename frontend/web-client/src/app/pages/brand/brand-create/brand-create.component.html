@@ -1,0 +1,45 @@
+<div style="width: 18rem; height: 18rem">
+  <div class="container">
+    @if(!successMessage){
+    <form
+      [formGroup]="brandForm"
+      class="row g-3 needs-validation"
+      novalidate
+      (submit)="enviar($event)"
+    >
+      <div class="mb-3">
+        <label for="brandNameInput" class="form-label">Brand Name:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="brandNameInput"
+          placeholder="add new Brand Name"
+          formControlName="brandName"
+          [ngClass]="{
+            'is-invalid': hasErrors('brandName', 'required')
+          }"
+        />
+        @if (hasErrors('brandName','required')) {
+        <span class="text-danger">Brand name cannot be empty</span>
+        }
+      </div>
+      <fieldset class="btn-group" role="group">
+        <button type="submit" class="btn btn-outline-primary btn-sm">
+          Save
+        </button>
+        <button class="btn btn-outline-danger btn-sm" (click)="toList()">
+          @if(successMessage){Go to Brands}@else {Cancel}
+        </button>
+      </fieldset>
+    </form>
+    } @if(successMessage){
+    <div class="card bg-success text-light">
+      <h5>{{ successMessage }}</h5>
+    </div>
+    } @if(errorMessage){
+    <div class="card bg-danger text-light">
+      <h5>{{ errorMessage }}</h5>
+    </div>
+    }
+  </div>
+</div>

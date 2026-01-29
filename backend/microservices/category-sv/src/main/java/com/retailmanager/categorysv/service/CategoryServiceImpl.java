@@ -1,7 +1,7 @@
 package com.retailmanager.categorysv.service;
 
-import com.retailmanager.categorysv.client.ImageClient;
-import com.retailmanager.categorysv.client.ProductClient;
+import com.retailmanager.categorysv.client.ImageServiceClient;
+import com.retailmanager.categorysv.client.ProductServiceClient;
 import com.retailmanager.categorysv.dto.CategoryResponse;
 import com.retailmanager.categorysv.dto.CategoryTreeResponse;
 import com.retailmanager.categorysv.exception.BusinessException;
@@ -31,8 +31,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final ImageClient imageClient;
-    private final ProductClient productClient;
+    private final ImageServiceClient imageClient;
+    private final ProductServiceClient productClient;
 
     @Transactional
     @Override
@@ -72,6 +72,21 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         return categoryMapper.toDto(categoryRepository.save(category));
+    }
+
+    @Transactional
+    @Override
+    public UUID getIdOrCreateByName(String name) {
+
+        if (name == null || name.isBlank()) {
+            throw new BusinessException("Category name cannot be empty");
+        }
+
+        return categoryRepository.findByName(name.trim())
+                .map(Category::getId)
+                .orElseGet(() ->
+                        create(name.trim(), null, null).getId()
+                );
     }
 
     @Transactional(readOnly = true)
@@ -210,7 +225,8 @@ public class CategoryServiceImpl implements CategoryService {
     // PRIVATE HELPERS
     // =========================
     private Category getCategoryOrThrow(UUID id) {
-        return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format(CATEGORY_NOT_FOUND, id)));
+        return categoryRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(String.format(CATEGORY_NOT_FOUND, id)));
     }
 
     private boolean isDescendant(Category category, Category possibleChild) {
@@ -226,8 +242,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     private CategoryTreeResponse mapToTree(Category category) {
 
-        List<CategoryTreeResponse> children = category.getChildren().stream().map(this::mapToTree).toList();
+        List<CategoryTreeResponse> children = category.getChildren().stream()
+                .map(this::mapToTree)
+                .toList();
 
-        return new CategoryTreeResponse(category.getId(), category.getName(), category.getImageUrl(), children);
+        return new CategoryTreeResponse(
+                category.getId(), category.getName(), category.getImageUrl(), children);
     }
 }

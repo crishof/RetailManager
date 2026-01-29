@@ -127,4 +127,6 @@ public class SupplierController {
         log.info("Getting total count of suppliers");
         return ResponseEntity.ok(supplierService.getSupplierCount());
     }
+
+    //TODO get By name containing
 }
