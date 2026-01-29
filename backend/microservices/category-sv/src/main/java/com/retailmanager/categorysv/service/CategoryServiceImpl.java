@@ -1,7 +1,7 @@
 package com.retailmanager.categorysv.service;
 
-import com.retailmanager.categorysv.client.ImageClient;
-import com.retailmanager.categorysv.client.ProductClient;
+import com.retailmanager.categorysv.client.ImageServiceClient;
+import com.retailmanager.categorysv.client.ProductServiceClient;
 import com.retailmanager.categorysv.dto.CategoryResponse;
 import com.retailmanager.categorysv.dto.CategoryTreeResponse;
 import com.retailmanager.categorysv.exception.BusinessException;
@@ -31,8 +31,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final ImageClient imageClient;
-    private final ProductClient productClient;
+    private final ImageServiceClient imageClient;
+    private final ProductServiceClient productClient;
 
     @Transactional
     @Override
