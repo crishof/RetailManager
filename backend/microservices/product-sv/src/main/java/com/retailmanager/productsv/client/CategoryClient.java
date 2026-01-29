@@ -1,35 +1,14 @@
 package com.retailmanager.productsv.client;
 
-import com.retailmanager.productsv.exception.BusinessException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
-@Service
-@Slf4j
-public class CategoryClient {
+@FeignClient(name = "category-sv", url = "http://category-sv:8080", path = "/internal/categories")
+public interface CategoryClient {
 
-    private static final String BASE_URL = "http://category-sv:8080/internal/categories";
-    private final WebClient webClient;
-
-    public CategoryClient(WebClient.Builder builder) {
-        this.webClient = builder.baseUrl(BASE_URL).build();
-    }
-
-    public UUID getIdOrCreate(String categoryName) {
-        try {
-            return webClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                                    .path("/getByNameOrCreate")
-                                    .queryParam("categoryName", categoryName)
-                                    .build())
-                    .retrieve().bodyToMono(UUID.class).block();
-
-        } catch (Exception _) {
-            log.error("Error calling category-sv for category {}", categoryName);
-            throw new BusinessException("Failed to obtain category id");
-        }
-    }
+    @GetMapping("/getByNameOrCreate")
+    UUID getIdOrCreate(@RequestParam String categoryName);
 }

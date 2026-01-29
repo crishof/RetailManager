@@ -1,41 +1,22 @@
+// PricingClient (Feign interface)
 package com.retailmanager.productsv.client;
 
 import com.retailmanager.productsv.dto.CreateSnapshotPriceRequest;
 import com.retailmanager.productsv.dto.PriceRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
-@Service
-@Slf4j
-public class PricingClient {
+@FeignClient(name = "pricing-sv", url = "http://pricing-sv:8080", path = "/internal/pricing")
+public interface PricingClient {
 
-    private static final String BASE_URL = "http://pricing-sv:8080/internal/pricing";
-    private final WebClient webClient;
+    @PostMapping("/snapshot")
+    UUID createSnapshot(@RequestBody CreateSnapshotPriceRequest request);
 
-    public PricingClient(WebClient.Builder builder) {
-        this.webClient = builder.baseUrl(BASE_URL).build();
-    }
-
-    public UUID createSnapshot(UUID productId, double price, double suggestedPrice, double suggestedWebPrice, double taxRate) {
-        return webClient.post()
-                .uri("/snapshot")
-                .bodyValue(CreateSnapshotPriceRequest.builder()
-                        .productId(productId)
-                        .purchasePrice(BigDecimal.valueOf(price))
-                        .suggestedPrice(BigDecimal.valueOf(suggestedPrice))
-                        .suggestedWebPrice(BigDecimal.valueOf(suggestedWebPrice))
-                        .taxRate(BigDecimal.valueOf(taxRate))
-                        .build())
-                .retrieve()
-                .bodyToMono(UUID.class)
-                .block();
-    }
-
-    public void update(UUID priceId, PriceRequest request) {
-        //TODO Implement method
-    }
+    @PutMapping("/{priceId}")
+    void update(@PathVariable UUID priceId, @RequestBody PriceRequest request);
 }

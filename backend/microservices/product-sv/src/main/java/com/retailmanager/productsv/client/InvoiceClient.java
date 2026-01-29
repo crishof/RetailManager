@@ -1,16 +1,15 @@
+// InvoiceClient (Feign interface)
 package com.retailmanager.productsv.client;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.UUID;
 
-@Service
-@Slf4j
-public class InvoiceClient {
+@FeignClient(name = "invoice-sv", url = "http://invoice-sv:8080", path = "/internal/invoices")
+public interface InvoiceClient {
 
-    public boolean hasInvoicesForProduct(UUID id) {
-        //TODO implement method
-        return false;
-    }
+    @GetMapping("/product/{productId}/exists")
+    boolean hasInvoicesForProduct(@PathVariable UUID productId);
 }

@@ -1,9 +1,9 @@
 package com.retailmanager.productsv.service;
 
-import com.retailmanager.productsv.client.ImageClient;
-import com.retailmanager.productsv.client.InventoryClient;
-import com.retailmanager.productsv.client.InvoiceClient;
-import com.retailmanager.productsv.client.OrderClient;
+import com.retailmanager.productsv.client.ImageServiceClient;
+import com.retailmanager.productsv.client.InventoryServiceClient;
+import com.retailmanager.productsv.client.InvoiceServiceClient;
+import com.retailmanager.productsv.client.OrderServiceClient;
 import com.retailmanager.productsv.dto.ProductRequest;
 import com.retailmanager.productsv.dto.ProductResponse;
 import com.retailmanager.productsv.exception.BusinessException;
@@ -38,18 +38,14 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
-    private final ImageClient imageClient;
-    private final OrderClient orderClient;
-    private final InvoiceClient invoiceClient;
-    private final InventoryClient inventoryClient;
+    private final ImageServiceClient imageClient;
+    private final OrderServiceClient orderClient;
+    private final InvoiceServiceClient invoiceClient;
+    private final InventoryServiceClient inventoryClient;
 
     @Override
-    public Page<ProductResponse> findAll(UUID brandId, UUID categoryId,
-                                         UUID supplierId,
-                                         Boolean highlighted, Boolean published,
-                                         String search, Pageable pageable) {
-        Specification<Product> spec = ProductSpecifications.filter(
-                brandId, categoryId, supplierId, highlighted, published, search);
+    public Page<ProductResponse> findAll(UUID brandId, UUID categoryId, UUID supplierId, Boolean highlighted, Boolean published, String search, Pageable pageable) {
+        Specification<Product> spec = ProductSpecifications.filter(brandId, categoryId, supplierId, highlighted, published, search);
 
         return productRepository.findAll(spec, pageable).map(productMapper::toResponse);
     }
@@ -142,8 +138,7 @@ public class ProductServiceImpl implements ProductService {
         }
         log.info("Product restored successfully");
 
-        Product restored = productRepository.findById(id).orElseThrow(
-                () -> new IllegalStateException("Product restored by not found"));
+        Product restored = productRepository.findById(id).orElseThrow(() -> new IllegalStateException("Product restored by not found"));
 
         return productMapper.toResponse(restored);
 
@@ -163,8 +158,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     private Product getProductOrThrow(UUID id) {
-        return productRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(String.format(PRODUCT_NOT_FOUND, id)));
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format(PRODUCT_NOT_FOUND, id)));
     }
 
     @Transactional
@@ -222,8 +216,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     public void attachPrice(UUID productId, UUID priceId) {
-        Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ResourceNotFoundException("Product not found"));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         product.setPriceId(priceId);
         productRepository.save(product);
