@@ -1,87 +1,88 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable, catchError, throwError } from 'rxjs';
-import { ISupplierProduct } from '../model/supplierProduct';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { Observable, catchError, throwError } from "rxjs";
+import { ISupplierProduct } from "../model/supplierProduct";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class SupplierPriceListService {
-  private readonly _http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
-  //TODO: corregir camelCase de URL
+  private readonly baseUrl = "http://localhost:8080/api/v1/price-items";
+  private readonly productsUrl =
+    "http://localhost:8080/api/v1/products/import/supplier";
 
-  private readonly _urlBase = 'http://localhost:443/supplierpricelist-sv/priceList';
-  private readonly _urlSupplier = 'http://localhost:443/supplierpricelist-sv/supplier';
-  private readonly _urlProductSv = 'http://localhost:443/product-sv/product';
-  constructor() {}
-
-  uploadFile(file: File, supplierId: string, updateExistingProducts: boolean) {
+  // ============================
+  // IMPORT PRICE ITEMS
+  // ============================
+  uploadFile(
+    file: File,
+    supplierId: string,
+    updateExisting = false,
+  ): Observable<any> {
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('supplierId', supplierId);
-    formData.append('updateExistingProducts', String(updateExistingProducts));
+    formData.append("file", file);
+    formData.append("supplierId", supplierId);
+    formData.append("updateExisting", String(updateExisting));
 
-    const headers = new HttpHeaders();
-    headers.append('Content-Type', 'multipart/form-data');
-    return this._http.post<any>(`${this._urlBase}/importList`, formData, {
-      headers,
-    });
+    // ❗ NO setear Content-Type en multipart
+    return this.http.post(`${this.baseUrl}/import`, formData);
   }
 
+  // ============================
+  // SEARCH / FILTER ITEMS
+  // ============================
   getAllByFilter(
-    supplierId: string,
-    brand: string,
-    filter: string
+    supplierId?: string,
+    brand?: string,
+    filter?: string,
   ): Observable<ISupplierProduct[]> {
     let params = new HttpParams();
 
-    if (supplierId !== null && supplierId !== '') {
-      params = params.set('supplierId', supplierId);
+    if (supplierId) {
+      params = params.set("supplierId", supplierId);
     }
-    if (brand !== null && brand !== '') {
-      params = params.set('brand', brand);
+    if (brand) {
+      params = params.set("brand", brand);
     }
-    if (filter !== null && filter !== '') {
-      params = params.set('filter', filter);
+    if (filter) {
+      params = params.set("filter", filter);
     }
-    return this._http.get<ISupplierProduct[]>(
-      `${this._urlBase}/getAllByFilter`,
-      {
-        params: params,
-      }
-    );
+
+    return this.http.get<ISupplierProduct[]>(this.baseUrl, { params });
   }
 
-  getBrandsBySupplierId(supplierId: string): Observable<string[]> {
-    let params = new HttpParams();
-    params = params.set('supplierId', supplierId);
-    return this._http.get<string[]>(
-      `${this._urlSupplier}/getBrandsBySupplier`,
-      {
-        params: params,
-      }
-    );
-  }
-
-  getAllBrands(): Observable<string[]> {
-    return this._http.get<string[]>(`${this._urlSupplier}/getAllBrands`);
-  }
-
-  getSupplierProductById(id: string): Observable<ISupplierProduct> {
-    return this._http
-      .get<ISupplierProduct>(`${this._urlBase}/getById/${id}`)
+  // ============================
+  // GET ITEM BY ID
+  // ============================
+  getById(id: string): Observable<ISupplierProduct> {
+    return this.http
+      .get<ISupplierProduct>(`${this.baseUrl}/${id}`)
       .pipe(
-        catchError(() => {
-          return throwError(() => new Error('Error getting supplier product'));
-        })
+        catchError(() =>
+          throwError(() => new Error("Error getting price item")),
+        ),
       );
   }
 
-  importProducts(productList: ISupplierProduct[]): Observable<any> {
-    return this._http.post<any>(
-      `${this._urlProductSv}/importProducts`,
-      productList
-    );
+  // ============================
+  // GET BRANDS (OPTIONAL SUPPLIER)
+  // ============================
+  getBrands(supplierId?: string): Observable<string[]> {
+    let params = new HttpParams();
+
+    if (supplierId) {
+      params = params.set("supplierId", supplierId);
+    }
+
+    return this.http.get<string[]>(`${this.baseUrl}/brands`, { params });
+  }
+
+  // ============================
+  // IMPORT PRODUCTS FROM SUPPLIER
+  // ============================
+  importProductsFromSupplier(productList: ISupplierProduct[]): Observable<any> {
+    return this.http.post<any>(this.productsUrl, productList);
   }
 }
