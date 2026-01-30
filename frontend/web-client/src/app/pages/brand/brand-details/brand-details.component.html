@@ -1,32 +1,44 @@
-@if(!editingMode){
-
+@if (!editingMode) {
   @if (brand) {
     <div class="container">
       <div style="width: 18rem; height: 18rem">
         <h3>Brand Details</h3>
-        @if (brand.imageUrl != null){
-          <img [src]="brand.imageUrl" alt="" class="brand-image" />
-        } @else{
+        @if (brand.logoUrl != null) {
+          <img
+            [src]="
+              brand.logoUrl
+                ? brand.logoUrl
+                : '../../../../assets/images/no-image-100.png'
+            "
+            alt="Brand Logo"
+            width="50"
+            height="50"
+          />
+        } @else {
           <img
             src="../../../../assets/images/no-image-100.png"
             alt=""
             class="no-image"
-            />
+          />
         }
+
         <div>
           <hr />
           <h5 class="card-title">{{ brand.name }}</h5>
           <p>Number of Products: {{ productsQuantity }}</p>
           <hr />
-          @if(brand != null && brand != undefined && !successMessage ){
+          @if (brand != null && brand != undefined && !successMessage) {
             <fieldset class="btn-group" role="group">
-              <button class="btn btn-outline-primary btn-sm" (click)="startEditing()">
+              <button
+                class="btn btn-outline-primary btn-sm"
+                (click)="startEditing()"
+              >
                 Edit
               </button>
               <button
                 class="btn btn-outline-danger btn-sm"
                 (click)="confirmDelete(brand.id)"
-                >
+              >
                 Delete
               </button>
             </fieldset>
@@ -35,22 +47,27 @@
       </div>
     </div>
   }
-  } @if(successMessage){
+}
+@if (successMessage) {
   <div class="card bg-success text-light">
     <h5>{{ successMessage }}</h5>
   </div>
-  } @if(errorMessage){
+}
+@if (errorMessage) {
   <div class="card bg-danger text-light">
     <h5>{{ errorMessage }}</h5>
   </div>
-  } @if (editingMode){
+}
+@if (editingMode && brand !== null) {
   <div class="container text-center m-3">
     <h5>Brand edit: {{ brand!.name }}</h5>
   </div>
 
   <app-brand-edit
-    [brand]="brand || undefined"
+    [brand]="brand"
     (onSave)="saveChanges($event)"
+    (onCancel)="cancelEditing()"
+    (onSuccessMessage)="onSuccessMessageHandler($event)"
   ></app-brand-edit>
 
   <button class="btn btn-outline-danger btn-sm" (click)="cancelEditing()">

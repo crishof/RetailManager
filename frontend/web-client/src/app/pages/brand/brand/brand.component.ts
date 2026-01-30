@@ -1,4 +1,3 @@
-
 import {
   Component,
   Input,
@@ -6,36 +5,36 @@ import {
   OnInit,
   Output,
   inject,
-} from '@angular/core';
-import { IBrand } from '../../../model/brand.model';
-import { BrandService } from '../../../services/brand.service';
-import { Router } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DefaultImageDirective } from '../../../utils/default-image.directive';
-import { BrandDetailsComponent } from '../brand-details/brand-details.component';
-import { BrandCreateComponent } from '../brand-create/brand-create.component';
+} from "@angular/core";
+import { IBrand } from "../../../model/brand.model";
+import { BrandService } from "../../../services/brand.service";
+import { Router } from "@angular/router";
+import { DomSanitizer } from "@angular/platform-browser";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { DefaultImageDirective } from "../../../utils/default-image.directive";
+import { BrandDetailsComponent } from "../brand-details/brand-details.component";
+import { BrandCreateComponent } from "../brand-create/brand-create.component";
 
 @Component({
-    selector: 'app-brand',
-    imports: [
+  selector: "app-brand",
+  imports: [
     FormsModule,
     ReactiveFormsModule,
     DefaultImageDirective,
     BrandDetailsComponent,
-    BrandCreateComponent
-],
-    templateUrl: './brand.component.html',
-    styleUrl: './brand.component.css'
+    BrandCreateComponent,
+  ],
+  templateUrl: "./brand.component.html",
+  styleUrl: "./brand.component.css",
 })
 export class BrandComponent implements OnInit {
   private readonly _brandService = inject(BrandService);
   brandList: IBrand[] = [];
   filteredBrandList: IBrand[] = [];
-  searchTerm: string = '';
+  searchTerm: string = "";
   sortedColumn: keyof IBrand | undefined;
   isAscendingOrder: boolean = true;
-  @Input() selectionMode: 'click' | 'dblclick' = 'click';
+  @Input() selectionMode: "click" | "dblclick" = "click";
   selectedBrand: IBrand | null = null;
   private readonly _router = inject(Router);
   totalElements: number = 0;
@@ -49,15 +48,15 @@ export class BrandComponent implements OnInit {
   }
 
   loadBrands() {
-  this._brandService.getBrands().subscribe({
-    next: (page) => {
-      this.brandList = page.content;
-      this.totalElements = page.totalElements;
-    },
-    error: (err) => console.error(err)
-  });
-}
-
+    this._brandService.getBrands().subscribe({
+      next: (page) => {
+        this.brandList = page.content;
+        this.filteredBrandList = page.content;
+        this.totalElements = page.totalElements;
+      },
+      error: (err) => console.error(err),
+    });
+  }
   searchBrand() {
     this.filterBrands(this.searchTerm);
   }
@@ -70,7 +69,7 @@ export class BrandComponent implements OnInit {
       this.filteredBrandList = this.brandList.filter(
         (brand) =>
           brand.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-          brand.id.toString().includes(lowerCaseSearchTerm)
+          brand.id.toString().includes(lowerCaseSearchTerm),
       );
     }
   }

@@ -1,41 +1,40 @@
-import { Component, Input, OnInit, SimpleChanges, inject } from '@angular/core';
-import { IBrand } from '../../../model/brand.model';
-import { BrandService } from '../../../services/brand.service';
+import { Component, Input, OnInit, SimpleChanges, inject } from "@angular/core";
+import { IBrand } from "../../../model/brand.model";
+import { BrandService } from "../../../services/brand.service";
 
-import { ActivatedRoute, Router } from '@angular/router';
-import { BrandEditComponent } from '../brand-edit/brand-edit.component';
-import { Subject } from 'rxjs';
-import { ModalDialogService } from '../../../services/modal-dialog.service';
-import { DomSanitizer } from '@angular/platform-browser';
-import { ProductService } from '../../../services/product.service';
+import { ActivatedRoute, Router } from "@angular/router";
+import { BrandEditComponent } from "../brand-edit/brand-edit.component";
+import { Subject } from "rxjs";
+import { ModalDialogService } from "../../../services/modal-dialog.service";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ProductService } from "../../../services/product.service";
 
 @Component({
-    selector: 'app-brand-details',
-    templateUrl: './brand-details.component.html',
-    styleUrl: './brand-details.component.css',
-    imports: [BrandEditComponent]
+  selector: "app-brand-details",
+  templateUrl: "./brand-details.component.html",
+  styleUrl: "./brand-details.component.css",
+  imports: [BrandEditComponent],
 })
 export class BrandDetailsComponent implements OnInit {
+  @Input() brand: IBrand | null = null;
   loading: boolean = true;
 
   editingMode: boolean = false;
 
-  private _route = inject(ActivatedRoute);
-  private _brandService = inject(BrandService);
-  private _productService = inject(ProductService);
-  private _router = inject(Router);
-  private _confirmDialogService = inject(ModalDialogService);
+  private readonly _route = inject(ActivatedRoute);
+  private readonly _brandService = inject(BrandService);
+  private readonly _productService = inject(ProductService);
+  private readonly _router = inject(Router);
+  private readonly _confirmDialogService = inject(ModalDialogService);
 
-  private _sanitizer = inject(DomSanitizer);
+  private readonly _sanitizer = inject(DomSanitizer);
 
-  successMessage: string = '';
-  errorMessage: string = '';
+  successMessage: string = "";
+  errorMessage: string = "";
 
   productsQuantity: number = 0;
 
-  private brandUpdatedSubject: Subject<IBrand> = new Subject<IBrand>();
-
-  @Input() brand: IBrand | null | undefined;
+  private readonly brandUpdatedSubject: Subject<IBrand> = new Subject<IBrand>();
 
   ngOnInit(): void {
     if (!this.brand) {
@@ -46,16 +45,16 @@ export class BrandDetailsComponent implements OnInit {
         this.loading = true;
 
         // Llama al servicio para obtener los datos de la marca
-        this._brandService.getBrand(params['id']).subscribe(
+        this._brandService.getBrand(params["id"]).subscribe(
           (data: IBrand) => {
             this.brand = data;
             this.getBrandProductsQuantity(); // Llama a la función después de asignar la marca
             this.loading = false;
           },
           (error) => {
-            console.error('Error getting brand data:', error);
+            console.error("Error getting brand data:", error);
             this.loading = false;
-          }
+          },
         );
       });
     }
@@ -70,7 +69,7 @@ export class BrandDetailsComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['brand'] && this.brand) {
+    if (changes["brand"] && this.brand) {
       this.getBrandProductsQuantity();
       this.editingMode = false;
     }
@@ -79,7 +78,7 @@ export class BrandDetailsComponent implements OnInit {
   getImageUrl(image: any): any {
     const base64Image = image.content;
     return this._sanitizer.bypassSecurityTrustResourceUrl(
-      'data:image/jpeg;base64,' + base64Image
+      "data:image/jpeg;base64," + base64Image,
     );
   }
 
@@ -89,7 +88,7 @@ export class BrandDetailsComponent implements OnInit {
 
   saveChanges(updatedBrand: IBrand): void {
     this.editingMode = false;
-    this.successMessage = 'Brand ' + updatedBrand.name + 'saved successfully';
+    this.successMessage = "Brand " + updatedBrand.name + "saved successfully";
     if (this.brandUpdatedSubject) {
       this.brandUpdatedSubject.next(updatedBrand);
     }
@@ -105,7 +104,7 @@ export class BrandDetailsComponent implements OnInit {
   }
 
   goToList(): void {
-    this._router.navigate(['/brand']);
+    this._router.navigate(["/brand"]);
   }
 
   confirmDelete(id: string): void {
@@ -117,27 +116,28 @@ export class BrandDetailsComponent implements OnInit {
   }
 
   deleteBrand(id: string): void {
-    this._brandService.deleteBrand(id).subscribe(
-      (response: any) => {
-        this.successMessage = response;
-        this.errorMessage = '';
+    this._brandService.deleteBrand(id).subscribe({
+      next: () => {
+        this.successMessage = "Brand deleted successfully";
+        this.errorMessage = "";
+        this.goToList();
       },
-      (error) => {
-        this.errorMessage = error.error;
-        this.successMessage = '';
-      }
-    );
+      error: (error) => {
+        this.errorMessage = "Error deleting brand";
+        console.error(error);
+      },
+    });
   }
 
   getBrandProductsQuantity(): void {
-    const brandId = this.brand?.id ?? '';
+    const brandId = this.brand?.id ?? "";
     this._productService.getBrandProductsQuantity(brandId).subscribe(
       (quantity: number) => {
         this.productsQuantity = quantity;
       },
       (error) => {
-        console.error('Error getting products quantity:', error);
-      }
+        console.error("Error getting products quantity:", error);
+      },
     );
     console.log(this.productsQuantity);
   }

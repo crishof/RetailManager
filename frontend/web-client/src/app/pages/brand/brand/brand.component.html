@@ -8,7 +8,7 @@
       #brandForm="ngForm"
       (ngSubmit)="searchBrand()"
       class="row mb-3 text-center col-md-6"
-      >
+    >
       <div class="col-md-10">
         <input
           type="text"
@@ -18,7 +18,7 @@
           [(ngModel)]="searchTerm"
           name="searchTerm"
           (keyup.enter)="searchBrand()"
-          />
+        />
       </div>
 
       <div class="col-md-2">
@@ -45,9 +45,9 @@
               (click)="sortColumn('id')"
               (keydown.enter)="sortColumn('id')"
               tabindex="0"
-              >
+            >
               #Id
-              @if (sortedColumn === 'id') {
+              @if (sortedColumn === "id") {
                 <span class="arrow">
                   {{ isAscendingOrder ? "↑" : "↓" }}
                 </span>
@@ -62,58 +62,58 @@
               (click)="sortColumn('name')"
               (keydown.enter)="sortColumn('name')"
               tabindex="0"
-              >
+            >
               Name
-              @if (sortedColumn === 'name') {
-                <span class="arrow">
-                  {{ isAscendingOrder ? "↑" : "↓" }}</span
-                  >
-                }
-              </th>
+              @if (sortedColumn === "name") {
+                <span class="arrow"> {{ isAscendingOrder ? "↑" : "↓" }}</span>
+              }
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (brand of filteredBrandList; track $index) {
+            <tr
+              (click)="
+                selectionMode === 'click' ? onBrandInteract(brand) : null
+              "
+              (keydown.enter)="
+                selectionMode === 'click' ? onBrandInteract(brand) : null
+              "
+            >
+              <td>{{ brand.id }}</td>
+
+              <td>
+                <img
+                  [src]="
+                    brand.logoUrl
+                      ? brand.logoUrl
+                      : '../../../../assets/images/no-image-100.png'
+                  "
+                  alt="Brand Logo"
+                  width="50"
+                  height="50"
+                />
+              </td>
+
+              <td>{{ brand.name }}</td>
             </tr>
-          </thead>
-          <tbody>
-            @for (brand of filteredBrandList; track $index){
-              <tr></tr>
-
-              <tr
-                (click)="selectionMode === 'click' ? onBrandInteract(brand) : null"
-            (keydown.enter)="
-              selectionMode === 'click' ? onBrandInteract(brand) : null
-            "
-                >
-                <td>{{ brand.id }}</td>
-                <td>
-                  @if (brand.imageUrl != null){
-                    <img [src]="brand.imageUrl" alt="" width="50px" height="50px" />
-                  } @else{
-                    <img
-                      src="../../../../assets/images/no-image-100.png"
-                      alt=""
-                      width="50px"
-                      height="50px"
-                      />
-                  }
-                </td>
-                <td>{{ brand.name }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-      @if(createBrand){
-
-        <div class="col-md-4">
-          <div class="card shadow">
-            <app-brand-create (onCancel)="createBrand = false"></app-brand-create>
-          </div>
-        </div>
-        } @if( selectedBrand){
-        <div class="col-md-4">
-          <div class="card shadow">
-            <app-brand-details [brand]="selectedBrand"></app-brand-details>
-          </div>
-        </div>
-      }
+          }
+        </tbody>
+      </table>
     </div>
+    @if (createBrand) {
+      <div class="col-md-4">
+        <div class="card shadow">
+          <app-brand-create (onCancel)="createBrand = false"></app-brand-create>
+        </div>
+      </div>
+    }
+    @if (selectedBrand) {
+      <div class="col-md-4">
+        <div class="card shadow">
+          <app-brand-details [brand]="selectedBrand"></app-brand-details>
+        </div>
+      </div>
+    }
   </div>
+</div>
