@@ -171,7 +171,7 @@ export class SupplierPriceListComponent implements OnInit {
   // SUPPLIERS
   // ============================
   loadSuppliers(): void {
-    this.supplierService.getAllSuppliers().subscribe({
+    this.supplierService.getSuppliers().subscribe({
       next: (suppliers) => (this.suppliers = suppliers),
       error: () => (this.errorMessage = "Error loading suppliers"),
     });

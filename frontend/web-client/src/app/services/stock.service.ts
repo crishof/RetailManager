@@ -1,12 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class StockService {
-  private _http = inject(HttpClient);
+  private readonly _http = inject(HttpClient);
 
-  private _urlBase = 'http://localhost:443/stock-sv/stock';
+  private readonly _urlBase = "http://localhost:443/stock-sv/stock";
 }

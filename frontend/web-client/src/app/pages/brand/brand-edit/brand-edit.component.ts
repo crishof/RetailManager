@@ -24,9 +24,9 @@ import { BrandService } from "../../../services/brand.service";
 })
 export class BrandEditComponent implements OnInit {
   @Input() brand: IBrand | null = null;
-  @Output() onSave = new EventEmitter<IBrand>();
-  @Output() onCancel = new EventEmitter<void>();
-  @Output() onSuccessMessage = new EventEmitter<string>();
+  @Output() _save = new EventEmitter<IBrand>();
+  @Output() _cancel = new EventEmitter<void>();
+  @Output() _successMessage = new EventEmitter<string>();
 
   brandForm!: FormGroup;
   file: File | null = null;
@@ -60,8 +60,8 @@ export class BrandEditComponent implements OnInit {
       .updateBrand(this.brand.id, brandName, this.file ?? undefined)
       .subscribe({
         next: (updatedBrand) => {
-          this.onSave.emit(updatedBrand);
-          this.onSuccessMessage.emit("Brand updated successfully");
+          this._save.emit(updatedBrand);
+          this._successMessage.emit("Brand updated successfully");
         },
         error: (error) => {
           this.errorMessage = "Error updating brand";
@@ -77,7 +77,7 @@ export class BrandEditComponent implements OnInit {
   }
 
   cancelar(): void {
-    this.onCancel.emit();
+    this._cancel.emit();
   }
 
   hasErrors(field: string, error: string): boolean {

@@ -1,144 +1,161 @@
-import { Component, Input, OnInit, SimpleChanges, inject } from "@angular/core";
+import {
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  inject,
+  OnDestroy,
+} from "@angular/core";
 import { IBrand } from "../../../model/brand.model";
 import { BrandService } from "../../../services/brand.service";
-
+import { ProductService } from "../../../services/product.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { BrandEditComponent } from "../brand-edit/brand-edit.component";
-import { Subject } from "rxjs";
 import { ModalDialogService } from "../../../services/modal-dialog.service";
 import { DomSanitizer } from "@angular/platform-browser";
-import { ProductService } from "../../../services/product.service";
+import { BrandEditComponent } from "../brand-edit/brand-edit.component";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-brand-details",
+  standalone: true,
+  imports: [BrandEditComponent],
   templateUrl: "./brand-details.component.html",
   styleUrl: "./brand-details.component.css",
-  imports: [BrandEditComponent],
 })
-export class BrandDetailsComponent implements OnInit {
+export class BrandDetailsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() brand: IBrand | null = null;
-  loading: boolean = true;
 
-  editingMode: boolean = false;
+  loading = false;
+  editingMode = false;
 
-  private readonly _route = inject(ActivatedRoute);
-  private readonly _brandService = inject(BrandService);
-  private readonly _productService = inject(ProductService);
-  private readonly _router = inject(Router);
-  private readonly _confirmDialogService = inject(ModalDialogService);
+  successMessage = "";
+  errorMessage = "";
+  productsQuantity = 0;
 
-  private readonly _sanitizer = inject(DomSanitizer);
+  private readonly destroy$ = new Subject<void>();
 
-  successMessage: string = "";
-  errorMessage: string = "";
+  private readonly route = inject(ActivatedRoute);
+  private readonly brandService = inject(BrandService);
+  private readonly productService = inject(ProductService);
+  private readonly router = inject(Router);
+  private readonly confirmDialogService = inject(ModalDialogService);
+  private readonly sanitizer = inject(DomSanitizer);
 
-  productsQuantity: number = 0;
-
-  private readonly brandUpdatedSubject: Subject<IBrand> = new Subject<IBrand>();
-
+  // ============================
+  // LIFECYCLE
+  // ============================
   ngOnInit(): void {
+    // 👉 SOLO usar la ruta si NO viene brand por Input
     if (!this.brand) {
-    } else {
-      console.log(this.productsQuantity);
-      // Suscribirse a los parámetros de la ruta para obtener el 'id' de la marca siempre
-      this._route.params.subscribe((params) => {
-        this.loading = true;
-
-        // Llama al servicio para obtener los datos de la marca
-        this._brandService.getBrand(params["id"]).subscribe(
-          (data: IBrand) => {
-            this.brand = data;
-            this.getBrandProductsQuantity(); // Llama a la función después de asignar la marca
-            this.loading = false;
-          },
-          (error) => {
-            console.error("Error getting brand data:", error);
-            this.loading = false;
-          },
-        );
-      });
+      this.listenRoute();
     }
-
-    // Suscripción a los cambios en la marca
-    this.brandUpdatedSubject.subscribe((updatedBrand) => {
-      if (updatedBrand) {
-        this.brand = updatedBrand;
-        this.getBrandProductsQuantity(); // Llama a la función si la marca se actualiza
-      }
-    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes["brand"] && this.brand) {
-      this.getBrandProductsQuantity();
       this.editingMode = false;
+      this.loadProductsQuantity(this.brand.id);
     }
   }
 
-  getImageUrl(image: any): any {
-    const base64Image = image.content;
-    return this._sanitizer.bypassSecurityTrustResourceUrl(
-      "data:image/jpeg;base64," + base64Image,
-    );
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
+  // ============================
+  // DATA LOADERS
+  // ============================
+  private listenRoute(): void {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(({ id }) => {
+      if (!id) return;
+
+      this.loading = true;
+
+      this.brandService.getBrand(id).subscribe({
+        next: (brand) => {
+          this.brand = brand;
+          this.loadProductsQuantity(brand.id);
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error("Error loading brand", err);
+          this.loading = false;
+        },
+      });
+    });
+  }
+
+  private loadProductsQuantity(brandId: string): void {
+    this.productsQuantity = 0; // 👈 reset visual inmediato
+
+    this.productService
+      .countProducts({ brandId })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (count) => (this.productsQuantity = count),
+        error: (err) => {
+          console.error("Error counting products", err);
+          this.productsQuantity = 0;
+        },
+      });
+  }
+
+  // ============================
+  // UI ACTIONS
+  // ============================
   startEditing(): void {
     this.editingMode = true;
-  }
-
-  saveChanges(updatedBrand: IBrand): void {
-    this.editingMode = false;
-    this.successMessage = "Brand " + updatedBrand.name + "saved successfully";
-    if (this.brandUpdatedSubject) {
-      this.brandUpdatedSubject.next(updatedBrand);
-    }
-    this.brandUpdatedSubject.next(updatedBrand);
-  }
-
-  onSuccessMessageHandler(message: string) {
-    this.successMessage = message;
+    this.successMessage = "";
+    this.errorMessage = "";
   }
 
   cancelEditing(): void {
     this.editingMode = false;
   }
 
-  goToList(): void {
-    this._router.navigate(["/brand"]);
+  saveChanges(updatedBrand: IBrand): void {
+    this.brand = updatedBrand;
+    this.editingMode = false;
+    this.successMessage = `Brand "${updatedBrand.name}" saved successfully`;
+    this.loadProductsQuantity(updatedBrand.id);
   }
 
-  confirmDelete(id: string): void {
-    this._confirmDialogService.openConfirmDialog().subscribe((confirmed) => {
+  confirmDelete(): void {
+    if (!this.brand?.id) return;
+
+    this.confirmDialogService.openConfirmDialog().subscribe((confirmed) => {
       if (confirmed) {
-        this.deleteBrand(id);
+        this.deleteBrand(this.brand!.id);
       }
     });
   }
 
-  deleteBrand(id: string): void {
-    this._brandService.deleteBrand(id).subscribe({
+  private deleteBrand(id: string): void {
+    this.brandService.deleteBrand(id).subscribe({
       next: () => {
         this.successMessage = "Brand deleted successfully";
-        this.errorMessage = "";
-        this.goToList();
+        this.router.navigate(["/brand"]);
       },
-      error: (error) => {
+      error: () => {
         this.errorMessage = "Error deleting brand";
-        console.error(error);
       },
     });
   }
 
-  getBrandProductsQuantity(): void {
-    const brandId = this.brand?.id ?? "";
-    this._productService.getBrandProductsQuantity(brandId).subscribe(
-      (quantity: number) => {
-        this.productsQuantity = quantity;
-      },
-      (error) => {
-        console.error("Error getting products quantity:", error);
-      },
+  goToList(): void {
+    this.router.navigate(["/brand"]);
+  }
+
+  // ============================
+  // HELPERS
+  // ============================
+  getImageUrl(image: any): any {
+    if (!image?.content) return null;
+
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `data:image/jpeg;base64,${image.content}`,
     );
-    console.log(this.productsQuantity);
   }
 }

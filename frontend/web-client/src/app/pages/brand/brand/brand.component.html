@@ -1,31 +1,21 @@
 <div class="container">
-  <div class="container text-center m-3">
-    <h2>Brands List</h2>
+  <div class="text-center my-3">
+    <h2>Brands</h2>
+    <small class="text-muted">Total: {{ totalElements }}</small>
   </div>
 
-  <div class="row">
-    <form
-      #brandForm="ngForm"
-      (ngSubmit)="searchBrand()"
-      class="row mb-3 text-center col-md-6"
-    >
-      <div class="col-md-10">
-        <input
-          type="text"
-          class="form-control"
-          id="searchBrand"
-          placeholder="Enter brand name and press enter to search"
-          [(ngModel)]="searchTerm"
-          name="searchTerm"
-          (keyup.enter)="searchBrand()"
-        />
-      </div>
-
-      <div class="col-md-2">
-        <button type="submit" class="btn btn-outline-primary btn-sm">
-          Search
-        </button>
-      </div>
+  <div class="row align-items-center mb-3">
+    <form class="col-md-6 d-flex" (ngSubmit)="searchBrand()">
+      <input
+        type="text"
+        class="form-control me-2"
+        placeholder="Search brand by name or ID"
+        [(ngModel)]="searchTerm"
+        name="searchTerm"
+      />
+      <button class="btn btn-outline-primary btn-sm" type="submit">
+        Search
+      </button>
     </form>
 
     <div class="col-md-2">
@@ -34,6 +24,7 @@
       </button>
     </div>
   </div>
+
   <div class="row">
     <div class="col-md-8">
       <table class="table table-striped table-hover align-middle">
@@ -41,76 +32,64 @@
           <tr>
             <th
               scope="col"
-              class="sortable"
+              tabindex="0"
               (click)="sortColumn('id')"
               (keydown.enter)="sortColumn('id')"
-              tabindex="0"
             >
-              #Id
+              ID
               @if (sortedColumn === "id") {
-                <span class="arrow">
-                  {{ isAscendingOrder ? "↑" : "↓" }}
-                </span>
+                <span>{{ isAscendingOrder ? "↑" : "↓" }}</span>
               }
             </th>
-
-            <th scope="col">Image</th>
-
+            <th scope="col">Logo</th>
             <th
               scope="col"
-              class="sortable"
+              tabindex="0"
               (click)="sortColumn('name')"
               (keydown.enter)="sortColumn('name')"
-              tabindex="0"
             >
               Name
               @if (sortedColumn === "name") {
-                <span class="arrow"> {{ isAscendingOrder ? "↑" : "↓" }}</span>
+                <span>{{ isAscendingOrder ? "↑" : "↓" }}</span>
               }
             </th>
           </tr>
         </thead>
+
         <tbody>
-          @for (brand of filteredBrandList; track $index) {
+          @for (brand of filteredBrandList; track brand.id) {
             <tr
-              (click)="
-                selectionMode === 'click' ? onBrandInteract(brand) : null
-              "
-              (keydown.enter)="
-                selectionMode === 'click' ? onBrandInteract(brand) : null
-              "
+              tabindex="0"
+              (click)="onBrandSelect(brand)"
+              (keydown.enter)="onBrandSelect(brand)"
             >
               <td>{{ brand.id }}</td>
-
               <td>
                 <img
-                  [src]="
-                    brand.logoUrl
-                      ? brand.logoUrl
-                      : '../../../../assets/images/no-image-100.png'
-                  "
-                  alt="Brand Logo"
+                  [src]="brand.logoUrl || 'assets/images/no-image-100.png'"
+                  alt="Brand logo"
                   width="50"
                   height="50"
                 />
               </td>
-
               <td>{{ brand.name }}</td>
             </tr>
           }
         </tbody>
       </table>
     </div>
+
     @if (createBrand) {
       <div class="col-md-4">
-        <div class="card shadow">
+        <div class="card shadow p-2">
           <app-brand-create (onCancel)="createBrand = false"></app-brand-create>
         </div>
       </div>
     }
+
     @if (selectedBrand) {
       <div class="col-md-4">
-        <div class="card shadow">
+        <div class="card shadow p-2">
           <app-brand-details [brand]="selectedBrand"></app-brand-details>
         </div>
       </div>

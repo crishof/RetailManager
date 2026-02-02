@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { IBrand } from "../model/brand.model";
@@ -29,10 +29,24 @@ export class BrandService {
   // ============================
   // GET ALL BRANDS (paginated)
   // ============================
-  getBrands(page = 0, size = 10): Observable<PageResponse<IBrand>> {
-    return this.http.get<PageResponse<IBrand>>(
-      `${this.urlBase}?page=${page}&size=${size}`,
-    );
+  getBrands(params?: {
+    page?: number;
+    size?: number;
+    search?: string;
+  }): Observable<PageResponse<IBrand>> {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get<PageResponse<IBrand>>(this.urlBase, {
+      params: httpParams,
+    });
   }
 
   // ============================

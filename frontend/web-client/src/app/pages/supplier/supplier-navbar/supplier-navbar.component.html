@@ -94,14 +94,14 @@
 
           <ul class="dropdown-menu">
             <li>
-              @if(selectedSupplier){
-              <a
-                class="dropdown-item"
-                (click)="toStatementAccount(selectedSupplier.id)"
-                >Statement of Account</a
-              >
-              }@else{
-              <a class="dropdown-item">Statement of Account</a>
+              @if (selectedSupplier) {
+                <a
+                  class="dropdown-item"
+                  (click)="toStatementAccount(selectedSupplier.id)"
+                  >Statement of Account</a
+                >
+              } @else {
+                <a class="dropdown-item">Statement of Account</a>
               }
             </li>
             <li>
