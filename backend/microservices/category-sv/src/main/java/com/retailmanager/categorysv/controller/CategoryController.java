@@ -70,6 +70,12 @@ public class CategoryController {
     }
 
     // ============================
+    // GET CATEGORY BY NAME
+    // ============================
+    //TODO implement get by name containing
+
+
+    // ============================
     // UPDATE CATEGORY
     // ============================
     @Operation(summary = "Update an existing category (name and/or image")

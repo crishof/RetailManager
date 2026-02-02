@@ -1,5 +1,7 @@
+import { UUID } from "node:crypto";
+
 export interface IBrand {
-  id: string;
+  id: UUID;
   name: string;
-  imageUrl?: string;
+  logoUrl: string;
 }

@@ -145,9 +145,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public long count(UUID brandId, UUID categoryId, UUID supplierId) {
-        return productRepository.count();
+        return productRepository.countWithFilters(
+                brandId,
+                categoryId,
+                supplierId
+        );
     }
 
     @Override

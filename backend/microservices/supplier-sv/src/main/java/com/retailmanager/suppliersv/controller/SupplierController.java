@@ -65,6 +65,12 @@ public class SupplierController {
     }
 
     // ============================
+    // GET SUPPLIER BY NAME
+    // ============================
+    //TODO implement get by name containing
+
+
+    // ============================
     // UPDATE SUPPLIER
     // ============================
     @Operation(summary = "Update existing supplier")
@@ -127,6 +133,4 @@ public class SupplierController {
         log.info("Getting total count of suppliers");
         return ResponseEntity.ok(supplierService.getSupplierCount());
     }
-
-    //TODO get By name containing
 }

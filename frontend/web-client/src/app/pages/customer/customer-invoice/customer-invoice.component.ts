@@ -23,7 +23,6 @@ import { CustomerInvoiceService } from "../../../services/customer-invoice.servi
 import { Subscription } from "rxjs";
 import { ProductService } from "../../../services/product.service";
 import { BranchService } from "../../../services/branch.service";
-import { CustomerComponent } from "../customer/customer.component";
 
 @Component({
   selector: "app-customer-invoice",
@@ -38,7 +37,6 @@ import { CustomerComponent } from "../customer/customer.component";
     ProductSearchComponent,
     ProductListComponent,
     InvoiceItemsComponent,
-    CustomerComponent,
     NgClass,
   ],
   templateUrl: "./customer-invoice.component.html",
@@ -197,8 +195,12 @@ export class CustomerInvoiceComponent implements OnInit {
   }
 
   calculateNetVat(vat: number): number {
-    const discount = Number.parseFloat(this.invoiceForm.get("discount")?.value || "0");
-    const interest = Number.parseFloat(this.invoiceForm.get("interest")?.value || "0");
+    const discount = Number.parseFloat(
+      this.invoiceForm.get("discount")?.value || "0",
+    );
+    const interest = Number.parseFloat(
+      this.invoiceForm.get("interest")?.value || "0",
+    );
 
     const total = this.invoiceItems.reduce((acc, item) => {
       if (item.taxRate == vat) {
@@ -339,10 +341,25 @@ export class CustomerInvoiceComponent implements OnInit {
     this.invoiceItems.push(invoiceItem);
   }
 
+  private loadProducts(params: {
+    search?: string;
+    supplierId?: string;
+    inStock?: boolean;
+  }): void {
+    this.subscription?.unsubscribe();
+
+    this.subscription = this._productService
+      .getProducts({ ...params, page: 0, size: 20 })
+      .subscribe({
+        next: (page) => (this.productList = page.content),
+        error: (err) => console.error(err),
+      });
+  }
+
   handleSearch(searchTerm: string): void {
     this.isFormSubmitted = true;
     if (searchTerm.length >= 3) {
-      this.searchProducts(searchTerm);
+      this.searchProducts(searchTerm); // sin supplierId
     } else {
       this.productList = [];
     }
@@ -351,7 +368,7 @@ export class CustomerInvoiceComponent implements OnInit {
   handleSearchWithStock(searchTerm: string): void {
     this.isFormSubmitted = true;
     if (searchTerm.length >= 3) {
-      this.searchProductsWithStock(searchTerm);
+      this.searchProductsWithStock(searchTerm); // sin supplierId
     } else {
       this.productList = [];
     }
@@ -361,11 +378,17 @@ export class CustomerInvoiceComponent implements OnInit {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+
     this.subscription = this._productService
-      .getAllByFilter(searchTerm, supplierId)
+      .getProducts({
+        search: searchTerm,
+        supplierId: supplierId,
+        page: 0,
+        size: 20,
+      })
       .subscribe({
-        next: (data: IProduct[]) => {
-          this.productList = data;
+        next: (page) => {
+          this.productList = page.content;
         },
         error: (err) => {
           console.error("Failed to load products", err);
@@ -377,11 +400,18 @@ export class CustomerInvoiceComponent implements OnInit {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+
     this.subscription = this._productService
-      .getAllByFilterAndStock(searchTerm, supplierId)
+      .getProducts({
+        search: searchTerm,
+        supplierId: supplierId,
+        inStock: true,
+        page: 0,
+        size: 20,
+      })
       .subscribe({
-        next: (data: IProduct[]) => {
-          this.productList = data;
+        next: (page) => {
+          this.productList = page.content;
         },
         error: (err) => {
           console.error("Failed to load products", err);

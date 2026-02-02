@@ -1,10 +1,10 @@
 <div class="container">
+  <!-- FORMULARIO PARA NOMBRE -->
   <form
     [formGroup]="categoryForm"
-    enctype="multipart/form-data"
     class="g-3 needs-validation"
     novalidate
-    (submit)="enviar($event)"
+    (submit)="save($event)"
   >
     <div class="mb-3">
       <label for="categoryNameInput" class="form-label">Category Name:</label>
@@ -14,17 +14,21 @@
         id="categoryNameInput"
         placeholder="Type new name here"
         formControlName="categoryName"
-        [ngClass]="{
-          'is-invalid': hasErrors('categoryName', 'required')
-        }"
+        [ngClass]="{ 'is-invalid': hasErrors('categoryName', 'required') }"
       />
-
-      @if (hasErrors('categoryName','required')) {
-      <span class="text-danger">Category name cannot be empty</span>
-      }
+      <div *ngIf="hasErrors('categoryName', 'required')" class="text-danger">
+        Category name cannot be empty
+      </div>
     </div>
     <button type="submit" class="btn btn-outline-primary btn-sm">
       Update Name
+    </button>
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm ms-2"
+      (click)="cancel()"
+    >
+      Cancel
     </button>
   </form>
 </div>
@@ -32,9 +36,10 @@
 <hr />
 
 <div class="container">
-  <form class="g-3" enctype="multipart/form-data">
+  <!-- FORMULARIO PARA IMAGEN -->
+  <form class="g-3">
     <div class="mb-3">
-      <label for="formFile" class="form-label">Image: </label>
+      <label for="formFile" class="form-label">Image:</label>
       <input
         class="form-control"
         type="file"
@@ -44,10 +49,12 @@
     </div>
     <button
       type="button"
-      class="btn btn-outline-primary btn-sm mb-3"
+      class="btn btn-outline-primary btn-sm"
+      [disabled]="!selectedFile"
       (click)="updateImage()"
     >
       Update Image
     </button>
   </form>
 </div>
+<hr />

@@ -1,14 +1,14 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ISupplierInvoice } from '../model/supplier-invoice.model';
-import { Observable } from 'rxjs';
+import { Injectable, inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { ISupplierInvoice } from "../model/supplier-invoice.model";
+import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class SupplierInvoiceService {
-  private _http = inject(HttpClient);
-  private _urlBase = 'http://localhost:443/supplierinvoice-sv/invoice';
+  private readonly _http = inject(HttpClient);
+  private readonly _urlBase = "http://localhost:443/supplierinvoice-sv/invoice";
 
   getAll(): Observable<ISupplierInvoice[]> {
     return this._http.get<ISupplierInvoice[]>(`${this._urlBase}/getAll`);

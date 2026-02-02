@@ -2,114 +2,97 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnInit,
   Output,
+  OnInit,
   inject,
-} from '@angular/core';
-import { ICategory } from '../../../model/category.model';
-import { CommonModule, NgClass } from '@angular/common';
+} from "@angular/core";
+import { ICategory } from "../../../model/category.model";
+import { CommonModule, NgClass } from "@angular/common";
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { CategoryService } from '../../../services/category.service';
-import { Subject } from 'rxjs';
+} from "@angular/forms";
+import { CategoryService } from "../../../services/category.service";
 
 @Component({
-    selector: 'app-category-edit',
-    imports: [CommonModule, ReactiveFormsModule, NgClass],
-    templateUrl: './category-edit.component.html',
-    styleUrl: './category-edit.component.css'
+  selector: "app-category-edit",
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, NgClass],
+  templateUrl: "./category-edit.component.html",
+  styleUrls: ["./category-edit.component.css"],
 })
 export class CategoryEditComponent implements OnInit {
-  @Input() category: ICategory | undefined;
-  @Output() onSave = new EventEmitter<ICategory>();
-  @Output() onCancel = new EventEmitter();
-  @Output() categoryUpdated = new EventEmitter();
+  @Input() category?: ICategory;
+  @Output() saved = new EventEmitter<ICategory>();
+  @Output() canceled = new EventEmitter<void>();
+  @Output() categoryUpdatedEvent = new EventEmitter<void>();
 
   categoryForm!: FormGroup;
-  _categoryService = inject(CategoryService);
+  selectedFile?: File;
 
-  private categoryUpdatedSubject = new Subject<ICategory>();
+  private readonly _categoryService = inject(CategoryService);
+  private readonly fb = inject(FormBuilder);
 
-  constructor(private formBuilder: FormBuilder) {
-    this.categoryForm = formBuilder.group({
-      categoryName: ['', [Validators.required]],
+  ngOnInit(): void {
+    this.categoryForm = this.fb.group({
+      categoryName: [this.category?.name || "", Validators.required],
       image: [null],
     });
   }
-  enviar(event: Event) {
+
+  hasErrors(field: string, typeError: string): boolean {
+    const control = this.categoryForm.get(field);
+    return (control?.hasError(typeError) && control.touched) ?? false;
+  }
+
+  save(event: Event): void {
     event.preventDefault();
+    if (!this.categoryForm.valid || !this.category?.id) return;
 
-    const updatedCategory: ICategory = {
-      id: this.category?.id || '',
-      name: this.categoryForm.get('categoryName')?.value || '',
-    };
+    const name = this.categoryForm.get("categoryName")?.value;
 
-    const formData = new FormData();
-    formData.append('name', updatedCategory.name);
-
-    this._categoryService
-      .updateCategory(updatedCategory.id, formData)
-      .subscribe(
-        (response) => {
-          console.log('Category updated: ', response);
-          this.categoryUpdated.emit();
-
-          this.categoryUpdatedSubject.next(response);
-
-          this.onSave.emit(response);
-        },
-        (error) => {
-          console.log('Error updating category:', error);
-        }
-      );
+    this._categoryService.updateCategory(this.category.id, name).subscribe({
+      next: (updatedCategory) => {
+        this.saved.emit(updatedCategory);
+        this.categoryUpdatedEvent.emit();
+        console.log("Category updated:", updatedCategory);
+      },
+      error: (err) => console.error("Error updating category:", err),
+    });
   }
 
-  selectedFile: File | undefined;
-
-  onFileSelected(event: any): void {
-    this.selectedFile = event.target.files[0] as File;
-  }
-
-  updateImage(): void {
-    if (this.selectedFile && this.category?.id) {
-      this._categoryService
-        .updateCategoryImage(this.category?.id, this.selectedFile)
-        .subscribe(
-          (response) => {
-            console.log('Image updated: ', response);
-
-            this.categoryUpdatedSubject.next(response);
-
-            this.onSave.emit(response);
-          },
-          (error) => {
-            console.log('Error updating image:', error);
-          }
-        );
-    } else {
-      console.log('Seleccione un archivo y proporcione un ID de marca válido.');
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      this.selectedFile = input.files[0];
     }
   }
 
-  ngOnInit(): void {
-    this.categoryForm = this.formBuilder.group({
-      categoryName: ['', Validators.required],
-      image: [null],
-    });
+  updateImage(): void {
+    if (!this.selectedFile || !this.category?.id) {
+      console.warn(
+        "Seleccione un archivo válido y asegúrese de que la categoría tenga ID.",
+      );
+      return;
+    }
+
+    const name = this.categoryForm.get("categoryName")?.value || undefined;
+
+    this._categoryService
+      .updateCategory(this.category.id, name, this.selectedFile)
+      .subscribe({
+        next: (updatedCategory) => {
+          this.saved.emit(updatedCategory);
+          this.categoryUpdatedEvent.emit();
+          console.log("Category image updated:", updatedCategory);
+        },
+        error: (err) => console.error("Error updating image:", err),
+      });
   }
 
-  cancelar(): void {
-    this.onCancel.emit();
-  }
-
-  hasErrors(field: string, typeError: string) {
-    return (
-      this.categoryForm.get(field)?.hasError(typeError) &&
-      this.categoryForm.get(field)?.touched
-    );
+  cancel(): void {
+    this.canceled.emit();
   }
 }
