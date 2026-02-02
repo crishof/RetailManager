@@ -73,4 +73,17 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
             WHERE supplier_id = :supplierId and supplier_product_id = :productId)
             """, nativeQuery = true)
     boolean existBySupplier(UUID supplierId, UUID productId);
+
+    @Query("""
+        SELECT COUNT(p)
+        FROM Product p
+        WHERE (:brandId IS NULL OR p.brandId = :brandId)
+          AND (:categoryId IS NULL OR p.categoryId = :categoryId)
+          AND (:supplierId IS NULL OR p.supplierId = :supplierId)
+    """)
+    long countWithFilters(
+            @Param("brandId") UUID brandId,
+            @Param("categoryId") UUID categoryId,
+            @Param("supplierId") UUID supplierId
+    );
 }
