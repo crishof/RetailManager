@@ -8,6 +8,8 @@ import com.retailmanager.brandsv.dto.ReassignBrandResponse;
 import com.retailmanager.brandsv.exception.BusinessException;
 import com.retailmanager.brandsv.exception.ResourceNotFoundException;
 import com.retailmanager.brandsv.mapper.BrandMapper;
+import com.retailmanager.brandsv.messagging.event.BrandUpdatedEvent;
+import com.retailmanager.brandsv.messagging.publisher.BrandEventPublisher;
 import com.retailmanager.brandsv.model.Brand;
 import com.retailmanager.brandsv.repository.BrandRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,6 +39,7 @@ public class BrandServiceImpl implements BrandService {
     private final ImageServiceClient imageClient;
     private final ProductServiceClient productClient;
     private final BrandDeletionService brandDeletionService;
+    private final BrandEventPublisher eventPublisher;
 
 
     @Override
@@ -128,6 +132,10 @@ public class BrandServiceImpl implements BrandService {
         }
 
         Brand updated = brandRepository.save(brand);
+
+        log.info("Publishing brand update");
+        eventPublisher.publishBrandUpdated(new BrandUpdatedEvent(updated.getId(), updated.getName(), false, Instant.now()));
+
 
         log.info("Brand updated successfully | id={}", id);
 
