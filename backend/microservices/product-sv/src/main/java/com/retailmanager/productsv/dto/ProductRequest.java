@@ -16,6 +16,7 @@ public class ProductRequest {
 
     private String code;
     private UUID brandId;
+    private String brandName;
     private String model;
     private String description;
     private UUID categoryId;
