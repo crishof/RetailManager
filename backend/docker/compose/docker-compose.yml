@@ -23,6 +23,22 @@ services:
       timeout: 5s
       retries: 5
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - erp-net
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   # =========================================================
   # API GATEWAY (SINGLE ENTRY POINT)
   # =========================================================
@@ -32,29 +48,6 @@ services:
     container_name: gateway-sv
     ports:
       - "8080:8080"
-    depends_on:
-      brand-sv:
-        condition: service_healthy
-      category-sv:
-        condition: service_healthy
-      supplier-sv:
-        condition: service_healthy
-      image-sv:
-        condition: service_healthy
-      price-item-sv:
-        condition: service_healthy
-      product-sv:
-        condition: service_healthy
-      pricing-sv:
-        condition: service_healthy
-      customer-sv:
-        condition: service_healthy
-      inventory-sv:
-        condition: service_healthy
-      sales-sv:
-        condition: service_healthy
-      exchange-sv:
-        condition: service_healthy
     networks:
       - erp-net
     healthcheck:
@@ -75,6 +68,8 @@ services:
       - ../../microservices/brand-sv/.env
     depends_on:
       postgres:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     networks:
       - erp-net
@@ -162,6 +157,8 @@ services:
       - ../../microservices/product-sv/.env
     depends_on:
       postgres:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     networks:
       - erp-net
