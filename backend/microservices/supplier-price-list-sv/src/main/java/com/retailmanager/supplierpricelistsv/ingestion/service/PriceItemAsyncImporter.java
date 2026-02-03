@@ -54,8 +54,6 @@ public class PriceItemAsyncImporter {
                         job.getSupplierId(),
                         job.isUpdateExisting()
                 );
-//TODO: remove sleep
-                Thread.sleep(10_000); // Simulate long processing
 
                 job.setInserted(result.inserted());
                 job.setUpdated(result.updated());
