@@ -1,0 +1,60 @@
+<header class="topbar">
+  <!-- Hamburger -->
+  <button class="topbar__toggle" (click)="onToggle()" aria-label="Alternar menú">
+    <span class="material-icons">{{ sidebarCollapsed ? 'menu' : 'menu_open' }}</span>
+  </button>
+
+  <!-- Brand (visible solo en mobile) -->
+  <span class="topbar__brand">RetailManager</span>
+
+  <div class="topbar__spacer"></div>
+
+  <!-- Actions -->
+  <div class="topbar__actions">
+
+    <!-- Búsqueda rápida -->
+    <button class="topbar__icon-btn" aria-label="Buscar">
+      <span class="material-icons">search</span>
+    </button>
+
+    <!-- Notificaciones -->
+    <button class="topbar__icon-btn topbar__icon-btn--notif" aria-label="Notificaciones">
+      <span class="material-icons">notifications</span>
+      @if (notificationCount > 0) {
+        <span class="topbar__badge">{{ notificationCount }}</span>
+      }
+    </button>
+
+    <!-- Usuario -->
+    <div class="topbar__user" (click)="toggleUserMenu()" (keydown.enter)="toggleUserMenu()" tabindex="0">
+      <div class="topbar__avatar">
+        <span class="material-icons">person</span>
+      </div>
+      <span class="topbar__username">Admin</span>
+      <span class="material-icons topbar__chevron">expand_more</span>
+
+      @if (showUserMenu) {
+        <div class="topbar__user-menu">
+          <div class="topbar__user-menu-header">
+            <p class="topbar__user-name">Administrador</p>
+            <p class="topbar__user-role">admin&#64;retailmanager.com</p>
+          </div>
+          <hr class="topbar__divider" />
+          <button class="topbar__user-menu-item">
+            <span class="material-icons">account_circle</span>
+            Mi perfil
+          </button>
+          <button class="topbar__user-menu-item">
+            <span class="material-icons">settings</span>
+            Configuración
+          </button>
+          <hr class="topbar__divider" />
+          <button class="topbar__user-menu-item topbar__user-menu-item--danger">
+            <span class="material-icons">logout</span>
+            Cerrar sesión
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</header>
