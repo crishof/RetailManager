@@ -88,11 +88,14 @@
     }
 
     @if (selectedBrand) {
-      <div class="col-md-4">
-        <div class="card shadow p-2">
-          <app-brand-details [brand]="selectedBrand"></app-brand-details>
-        </div>
-      </div>
-    }
+  <div class="col-md-4">
+    <div class="card shadow p-2">
+      <app-brand-details
+        [brand]="selectedBrand"
+        (brandUpdated)="onBrandUpdated($event)"
+      ></app-brand-details>
+    </div>
+  </div>
+}
   </div>
 </div>

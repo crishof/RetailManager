@@ -26,7 +26,6 @@ export class BrandEditComponent implements OnInit {
   @Input() brand: IBrand | null = null;
   @Output() _save = new EventEmitter<IBrand>();
   @Output() _cancel = new EventEmitter<void>();
-  @Output() _successMessage = new EventEmitter<string>();
 
   brandForm!: FormGroup;
   file: File | null = null;
@@ -61,7 +60,6 @@ export class BrandEditComponent implements OnInit {
       .subscribe({
         next: (updatedBrand) => {
           this._save.emit(updatedBrand);
-          this._successMessage.emit("Brand updated successfully");
         },
         error: (error) => {
           this.errorMessage = "Error updating brand";

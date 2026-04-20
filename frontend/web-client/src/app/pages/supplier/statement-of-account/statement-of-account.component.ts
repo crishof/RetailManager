@@ -1,8 +1,6 @@
-import { CommonModule, NgClass } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { Component, inject, Input, OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { SupplierDetailsComponent } from "../supplier-details/supplier-details.component";
-import { SupplierNavbarComponent } from "../supplier-navbar/supplier-navbar.component";
 import { ITransaction } from "../../../model/transaction.model";
 import { TransactionService } from "../../../services/transaction.service";
 import { ISupplier } from "../../../model/supplier.model";
@@ -13,11 +11,8 @@ import { ModalDialogService } from "../../../services/modal-dialog.service";
   selector: "app-statement-of-account",
   imports: [
     CommonModule,
-    SupplierNavbarComponent,
-    SupplierDetailsComponent,
     FormsModule,
     ReactiveFormsModule,
-    NgClass,
   ],
   templateUrl: "./statement-of-account.component.html",
   styleUrl: "./statement-of-account.component.css",

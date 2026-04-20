@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/pages/supplier/supplier-invoice/supplier-invoice.component.css"],
+  "sourcesContent": [".icon-small {\n  width: 24px;\n  height: 24px;\n}\n.dateInput {\n  width: 100%; /* Asegura que el campo ocupe todo el ancho de la columna */\n  box-sizing: border-box; /*Incluye el padding y el borde en el ancho del elemento */\n\n  height: 80px;\n  font-size: small;\n  padding: 0.2em;\n}\n\n.btn-group {\n  display: flex;\n  flex-wrap: wrap;\n  max-width: 80%; /* Establece el ancho m\u00E1ximo al 100% del contenedor padre */\n  margin: 0 auto;\n  justify-content: space-between;\n}\n\n.btn-group > button {\n  flex: 1; /* Hace que los botones ocupen el mismo espacio dentro del contenedor */\n  /* margin-right: 5px;  Agrega un margen entre los botones */\n}\n\n.custom-modal-width {\n  max-width: 90%;\n}\n"],
+  "mappings": ";AAAA,CAAC;AACC,SAAO;AACP,UAAQ;AACV;AACA,CAAC;AACC,SAAO;AACP,cAAY;AAEZ,UAAQ;AACR,aAAW;AACX,WAAS;AACX;AAEA,CAAC;AACC,WAAS;AACT,aAAW;AACX,aAAW;AACX,UAAQ,EAAE;AACV,mBAAiB;AACnB;AAEA,CARC,UAQU,EAAE;AACX,QAAM;AAER;AAEA,CAAC;AACC,aAAW;AACb;",
+  "names": []
+}

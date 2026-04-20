@@ -72,7 +72,8 @@ public class CustomerController {
     @ApiResponse(responseCode = "400", description = "Invalid input")
     @ApiResponse(responseCode = "404", description = "Customer not found")
     @PatchMapping("/{id}")
-    public ResponseEntity<CustomerResponse> update(@PathVariable @NotNull UUID id, @RequestBody CustomerRequest customerRequest) {
+    public ResponseEntity<CustomerResponse> update(@PathVariable @NotNull UUID id,
+                                                   @RequestBody CustomerRequest customerRequest) {
         return ResponseEntity.ok(customerService.update(id, customerRequest));
     }
 
@@ -128,12 +129,17 @@ public class CustomerController {
     // ============================
     // MERGE CUSTOMERS
     // ============================
-    @Operation(summary = "Merge a customer into another one", description = "Reassigns all purchases to the target customer and deletes the source. This operation is irreversible")
+    @Operation(summary = "Merge a customer into another one",
+            description = """
+                    Reassigns all purchases to the target customer and deletes the source.
+                    This operation is irreversible"""
+    )
     @ApiResponse(responseCode = "200", description = "Customers merged successfully")
     @ApiResponse(responseCode = "404", description = "Customer not found")
     @ApiResponse(responseCode = "400", description = "Invalid customer merge request")
     @PutMapping("/{id}/merge")
-    public ResponseEntity<CustomerMergeResponse> mergeCustomerInto(@PathVariable @NotNull UUID id, @RequestParam @NotNull UUID targetCustomerId) {
+    public ResponseEntity<CustomerMergeResponse> mergeCustomerInto(@PathVariable @NotNull UUID id,
+                                                                   @RequestParam @NotNull UUID targetCustomerId) {
 
         //TODO test with orders created
         return ResponseEntity.ok(customerService.mergeCustomerInto(id, targetCustomerId));

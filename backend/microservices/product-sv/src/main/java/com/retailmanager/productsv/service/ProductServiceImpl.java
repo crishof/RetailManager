@@ -44,9 +44,11 @@ public class ProductServiceImpl implements ProductService {
     private final InventoryServiceClient inventoryClient;
 
     @Override
-    public Page<ProductResponse> findAll(UUID brandId, UUID categoryId, UUID supplierId, Boolean highlighted, Boolean published, String search, Pageable pageable) {
-        Specification<Product> spec = ProductSpecifications.filter(brandId, categoryId, supplierId, highlighted, published, search);
+    public Page<ProductResponse> findAll(UUID brandId, UUID categoryId, UUID supplierId, Boolean highlighted,
+                                         Boolean published, String search, Pageable pageable) {
 
+        Specification<Product> spec = ProductSpecifications
+                .filter(brandId, categoryId, supplierId, highlighted, published, search);
         return productRepository.findAll(spec, pageable).map(productMapper::toResponse);
     }
 
@@ -138,7 +140,8 @@ public class ProductServiceImpl implements ProductService {
         }
         log.info("Product restored successfully");
 
-        Product restored = productRepository.findById(id).orElseThrow(() -> new IllegalStateException("Product restored by not found"));
+        Product restored = productRepository.findById(id).orElseThrow(
+                () -> new IllegalStateException("Product restored by not found"));
 
         return productMapper.toResponse(restored);
 
@@ -161,7 +164,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     private Product getProductOrThrow(UUID id) {
-        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format(PRODUCT_NOT_FOUND, id)));
+        return productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(String.format(PRODUCT_NOT_FOUND, id)));
     }
 
     @Transactional
@@ -219,7 +223,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional
     public void attachPrice(UUID productId, UUID priceId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ResourceNotFoundException("Product not found"));
 
         product.setPriceId(priceId);
         productRepository.save(product);

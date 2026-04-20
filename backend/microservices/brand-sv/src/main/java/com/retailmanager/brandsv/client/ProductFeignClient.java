@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface ProductFeignClient {
 
     @GetMapping("/internal/products/brand/{brandId}/exists")
-    Boolean hasProductsForBrand(@PathVariable("brandId") UUID brandId);
+    Boolean hasProductsForBrand(@PathVariable UUID brandId);
 
     @PatchMapping("/internal/products/brand")
     ReassignBrandResponse replaceBrand(

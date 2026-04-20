@@ -8,13 +8,16 @@
         <th scope="col">Model</th>
         <th scope="col">Description</th>
         <th scope="col">Category</th>
-        <th scope="col">Tax Rate</th>
-        <th scope="col">Selling Price</th>
-        <th scope="col">Stock</th>
+        <!-- TODO get data -->
+        <!--
+          <th scope="col">Tax Rate</th>
+          <th scope="col">Selling Price</th>
+          <th scope="col">Stock</th>
+          -->
       </tr>
     </thead>
     <tbody>
-      @for (product of productList; track product; let i = $index) {
+      @for (product of productList; track product.id ) {
         <tr
           (click)="selectionMode === 'click' ? onProductInteract(product) : null"
         (dblclick)="
@@ -27,9 +30,11 @@
           <td>{{ product.model }}</td>
           <td class="description-cell">{{ product.description }}</td>
           <td>{{ product.categoryName }}</td>
-          <td>{{ product.priceResponse.taxRate * 100 }}%</td>
-          <td>{{ product.priceResponse.sellingPrice | currency }}</td>
-          <td>{{ getTotalStockQuantity(product.stockResponses) }}</td>
+          <!--
+            <td>{{ product.priceResponse.taxRate * 100 }}%</td>
+            <td>{{ product.priceResponse.sellingPrice | currency }}</td>
+            <td>{{ getTotalStockQuantity(product.stockResponses) }}</td>
+            -->
         </tr>
       }
     </tbody>

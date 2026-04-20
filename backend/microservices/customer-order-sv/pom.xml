@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.retailManager</groupId>
-    <artifactId>sales-sv</artifactId>
+    <artifactId>customer-order-sv</artifactId>
     <version>0.0.1</version>
     <name>sales-sv</name>
     <description>sales-sv</description>

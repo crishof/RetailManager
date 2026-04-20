@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/pages/category/category/category.component.css"],
+  "sourcesContent": ["tr{\n    cursor: pointer;\n}"],
+  "mappings": ";AAAA;AACI,UAAQ;AACZ;",
+  "names": []
+}

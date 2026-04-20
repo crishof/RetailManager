@@ -6,6 +6,8 @@ import {
   SimpleChanges,
   inject,
   OnDestroy,
+  Output,
+  EventEmitter,
 } from "@angular/core";
 import { IBrand } from "../../../model/brand.model";
 import { BrandService } from "../../../services/brand.service";
@@ -26,6 +28,7 @@ import { Subject, takeUntil } from "rxjs";
 export class BrandDetailsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() brand: IBrand | null = null;
 
+  @Output() brandUpdated = new EventEmitter<IBrand>();
   loading = false;
   editingMode = false;
 
@@ -53,9 +56,14 @@ export class BrandDetailsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes["brand"] && this.brand) {
+    if (changes["brand"]) {
       this.editingMode = false;
-      this.loadProductsQuantity(this.brand.id);
+      this.successMessage = "";
+      this.errorMessage = "";
+
+      if (this.brand) {
+        this.loadProductsQuantity(this.brand.id);
+      }
     }
   }
 
@@ -119,6 +127,8 @@ export class BrandDetailsComponent implements OnInit, OnChanges, OnDestroy {
     this.brand = updatedBrand;
     this.editingMode = false;
     this.successMessage = `Brand "${updatedBrand.name}" saved successfully`;
+
+    this.brandUpdated.emit(updatedBrand); // 👈 clave
     this.loadProductsQuantity(updatedBrand.id);
   }
 
