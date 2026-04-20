@@ -82,12 +82,26 @@ export class BrandComponent implements OnInit {
   }
 
   onBrandSelect(brand: IBrand): void {
-    this.selectedBrand = brand;
-    this.createBrand = false;
-  }
+  this.selectedBrand = brand;
+  this.createBrand = false;
+}
 
   toNewBrand(): void {
     this.createBrand = true;
     this.selectedBrand = null;
   }
+
+  onBrandUpdated(updated: IBrand): void {
+  // actualizar lista
+  this.brandList = this.brandList.map((b) =>
+    b.id === updated.id ? updated : b,
+  );
+
+  this.filteredBrandList = this.filteredBrandList.map((b) =>
+    b.id === updated.id ? updated : b,
+  );
+
+  // actualizar seleccionado
+  this.selectedBrand = updated;
+}
 }

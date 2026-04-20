@@ -19900,15 +19900,16 @@ var SupplierPriceListService = class _SupplierPriceListService {
 })();
 
 // src/app/pages/product/product-list/product-list.component.ts
-function ProductListComponent_For_24_Template(rf, ctx) {
+var _forTrack0 = ($index, $item) => $item.id;
+function ProductListComponent_For_18_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
     \u0275\u0275domElementStart(0, "tr", 4);
-    \u0275\u0275domListener("click", function ProductListComponent_For_24_Template_tr_click_0_listener() {
+    \u0275\u0275domListener("click", function ProductListComponent_For_18_Template_tr_click_0_listener() {
       const product_r2 = \u0275\u0275restoreView(_r1).$implicit;
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.selectionMode === "click" ? ctx_r2.onProductInteract(product_r2) : null);
-    })("dblclick", function ProductListComponent_For_24_Template_tr_dblclick_0_listener() {
+    })("dblclick", function ProductListComponent_For_18_Template_tr_dblclick_0_listener() {
       const product_r2 = \u0275\u0275restoreView(_r1).$implicit;
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.selectionMode === "dblclick" ? ctx_r2.onProductInteract(product_r2) : null);
@@ -19930,21 +19931,10 @@ function ProductListComponent_For_24_Template(rf, ctx) {
     \u0275\u0275domElementEnd();
     \u0275\u0275domElementStart(11, "td");
     \u0275\u0275text(12);
-    \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(13, "td");
-    \u0275\u0275text(14);
-    \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(15, "td");
-    \u0275\u0275text(16);
-    \u0275\u0275pipe(17, "currency");
-    \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(18, "td");
-    \u0275\u0275text(19);
     \u0275\u0275domElementEnd()();
   }
   if (rf & 2) {
     const product_r2 = ctx.$implicit;
-    const ctx_r2 = \u0275\u0275nextContext();
     \u0275\u0275advance(2);
     \u0275\u0275textInterpolate(product_r2.id);
     \u0275\u0275advance(2);
@@ -19957,12 +19947,6 @@ function ProductListComponent_For_24_Template(rf, ctx) {
     \u0275\u0275textInterpolate(product_r2.description);
     \u0275\u0275advance(2);
     \u0275\u0275textInterpolate(product_r2.categoryName);
-    \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate1("", product_r2.priceResponse.taxRate * 100, "%");
-    \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(\u0275\u0275pipeBind1(17, 9, product_r2.priceResponse.sellingPrice));
-    \u0275\u0275advance(3);
-    \u0275\u0275textInterpolate(ctx_r2.getTotalStockQuantity(product_r2.stockResponses));
   }
 }
 var ProductListComponent = class _ProductListComponent {
@@ -19972,6 +19956,9 @@ var ProductListComponent = class _ProductListComponent {
     this.productList = [];
     this.selectionMode = "click";
     this.selectProduct = new EventEmitter();
+  }
+  trackByProductId(index, product) {
+    return product.id;
   }
   onProductInteract(product) {
     this.selectProduct.emit(product);
@@ -19994,7 +19981,7 @@ var ProductListComponent = class _ProductListComponent {
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductListComponent, selectors: [["app-product-list"]], inputs: { productList: "productList", selectionMode: "selectionMode" }, outputs: { selectProduct: "selectProduct" }, decls: 25, vars: 0, consts: [["id", "table-container", 1, "table-responsive"], [1, "table", "table-striped", "table-hover", "align-middle", "table-sm"], [1, "table-dark"], ["scope", "col"], [3, "click", "dblclick"], [1, "description-cell"]], template: function ProductListComponent_Template(rf, ctx) {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductListComponent, selectors: [["app-product-list"]], inputs: { productList: "productList", selectionMode: "selectionMode" }, outputs: { selectProduct: "selectProduct" }, decls: 19, vars: 0, consts: [["id", "table-container", 1, "table-responsive"], [1, "table", "table-striped", "table-hover", "align-middle", "table-sm"], [1, "table-dark"], ["scope", "col"], [3, "click", "dblclick"], [1, "description-cell"]], template: function ProductListComponent_Template(rf, ctx) {
       if (rf & 1) {
         \u0275\u0275domElementStart(0, "div", 0)(1, "table", 1)(2, "thead", 2)(3, "tr")(4, "th", 3);
         \u0275\u0275text(5, "#Id");
@@ -20013,25 +20000,16 @@ var ProductListComponent = class _ProductListComponent {
         \u0275\u0275domElementEnd();
         \u0275\u0275domElementStart(14, "th", 3);
         \u0275\u0275text(15, "Category");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(16, "th", 3);
-        \u0275\u0275text(17, "Tax Rate");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(18, "th", 3);
-        \u0275\u0275text(19, "Selling Price");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(20, "th", 3);
-        \u0275\u0275text(21, "Stock");
         \u0275\u0275domElementEnd()()();
-        \u0275\u0275domElementStart(22, "tbody");
-        \u0275\u0275repeaterCreate(23, ProductListComponent_For_24_Template, 20, 11, "tr", null, \u0275\u0275repeaterTrackByIdentity);
+        \u0275\u0275domElementStart(16, "tbody");
+        \u0275\u0275repeaterCreate(17, ProductListComponent_For_18_Template, 13, 6, "tr", null, _forTrack0);
         \u0275\u0275domElementEnd()()();
       }
       if (rf & 2) {
-        \u0275\u0275advance(23);
+        \u0275\u0275advance(17);
         \u0275\u0275repeater(ctx.productList);
       }
-    }, dependencies: [CommonModule, ReactiveFormsModule, CurrencyPipe], styles: ["\n.table-responsive[_ngcontent-%COMP%] {\n  max-width: 100%;\n  overflow-x: scroll;\n}\n#page-title[_ngcontent-%COMP%] {\n  margin: 30px;\n}\n#table-container[_ngcontent-%COMP%] {\n  height: 400px;\n  overflow-y: auto;\n}\n.table[_ngcontent-%COMP%]   thead[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 0;\n  z-index: 1;\n}\n.nowrap[_ngcontent-%COMP%] {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.description-cell[_ngcontent-%COMP%] {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  max-width: 300px;\n}\n/*# sourceMappingURL=product-list.component.css.map */"] });
+    }, dependencies: [CommonModule, ReactiveFormsModule], styles: ["\n.table-responsive[_ngcontent-%COMP%] {\n  max-width: 100%;\n  overflow-x: scroll;\n}\n#page-title[_ngcontent-%COMP%] {\n  margin: 30px;\n}\n#table-container[_ngcontent-%COMP%] {\n  height: 400px;\n  overflow-y: auto;\n}\n.table[_ngcontent-%COMP%]   thead[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 0;\n  z-index: 1;\n}\n.nowrap[_ngcontent-%COMP%] {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.description-cell[_ngcontent-%COMP%] {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  max-width: 300px;\n}\n/*# sourceMappingURL=product-list.component.css.map */"] });
   }
 };
 (() => {
@@ -20047,13 +20025,16 @@ var ProductListComponent = class _ProductListComponent {
         <th scope="col">Model</th>
         <th scope="col">Description</th>
         <th scope="col">Category</th>
-        <th scope="col">Tax Rate</th>
-        <th scope="col">Selling Price</th>
-        <th scope="col">Stock</th>
+        <!-- TODO get data -->
+        <!--
+          <th scope="col">Tax Rate</th>
+          <th scope="col">Selling Price</th>
+          <th scope="col">Stock</th>
+          -->
       </tr>
     </thead>
     <tbody>
-      @for (product of productList; track product; let i = $index) {
+      @for (product of productList; track product.id ) {
         <tr
           (click)="selectionMode === 'click' ? onProductInteract(product) : null"
         (dblclick)="
@@ -20066,9 +20047,11 @@ var ProductListComponent = class _ProductListComponent {
           <td>{{ product.model }}</td>
           <td class="description-cell">{{ product.description }}</td>
           <td>{{ product.categoryName }}</td>
-          <td>{{ product.priceResponse.taxRate * 100 }}%</td>
-          <td>{{ product.priceResponse.sellingPrice | currency }}</td>
-          <td>{{ getTotalStockQuantity(product.stockResponses) }}</td>
+          <!--
+            <td>{{ product.priceResponse.taxRate * 100 }}%</td>
+            <td>{{ product.priceResponse.sellingPrice | currency }}</td>
+            <td>{{ getTotalStockQuantity(product.stockResponses) }}</td>
+            -->
         </tr>
       }
     </tbody>
@@ -29023,7 +29006,6 @@ var BrandEditComponent = class _BrandEditComponent {
     this.brand = null;
     this._save = new EventEmitter();
     this._cancel = new EventEmitter();
-    this._successMessage = new EventEmitter();
     this.file = null;
     this.brandService = inject(BrandService);
     this.formBuilder = inject(FormBuilder);
@@ -29048,7 +29030,6 @@ var BrandEditComponent = class _BrandEditComponent {
     this.brandService.updateBrand(this.brand.id, brandName, this.file ?? void 0).subscribe({
       next: (updatedBrand) => {
         this._save.emit(updatedBrand);
-        this._successMessage.emit("Brand updated successfully");
       },
       error: (error) => {
         this.errorMessage = "Error updating brand";
@@ -29074,7 +29055,7 @@ var BrandEditComponent = class _BrandEditComponent {
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _BrandEditComponent, selectors: [["app-brand-edit"]], inputs: { brand: "brand" }, outputs: { _save: "_save", _cancel: "_cancel", _successMessage: "_successMessage" }, decls: 17, vars: 6, consts: [[1, "container"], ["enctype", "multipart/form-data", "novalidate", "", 1, "g-3", "needs-validation", 3, "submit", "formGroup"], [1, "mb-3"], ["for", "brandNameInput", 1, "form-label"], ["type", "text", "id", "brandNameInput", "formControlName", "brandName", "placeholder", "Type new brand name here", 1, "form-control", 3, "ngClass"], ["class", "invalid-feedback", 4, "ngIf"], ["for", "formFile", 1, "form-label"], ["type", "file", "id", "formFile", "accept", "image/*", 1, "form-control", 3, "change"], ["class", "alert alert-danger", 4, "ngIf"], [1, "d-flex", "gap-2"], ["type", "submit", 1, "btn", "btn-outline-primary", "btn-sm"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", 3, "click"], [1, "invalid-feedback"], [1, "alert", "alert-danger"]], template: function BrandEditComponent_Template(rf, ctx) {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _BrandEditComponent, selectors: [["app-brand-edit"]], inputs: { brand: "brand" }, outputs: { _save: "_save", _cancel: "_cancel" }, decls: 17, vars: 6, consts: [[1, "container"], ["enctype", "multipart/form-data", "novalidate", "", 1, "g-3", "needs-validation", 3, "submit", "formGroup"], [1, "mb-3"], ["for", "brandNameInput", 1, "form-label"], ["type", "text", "id", "brandNameInput", "formControlName", "brandName", "placeholder", "Type new brand name here", 1, "form-control", 3, "ngClass"], ["class", "invalid-feedback", 4, "ngIf"], ["for", "formFile", 1, "form-label"], ["type", "file", "id", "formFile", "accept", "image/*", 1, "form-control", 3, "change"], ["class", "alert alert-danger", 4, "ngIf"], [1, "d-flex", "gap-2"], ["type", "submit", 1, "btn", "btn-outline-primary", "btn-sm"], ["type", "button", 1, "btn", "btn-outline-secondary", "btn-sm", 3, "click"], [1, "invalid-feedback"], [1, "alert", "alert-danger"]], template: function BrandEditComponent_Template(rf, ctx) {
       if (rf & 1) {
         \u0275\u0275elementStart(0, "div", 0)(1, "form", 1);
         \u0275\u0275listener("submit", function BrandEditComponent_Template_form_submit_1_listener($event) {
@@ -29187,8 +29168,6 @@ var BrandEditComponent = class _BrandEditComponent {
     type: Output
   }], _cancel: [{
     type: Output
-  }], _successMessage: [{
-    type: Output
   }] });
 })();
 (() => {
@@ -29290,10 +29269,6 @@ function BrandDetailsComponent_Conditional_4_Template(rf, ctx) {
       \u0275\u0275restoreView(_r3);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.cancelEditing());
-    })("_successMessage", function BrandDetailsComponent_Conditional_4_Template_app_brand_edit__successMessage_3_listener($event) {
-      \u0275\u0275restoreView(_r3);
-      const ctx_r1 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r1.successMessage = $event);
     });
     \u0275\u0275elementEnd()();
   }
@@ -29308,6 +29283,7 @@ function BrandDetailsComponent_Conditional_4_Template(rf, ctx) {
 var BrandDetailsComponent = class _BrandDetailsComponent {
   constructor() {
     this.brand = null;
+    this.brandUpdated = new EventEmitter();
     this.loading = false;
     this.editingMode = false;
     this.successMessage = "";
@@ -29330,9 +29306,13 @@ var BrandDetailsComponent = class _BrandDetailsComponent {
     }
   }
   ngOnChanges(changes) {
-    if (changes["brand"] && this.brand) {
+    if (changes["brand"]) {
       this.editingMode = false;
-      this.loadProductsQuantity(this.brand.id);
+      this.successMessage = "";
+      this.errorMessage = "";
+      if (this.brand) {
+        this.loadProductsQuantity(this.brand.id);
+      }
     }
   }
   ngOnDestroy() {
@@ -29385,6 +29365,7 @@ var BrandDetailsComponent = class _BrandDetailsComponent {
     this.brand = updatedBrand;
     this.editingMode = false;
     this.successMessage = `Brand "${updatedBrand.name}" saved successfully`;
+    this.brandUpdated.emit(updatedBrand);
     this.loadProductsQuantity(updatedBrand.id);
   }
   confirmDelete() {
@@ -29424,7 +29405,7 @@ var BrandDetailsComponent = class _BrandDetailsComponent {
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _BrandDetailsComponent, selectors: [["app-brand-details"]], inputs: { brand: "brand" }, features: [\u0275\u0275NgOnChangesFeature], decls: 5, vars: 5, consts: [[1, "text-center", "m-3"], [1, "container"], [1, "alert", "alert-success", "mt-3"], [1, "alert", "alert-danger", "mt-3"], [1, "container", "mt-3"], ["alt", "Brand Logo", "width", "80", "height", "80", 3, "src"], [1, "btn-group"], ["type", "button", 1, "btn", "btn-outline-primary", "btn-sm", 3, "click"], ["type", "button", 1, "btn", "btn-outline-danger", "btn-sm", 3, "click"], [3, "_save", "_cancel", "_successMessage", "brand"]], template: function BrandDetailsComponent_Template(rf, ctx) {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _BrandDetailsComponent, selectors: [["app-brand-details"]], inputs: { brand: "brand" }, outputs: { brandUpdated: "brandUpdated" }, features: [\u0275\u0275NgOnChangesFeature], decls: 5, vars: 5, consts: [[1, "text-center", "m-3"], [1, "container"], [1, "alert", "alert-success", "mt-3"], [1, "alert", "alert-danger", "mt-3"], [1, "container", "mt-3"], ["alt", "Brand Logo", "width", "80", "height", "80", 3, "src"], [1, "btn-group"], ["type", "button", 1, "btn", "btn-outline-primary", "btn-sm", 3, "click"], ["type", "button", 1, "btn", "btn-outline-danger", "btn-sm", 3, "click"], [3, "_save", "_cancel", "brand"]], template: function BrandDetailsComponent_Template(rf, ctx) {
       if (rf & 1) {
         \u0275\u0275conditionalCreate(0, BrandDetailsComponent_Conditional_0_Template, 3, 0, "div", 0);
         \u0275\u0275conditionalCreate(1, BrandDetailsComponent_Conditional_1_Template, 10, 4, "div", 1);
@@ -29513,17 +29494,18 @@ var BrandDetailsComponent = class _BrandDetailsComponent {
       [brand]="brand"
       (_save)="saveChanges($event)"
       (_cancel)="cancelEditing()"
-      (_successMessage)="successMessage = $event"
     ></app-brand-edit>
   </div>
 }
 `, styles: ["/* src/app/pages/brand/brand-details/brand-details.component.css */\n.card {\n  justify-content: center;\n}\nimg {\n  max-width: 50%;\n  justify-content: center;\n  position: relative;\n}\nh5 {\n  text-align: center;\n}\n.btn {\n  margin: 3px;\n}\n.brand-image {\n  width: 50px;\n  height: 50px;\n  object-fit: contain;\n  border-radius: 5px;\n}\n.no-image {\n  width: 50px;\n  height: 50px;\n}\n/*# sourceMappingURL=brand-details.component.css.map */\n"] }]
   }], null, { brand: [{
     type: Input
+  }], brandUpdated: [{
+    type: Output
   }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(BrandDetailsComponent, { className: "BrandDetailsComponent", filePath: "src/app/pages/brand/brand-details/brand-details.component.ts", lineNumber: 26 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(BrandDetailsComponent, { className: "BrandDetailsComponent", filePath: "src/app/pages/brand/brand-details/brand-details.component.ts", lineNumber: 28 });
 })();
 
 // src/app/pages/brand/brand-create/brand-create.component.ts
@@ -29735,7 +29717,7 @@ var BrandCreateComponent = class _BrandCreateComponent {
 })();
 
 // src/app/pages/brand/brand/brand.component.ts
-var _forTrack0 = ($index, $item) => $item.id;
+var _forTrack02 = ($index, $item) => $item.id;
 function BrandComponent_Conditional_21_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
@@ -29807,9 +29789,14 @@ function BrandComponent_Conditional_30_Template(rf, ctx) {
 }
 function BrandComponent_Conditional_31_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 16)(1, "div", 19);
-    \u0275\u0275element(2, "app-brand-details", 21);
-    \u0275\u0275elementEnd()();
+    const _r5 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 16)(1, "div", 19)(2, "app-brand-details", 21);
+    \u0275\u0275listener("brandUpdated", function BrandComponent_Conditional_31_Template_app_brand_details_brandUpdated_2_listener($event) {
+      \u0275\u0275restoreView(_r5);
+      const ctx_r0 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r0.onBrandUpdated($event));
+    });
+    \u0275\u0275elementEnd()()();
   }
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext();
@@ -29870,13 +29857,18 @@ var BrandComponent = class _BrandComponent {
     this.createBrand = true;
     this.selectedBrand = null;
   }
+  onBrandUpdated(updated) {
+    this.brandList = this.brandList.map((b) => b.id === updated.id ? updated : b);
+    this.filteredBrandList = this.filteredBrandList.map((b) => b.id === updated.id ? updated : b);
+    this.selectedBrand = updated;
+  }
   static {
     this.\u0275fac = function BrandComponent_Factory(__ngFactoryType__) {
       return new (__ngFactoryType__ || _BrandComponent)();
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _BrandComponent, selectors: [["app-brand"]], inputs: { selectionMode: "selectionMode" }, decls: 32, vars: 6, consts: [[1, "container"], [1, "text-center", "my-3"], [1, "text-muted"], [1, "row", "align-items-center", "mb-3"], [1, "col-md-6", "d-flex", 3, "ngSubmit"], ["type", "text", "placeholder", "Search brand by name or ID", "name", "searchTerm", 1, "form-control", "me-2", 3, "ngModelChange", "ngModel"], ["type", "submit", 1, "btn", "btn-outline-primary", "btn-sm"], [1, "col-md-2"], [1, "btn", "btn-outline-success", "btn-sm", 3, "click"], [1, "row"], [1, "col-md-8"], [1, "table", "table-striped", "table-hover", "align-middle"], [1, "table-dark"], ["scope", "col", "tabindex", "0", 3, "click", "keydown.enter"], ["scope", "col"], ["tabindex", "0"], [1, "col-md-4"], ["tabindex", "0", 3, "click", "keydown.enter"], ["alt", "Brand logo", "width", "50", "height", "50", 3, "src"], [1, "card", "shadow", "p-2"], [3, "onCancel"], [3, "brand"]], template: function BrandComponent_Template(rf, ctx) {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _BrandComponent, selectors: [["app-brand"]], inputs: { selectionMode: "selectionMode" }, decls: 32, vars: 6, consts: [[1, "container"], [1, "text-center", "my-3"], [1, "text-muted"], [1, "row", "align-items-center", "mb-3"], [1, "col-md-6", "d-flex", 3, "ngSubmit"], ["type", "text", "placeholder", "Search brand by name or ID", "name", "searchTerm", 1, "form-control", "me-2", 3, "ngModelChange", "ngModel"], ["type", "submit", 1, "btn", "btn-outline-primary", "btn-sm"], [1, "col-md-2"], [1, "btn", "btn-outline-success", "btn-sm", 3, "click"], [1, "row"], [1, "col-md-8"], [1, "table", "table-striped", "table-hover", "align-middle"], [1, "table-dark"], ["scope", "col", "tabindex", "0", 3, "click", "keydown.enter"], ["scope", "col"], ["tabindex", "0"], [1, "col-md-4"], ["tabindex", "0", 3, "click", "keydown.enter"], ["alt", "Brand logo", "width", "50", "height", "50", 3, "src"], [1, "card", "shadow", "p-2"], [3, "onCancel"], [3, "brandUpdated", "brand"]], template: function BrandComponent_Template(rf, ctx) {
       if (rf & 1) {
         \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "h2");
         \u0275\u0275text(3, "Brands");
@@ -29925,7 +29917,7 @@ var BrandComponent = class _BrandComponent {
         \u0275\u0275conditionalCreate(26, BrandComponent_Conditional_26_Template, 2, 1, "span");
         \u0275\u0275elementEnd()()();
         \u0275\u0275elementStart(27, "tbody");
-        \u0275\u0275repeaterCreate(28, BrandComponent_For_29_Template, 7, 3, "tr", 15, _forTrack0);
+        \u0275\u0275repeaterCreate(28, BrandComponent_For_29_Template, 7, 3, "tr", 15, _forTrack02);
         \u0275\u0275elementEnd()()();
         \u0275\u0275conditionalCreate(30, BrandComponent_Conditional_30_Template, 3, 0, "div", 16);
         \u0275\u0275conditionalCreate(31, BrandComponent_Conditional_31_Template, 3, 1, "div", 16);
@@ -30059,12 +30051,15 @@ var BrandComponent = class _BrandComponent {
     }
 
     @if (selectedBrand) {
-      <div class="col-md-4">
-        <div class="card shadow p-2">
-          <app-brand-details [brand]="selectedBrand"></app-brand-details>
-        </div>
-      </div>
-    }
+  <div class="col-md-4">
+    <div class="card shadow p-2">
+      <app-brand-details
+        [brand]="selectedBrand"
+        (brandUpdated)="onBrandUpdated($event)"
+      ></app-brand-details>
+    </div>
+  </div>
+}
   </div>
 </div>
 `, styles: ["/* src/app/pages/brand/brand/brand.component.css */\nth.sortable {\n  cursor: pointer;\n}\n#table-container {\n  max-height: 400px;\n  overflow-y: auto;\n}\n.table thead th {\n  position: sticky;\n  top: 0;\n  background-color: #343a40;\n  z-index: 1;\n}\n/*# sourceMappingURL=brand.component.css.map */\n"] }]
@@ -30813,7 +30808,7 @@ var SupplierDetailsComponent = class _SupplierDetailsComponent {
 
 // src/app/pages/supplier/supplier/supplier.component.ts
 var _c06 = (a0) => ({ active: a0 });
-var _forTrack02 = ($index, $item) => $item.id;
+var _forTrack03 = ($index, $item) => $item.id;
 function SupplierComponent_button_2_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
@@ -31023,7 +31018,7 @@ var SupplierComponent = class _SupplierComponent {
         \u0275\u0275text(31, "Tax Id");
         \u0275\u0275elementEnd()()();
         \u0275\u0275elementStart(32, "tbody");
-        \u0275\u0275repeaterCreate(33, SupplierComponent_For_34_Template, 9, 4, "tr", 15, _forTrack02);
+        \u0275\u0275repeaterCreate(33, SupplierComponent_For_34_Template, 9, 4, "tr", 15, _forTrack03);
         \u0275\u0275elementEnd()()();
       }
       if (rf & 2) {
@@ -34744,7 +34739,7 @@ var _ErrorStateTracker = class {
 
 // node_modules/@angular/material/fesm2022/datepicker.mjs
 var _c011 = ["mat-calendar-body", ""];
-function _forTrack03($index, $item) {
+function _forTrack04($index, $item) {
   return this._trackRow($item);
 }
 var _forTrack1 = ($index, $item) => $item.id;
@@ -35374,7 +35369,7 @@ var MatCalendarBody = class _MatCalendarBody {
     template: function MatCalendarBody_Template(rf, ctx) {
       if (rf & 1) {
         \u0275\u0275conditionalCreate(0, MatCalendarBody_Conditional_0_Template, 3, 6, "tr", 0);
-        \u0275\u0275repeaterCreate(1, MatCalendarBody_For_2_Template, 4, 1, "tr", 1, _forTrack03, true);
+        \u0275\u0275repeaterCreate(1, MatCalendarBody_For_2_Template, 4, 1, "tr", 1, _forTrack04, true);
         \u0275\u0275domElementStart(3, "span", 2);
         \u0275\u0275text(4);
         \u0275\u0275domElementEnd();
@@ -44482,11 +44477,8 @@ var StatementOfAccountComponent = class _StatementOfAccountComponent {
     type: Component,
     args: [{ selector: "app-statement-of-account", imports: [
       CommonModule,
-      SupplierNavbarComponent,
-      SupplierDetailsComponent,
       FormsModule,
-      ReactiveFormsModule,
-      NgClass
+      ReactiveFormsModule
     ], template: `<h3>Outstanding balance</h3>
 
 <div class="container">
@@ -44589,7 +44581,7 @@ var StatementOfAccountComponent = class _StatementOfAccountComponent {
   }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(StatementOfAccountComponent, { className: "StatementOfAccountComponent", filePath: "src/app/pages/supplier/statement-of-account/statement-of-account.component.ts", lineNumber: 25 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(StatementOfAccountComponent, { className: "StatementOfAccountComponent", filePath: "src/app/pages/supplier/statement-of-account/statement-of-account.component.ts", lineNumber: 20 });
 })();
 
 // src/app/app.routes.ts

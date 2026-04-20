@@ -46,7 +46,8 @@ public class ProductController {
         log.info("Fetching products with pagination ");
 
         // TODO add serch by stock
-        Page<ProductResponse> page = productService.findAll(brandId, categoryId, supplierId, highlighted, published, search, pageable);
+        Page<ProductResponse> page = productService.findAll(
+                brandId, categoryId, supplierId, highlighted, published, search, pageable);
         return ResponseEntity.ok(page);
     }
 
@@ -127,11 +128,9 @@ public class ProductController {
     // ============================
     @Operation(summary = "Get total count of products with optional filters")
     @GetMapping("/count")
-    public long count(@RequestParam(required = false) UUID brandId, @RequestParam(required = false) UUID categoryId, @RequestParam(required = false) UUID supplierId) {
+    public long count(@RequestParam(required = false) UUID brandId,
+                      @RequestParam(required = false) UUID categoryId,
+                      @RequestParam(required = false) UUID supplierId) {
         return productService.count(brandId, categoryId, supplierId);
     }
-
-    //TODO GetAllByFilterAndStock
-
-    //TODO GetAllByFilter
 }

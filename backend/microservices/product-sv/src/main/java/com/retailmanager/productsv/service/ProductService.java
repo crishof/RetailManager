@@ -12,7 +12,8 @@ import java.util.UUID;
 
 public interface ProductService {
 
-    Page<ProductResponse> findAll(UUID brandId, UUID categoryId, UUID supplierId, Boolean highlighted, Boolean published, String search, Pageable pageable);
+    Page<ProductResponse> findAll(UUID brandId, UUID categoryId, UUID supplierId,
+                                  Boolean highlighted, Boolean published, String search, Pageable pageable);
 
     ProductResponse getById(UUID id);
 

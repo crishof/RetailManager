@@ -207,12 +207,12 @@ services:
     healthcheck:
       test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
 
-  sales-sv:
-    build: ../../microservices/sales-sv
+  orders-sv:
+    build: ../../microservices/customer-order-sv
     container_name: sales-sv
     env_file:
       - .env
-      - ../../microservices/sales-sv/.env
+      - ../../microservices/customer-order-sv/.env
     depends_on:
       postgres:
         condition: service_healthy

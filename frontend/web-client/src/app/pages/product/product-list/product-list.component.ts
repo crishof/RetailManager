@@ -17,6 +17,9 @@ export class ProductListComponent {
   @Input() selectionMode: 'click' | 'dblclick' = 'click';
   @Output() selectProduct = new EventEmitter<IProduct>();
 
+  trackByProductId(index: number, product: IProduct): string {
+  return product.id;
+}
   onProductInteract(product: IProduct): void {
     this.selectProduct.emit(product);
   }

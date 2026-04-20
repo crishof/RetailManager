@@ -184,7 +184,7 @@ public class ExcelPriceItemReader {
 
         try {
             return new BigDecimal(cleaned);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             log.warn("Invalid numeric value '{}', defaulting to 0", raw);
             return BigDecimal.ZERO;
         }
