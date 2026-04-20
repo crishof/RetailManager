@@ -2,7 +2,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { IProduct } from '../../model/product.model';
 import { ProductService } from '../../services/product.service';
-import { data } from 'jquery';
 import { BrandService } from '../../services/brand.service';
 import { IBrand } from '../../model/brand.model';
 

@@ -1,0 +1,15 @@
+{
+  "routes": {
+    "/": {},
+    "/brand": {},
+    "/brand/create": {},
+    "/category": {},
+    "/customerInvoice": {},
+    "/dashboard": {},
+    "/products": {},
+    "/statementAccount": {},
+    "/supplier": {},
+    "/supplierInvoice": {},
+    "/supplierPriceList": {}
+  }
+}
