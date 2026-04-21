@@ -1,101 +1,183 @@
-<div class="container">
-  <div class="text-center my-3">
-    <h2>Brands</h2>
-    <small class="text-muted">Total: {{ totalElements }}</small>
-  </div>
+<section class="brand">
+  <header class="brand__header">
+    <div>
+      <h1 class="brand__title">Marcas</h1>
+      <p class="brand__subtitle">Gestioná catálogo de marcas, logos y mantenimiento operativo.</p>
+    </div>
+    <button class="brand__btn brand__btn--primary" type="button" (click)="openCreateModal()">
+      <span class="material-icons">add</span>
+      Nueva marca
+    </button>
+  </header>
 
-  <div class="row align-items-center mb-3">
-    <form class="col-md-6 d-flex" (ngSubmit)="searchBrand()">
+  <div class="brand__toolbar">
+    <div class="brand__search">
+      <span class="material-icons">search</span>
       <input
         type="text"
-        class="form-control me-2"
-        placeholder="Search brand by name or ID"
+        placeholder="Buscar por nombre o ID"
         [(ngModel)]="searchTerm"
         name="searchTerm"
+        (input)="searchBrand()"
       />
-      <button class="btn btn-outline-primary btn-sm" type="submit">
-        Search
-      </button>
-    </form>
-
-    <div class="col-md-2">
-      <button class="btn btn-outline-success btn-sm" (click)="toNewBrand()">
-        New Brand
-      </button>
     </div>
+    <span class="brand__total">{{ filteredBrandList.length }} de {{ totalElements }}</span>
   </div>
 
-  <div class="row">
-    <div class="col-md-8">
-      <table class="table table-striped table-hover align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th
-              scope="col"
-              tabindex="0"
-              (click)="sortColumn('id')"
-              (keydown.enter)="sortColumn('id')"
-            >
-              ID
-              @if (sortedColumn === "id") {
-                <span>{{ isAscendingOrder ? "↑" : "↓" }}</span>
-              }
-            </th>
-            <th scope="col">Logo</th>
-            <th
-              scope="col"
-              tabindex="0"
-              (click)="sortColumn('name')"
-              (keydown.enter)="sortColumn('name')"
-            >
-              Name
-              @if (sortedColumn === "name") {
-                <span>{{ isAscendingOrder ? "↑" : "↓" }}</span>
-              }
-            </th>
-          </tr>
-        </thead>
+  @if (successMessage) {
+    <div class="brand__alert brand__alert--success">{{ successMessage }}</div>
+  }
 
-        <tbody>
-          @for (brand of filteredBrandList; track brand.id) {
-            <tr
-              tabindex="0"
-              (click)="onBrandSelect(brand)"
-              (keydown.enter)="onBrandSelect(brand)"
-            >
-              <td>{{ brand.id }}</td>
-              <td>
-                <img
-                  [src]="brand.logoUrl || 'assets/images/no-image-100.png'"
-                  alt="Brand logo"
-                  width="50"
-                  height="50"
-                />
-              </td>
-              <td>{{ brand.name }}</td>
+  @if (errorMessage) {
+    <div class="brand__alert brand__alert--error">{{ errorMessage }}</div>
+  }
+
+  <div class="brand__workspace">
+    <section class="brand-panel brand-panel--list">
+      <div class="brand-table-wrap">
+        <table class="brand-table">
+          <thead>
+            <tr>
+              <th>Logo</th>
+              <th (click)="sortColumn('name')" class="brand-table__sortable">
+                Nombre
+                @if (sortedColumn === 'name') {
+                  <span>{{ isAscendingOrder ? '↑' : '↓' }}</span>
+                }
+              </th>
+              <th (click)="sortColumn('id')" class="brand-table__sortable">
+                ID
+                @if (sortedColumn === 'id') {
+                  <span>{{ isAscendingOrder ? '↑' : '↓' }}</span>
+                }
+              </th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            @if (loading) {
+              <tr>
+                <td colspan="3" class="brand-table__empty">Cargando marcas...</td>
+              </tr>
+            } @else if (filteredBrandList.length === 0) {
+              <tr>
+                <td colspan="3" class="brand-table__empty">No hay marcas para mostrar.</td>
+              </tr>
+            }
 
-    @if (createBrand) {
-      <div class="col-md-4">
-        <div class="card shadow p-2">
-          <app-brand-create (onCancel)="createBrand = false"></app-brand-create>
-        </div>
+            @for (brand of filteredBrandList; track brand.id) {
+              <tr
+                tabindex="0"
+                [class.brand-table__row--selected]="selectedBrand?.id === brand.id"
+                (click)="onBrandSelect(brand)"
+                (keydown.enter)="onBrandSelect(brand)"
+              >
+                <td>
+                  <img class="brand-table__logo" [src]="logoUrl(brand)" alt="Logo de marca" />
+                </td>
+                <td>{{ brand.name }}</td>
+                <td>{{ brand.id }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
-    }
+    </section>
 
-    @if (selectedBrand) {
-  <div class="col-md-4">
-    <div class="card shadow p-2">
-      <app-brand-details
-        [brand]="selectedBrand"
-        (brandUpdated)="onBrandUpdated($event)"
-      ></app-brand-details>
+    <section class="brand-panel brand-panel--detail">
+      @if (selectedBrand) {
+        <div class="brand-detail">
+          <img class="brand-detail__logo" [src]="logoUrl(selectedBrand)" alt="Logo seleccionado" />
+          <h2>{{ selectedBrand.name }}</h2>
+          <p class="brand-detail__id">ID: {{ selectedBrand.id }}</p>
+
+          <div class="brand-detail__metric">
+            <span>Cantidad de productos</span>
+            <strong>{{ detailLoading ? '...' : selectedBrandProducts }}</strong>
+          </div>
+
+          <div class="brand-detail__actions">
+            <button class="brand__btn" type="button" (click)="openEditModal()">
+              <span class="material-icons">edit</span>
+              Editar
+            </button>
+            <button class="brand__btn brand__btn--danger" type="button" (click)="confirmDeleteBrand()">
+              <span class="material-icons">delete_outline</span>
+              Eliminar
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="brand-detail__empty">
+          <span class="material-icons">branding_watermark</span>
+          <p>Seleccioná una marca para ver su detalle completo.</p>
+        </div>
+      }
+    </section>
+  </div>
+</section>
+
+@if (createModalOpen) {
+  <div class="brand-modal" (click)="closeCreateModal()">
+    <div class="brand-modal__dialog" (click)="$event.stopPropagation()">
+      <header class="brand-modal__header">
+        <h3>Nueva marca</h3>
+        <button type="button" (click)="closeCreateModal()"><span class="material-icons">close</span></button>
+      </header>
+
+      <form [formGroup]="createForm" (ngSubmit)="submitCreate()" class="brand-modal__form">
+        <label>
+          <span>Nombre de marca</span>
+          <input type="text" formControlName="brandName" placeholder="Ej: Samsung" />
+          @if (hasError('create', 'brandName', 'required')) {
+            <small>El nombre es obligatorio.</small>
+          }
+        </label>
+
+        <label>
+          <span>Logo (opcional)</span>
+          <input type="file" accept="image/*" (change)="onCreateLogoSelected($event)" />
+        </label>
+
+        <footer>
+          <button type="button" class="brand__btn" (click)="closeCreateModal()">Cancelar</button>
+          <button type="submit" class="brand__btn brand__btn--primary" [disabled]="savingCreate">
+            {{ savingCreate ? 'Guardando...' : 'Crear marca' }}
+          </button>
+        </footer>
+      </form>
     </div>
   </div>
 }
+
+@if (editModalOpen && selectedBrand) {
+  <div class="brand-modal" (click)="closeEditModal()">
+    <div class="brand-modal__dialog" (click)="$event.stopPropagation()">
+      <header class="brand-modal__header">
+        <h3>Editar marca</h3>
+        <button type="button" (click)="closeEditModal()"><span class="material-icons">close</span></button>
+      </header>
+
+      <form [formGroup]="editForm" (ngSubmit)="submitEdit()" class="brand-modal__form">
+        <label>
+          <span>Nombre de marca</span>
+          <input type="text" formControlName="brandName" />
+          @if (hasError('edit', 'brandName', 'required')) {
+            <small>El nombre es obligatorio.</small>
+          }
+        </label>
+
+        <label>
+          <span>Nuevo logo (opcional)</span>
+          <input type="file" accept="image/*" (change)="onEditLogoSelected($event)" />
+        </label>
+
+        <footer>
+          <button type="button" class="brand__btn" (click)="closeEditModal()">Cancelar</button>
+          <button type="submit" class="brand__btn brand__btn--primary" [disabled]="savingEdit">
+            {{ savingEdit ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </footer>
+      </form>
+    </div>
   </div>
-</div>
+}

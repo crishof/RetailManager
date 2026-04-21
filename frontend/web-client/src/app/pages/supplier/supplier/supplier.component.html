@@ -1,99 +1,147 @@
-<app-supplier-navbar></app-supplier-navbar>
+<app-supplier-navbar
+  (newSupplier)="navigateNewSupplier()"
+  (editSupplier)="navigateEditSupplier()"
+></app-supplier-navbar>
 
-<fieldset class="btn-group btn-group-sm" aria-label="Supplier tabs">
-  <button
-    *ngFor="let tab of tabs"
-    type="button"
-    class="btn btn-outline-secondary"
-    [ngClass]="{ active: selectedComponent === tab }"
-    (click)="selectedComponent = tab"
-  >
-    {{ tab }}
-  </button>
-</fieldset>
-<div class="container" id="tag-container">
-  @switch (selectedComponent) {
-    @case ("supplier") {
-      <app-supplier-details [supplier]="currentSupplier"></app-supplier-details>
-    }
-    @case ("margenes") {
-      <div>
-        <p>Margenes</p>
-      </div>
-    }
-    @case ("contactos") {
-      <div>
-        <p>Contactos</p>
-      </div>
-    }
-    @case ("inscripciones") {
-      <div>
-        <p>Numero de inscripciones</p>
-      </div>
-    }
-  }
-</div>
-<hr />
+<section class="sup">
+  <header class="sup__header">
+    <div>
+      <h1 class="sup__title">Proveedores</h1>
+      <p class="sup__subtitle">Gestioná tu base de proveedores, buscá rápido y consultá su información operativa.</p>
+    </div>
 
-<div class="container">
-  @switch (selectedComponent) {
-    @case ("supplier") {
-      <app-supplier-details [supplier]="currentSupplier"></app-supplier-details>
-    }
-    @default {
-      <p class="text-muted">Sección en construcción</p>
-    }
-  }
-</div>
+    <div class="sup__search-meta">
+      <span class="sup__chip">{{ supplierList.length }} resultado{{ supplierList.length !== 1 ? 's' : '' }}</span>
+    </div>
+  </header>
 
-<hr />
-
-<form class="row mb-3 justify-content-center" (ngSubmit)="onFormSubmit()">
-  <div class="col-md-6">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Search supplier (min 3 chars)"
-      [(ngModel)]="searchTerm"
-      name="searchTerm"
-    />
-
-    @if (isFormSubmitted && searchTerm.length < 3) {
-      <small class="text-danger">
-        Search term must be at least 3 characters long
-      </small>
-    }
-  </div>
-
-  <div class="col-md-2">
-    <button type="submit" class="btn btn-outline-primary btn-sm">Search</button>
-  </div>
-</form>
-
-<div class="table-responsive">
-  <table class="table table-hover table-sm align-middle">
-    <thead class="table-dark">
-      <tr>
-        <th>#Id</th>
-        <th>Name</th>
-        <th>Legal Name</th>
-        <th>Tax Id</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      @for (supplier of supplierList; track supplier.id) {
-        <tr
-          tabindex="0"
-          (click)="selectSupplier(supplier)"
-          (keydown.enter)="selectSupplier(supplier)"
-        >
-          <td>{{ supplier.id }}</td>
-          <td>{{ supplier.name }}</td>
-          <td>{{ supplier.legalName }}</td>
-          <td>{{ supplier.taxId }}</td>
-        </tr>
+  <form class="sup-search" (ngSubmit)="onFormSubmit()">
+    <div class="sup-search__input-wrap">
+      <span class="material-icons">search</span>
+      <input
+        type="text"
+        placeholder="Buscar proveedor por nombre o CUIT (mínimo 3 caracteres)"
+        [(ngModel)]="searchTerm"
+        name="searchTerm"
+        (input)="onSearchInput()"
+        (keyup)="onKeyUp($event)"
+      />
+      @if (searchTerm.length > 0) {
+        <button type="button" class="sup-search__clear" (click)="clearSearch()" aria-label="Limpiar búsqueda">
+          <span class="material-icons">close</span>
+        </button>
       }
-    </tbody>
-  </table>
-</div>
+    </div>
+
+    <button class="sup-search__btn" type="submit" [disabled]="loading">{{ loading ? 'Buscando...' : 'Buscar' }}</button>
+  </form>
+
+  @if (isFormSubmitted && searchTerm.trim().length > 0 && searchTerm.trim().length < 3) {
+    <div class="sup__message sup__message--warning">Ingresá al menos 3 caracteres para buscar.</div>
+  }
+
+  @if (errorMessage) {
+    <div class="sup__message sup__message--error">{{ errorMessage }}</div>
+  }
+
+  <div class="sup__workspace">
+    <section class="sup-panel sup-panel--list">
+      <div class="sup-panel__head">
+        <h2>Listado</h2>
+      </div>
+
+      <div class="sup-table-wrap">
+        <table class="sup-table">
+          <thead>
+            <tr>
+              <th>#Id</th>
+              <th>Nombre</th>
+              <th>Razón social</th>
+              <th>CUIT</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @if (loading) {
+              <tr>
+                <td colspan="4" class="sup-table__empty">Cargando proveedores...</td>
+              </tr>
+            } @else if (supplierList.length === 0) {
+              <tr>
+                <td colspan="4" class="sup-table__empty">Sin resultados para los filtros actuales.</td>
+              </tr>
+            }
+
+            @for (supplier of supplierList; track trackBySupplierId($index, supplier)) {
+              <tr
+                tabindex="0"
+                [class.sup-table__row--selected]="currentSupplier?.id === supplier.id"
+                (click)="selectSupplier(supplier)"
+                (dblclick)="navigate(supplier.id)"
+                (keydown.enter)="selectSupplier(supplier)"
+              >
+                <td>{{ supplier.id }}</td>
+                <td>{{ supplier.name }}</td>
+                <td>{{ supplier.legalName }}</td>
+                <td>{{ supplier.taxId }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sup-panel sup-panel--detail">
+      <div class="sup-tabs" role="tablist" aria-label="Supplier tabs">
+        <button
+          *ngFor="let tab of tabs"
+          type="button"
+          class="sup-tabs__btn"
+          [ngClass]="{ 'sup-tabs__btn--active': selectedComponent === tab }"
+          (click)="selectedComponent = tab"
+        >
+          {{ tab | titlecase }}
+        </button>
+      </div>
+
+      <div class="sup-detail-body">
+        @switch (selectedComponent) {
+          @case ("supplier") {
+            <app-supplier-details [supplier]="currentSupplier"></app-supplier-details>
+          }
+          @case ("margenes") {
+            <div class="sup-placeholder">
+              <span class="material-icons">percent</span>
+              <p>Sección de márgenes disponible para esta vista.</p>
+            </div>
+          }
+          @case ("contactos") {
+            <div class="sup-placeholder">
+              <span class="material-icons">contact_phone</span>
+              <p>Sección de contactos disponible para esta vista.</p>
+            </div>
+          }
+          @case ("inscripciones") {
+            <div class="sup-placeholder">
+              <span class="material-icons">badge</span>
+              <p>Sección de inscripciones disponible para esta vista.</p>
+            </div>
+          }
+        }
+      </div>
+    </section>
+  </div>
+</section>
+
+@if (supplierModalOpen) {
+  <div class="sup-modal" (click)="closeSupplierModal()">
+    <div class="sup-modal__dialog" (click)="$event.stopPropagation()">
+      <app-supplier-form
+        [modalMode]="true"
+        [supplierIdInput]="supplierModalId"
+        (saved)="onSupplierSaved()"
+        (cancelled)="closeSupplierModal()"
+      ></app-supplier-form>
+    </div>
+  </div>
+}

@@ -1,72 +1,260 @@
-<div class="container">
-  <table class="table table-striped table-hover align-middle">
-    <thead class="table-dark">
-      <tr>
-        <th scope="col">#Id</th>
-        <th scope="col">Name</th>
-        <th scope="col">Image</th>
-        <th scope="col">Details</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        *ngFor="let category of categoryList; let i = index"
-        (click
-        |
-        onkeypress)="showDetails(category)"
-        tabindex="0"
-      >
-        <td>{{ category.id }}</td>
-        <td>{{ category.name }}</td>
-        <td>
-          <img [src]="getImageUrl(category)" alt="" width="50" height="50" />
-        </td>
-        <td>
-          <button
-            class="btn btn-outline-primary btn-sm"
-            (click)="openCategoryEditDialog(); $event.stopPropagation()"
-          >
-            Edit
-          </button>
-          <button
-            class="btn btn-outline-secondary btn-sm ms-1"
-            (click)="navigateToDetails(category.id); $event.stopPropagation()"
-          >
-            Details
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<section class="cat">
+  <header class="cat__header">
+    <div>
+      <h1 class="cat__title">Categorías</h1>
+      <p class="cat__subtitle">Administrá estructura jerárquica, imagen y medidas por categoría.</p>
+    </div>
+    <button class="cat__btn cat__btn--primary" type="button" (click)="openCreateModal()">
+      <span class="material-icons">add</span>
+      Nueva categoría
+    </button>
+  </header>
 
-<!-- Modal para Category Details -->
-<div
-  class="modal fade modal-dialog-scrollable"
-  id="categoryDetailsModal"
-  tabindex="-1"
-  aria-labelledby="categoryDetailsModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="categoryDetailsModalLabel">
-          Category Details
-        </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+  <div class="cat__toolbar">
+    <div class="cat__search">
+      <span class="material-icons">search</span>
+      <input
+        type="text"
+        placeholder="Buscar por nombre o ID"
+        [(ngModel)]="searchTerm"
+        (input)="searchCategory()"
+      />
+    </div>
+    <span class="cat__total">{{ filteredCategoryList.length }} de {{ totalElements }}</span>
+  </div>
+
+  @if (successMessage) {
+    <div class="cat__alert cat__alert--success">{{ successMessage }}</div>
+  }
+
+  @if (errorMessage) {
+    <div class="cat__alert cat__alert--error">{{ errorMessage }}</div>
+  }
+
+  <div class="cat__workspace">
+    <section class="cat-panel cat-panel--list">
+      <div class="cat-table-wrap">
+        <table class="cat-table">
+          <thead>
+            <tr>
+              <th>Imagen</th>
+              <th>Nombre</th>
+              <th>ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (loading) {
+              <tr>
+                <td colspan="3" class="cat-table__empty">Cargando categorías...</td>
+              </tr>
+            } @else if (filteredCategoryList.length === 0) {
+              <tr>
+                <td colspan="3" class="cat-table__empty">No hay categorías para mostrar.</td>
+              </tr>
+            }
+
+            @for (category of filteredCategoryList; track trackByCategoryId($index, category)) {
+              <tr
+                tabindex="0"
+                [class.cat-table__row--selected]="selectedCategory?.id === category.id"
+                (click)="showDetails(category)"
+                (keydown.enter)="showDetails(category)"
+              >
+                <td><img class="cat-table__image" [src]="getImageUrl(category)" alt="Imagen de categoría" /></td>
+                <td>{{ category.name }}</td>
+                <td>{{ category.id }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
-      <div class="modal-body">
-        <app-category-details
-          [selectedCategory]="selectedCategory"
-          (categoryUpdated)="loadCategories()"
-        ></app-category-details>
+    </section>
+
+    <section class="cat-panel cat-panel--tree">
+      <header class="cat-panel__head">
+        <h2>Árbol jerárquico</h2>
+      </header>
+
+      <div class="cat-tree">
+        @if (categoryTree.length === 0) {
+          <p class="cat-tree__empty">Sin estructura jerárquica disponible.</p>
+        }
+
+        <ng-template #treeNode let-node>
+          <li>
+            <button type="button" class="cat-tree__node" (click)="showDetails(node)">
+              <span class="material-icons">folder</span>
+              <span>{{ node.name }}</span>
+            </button>
+            @if (node.children?.length) {
+              <ul>
+                @for (child of node.children; track child.id) {
+                  <ng-container *ngTemplateOutlet="treeNode; context: { $implicit: child }"></ng-container>
+                }
+              </ul>
+            }
+          </li>
+        </ng-template>
+
+        <ul>
+          @for (node of categoryTree; track node.id) {
+            <ng-container *ngTemplateOutlet="treeNode; context: { $implicit: node }"></ng-container>
+          }
+        </ul>
       </div>
+    </section>
+
+    <section class="cat-panel cat-panel--detail">
+      @if (selectedCategory) {
+        <div class="cat-detail">
+          <img class="cat-detail__image" [src]="getImageUrl(selectedCategory)" alt="Imagen seleccionada" />
+          <h2>{{ selectedCategory.name }}</h2>
+          <p class="cat-detail__id">ID: {{ selectedCategory.id }}</p>
+
+          <div class="cat-detail__metric">
+            <span>Productos en categoría</span>
+            <strong>{{ detailLoading ? '...' : selectedCategoryProducts }}</strong>
+          </div>
+
+          <div class="cat-detail__measures">
+            <h3>Medidas</h3>
+            <p>
+              {{ selectedCategory.width ?? '-' }} x {{ selectedCategory.height ?? '-' }} x {{ selectedCategory.depth ?? '-' }}
+              {{ selectedCategory.unit || 'cm' }}
+            </p>
+          </div>
+
+          <div class="cat-detail__actions">
+            <button class="cat__btn" type="button" (click)="openEditModal()">
+              <span class="material-icons">edit</span>
+              Editar
+            </button>
+            <button class="cat__btn cat__btn--danger" type="button" (click)="confirmDeleteCategory()">
+              <span class="material-icons">delete_outline</span>
+              Eliminar
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="cat-detail__empty">
+          <span class="material-icons">category</span>
+          <p>Seleccioná una categoría para ver y editar su detalle.</p>
+        </div>
+      }
+    </section>
+  </div>
+</section>
+
+@if (createModalOpen) {
+  <div class="cat-modal" (click)="closeCreateModal()">
+    <div class="cat-modal__dialog" (click)="$event.stopPropagation()">
+      <header class="cat-modal__header">
+        <h3>Nueva categoría</h3>
+        <button type="button" (click)="closeCreateModal()"><span class="material-icons">close</span></button>
+      </header>
+
+      <form [formGroup]="createForm" (ngSubmit)="submitCreate()" class="cat-modal__form">
+        <label>
+          <span>Nombre</span>
+          <input type="text" formControlName="name" placeholder="Ej: Celulares" />
+          @if (hasError('create', 'name', 'required')) {
+            <small>El nombre es obligatorio.</small>
+          }
+        </label>
+
+        <label>
+          <span>Categoría padre (opcional)</span>
+          <select formControlName="parentId">
+            <option value="">Sin padre (nivel raíz)</option>
+            @for (option of moveOptions; track trackByOptionId($index, option)) {
+              <option [value]="option.id">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+
+        <div class="cat-modal__measure-grid">
+          <label><span>Ancho</span><input type="number" min="0" step="0.01" formControlName="width" /></label>
+          <label><span>Alto</span><input type="number" min="0" step="0.01" formControlName="height" /></label>
+          <label><span>Profundidad</span><input type="number" min="0" step="0.01" formControlName="depth" /></label>
+          <label>
+            <span>Unidad</span>
+            <select formControlName="unit">
+              <option value="cm">cm</option>
+              <option value="mm">mm</option>
+              <option value="m">m</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          <span>Imagen (opcional)</span>
+          <input type="file" accept="image/*" (change)="onCreateImageSelected($event)" />
+        </label>
+
+        <footer>
+          <button type="button" class="cat__btn" (click)="closeCreateModal()">Cancelar</button>
+          <button type="submit" class="cat__btn cat__btn--primary" [disabled]="savingCreate">
+            {{ savingCreate ? 'Guardando...' : 'Crear categoría' }}
+          </button>
+        </footer>
+      </form>
     </div>
   </div>
-</div>
+}
+
+@if (editModalOpen && selectedCategory) {
+  <div class="cat-modal" (click)="closeEditModal()">
+    <div class="cat-modal__dialog" (click)="$event.stopPropagation()">
+      <header class="cat-modal__header">
+        <h3>Editar categoría</h3>
+        <button type="button" (click)="closeEditModal()"><span class="material-icons">close</span></button>
+      </header>
+
+      <form [formGroup]="editForm" (ngSubmit)="submitEdit()" class="cat-modal__form">
+        <label>
+          <span>Nombre</span>
+          <input type="text" formControlName="name" />
+          @if (hasError('edit', 'name', 'required')) {
+            <small>El nombre es obligatorio.</small>
+          }
+        </label>
+
+        <label>
+          <span>Mover a categoría padre</span>
+          <select formControlName="newParentId">
+            <option value="">Sin padre (nivel raíz)</option>
+            @for (option of moveOptions; track trackByOptionId($index, option)) {
+              <option [value]="option.id" [disabled]="!canMoveTo(option.id)">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+
+        <div class="cat-modal__measure-grid">
+          <label><span>Ancho</span><input type="number" min="0" step="0.01" formControlName="width" /></label>
+          <label><span>Alto</span><input type="number" min="0" step="0.01" formControlName="height" /></label>
+          <label><span>Profundidad</span><input type="number" min="0" step="0.01" formControlName="depth" /></label>
+          <label>
+            <span>Unidad</span>
+            <select formControlName="unit">
+              <option value="cm">cm</option>
+              <option value="mm">mm</option>
+              <option value="m">m</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          <span>Nueva imagen (opcional)</span>
+          <input type="file" accept="image/*" (change)="onEditImageSelected($event)" />
+        </label>
+
+        <footer>
+          <button type="button" class="cat__btn" (click)="closeEditModal()">Cancelar</button>
+          <button type="submit" class="cat__btn cat__btn--primary" [disabled]="savingEdit">
+            {{ savingEdit ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}

@@ -1,44 +1,69 @@
-<div class="container">
-  <!-- 
+@if (supplier) {
+  <section class="sdetail">
+    <header class="sdetail__header">
+      <h3>{{ supplier.name }}</h3>
+      <span>ID {{ supplier.id }}</span>
+    </header>
 
-    @if (loading) {
-      <h5>Loading....</h5>
-    } @if (!loading) {
-    }
-  -->
+    <div class="sdetail__grid">
+      <article class="sdetail__card">
+        <h4>Datos fiscales</h4>
+        <dl>
+          <div>
+            <dt>Razón social</dt>
+            <dd>{{ supplier.legalName }}</dd>
+          </div>
+          <div>
+            <dt>CUIT</dt>
+            <dd>{{ supplier.taxId }}</dd>
+          </div>
+          <div>
+            <dt>Categoría impositiva</dt>
+            <dd>Sin dato</dd>
+          </div>
+        </dl>
+      </article>
 
-  <div class="container">
-    <div class="row">
-      <div class="col-md-3">
-        <p>Id : {{ supplier?.id }}</p>
-        <p>Mi numero de cliente</p>
-        <p>Name : {{ supplier?.name }}</p>
-        <p>Legal Name : {{ supplier?.legalName }}</p>
-        <p>Domicilio</p>
-        <p>Codigo Postal</p>
-        <p>Localidad</p>
-        <p>Provincia</p>
-        <p>Pais</p>
-        <p>Tax Id : {{ supplier?.taxId }}</p>
-        <p>Categoría impositiva</p>
-      </div>
-      <div class="col-md-3">
-        <p>Codigo de area</p>
-        <p>telefono</p>
-        <p>movil</p>
-        <p>email</p>
-        <p>web</p>
-        <p>viajante</p>
-      </div>
-      <div class="col-md-3">
-        <p>Valor dolar</p>
-        <p>id comision</p>
-        <p>id prodeedor remoto</p>
-        <p>fecha lista</p>
-        <p>fecha costo</p>
-        <p>Cuenta corriente valuada en</p>
-        <p>Datos extras</p>
-      </div>
+      <article class="sdetail__card">
+        <h4>Contacto</h4>
+        <dl>
+          <div>
+            <dt>Teléfono</dt>
+            <dd>Sin dato</dd>
+          </div>
+          <div>
+            <dt>Email</dt>
+            <dd>Sin dato</dd>
+          </div>
+          <div>
+            <dt>Web</dt>
+            <dd>Sin dato</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="sdetail__card">
+        <h4>Operación</h4>
+        <dl>
+          <div>
+            <dt>Viajante</dt>
+            <dd>Sin dato</dd>
+          </div>
+          <div>
+            <dt>Última lista de costos</dt>
+            <dd>Sin dato</dd>
+          </div>
+          <div>
+            <dt>Proveedor remoto</dt>
+            <dd>Sin dato</dd>
+          </div>
+        </dl>
+      </article>
     </div>
+  </section>
+} @else {
+  <div class="sdetail__empty">
+    <span class="material-icons">storefront</span>
+    <p>Seleccioná un proveedor para ver su ficha.</p>
   </div>
-</div>
+}

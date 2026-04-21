@@ -1,10 +1,11 @@
 import { CommonModule, NgClass } from "@angular/common";
-import { Component, OnInit, inject } from "@angular/core";
+import { Component, HostListener, OnDestroy, OnInit, inject } from "@angular/core";
 import { ISupplier } from "../../../model/supplier.model";
 import { Router } from "@angular/router";
 import { SupplierService } from "../../../services/supplier.service";
 import { SupplierNavbarComponent } from "../supplier-navbar/supplier-navbar.component";
 import { SupplierDetailsComponent } from "../supplier-details/supplier-details.component";
+import { SupplierFormComponent } from "../supplier-form/supplier-form.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Subscription } from "rxjs";
 
@@ -17,6 +18,7 @@ type SupplierTab = "supplier" | "margenes" | "contactos" | "inscripciones";
     CommonModule,
     SupplierNavbarComponent,
     SupplierDetailsComponent,
+    SupplierFormComponent,
     FormsModule,
     ReactiveFormsModule,
     NgClass,
@@ -24,7 +26,7 @@ type SupplierTab = "supplier" | "margenes" | "contactos" | "inscripciones";
   templateUrl: "./supplier.component.html",
   styleUrl: "./supplier.component.css",
 })
-export class SupplierComponent implements OnInit {
+export class SupplierComponent implements OnInit, OnDestroy {
   private readonly supplierService = inject(SupplierService);
   private readonly router = inject(Router);
 
@@ -33,8 +35,12 @@ export class SupplierComponent implements OnInit {
 
   searchTerm = "";
   isFormSubmitted = false;
+  loading = false;
+  errorMessage = "";
 
   selectedComponent: SupplierTab = "supplier";
+  supplierModalOpen = false;
+  supplierModalId: string | null = null;
 
   readonly tabs: SupplierTab[] = [
     "supplier",
@@ -50,10 +56,19 @@ export class SupplierComponent implements OnInit {
   }
 
   loadAllSuppliers(): void {
+    this.loading = true;
+    this.errorMessage = "";
     this.subscription?.unsubscribe();
     this.subscription = this.supplierService.getSuppliers().subscribe({
-      next: (data) => (this.supplierList = data),
-      error: (err) => console.error("Error loading suppliers", err),
+      next: (data) => {
+        this.supplierList = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error("Error loading suppliers", err);
+        this.errorMessage = "No se pudieron cargar los proveedores.";
+        this.loading = false;
+      },
     });
   }
 
@@ -65,19 +80,46 @@ export class SupplierComponent implements OnInit {
 
   onFormSubmit(): void {
     this.isFormSubmitted = true;
+    const search = this.searchTerm.trim();
 
-    if (this.searchTerm.length < 3) {
+    if (search.length === 0) {
+      this.loadAllSuppliers();
+      return;
+    }
+
+    if (search.length < 3) {
       this.supplierList = [];
       return;
     }
 
+    this.loading = true;
+    this.errorMessage = "";
     this.subscription?.unsubscribe();
     this.subscription = this.supplierService
-      .getSuppliers(this.searchTerm)
+      .getSuppliers(search)
       .subscribe({
-        next: (data) => (this.supplierList = data),
-        error: (err) => console.error("Error searching suppliers", err),
+        next: (data) => {
+          this.supplierList = data;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error("Error searching suppliers", err);
+          this.errorMessage = "No se pudo realizar la búsqueda.";
+          this.loading = false;
+        },
       });
+  }
+
+  onSearchInput(): void {
+    if (this.searchTerm.length === 0 && this.isFormSubmitted) {
+      this.loadAllSuppliers();
+    }
+  }
+
+  clearSearch(): void {
+    this.searchTerm = "";
+    this.isFormSubmitted = false;
+    this.loadAllSuppliers();
   }
 
   selectSupplier(supplier: ISupplier): void {
@@ -85,7 +127,43 @@ export class SupplierComponent implements OnInit {
     this.currentSupplier = supplier;
   }
 
+  navigateNewSupplier(): void {
+    this.supplierModalId = null;
+    this.supplierModalOpen = true;
+  }
+
+  navigateEditSupplier(): void {
+    if (!this.currentSupplier) return;
+    this.supplierModalId = this.currentSupplier.id;
+    this.supplierModalOpen = true;
+  }
+
+  closeSupplierModal(): void {
+    this.supplierModalOpen = false;
+    this.supplierModalId = null;
+  }
+
+  @HostListener("document:keydown.escape")
+  onEscape(): void {
+    if (this.supplierModalOpen) {
+      this.closeSupplierModal();
+    }
+  }
+
+  onSupplierSaved(): void {
+    this.closeSupplierModal();
+    this.loadAllSuppliers();
+  }
+
+  trackBySupplierId(_: number, supplier: ISupplier): string {
+    return supplier.id;
+  }
+
   navigate(id: string): void {
     this.router.navigate(["/supplier", id]);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 }

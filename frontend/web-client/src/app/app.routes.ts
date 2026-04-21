@@ -11,6 +11,7 @@ import { CategoryComponent } from './pages/category/category/category.component'
 import { CategoryDetailsComponent } from './pages/category/category-details/category-details.component';
 import { SupplierComponent } from './pages/supplier/supplier/supplier.component';
 import { SupplierDetailsComponent } from './pages/supplier/supplier-details/supplier-details.component';
+import { SupplierFormComponent } from './pages/supplier/supplier-form/supplier-form.component';
 import { SupplierInvoiceComponent } from './pages/supplier/supplier-invoice/supplier-invoice.component';
 import { StatementOfAccountComponent } from './pages/supplier/statement-of-account/statement-of-account.component';
 import { SupplierPriceListComponent } from './pages/supplier-price-list/supplier-price-list.component';
@@ -45,6 +46,8 @@ export const routes: Routes = [
 
   // ── Proveedores ────────────────────────────────────
   { path: 'supplier',             component: SupplierComponent },
+  { path: 'supplier/new',         component: SupplierFormComponent },
+  { path: 'supplier/:id/edit',    component: SupplierFormComponent },
   { path: 'supplier/:id',         component: SupplierDetailsComponent },
   { path: 'supplierInvoice',      component: SupplierInvoiceComponent },
   { path: 'supplierPriceList',    component: SupplierPriceListComponent },

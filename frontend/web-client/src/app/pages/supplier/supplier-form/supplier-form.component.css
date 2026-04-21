@@ -1,0 +1,165 @@
+:host {
+  display: block;
+}
+
+.sform {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: grid;
+  gap: .9rem;
+}
+
+.sform__header h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #0f172a;
+}
+
+.sform__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+.sform__header p {
+  margin: .3rem 0 0;
+  color: #64748b;
+  font-size: .86rem;
+}
+
+.sform__close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dbe2ea;
+  border-radius: .5rem;
+  background: #fff;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sform__close:hover {
+  border-color: #94a3b8;
+  color: #334155;
+}
+
+.sform__close .material-icons {
+  font-size: 1rem;
+}
+
+.sform__card {
+  border: 1px solid #dbe2ea;
+  border-radius: .95rem;
+  background: #fff;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, .08);
+  padding: .95rem;
+}
+
+.sform__grid {
+  display: grid;
+  gap: .8rem;
+}
+
+.sform__field {
+  display: grid;
+  gap: .32rem;
+}
+
+.sform__field span {
+  font-size: .76rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+.sform__field input {
+  height: 38px;
+  border: 1px solid #dbe2ea;
+  border-radius: .6rem;
+  padding: 0 .72rem;
+  font-size: .84rem;
+  color: #0f172a;
+  font-family: inherit;
+}
+
+.sform__field input:focus {
+  outline: none;
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, .14);
+}
+
+.sform__field small {
+  color: #b91c1c;
+  font-size: .72rem;
+}
+
+.sform__alert {
+  border-radius: .6rem;
+  padding: .55rem .7rem;
+  border: 1px solid;
+  font-size: .8rem;
+}
+
+.sform__alert--error {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.sform__alert--success {
+  background: #ecfdf5;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.sform__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+  margin-top: .25rem;
+}
+
+.sform__btn {
+  height: 36px;
+  border-radius: .6rem;
+  padding: 0 .8rem;
+  border: 1px solid #dbe2ea;
+  background: #fff;
+  color: #334155;
+  font-size: .78rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sform__btn--ghost:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.sform__btn--primary {
+  background: #0f766e;
+  color: #fff;
+  border-color: #0f766e;
+}
+
+.sform__btn--primary:hover:not(:disabled) {
+  background: #115e59;
+  border-color: #115e59;
+}
+
+.sform__btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.sform__loading {
+  margin: 0;
+  color: #64748b;
+  font-size: .84rem;
+}

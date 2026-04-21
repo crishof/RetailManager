@@ -3,6 +3,12 @@ import { ISupplier } from "../model/supplier.model";
 import { BehaviorSubject, Observable } from "rxjs";
 import { HttpClient, HttpParams } from "@angular/common/http";
 
+interface SupplierPayload {
+  name: string;
+  legalName: string;
+  taxId: string;
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -39,6 +45,17 @@ export class SupplierService {
     return this._http.get<ISupplier>(`${this._urlBase}/by-name`, {
       params,
     });
+  }
+
+  // ============================
+  // CREATE / UPDATE
+  // ============================
+  createSupplier(payload: SupplierPayload): Observable<ISupplier> {
+    return this._http.post<ISupplier>(this._urlBase, payload);
+  }
+
+  updateSupplier(id: string, payload: SupplierPayload): Observable<ISupplier> {
+    return this._http.patch<ISupplier>(`${this._urlBase}/${id}`, payload);
   }
 
   // ============================

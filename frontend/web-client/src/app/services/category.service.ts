@@ -4,6 +4,13 @@ import { Observable, Subject, tap } from "rxjs";
 import { ICategory } from "../model/category.model";
 import { PageResponse } from "../model/PageResponse";
 
+interface CategoryMeasures {
+  width?: number | null;
+  height?: number | null;
+  depth?: number | null;
+  unit?: string | null;
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -21,6 +28,7 @@ export class CategoryService {
     name: string,
     parentId?: string,
     logo?: File,
+    measures?: CategoryMeasures,
   ): Observable<ICategory> {
     const formData = new FormData();
     formData.append("name", name);
@@ -31,6 +39,13 @@ export class CategoryService {
 
     if (logo) {
       formData.append("logo", logo, logo.name);
+    }
+
+    if (measures) {
+      if (measures.width != null) formData.append("width", String(measures.width));
+      if (measures.height != null) formData.append("height", String(measures.height));
+      if (measures.depth != null) formData.append("depth", String(measures.depth));
+      if (measures.unit) formData.append("unit", measures.unit);
     }
 
     return this._http
@@ -70,6 +85,7 @@ export class CategoryService {
     id: string,
     name?: string,
     logo?: File,
+    measures?: CategoryMeasures,
   ): Observable<ICategory> {
     const formData = new FormData();
 
@@ -79,6 +95,13 @@ export class CategoryService {
 
     if (logo) {
       formData.append("logo", logo, logo.name);
+    }
+
+    if (measures) {
+      if (measures.width != null) formData.append("width", String(measures.width));
+      if (measures.height != null) formData.append("height", String(measures.height));
+      if (measures.depth != null) formData.append("depth", String(measures.depth));
+      if (measures.unit) formData.append("unit", measures.unit);
     }
 
     return this._http

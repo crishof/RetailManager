@@ -1,199 +1,303 @@
-<div class="container">
-  <div class="row">
-    <div class="col card shadow m-3 p-3">
-      <h2>Search Products</h2>
-      <form
-        #brandForm="ngForm"
-        (ngSubmit)="searchProducts()"
-        class="mb-3 text-center"
-      >
-        <select
-          class="form-control form-control-sm mb-2"
-          name="supplierId"
-          [ngModel]="selectedSupplierId"
-          (ngModelChange)="onSupplierChange($event)"
-        >
-          <option value="">All Suppliers</option>
-          @for (supplier of suppliers; track supplier) {
-            <option [value]="supplier.id">
-              {{ supplier.name }}
-            </option>
-          }
-        </select>
+<section class="spl">
+  <header class="spl__header">
+    <div>
+      <h1 class="spl__title">Lista de Precios del Proveedor</h1>
+      <p class="spl__subtitle">Buscá por proveedor y marca, importá desde Excel y revisá el detalle completo del producto.</p>
+    </div>
+    <div class="spl__kpis">
+      <div class="spl__kpi">
+        <span>Resultados</span>
+        <strong>{{ productList.length }}</strong>
+      </div>
+      <div class="spl__kpi spl__kpi--accent">
+        <span>Seleccionados</span>
+        <strong>{{ selectedProducts.length }}</strong>
+      </div>
+    </div>
+  </header>
 
-        <select
-          class="form-control form-control-sm mb-2"
-          name="brand"
-          [(ngModel)]="selectedBrand"
-        >
-          <option value="">All Brands</option>
-          @for (brand of brands; track brand) {
-            <option [value]="brand">
-              {{ brand }}
-            </option>
-          }
-        </select>
+  @if (successMessage || errorMessage || warningMessage) {
+    <div class="spl__alerts">
+      @if (successMessage) {
+        <div class="spl__alert spl__alert--success">{{ successMessage }}</div>
+      }
+      @if (errorMessage) {
+        <div class="spl__alert spl__alert--error">{{ errorMessage }}</div>
+      }
+      @if (warningMessage) {
+        <div class="spl__alert spl__alert--warning">{{ warningMessage }}</div>
+      }
+    </div>
+  }
 
-        <div class="form-group d-flex">
-          <input
-            type="text"
-            class="form-control row-8 flex-grow-1"
-            id="searchTerm"
-            placeholder="Enter search term and press enter to search"
-            [(ngModel)]="searchTerm"
-            name="searchTerm"
-            (keyup.enter)="searchProducts()"
-          />
+  <div class="spl__top-grid">
+    <article class="spl-card">
+      <div class="spl-card__head">
+        <h2>Buscador</h2>
+        <button type="button" class="spl-btn spl-btn--ghost" (click)="searchProducts()">
+          <span class="material-icons">refresh</span>
+          Actualizar
+        </button>
+      </div>
 
-          <button type="submit" class="btn btn-outline-primary btn-sm">
-            Search
+      <form class="spl-filter" (ngSubmit)="searchProducts()">
+        <label class="spl-field">
+          <span>Proveedor</span>
+          <select
+            name="supplierId"
+            [ngModel]="selectedSupplierId"
+            (ngModelChange)="onSupplierChange($event)"
+          >
+            <option value="">Todos los proveedores</option>
+            @for (supplier of suppliers; track supplier.id) {
+              <option [value]="supplier.id">{{ supplier.name }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="spl-field">
+          <span>Marca</span>
+          <select
+            name="brand"
+            [ngModel]="selectedBrand"
+            (ngModelChange)="onBrandChange($event)"
+          >
+            <option value="">Todas las marcas</option>
+            @for (brand of brands; track brand) {
+              <option [value]="brand">{{ brand }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="spl-field spl-field--search">
+          <span>Búsqueda libre</span>
+          <div class="spl-search">
+            <span class="material-icons">search</span>
+            <input
+              type="text"
+              id="searchTerm"
+              placeholder="Código, modelo o descripción"
+              [(ngModel)]="searchTerm"
+              name="searchTerm"
+              (keyup.enter)="searchProducts()"
+            />
+          </div>
+        </label>
+
+        <div class="spl-filter__actions">
+          <button type="submit" class="spl-btn spl-btn--primary" [disabled]="loadingSearch">
+            <span class="material-icons">manage_search</span>
+            {{ loadingSearch ? 'Buscando...' : 'Buscar' }}
+          </button>
+          <button
+            type="button"
+            class="spl-btn spl-btn--success"
+            [disabled]="loadingImportSelection || selectedProducts.length === 0"
+            (click)="importSelectedProducts()"
+          >
+            <span class="material-icons">publish</span>
+            {{ loadingImportSelection ? 'Importando...' : 'Importar seleccionados' }}
           </button>
         </div>
       </form>
+    </article>
 
-      <button
-        class="btn btn-outline-success"
-        (click)="importSelectedProducts()"
-      >
-        Import products
-      </button>
-    </div>
-
-    <div class="col card shadow m-3 p-3">
-      <h2>Details</h2>
-      <div class="row">
-        <div class="row">
-          @if (selectedBrand.length > 0) {
-            <p class="card bg-secondary text-light">{{ selectedBrand }}</p>
-          }
-        </div>
-        @if (productList.length > 0) {
-          <p>{{ productList.length }} products found</p>
-        }
+    <article class="spl-card">
+      <div class="spl-card__head">
+        <h2>Importar Excel</h2>
       </div>
-      @if (successMessage) {
-        <div class="card bg-success text-light">
-          <h5>{{ successMessage }}</h5>
-        </div>
-      }
-      @if (errorMessage) {
-        <div class="card bg-danger text-light">
-          <h5>{{ errorMessage }}</h5>
-        </div>
-      }
-      @if (warningMessage) {
-        <div class="card bg-warning text-light">
-          <h5>{{ warningMessage }}</h5>
-        </div>
-      }
-    </div>
 
-    <div class="col card shadow m-3 p-3">
-      <h2>Upload Price List</h2>
-      <form
-        [formGroup]="fileForm"
-        enctype="multipart/form-data"
-        class="g-3"
-        (submit)="uploadFile($event)"
-      >
-        <div class="mb-3">
-          <select
-            class="form-control form-control-sm mb-2"
-            formControlName="supplierId"
-          >
-            <option value="">All Suppliers</option>
-            @for (supplier of suppliers; track supplier) {
-              <option [value]="supplier.id">
-                {{ supplier.name }}
-              </option>
+      <form [formGroup]="fileForm" (submit)="uploadFile($event)" class="spl-upload" enctype="multipart/form-data">
+        <label class="spl-field">
+          <span>Proveedor</span>
+          <select formControlName="supplierId">
+            <option value="">Seleccionar proveedor</option>
+            @for (supplier of suppliers; track supplier.id) {
+              <option [value]="supplier.id">{{ supplier.name }}</option>
             }
           </select>
-        </div>
-        <div class="mb-3">
-          <label for="file" class="form-label">Upload Price List</label>
+        </label>
+
+        <label class="spl-upload__dropzone" for="supplierPriceFile">
           <input
+            id="supplierPriceFile"
             type="file"
-            class="form-control"
-            id="file"
+            accept=".xlsx,.xls"
             (change)="onFileSelected($event)"
           />
-        </div>
+          <span class="material-icons">upload_file</span>
+          <strong>Arrastrá o elegí un archivo Excel</strong>
+          <small>Formatos permitidos: .xlsx y .xls</small>
+          @if (selectedFileName) {
+            <em>{{ selectedFileName }}</em>
+          }
+        </label>
 
-        <div class="mb-3 form-check">
-          <input
-            type="checkbox"
-            class="form-check-input"
-            id="updateExistingProducts"
-            formControlName="updateExistingProducts"
-          />
-          <label class="form-check-label" for="updateExistingProducts"
-            >Update existing products</label
-          >
-        </div>
+        <label class="spl-check">
+          <input type="checkbox" formControlName="updateExistingProducts" />
+          <span>Actualizar productos existentes</span>
+        </label>
 
-        <button type="submit" class="btn btn-outline-success">Submit</button>
+        <button type="submit" class="spl-btn spl-btn--primary" [disabled]="loadingUpload || !selectedFile">
+          <span class="material-icons">file_upload</span>
+          {{ loadingUpload ? 'Subiendo...' : 'Importar archivo' }}
+        </button>
       </form>
-    </div>
+    </article>
   </div>
-</div>
 
-<div class="container-fluid">
-  <div class="table-responsive" id="table-container">
-    <table class="table table-stripped table-hover align-middle table-sm">
-      <thead class="table-dark">
-        <tr>
-          <th scope="col">
-            <input type="checkbox" (change)="selectAllProducts($event)" />
-          </th>
-          <th scope="col">#Id</th>
-          <th scope="col">Brand</th>
-          <th scope="col">Code</th>
-          <th scope="col">Model</th>
-          <th scope="col">Description</th>
-          <th scope="col">Category</th>
-          <th scope="col">Date</th>
-          <th scope="col">Price</th>
-          <th scope="col">Selling Price</th>
-          <th scope="col">Web Price</th>
-          <th scope="col">Stock</th>
-          <th scope="col">Barcode</th>
-          <th scope="col">currency</th>
-          <th class="nowrap" scope="col">Tax Rate</th>
-        </tr>
-      </thead>
+  <div class="spl__workspace">
+    <article class="spl-card spl-card--table">
+      <div class="spl-table-wrap">
+        <table class="spl-table">
+          <thead>
+            <tr>
+              <th>
+                <input type="checkbox" [checked]="allSelected" (change)="selectAllProducts($event)" />
+              </th>
+              <th>
+                <button type="button" class="spl-table__sort" (click)="sortBy('brand')">
+                  Marca
+                  <span class="material-icons">{{ sortIcon('brand') }}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" class="spl-table__sort" (click)="sortBy('code')">
+                  Código
+                  <span class="material-icons">{{ sortIcon('code') }}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" class="spl-table__sort" (click)="sortBy('model')">
+                  Modelo
+                  <span class="material-icons">{{ sortIcon('model') }}</span>
+                </button>
+              </th>
+              <th>Descripción</th>
+              <th>
+                <button type="button" class="spl-table__sort" (click)="sortBy('category')">
+                  Categoría
+                  <span class="material-icons">{{ sortIcon('category') }}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" class="spl-table__sort" (click)="sortBy('price')">
+                  Precio costo
+                  <span class="material-icons">{{ sortIcon('price') }}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" class="spl-table__sort" (click)="sortBy('suggestedPrice')">
+                  Precio sugerido
+                  <span class="material-icons">{{ sortIcon('suggestedPrice') }}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" class="spl-table__sort" (click)="sortBy('lastUpdate')">
+                  Actualización
+                  <span class="material-icons">{{ sortIcon('lastUpdate') }}</span>
+                </button>
+              </th>
+              <th>Stock</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (loadingSearch) {
+              <tr>
+                <td colspan="10" class="spl-table__empty">Buscando productos...</td>
+              </tr>
+            } @else if (productList.length === 0) {
+              <tr>
+                <td colspan="10" class="spl-table__empty">Sin resultados para los filtros seleccionados.</td>
+              </tr>
+            }
 
-      <tbody>
-        @for (product of productList; track product; let i = $index) {
-          <tr
-            tabindex="0"
-            (click)="toggleSelection($event, product)"
-            (keydown.enter)="toggleSelection($event, product)"
-            (keydown.space)="toggleSelection($event, product)"
-          >
-            <td>
-              <input
-                type="checkbox"
-                (change)="toggleSelection($event, product)"
-                [checked]="isSelected(product)"
-              />
-            </td>
-            <td id="id">{{ product.id }}</td>
-            <td>{{ product.brand }}</td>
-            <td>{{ product.code }}</td>
-            <td>{{ product.model }}</td>
-            <td class="description-cell">{{ product.description }}</td>
-            <td>{{ product.category }}</td>
-            <td>{{ product.lastUpdate }}</td>
-            <td>{{ product.price }}</td>
-            <td>{{ product.suggestedPrice | currency }}</td>
-            <td>{{ product.suggestedWebPrice | currency }}</td>
-            <td>{{ product.stockAvailable }}</td>
-            <td>{{ product.barcode }}</td>
-            <td>{{ product.currency }}</td>
-            <td>{{ product.taxRate * 100 }} %</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+            @for (product of pagedProducts; track trackByProductId($index, product)) {
+              <tr
+                tabindex="0"
+                [class.spl-table__row--active]="selectedProduct?.id === product.id"
+                (click)="selectProduct(product)"
+                (keydown.enter)="selectProduct(product)"
+              >
+                <td>
+                  <input
+                    type="checkbox"
+                    [checked]="isSelected(product)"
+                    (change)="toggleSelection($event, product)"
+                  />
+                </td>
+                <td>{{ product.brand }}</td>
+                <td>{{ product.code }}</td>
+                <td>{{ product.model }}</td>
+                <td class="spl-table__desc">{{ product.description }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.price | currency:'ARS':'symbol':'1.0-0' }}</td>
+                <td>{{ product.suggestedPrice | currency:'ARS':'symbol':'1.0-0' }}</td>
+                <td>{{ product.lastUpdate | date:'dd/MM/yyyy' }}</td>
+                <td>{{ product.stockAvailable }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="spl-table__footer">
+        <div class="spl-table__meta">
+          Mostrando {{ pageStart }}-{{ pageEnd }} de {{ productList.length }}
+        </div>
+        <div class="spl-table__pager">
+          <label>
+            <span>Filas</span>
+            <select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+              @for (size of pageSizeOptions; track size) {
+                <option [value]="size">{{ size }}</option>
+              }
+            </select>
+          </label>
+          <button type="button" (click)="previousPage()" [disabled]="pageIndex === 0">Anterior</button>
+          <span>Página {{ pageIndex + 1 }} / {{ totalPages }}</span>
+          <button type="button" (click)="nextPage()" [disabled]="pageIndex >= totalPages - 1">Siguiente</button>
+        </div>
+      </footer>
+    </article>
+
+    <article class="spl-card spl-card--detail">
+      <div class="spl-card__head">
+        <h2>Detalle del producto</h2>
+      </div>
+
+      @if (selectedProduct) {
+        <div class="spl-detail">
+          <div class="spl-detail__title">
+            <strong>{{ selectedProduct.brand }} {{ selectedProduct.model }}</strong>
+            <span>{{ selectedProduct.code }}</span>
+          </div>
+
+          <dl class="spl-detail__grid">
+            <div><dt>ID</dt><dd>{{ selectedProduct.id }}</dd></div>
+            <div><dt>Proveedor</dt><dd>{{ supplierNameById(selectedProduct.supplierId) }}</dd></div>
+            <div><dt>Categoría</dt><dd>{{ selectedProduct.category }}</dd></div>
+            <div><dt>Moneda</dt><dd>{{ selectedProduct.currency }}</dd></div>
+            <div><dt>Precio costo</dt><dd>{{ selectedProduct.price | currency:'ARS':'symbol':'1.0-0' }}</dd></div>
+            <div><dt>Precio sugerido</dt><dd>{{ selectedProduct.suggestedPrice | currency:'ARS':'symbol':'1.0-0' }}</dd></div>
+            <div><dt>Precio web</dt><dd>{{ selectedProduct.suggestedWebPrice | currency:'ARS':'symbol':'1.0-0' }}</dd></div>
+            <div><dt>IVA</dt><dd>{{ selectedProduct.taxRate * 100 | number:'1.0-2' }}%</dd></div>
+            <div><dt>Stock</dt><dd>{{ selectedProduct.stockAvailable }}</dd></div>
+            <div><dt>Código de barras</dt><dd>{{ selectedProduct.barcode || '—' }}</dd></div>
+            <div><dt>Última actualización</dt><dd>{{ selectedProduct.lastUpdate | date:'dd/MM/yyyy HH:mm' }}</dd></div>
+          </dl>
+
+          <div class="spl-detail__description">
+            <h3>Descripción</h3>
+            <p>{{ selectedProduct.description }}</p>
+          </div>
+        </div>
+      } @else {
+        <div class="spl-detail__empty">
+          <span class="material-icons">inventory_2</span>
+          <p>Seleccioná un producto para ver su detalle completo.</p>
+        </div>
+      }
+    </article>
   </div>
-</div>
+</section>
