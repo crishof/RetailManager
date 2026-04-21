@@ -11,6 +11,6 @@ export default `<!DOCTYPE html>
 <link rel="stylesheet" href="styles.css"></head>
   <body class="mat-typography" ngcm="">
     <app-root></app-root>
-  <link rel="modulepreload" href="chunk-VNFF53KL.js"><script src="polyfills.js" type="module"></script><script src="scripts.js" defer=""></script><script src="main.js" type="module"></script></body>
+  <link rel="modulepreload" href="chunk-VNFF53KL.js"><script src="polyfills.js" type="module"></script><script src="main.js" type="module"></script></body>
 </html>
 `;

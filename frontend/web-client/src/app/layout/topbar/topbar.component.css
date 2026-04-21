@@ -2,7 +2,7 @@
 .topbar {
   position: fixed;
   top: 0;
-  left: 0;
+  left: var(--sidebar-width);
   right: 0;
   height: var(--topbar-height);
   background: var(--color-surface);
@@ -11,8 +11,9 @@
   align-items: center;
   padding: 0 1rem;
   gap: .5rem;
-  z-index: 100;
+  z-index: 150;
   box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  transition: left .2s ease;
 }
 
 .topbar__toggle {
@@ -175,6 +176,7 @@
 .topbar__user-menu-item--danger:hover { background: #fef2f2; color: #dc2626; }
 
 @media (max-width: 640px) {
+  .topbar { left: 0 !important; }
   .topbar__brand { display: block; }
   .topbar__username { display: none; }
 }

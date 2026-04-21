@@ -14503,30 +14503,84 @@ function provideRouterInitializer() {
  */
 
 // src/app/pages/home/home.component.ts
+var _forTrack0 = ($index, $item) => $item.route;
+function HomeComponent_For_15_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "a", 8)(1, "div")(2, "span", 9);
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(4, "span", 10);
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "span", 11);
+    \u0275\u0275text(7, "arrow_forward");
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const link_r1 = ctx.$implicit;
+    \u0275\u0275property("routerLink", link_r1.route);
+    \u0275\u0275advance();
+    \u0275\u0275classMap(\u0275\u0275interpolate1("home-card__icon-wrap ", link_r1.color));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(link_r1.icon);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(link_r1.label);
+  }
+}
 var HomeComponent = class _HomeComponent {
+  constructor() {
+    this.quickLinks = [
+      { label: "Productos", icon: "inventory_2", route: "/products", color: "bg-teal-500" },
+      { label: "Proveedores", icon: "storefront", route: "/supplier", color: "bg-blue-500" },
+      { label: "Factura venta", icon: "receipt", route: "/customerInvoice", color: "bg-violet-500" },
+      { label: "Marcas", icon: "label", route: "/brand", color: "bg-amber-500" },
+      { label: "Categor\xEDas", icon: "category", route: "/category", color: "bg-rose-500" },
+      { label: "Lista de precios", icon: "price_check", route: "/supplierPriceList", color: "bg-indigo-500" },
+      { label: "Dashboard", icon: "dashboard", route: "/dashboard", color: "bg-emerald-600" },
+      { label: "Caja diaria", icon: "point_of_sale", route: "/caja", color: "bg-orange-500" }
+    ];
+  }
   static {
     this.\u0275fac = function HomeComponent_Factory(__ngFactoryType__) {
       return new (__ngFactoryType__ || _HomeComponent)();
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _HomeComponent, selectors: [["app-home"]], decls: 2, vars: 0, template: function HomeComponent_Template(rf, ctx) {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _HomeComponent, selectors: [["app-home"]], decls: 16, vars: 0, consts: [[1, "home-hero"], [1, "home-hero__inner"], [1, "material-icons", "home-hero__icon"], [1, "home-hero__title"], [1, "home-hero__subtitle"], [1, "home-quick"], [1, "home-quick__title"], [1, "home-quick__grid"], [1, "home-card", 3, "routerLink"], [1, "material-icons", "home-card__icon"], [1, "home-card__label"], [1, "material-icons", "home-card__arrow"]], template: function HomeComponent_Template(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275domElementStart(0, "p");
-        \u0275\u0275text(1, "home works!");
-        \u0275\u0275domElementEnd();
+        \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "span", 2);
+        \u0275\u0275text(3, "storefront");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(4, "h1", 3);
+        \u0275\u0275text(5, "Bienvenido a ");
+        \u0275\u0275elementStart(6, "span");
+        \u0275\u0275text(7, "RetailManager");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(8, "p", 4);
+        \u0275\u0275text(9, " Sistema integral de gesti\xF3n comercial. Administr\xE1 productos, ventas, proveedores y m\xE1s desde un solo lugar. ");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(10, "section", 5)(11, "h2", 6);
+        \u0275\u0275text(12, "Accesos r\xE1pidos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(13, "div", 7);
+        \u0275\u0275repeaterCreate(14, HomeComponent_For_15_Template, 8, 6, "a", 8, _forTrack0);
+        \u0275\u0275elementEnd()();
       }
-    }, encapsulation: 2 });
+      if (rf & 2) {
+        \u0275\u0275advance(14);
+        \u0275\u0275repeater(ctx.quickLinks);
+      }
+    }, dependencies: [RouterLink], styles: ["\n.home-hero[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      135deg,\n      #134e4a 0%,\n      #0d9488 50%,\n      #115e59 100%);\n  border-radius: .75rem;\n  padding: 3rem 2rem;\n  margin-bottom: 2rem;\n  text-align: center;\n  color: white;\n}\n.home-hero__icon[_ngcontent-%COMP%] {\n  font-size: 3.5rem;\n  opacity: .8;\n}\n.home-hero__title[_ngcontent-%COMP%] {\n  font-size: 1.75rem;\n  font-weight: 700;\n  margin: .5rem 0;\n}\n.home-hero__title[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #5eead4;\n}\n.home-hero__subtitle[_ngcontent-%COMP%] {\n  margin: 0 auto;\n  max-width: 500px;\n  font-size: .9rem;\n  opacity: .85;\n  line-height: 1.6;\n}\n.home-quick__title[_ngcontent-%COMP%] {\n  font-size: 1rem;\n  font-weight: 600;\n  color: #334155;\n  margin-bottom: 1rem;\n}\n.home-quick__grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));\n  gap: 1rem;\n}\n.home-card[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .875rem;\n  padding: 1rem 1.25rem;\n  background: white;\n  border: 1px solid #e2e8f0;\n  border-radius: .625rem;\n  text-decoration: none;\n  color: #1e293b;\n  transition:\n    transform .15s,\n    box-shadow .15s,\n    border-color .15s;\n  cursor: pointer;\n}\n.home-card[_ngcontent-%COMP%]:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 20px rgba(0, 0, 0, .08);\n  border-color: #0d9488;\n}\n.home-card__icon-wrap[_ngcontent-%COMP%] {\n  width: 40px;\n  height: 40px;\n  border-radius: .5rem;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n.home-card__icon[_ngcontent-%COMP%] {\n  font-size: 1.25rem;\n  color: white;\n}\n.home-card__label[_ngcontent-%COMP%] {\n  flex: 1;\n  font-size: .8125rem;\n  font-weight: 500;\n}\n.home-card__arrow[_ngcontent-%COMP%] {\n  font-size: 1rem;\n  color: #94a3b8;\n  transition: color .15s;\n}\n.home-card[_ngcontent-%COMP%]:hover   .home-card__arrow[_ngcontent-%COMP%] {\n  color: #0d9488;\n}\n/*# sourceMappingURL=home.component.css.map */"] });
   }
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(HomeComponent, [{
     type: Component,
-    args: [{ selector: "app-home", imports: [], template: "<p>home works!</p>\n" }]
+    args: [{ selector: "app-home", standalone: true, imports: [RouterLink], template: '<!-- Hero Banner -->\n<div class="home-hero">\n	<div class="home-hero__inner">\n		<span class="material-icons home-hero__icon">storefront</span>\n		<h1 class="home-hero__title">Bienvenido a <span>RetailManager</span></h1>\n		<p class="home-hero__subtitle">\n			Sistema integral de gesti\xF3n comercial. Administr\xE1 productos, ventas,\n			proveedores y m\xE1s desde un solo lugar.\n		</p>\n	</div>\n</div>\n\n<!-- Quick access cards -->\n<section class="home-quick">\n	<h2 class="home-quick__title">Accesos r\xE1pidos</h2>\n	<div class="home-quick__grid">\n		@for (link of quickLinks; track link.route) {\n			<a [routerLink]="link.route" class="home-card">\n				<div class="home-card__icon-wrap {{ link.color }}">\n					<span class="material-icons home-card__icon">{{ link.icon }}</span>\n				</div>\n				<span class="home-card__label">{{ link.label }}</span>\n				<span class="material-icons home-card__arrow">arrow_forward</span>\n			</a>\n		}\n	</div>\n</section>\n', styles: ["/* src/app/pages/home/home.component.css */\n.home-hero {\n  background:\n    linear-gradient(\n      135deg,\n      #134e4a 0%,\n      #0d9488 50%,\n      #115e59 100%);\n  border-radius: .75rem;\n  padding: 3rem 2rem;\n  margin-bottom: 2rem;\n  text-align: center;\n  color: white;\n}\n.home-hero__icon {\n  font-size: 3.5rem;\n  opacity: .8;\n}\n.home-hero__title {\n  font-size: 1.75rem;\n  font-weight: 700;\n  margin: .5rem 0;\n}\n.home-hero__title span {\n  color: #5eead4;\n}\n.home-hero__subtitle {\n  margin: 0 auto;\n  max-width: 500px;\n  font-size: .9rem;\n  opacity: .85;\n  line-height: 1.6;\n}\n.home-quick__title {\n  font-size: 1rem;\n  font-weight: 600;\n  color: #334155;\n  margin-bottom: 1rem;\n}\n.home-quick__grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));\n  gap: 1rem;\n}\n.home-card {\n  display: flex;\n  align-items: center;\n  gap: .875rem;\n  padding: 1rem 1.25rem;\n  background: white;\n  border: 1px solid #e2e8f0;\n  border-radius: .625rem;\n  text-decoration: none;\n  color: #1e293b;\n  transition:\n    transform .15s,\n    box-shadow .15s,\n    border-color .15s;\n  cursor: pointer;\n}\n.home-card:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 20px rgba(0, 0, 0, .08);\n  border-color: #0d9488;\n}\n.home-card__icon-wrap {\n  width: 40px;\n  height: 40px;\n  border-radius: .5rem;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n.home-card__icon {\n  font-size: 1.25rem;\n  color: white;\n}\n.home-card__label {\n  flex: 1;\n  font-size: .8125rem;\n  font-weight: 500;\n}\n.home-card__arrow {\n  font-size: 1rem;\n  color: #94a3b8;\n  transition: color .15s;\n}\n.home-card:hover .home-card__arrow {\n  color: #0d9488;\n}\n/*# sourceMappingURL=home.component.css.map */\n"] }]
   }], null, null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HomeComponent, { className: "HomeComponent", filePath: "src/app/pages/home/home.component.ts", lineNumber: 14 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HomeComponent, { className: "HomeComponent", filePath: "src/app/pages/home/home.component.ts", lineNumber: 11 });
 })();
 
 // src/app/services/product.service.ts
@@ -19900,7 +19954,7 @@ var SupplierPriceListService = class _SupplierPriceListService {
 })();
 
 // src/app/pages/product/product-list/product-list.component.ts
-var _forTrack0 = ($index, $item) => $item.id;
+var _forTrack02 = ($index, $item) => $item.id;
 function ProductListComponent_For_18_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
@@ -20002,7 +20056,7 @@ var ProductListComponent = class _ProductListComponent {
         \u0275\u0275text(15, "Category");
         \u0275\u0275domElementEnd()()();
         \u0275\u0275domElementStart(16, "tbody");
-        \u0275\u0275repeaterCreate(17, ProductListComponent_For_18_Template, 13, 6, "tr", null, _forTrack0);
+        \u0275\u0275repeaterCreate(17, ProductListComponent_For_18_Template, 13, 6, "tr", null, _forTrack02);
         \u0275\u0275domElementEnd()()();
       }
       if (rf & 2) {
@@ -20561,6 +20615,111 @@ var ProductsComponent = class _ProductsComponent {
 })();
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductsComponent, { className: "ProductsComponent", filePath: "src/app/pages/product/products/products.component.ts", lineNumber: 30 });
+})();
+
+// src/app/pages/product/product-edit/product-edit.component.ts
+var ProductEditComponent = class _ProductEditComponent {
+  static {
+    this.\u0275fac = function ProductEditComponent_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _ProductEditComponent)();
+    };
+  }
+  static {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductEditComponent, selectors: [["app-product-edit"]], decls: 69, vars: 0, consts: [[1, "container"], [1, "form-group", "mb-3"], ["for", "brand", 1, "form-label"], ["id", "brand", 1, "form-control"], [1, "form-group"], ["for", "model", 1, "form-label"], ["type", "text", "id", "model", 1, "form-control"], ["for", "description", 1, "form-label"], ["type", "text", "id", "description", 1, "form-control"], ["for", "supplier", 1, "form-label"], ["id", "supplier", 1, "form-control"], ["for", "category", 1, "form-label"], ["id", "category", 1, "form-control"], ["for", "barcode", 1, "form-label"], ["type", "text", "id", "barcode", 1, "form-control"], ["for", "supplierCode", 1, "form-label"], ["type", "text", "id", "supplierCode", 1, "form-control"], ["for", "purchasePrice", 1, "form-label"], ["type", "text", "id", "purchasePrice", 1, "form-control"], ["for", "currency", 1, "form-label"], ["id", "currency", 1, "form-control"], ["value", "currency"], ["for", "discount", 1, "form-label"], ["type", "text", "id", "discount", 1, "form-control"], ["for", "taxRate", 1, "form-label"], ["type", "text", "id", "taxRate", 1, "form-control"], ["type", "submit", 1, "btn", "btn-primary"]], template: function ProductEditComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        \u0275\u0275domElementStart(0, "div", 0)(1, "form")(2, "fieldset")(3, "legend");
+        \u0275\u0275text(4, "General Data");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(5, "div", 1)(6, "label", 2);
+        \u0275\u0275text(7, "Brand");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElement(8, "select", 3);
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(9, "div", 4)(10, "label", 5);
+        \u0275\u0275text(11, "Model");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElement(12, "input", 6);
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(13, "div", 4)(14, "label", 7);
+        \u0275\u0275text(15, "Description");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElement(16, "input", 8);
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(17, "div", 4)(18, "label", 9);
+        \u0275\u0275text(19, "Supplier");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElement(20, "select", 10);
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(21, "div", 4)(22, "label", 11);
+        \u0275\u0275text(23, "Category");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElement(24, "select", 12);
+        \u0275\u0275domElementEnd()();
+        \u0275\u0275domElement(25, "hr");
+        \u0275\u0275domElementStart(26, "fieldset")(27, "legend");
+        \u0275\u0275text(28, "Codes");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(29, "div", 4)(30, "label", 13);
+        \u0275\u0275text(31, "Barcode");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElement(32, "input", 14);
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(33, "div", 4)(34, "label", 15);
+        \u0275\u0275text(35, "Supplier Code");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElement(36, "input", 16);
+        \u0275\u0275domElementEnd()();
+        \u0275\u0275domElement(37, "hr");
+        \u0275\u0275domElementStart(38, "fieldset")(39, "legend");
+        \u0275\u0275text(40, "Purchase Prices");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(41, "div", 4)(42, "label", 17);
+        \u0275\u0275text(43, "Purchase Price");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElement(44, "input", 18);
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(45, "div", 4)(46, "label", 19);
+        \u0275\u0275text(47, "Currency");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(48, "select", 20)(49, "option", 21);
+        \u0275\u0275text(50, "$");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(51, "option", 21);
+        \u0275\u0275text(52, "EU");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(53, "option", 21);
+        \u0275\u0275text(54, "USD");
+        \u0275\u0275domElementEnd()()();
+        \u0275\u0275domElementStart(55, "div", 4)(56, "label", 22);
+        \u0275\u0275text(57, "Discount");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElement(58, "input", 23);
+        \u0275\u0275text(59, "% ");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(60, "div", 4)(61, "label", 24);
+        \u0275\u0275text(62, "Tax Rate");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElement(63, "input", 25);
+        \u0275\u0275domElementEnd();
+        \u0275\u0275text(64, " Costo contado FOB + currency Lista proveedor menos descuento Internal Tax ");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275text(65, " Precios de venta check mantener porcentaje check mantener precio Precio mayorista Precio Oferta Precio Lista Precio comercio Precio Alternativo Habilitaciones publicado en web doble unidad de stock etiqueta de gondola insumo Destacado en web Stock fraccionable LLeva numero de serie Servicio Precio visible en web Se vende por mayor Fabricacion propia Dimensiones y peso Alto Profundidad Ancho Peso Volumen Ficha t\xE9cnica Descripcion larga Fotos Articulos complementarios SEO Etiquetas Asignacion libre Existentes Otros datos Comision Garantia Compra minima por mayor Stock minimo Unidades por caja Ubicacion Venta minima por mayor Factor de doble unidad de stock Stock minimo ");
+        \u0275\u0275domElement(66, "hr");
+        \u0275\u0275domElementStart(67, "button", 26);
+        \u0275\u0275text(68, "Submit");
+        \u0275\u0275domElementEnd()()();
+      }
+    }, encapsulation: 2 });
+  }
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductEditComponent, [{
+    type: Component,
+    args: [{ selector: "app-product-edit", imports: [], template: '<div class="container">\n    <form>\n      <!-- Datos generales -->\n      <fieldset>\n        <legend>General Data</legend>\n        <div class="form-group mb-3">\n          <label for="brand" class="form-label">Brand</label>\n          <select class="form-control" id="brand">\n            <!-- OPTIONS -->\n          </select>\n        </div>\n        <div class="form-group">\n          <label for="model" class="form-label">Model</label>\n          <input type="text" class="form-control" id="model">\n        </div>\n        <div class="form-group">\n          <label for="description" class="form-label">Description</label>\n          <input type="text" class="form-control" id="description">\n        </div>\n        <div class="form-group">\n          <label for="supplier" class="form-label">Supplier</label>\n          <select class="form-control" id="supplier">\n            <!-- OPTIONS -->\n          </select>\n        </div>\n        <div class="form-group">\n          <label for="category" class="form-label">Category</label>\n          <select class="form-control" id="category">\n            <!-- OPTIONS -->\n          </select>\n        </div>\n      </fieldset>\n      \n      <hr>\n      \n      <!-- Detalles -->\n      <fieldset>\n        <legend>Codes</legend>\n        <div class="form-group">\n          <label for="barcode" class="form-label">Barcode</label>\n          <input type="text" class="form-control" id="barcode">\n        </div>\n        <div class="form-group">\n          <label for="supplierCode" class="form-label">Supplier Code</label>\n          <input type="text" class="form-control" id="supplierCode">\n        </div>\n      </fieldset>\n\n      <hr>\n      \n      <!-- Precios -->\n      <fieldset>\n        <legend>Purchase Prices</legend>\n        <div class="form-group">\n          <label for="purchasePrice" class="form-label">Purchase Price</label>\n          <input type="text" class="form-control" id="purchasePrice">\n        </div>\n        <div class="form-group">\n          <label for="currency" class="form-label">Currency</label>\n          <select class="form-control" id="currency">\n            <option value="currency">$</option>\n            <option value="currency">EU</option>\n            <option value="currency">USD</option>\n          </select>\n        </div>\n        <div class="form-group">\n          <label for="discount" class="form-label">Discount</label>\n          <input type="text" class="form-control" id="discount">%\n        </div>\n        <div class="form-group">\n          <label for="taxRate" class="form-label">Tax Rate</label>\n          <input type="text" class="form-control" id="taxRate">\n        </div>\n        Costo contado\n        FOB + currency\n        Lista proveedor menos descuento\n        Internal Tax\n      </fieldset>\n\n      Precios de venta\n      check mantener porcentaje\n      check mantener precio\n\n      Precio mayorista\n      Precio Oferta\n      Precio Lista\n      Precio comercio\n      Precio Alternativo\n\n\n      Habilitaciones\n      publicado en web\n      doble unidad de stock\n      etiqueta de gondola\n      insumo\n      Destacado en web\n      Stock fraccionable\n      LLeva numero de serie\n      Servicio\n      Precio visible en web\n      Se vende por mayor\n      Fabricacion propia\n\n\n      Dimensiones y peso\n      \n      Alto\n      Profundidad\n      Ancho\n      Peso\n      Volumen\n\n      Ficha t\xE9cnica\n\n      Descripcion larga\n      Fotos\n      Articulos complementarios\n      SEO\n\n      Etiquetas\n      Asignacion libre\n      Existentes\n\n\n      Otros datos\n      Comision\n      Garantia\n      Compra minima por mayor\n      Stock minimo\n      Unidades por caja\n      Ubicacion\n      Venta minima por mayor\n      Factor de doble unidad de stock\n      Stock minimo\n\n\n      <hr>\n  \n      <button type="submit" class="btn btn-primary">Submit</button>\n    </form>\n  </div>\n  ' }]
+  }], null, null);
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductEditComponent, { className: "ProductEditComponent", filePath: "src/app/pages/product/product-edit/product-edit.component.ts", lineNumber: 10 });
 })();
 
 // node_modules/@angular/cdk/fesm2022/_platform-chunk.mjs
@@ -29717,7 +29876,7 @@ var BrandCreateComponent = class _BrandCreateComponent {
 })();
 
 // src/app/pages/brand/brand/brand.component.ts
-var _forTrack02 = ($index, $item) => $item.id;
+var _forTrack03 = ($index, $item) => $item.id;
 function BrandComponent_Conditional_21_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
@@ -29917,7 +30076,7 @@ var BrandComponent = class _BrandComponent {
         \u0275\u0275conditionalCreate(26, BrandComponent_Conditional_26_Template, 2, 1, "span");
         \u0275\u0275elementEnd()()();
         \u0275\u0275elementStart(27, "tbody");
-        \u0275\u0275repeaterCreate(28, BrandComponent_For_29_Template, 7, 3, "tr", 15, _forTrack02);
+        \u0275\u0275repeaterCreate(28, BrandComponent_For_29_Template, 7, 3, "tr", 15, _forTrack03);
         \u0275\u0275elementEnd()()();
         \u0275\u0275conditionalCreate(30, BrandComponent_Conditional_30_Template, 3, 0, "div", 16);
         \u0275\u0275conditionalCreate(31, BrandComponent_Conditional_31_Template, 3, 1, "div", 16);
@@ -30808,7 +30967,7 @@ var SupplierDetailsComponent = class _SupplierDetailsComponent {
 
 // src/app/pages/supplier/supplier/supplier.component.ts
 var _c06 = (a0) => ({ active: a0 });
-var _forTrack03 = ($index, $item) => $item.id;
+var _forTrack04 = ($index, $item) => $item.id;
 function SupplierComponent_button_2_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
@@ -31018,7 +31177,7 @@ var SupplierComponent = class _SupplierComponent {
         \u0275\u0275text(31, "Tax Id");
         \u0275\u0275elementEnd()()();
         \u0275\u0275elementStart(32, "tbody");
-        \u0275\u0275repeaterCreate(33, SupplierComponent_For_34_Template, 9, 4, "tr", 15, _forTrack03);
+        \u0275\u0275repeaterCreate(33, SupplierComponent_For_34_Template, 9, 4, "tr", 15, _forTrack04);
         \u0275\u0275elementEnd()()();
       }
       if (rf & 2) {
@@ -34739,7 +34898,7 @@ var _ErrorStateTracker = class {
 
 // node_modules/@angular/material/fesm2022/datepicker.mjs
 var _c011 = ["mat-calendar-body", ""];
-function _forTrack04($index, $item) {
+function _forTrack05($index, $item) {
   return this._trackRow($item);
 }
 var _forTrack1 = ($index, $item) => $item.id;
@@ -35369,7 +35528,7 @@ var MatCalendarBody = class _MatCalendarBody {
     template: function MatCalendarBody_Template(rf, ctx) {
       if (rf & 1) {
         \u0275\u0275conditionalCreate(0, MatCalendarBody_Conditional_0_Template, 3, 6, "tr", 0);
-        \u0275\u0275repeaterCreate(1, MatCalendarBody_For_2_Template, 4, 1, "tr", 1, _forTrack04, true);
+        \u0275\u0275repeaterCreate(1, MatCalendarBody_For_2_Template, 4, 1, "tr", 1, _forTrack05, true);
         \u0275\u0275domElementStart(3, "span", 2);
         \u0275\u0275text(4);
         \u0275\u0275domElementEnd();
@@ -41824,316 +41983,421 @@ var SupplierInvoiceComponent = class _SupplierInvoiceComponent {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(SupplierInvoiceComponent, { className: "SupplierInvoiceComponent", filePath: "src/app/pages/supplier/supplier-invoice/supplier-invoice.component.ts", lineNumber: 49 });
 })();
 
-// src/app/pages/dashboard/dashboard.component.ts
-var _c013 = (a0) => ({ active: a0 });
-var DashboardComponent = class _DashboardComponent {
+// src/app/services/transaction.service.ts
+var TransactionService = class _TransactionService {
   constructor() {
-    this.clicked = true;
-    this.clicked1 = false;
+    this._http = inject(HttpClient);
+    this._urlBase = "http://localhost:8080/transaction-sv/transaction";
+    this.transactionSource = new BehaviorSubject(null);
   }
-  ngOnInit() {
+  getTransactions(id) {
+    return this._http.get(`${this._urlBase}/getAllBySupplier/${id}`);
   }
-  updateOptions() {
-    this.salesChart.data.datasets[0].data = this.data;
-    this.salesChart.update();
+  setSelectedTransaction(transaction) {
+    this.transactionSource.next(transaction);
   }
   static {
-    this.\u0275fac = function DashboardComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _DashboardComponent)();
+    this.\u0275fac = function TransactionService_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _TransactionService)();
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DashboardComponent, selectors: [["app-dashboard"]], decls: 270, vars: 6, consts: [[1, "header", "bg-gradient-danger", "pb-8", "pt-5", "pt-md-8"], [1, "container-fluid"], [1, "header-body"], [1, "row"], [1, "col-xl-3", "col-lg-6"], [1, "card", "card-stats", "mb-4", "mb-xl-0"], [1, "card-body"], [1, "col"], [1, "card-title", "text-uppercase", "text-muted", "mb-0"], [1, "h2", "font-weight-bold", "mb-0"], [1, "col-auto"], [1, "icon", "icon-shape", "bg-danger", "text-white", "rounded-circle", "shadow"], [1, "fas", "fa-chart-bar"], [1, "mt-3", "mb-0", "text-muted", "text-sm"], [1, "text-success", "mr-2"], [1, "fa", "fa-arrow-up"], [1, "text-nowrap"], [1, "icon", "icon-shape", "bg-warning", "text-white", "rounded-circle", "shadow"], [1, "fas", "fa-chart-pie"], [1, "text-danger", "mr-2"], [1, "fas", "fa-arrow-down"], [1, "icon", "icon-shape", "bg-yellow", "text-white", "rounded-circle", "shadow"], [1, "fas", "fa-users"], [1, "text-warning", "mr-2"], [1, "icon", "icon-shape", "bg-info", "text-white", "rounded-circle", "shadow"], [1, "fas", "fa-percent"], [1, "fas", "fa-arrow-up"], [1, "container-fluid", "mt--7"], [1, "col-xl-8", "mb-5", "mb-xl-0"], [1, "card", "bg-gradient-default", "shadow"], [1, "card-header", "bg-transparent"], [1, "row", "align-items-center"], [1, "text-uppercase", "text-light", "ls-1", "mb-1"], [1, "text-white", "mb-0"], [1, "nav", "nav-pills", "justify-content-end"], ["data-toggle", "chart", "data-target", "#chart-sales", 1, "nav-item", "mr-2", "mr-md-0", 3, "click"], ["href", "javascript:void(0)", "data-toggle", "tab", 1, "nav-link", "py-2", "px-3", 3, "click", "ngClass"], [1, "d-none", "d-md-block"], [1, "d-md-none"], ["data-toggle", "chart", "data-target", "#chart-sales", 1, "nav-item", 3, "click"], [1, "chart"], ["id", "chart-sales", 1, "chart-canvas"], [1, "col-xl-4"], [1, "card", "shadow"], [1, "text-uppercase", "text-muted", "ls-1", "mb-1"], [1, "mb-0"], ["id", "chart-orders", 1, "chart-canvas"], [1, "row", "mt-5"], [1, "card-header", "border-0"], [1, "col", "text-right"], ["href", "#!", 1, "btn", "btn-sm", "btn-primary"], [1, "table-responsive"], [1, "table", "align-items-center", "table-flush"], [1, "thead-light"], ["scope", "col"], ["scope", "row"], [1, "fas", "fa-arrow-up", "text-success", "mr-3"], [1, "fas", "fa-arrow-down", "text-warning", "mr-3"], [1, "fas", "fa-arrow-down", "text-danger", "mr-3"], [1, "d-flex", "align-items-center"], [1, "mr-2"], [1, "progress"], ["role", "progressbar", "aria-valuenow", "60", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "bg-gradient-danger", 2, "width", "60%"], ["role", "progressbar", "aria-valuenow", "70", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "bg-gradient-success", 2, "width", "70%"], ["role", "progressbar", "aria-valuenow", "80", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "bg-gradient-primary", 2, "width", "80%"], ["role", "progressbar", "aria-valuenow", "75", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "bg-gradient-info", 2, "width", "75%"], ["role", "progressbar", "aria-valuenow", "30", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "bg-gradient-warning", 2, "width", "30%"]], template: function DashboardComponent_Template(rf, ctx) {
-      if (rf & 1) {
-        \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "div", 2)(3, "div", 3)(4, "div", 4)(5, "div", 5)(6, "div", 6)(7, "div", 3)(8, "div", 7)(9, "h5", 8);
-        \u0275\u0275text(10, " Traffic ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(11, "span", 9);
-        \u0275\u0275text(12, "350,897");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(13, "div", 10)(14, "div", 11);
-        \u0275\u0275element(15, "i", 12);
-        \u0275\u0275elementEnd()()();
-        \u0275\u0275elementStart(16, "p", 13)(17, "span", 14);
-        \u0275\u0275element(18, "i", 15);
-        \u0275\u0275text(19, " 3.48%");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(20, "span", 16);
-        \u0275\u0275text(21, "Since last month");
-        \u0275\u0275elementEnd()()()()();
-        \u0275\u0275elementStart(22, "div", 4)(23, "div", 5)(24, "div", 6)(25, "div", 3)(26, "div", 7)(27, "h5", 8);
-        \u0275\u0275text(28, " New users ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(29, "span", 9);
-        \u0275\u0275text(30, "2,356");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(31, "div", 10)(32, "div", 17);
-        \u0275\u0275element(33, "i", 18);
-        \u0275\u0275elementEnd()()();
-        \u0275\u0275elementStart(34, "p", 13)(35, "span", 19);
-        \u0275\u0275element(36, "i", 20);
-        \u0275\u0275text(37, " 3.48%");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(38, "span", 16);
-        \u0275\u0275text(39, "Since last week");
-        \u0275\u0275elementEnd()()()()();
-        \u0275\u0275elementStart(40, "div", 4)(41, "div", 5)(42, "div", 6)(43, "div", 3)(44, "div", 7)(45, "h5", 8);
-        \u0275\u0275text(46, " Sales ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(47, "span", 9);
-        \u0275\u0275text(48, "924");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(49, "div", 10)(50, "div", 21);
-        \u0275\u0275element(51, "i", 22);
-        \u0275\u0275elementEnd()()();
-        \u0275\u0275elementStart(52, "p", 13)(53, "span", 23);
-        \u0275\u0275element(54, "i", 20);
-        \u0275\u0275text(55, " 1.10%");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(56, "span", 16);
-        \u0275\u0275text(57, "Since yesterday");
-        \u0275\u0275elementEnd()()()()();
-        \u0275\u0275elementStart(58, "div", 4)(59, "div", 5)(60, "div", 6)(61, "div", 3)(62, "div", 7)(63, "h5", 8);
-        \u0275\u0275text(64, " Performance ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(65, "span", 9);
-        \u0275\u0275text(66, "49,65%");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(67, "div", 10)(68, "div", 24);
-        \u0275\u0275element(69, "i", 25);
-        \u0275\u0275elementEnd()()();
-        \u0275\u0275elementStart(70, "p", 13)(71, "span", 14);
-        \u0275\u0275element(72, "i", 26);
-        \u0275\u0275text(73, " 12%");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(74, "span", 16);
-        \u0275\u0275text(75, "Since last month");
-        \u0275\u0275elementEnd()()()()()()()()();
-        \u0275\u0275elementStart(76, "div", 27)(77, "div", 3)(78, "div", 28)(79, "div", 29)(80, "div", 30)(81, "div", 31)(82, "div", 7)(83, "h6", 32);
-        \u0275\u0275text(84, "Overview");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(85, "h2", 33);
-        \u0275\u0275text(86, "Sales value");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(87, "div", 7)(88, "ul", 34)(89, "li", 35);
-        \u0275\u0275listener("click", function DashboardComponent_Template_li_click_89_listener() {
-          ctx.data = ctx.datasets[0];
-          return ctx.updateOptions();
-        });
-        \u0275\u0275elementStart(90, "a", 36);
-        \u0275\u0275listener("click", function DashboardComponent_Template_a_click_90_listener() {
-          ctx.clicked = true;
-          return ctx.clicked1 = false;
-        });
-        \u0275\u0275elementStart(91, "span", 37);
-        \u0275\u0275text(92, "Month");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(93, "span", 38);
-        \u0275\u0275text(94, "M");
-        \u0275\u0275elementEnd()()();
-        \u0275\u0275elementStart(95, "li", 39);
-        \u0275\u0275listener("click", function DashboardComponent_Template_li_click_95_listener() {
-          ctx.data = ctx.datasets[1];
-          return ctx.updateOptions();
-        });
-        \u0275\u0275elementStart(96, "a", 36);
-        \u0275\u0275listener("click", function DashboardComponent_Template_a_click_96_listener() {
-          ctx.clicked = false;
-          return ctx.clicked1 = true;
-        });
-        \u0275\u0275elementStart(97, "span", 37);
-        \u0275\u0275text(98, "Week");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(99, "span", 38);
-        \u0275\u0275text(100, "W");
-        \u0275\u0275elementEnd()()()()()()();
-        \u0275\u0275elementStart(101, "div", 6)(102, "div", 40);
-        \u0275\u0275element(103, "canvas", 41);
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(104, "div", 42)(105, "div", 43)(106, "div", 30)(107, "div", 31)(108, "div", 7)(109, "h6", 44);
-        \u0275\u0275text(110, "Performance");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(111, "h2", 45);
-        \u0275\u0275text(112, "Total orders");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(113, "div", 6)(114, "div", 40);
-        \u0275\u0275element(115, "canvas", 46);
-        \u0275\u0275elementEnd()()()()();
-        \u0275\u0275elementStart(116, "div", 47)(117, "div", 28)(118, "div", 43)(119, "div", 48)(120, "div", 31)(121, "div", 7)(122, "h3", 45);
-        \u0275\u0275text(123, "Page visits");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(124, "div", 49)(125, "a", 50);
-        \u0275\u0275text(126, "See all");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(127, "div", 51)(128, "table", 52)(129, "thead", 53)(130, "tr")(131, "th", 54);
-        \u0275\u0275text(132, "Page name");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(133, "th", 54);
-        \u0275\u0275text(134, "Visitors");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(135, "th", 54);
-        \u0275\u0275text(136, "Unique users");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(137, "th", 54);
-        \u0275\u0275text(138, "Bounce rate");
-        \u0275\u0275elementEnd()()();
-        \u0275\u0275elementStart(139, "tbody")(140, "tr")(141, "th", 55);
-        \u0275\u0275text(142, "/argon/");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(143, "td");
-        \u0275\u0275text(144, "4,569");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(145, "td");
-        \u0275\u0275text(146, "340");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(147, "td");
-        \u0275\u0275element(148, "i", 56);
-        \u0275\u0275text(149, " 46,53% ");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(150, "tr")(151, "th", 55);
-        \u0275\u0275text(152, "/argon/index.html");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(153, "td");
-        \u0275\u0275text(154, "3,985");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(155, "td");
-        \u0275\u0275text(156, "319");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(157, "td");
-        \u0275\u0275element(158, "i", 57);
-        \u0275\u0275text(159, " 46,53% ");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(160, "tr")(161, "th", 55);
-        \u0275\u0275text(162, "/argon/charts.html");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(163, "td");
-        \u0275\u0275text(164, "3,513");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(165, "td");
-        \u0275\u0275text(166, "294");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(167, "td");
-        \u0275\u0275element(168, "i", 57);
-        \u0275\u0275text(169, " 36,49% ");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(170, "tr")(171, "th", 55);
-        \u0275\u0275text(172, "/argon/tables.html");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(173, "td");
-        \u0275\u0275text(174, "2,050");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(175, "td");
-        \u0275\u0275text(176, "147");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(177, "td");
-        \u0275\u0275element(178, "i", 56);
-        \u0275\u0275text(179, " 50,87% ");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(180, "tr")(181, "th", 55);
-        \u0275\u0275text(182, "/argon/profile.html");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(183, "td");
-        \u0275\u0275text(184, "1,795");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(185, "td");
-        \u0275\u0275text(186, "190");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(187, "td");
-        \u0275\u0275element(188, "i", 58);
-        \u0275\u0275text(189, " 46,53% ");
-        \u0275\u0275elementEnd()()()()()()();
-        \u0275\u0275elementStart(190, "div", 42)(191, "div", 43)(192, "div", 48)(193, "div", 31)(194, "div", 7)(195, "h3", 45);
-        \u0275\u0275text(196, "Social traffic");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(197, "div", 49)(198, "a", 50);
-        \u0275\u0275text(199, "See all");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(200, "div", 51)(201, "table", 52)(202, "thead", 53)(203, "tr")(204, "th", 54);
-        \u0275\u0275text(205, "Referral");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(206, "th", 54);
-        \u0275\u0275text(207, "Visitors");
-        \u0275\u0275elementEnd();
-        \u0275\u0275element(208, "th", 54);
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(209, "tbody")(210, "tr")(211, "th", 55);
-        \u0275\u0275text(212, "Facebook");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(213, "td");
-        \u0275\u0275text(214, "1,480");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(215, "td")(216, "div", 59)(217, "span", 60);
-        \u0275\u0275text(218, "60%");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(219, "div")(220, "div", 61);
-        \u0275\u0275element(221, "div", 62);
-        \u0275\u0275elementEnd()()()()();
-        \u0275\u0275elementStart(222, "tr")(223, "th", 55);
-        \u0275\u0275text(224, "Facebook");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(225, "td");
-        \u0275\u0275text(226, "5,480");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(227, "td")(228, "div", 59)(229, "span", 60);
-        \u0275\u0275text(230, "70%");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(231, "div")(232, "div", 61);
-        \u0275\u0275element(233, "div", 63);
-        \u0275\u0275elementEnd()()()()();
-        \u0275\u0275elementStart(234, "tr")(235, "th", 55);
-        \u0275\u0275text(236, "Google");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(237, "td");
-        \u0275\u0275text(238, "4,807");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(239, "td")(240, "div", 59)(241, "span", 60);
-        \u0275\u0275text(242, "80%");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(243, "div")(244, "div", 61);
-        \u0275\u0275element(245, "div", 64);
-        \u0275\u0275elementEnd()()()()();
-        \u0275\u0275elementStart(246, "tr")(247, "th", 55);
-        \u0275\u0275text(248, "Instagram");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(249, "td");
-        \u0275\u0275text(250, "3,678");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(251, "td")(252, "div", 59)(253, "span", 60);
-        \u0275\u0275text(254, "75%");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(255, "div")(256, "div", 61);
-        \u0275\u0275element(257, "div", 65);
-        \u0275\u0275elementEnd()()()()();
-        \u0275\u0275elementStart(258, "tr")(259, "th", 55);
-        \u0275\u0275text(260, "twitter");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(261, "td");
-        \u0275\u0275text(262, "2,645");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(263, "td")(264, "div", 59)(265, "span", 60);
-        \u0275\u0275text(266, "30%");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(267, "div")(268, "div", 61);
-        \u0275\u0275element(269, "div", 66);
-        \u0275\u0275elementEnd()()()()()()()()()()()();
-      }
-      if (rf & 2) {
-        \u0275\u0275advance(90);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(2, _c013, ctx.clicked === true));
-        \u0275\u0275advance(6);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(4, _c013, ctx.clicked1 === true));
-      }
-    }, dependencies: [CommonModule, NgClass], encapsulation: 2 });
+    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _TransactionService, factory: _TransactionService.\u0275fac, providedIn: "root" });
   }
 };
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(DashboardComponent, [{
-    type: Component,
-    args: [{ selector: "app-dashboard", imports: [CommonModule], template: '<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">\n  <div class="container-fluid">\n    <div class="header-body">\n      <!-- Card stats -->\n      <div class="row">\n        <div class="col-xl-3 col-lg-6">\n          <div class="card card-stats mb-4 mb-xl-0">\n            <div class="card-body">\n              <div class="row">\n                <div class="col">\n                  <h5 class="card-title text-uppercase text-muted mb-0">\n                    Traffic\n                  </h5>\n                  <span class="h2 font-weight-bold mb-0">350,897</span>\n                </div>\n                <div class="col-auto">\n                  <div\n                    class="icon icon-shape bg-danger text-white rounded-circle shadow"\n                  >\n                    <i class="fas fa-chart-bar"></i>\n                  </div>\n                </div>\n              </div>\n              <p class="mt-3 mb-0 text-muted text-sm">\n                <span class="text-success mr-2"\n                  ><i class="fa fa-arrow-up"></i> 3.48%</span\n                >\n                <span class="text-nowrap">Since last month</span>\n              </p>\n            </div>\n          </div>\n        </div>\n        <div class="col-xl-3 col-lg-6">\n          <div class="card card-stats mb-4 mb-xl-0">\n            <div class="card-body">\n              <div class="row">\n                <div class="col">\n                  <h5 class="card-title text-uppercase text-muted mb-0">\n                    New users\n                  </h5>\n                  <span class="h2 font-weight-bold mb-0">2,356</span>\n                </div>\n                <div class="col-auto">\n                  <div\n                    class="icon icon-shape bg-warning text-white rounded-circle shadow"\n                  >\n                    <i class="fas fa-chart-pie"></i>\n                  </div>\n                </div>\n              </div>\n              <p class="mt-3 mb-0 text-muted text-sm">\n                <span class="text-danger mr-2"\n                  ><i class="fas fa-arrow-down"></i> 3.48%</span\n                >\n                <span class="text-nowrap">Since last week</span>\n              </p>\n            </div>\n          </div>\n        </div>\n        <div class="col-xl-3 col-lg-6">\n          <div class="card card-stats mb-4 mb-xl-0">\n            <div class="card-body">\n              <div class="row">\n                <div class="col">\n                  <h5 class="card-title text-uppercase text-muted mb-0">\n                    Sales\n                  </h5>\n                  <span class="h2 font-weight-bold mb-0">924</span>\n                </div>\n                <div class="col-auto">\n                  <div\n                    class="icon icon-shape bg-yellow text-white rounded-circle shadow"\n                  >\n                    <i class="fas fa-users"></i>\n                  </div>\n                </div>\n              </div>\n              <p class="mt-3 mb-0 text-muted text-sm">\n                <span class="text-warning mr-2"\n                  ><i class="fas fa-arrow-down"></i> 1.10%</span\n                >\n                <span class="text-nowrap">Since yesterday</span>\n              </p>\n            </div>\n          </div>\n        </div>\n        <div class="col-xl-3 col-lg-6">\n          <div class="card card-stats mb-4 mb-xl-0">\n            <div class="card-body">\n              <div class="row">\n                <div class="col">\n                  <h5 class="card-title text-uppercase text-muted mb-0">\n                    Performance\n                  </h5>\n                  <span class="h2 font-weight-bold mb-0">49,65%</span>\n                </div>\n                <div class="col-auto">\n                  <div\n                    class="icon icon-shape bg-info text-white rounded-circle shadow"\n                  >\n                    <i class="fas fa-percent"></i>\n                  </div>\n                </div>\n              </div>\n              <p class="mt-3 mb-0 text-muted text-sm">\n                <span class="text-success mr-2"\n                  ><i class="fas fa-arrow-up"></i> 12%</span\n                >\n                <span class="text-nowrap">Since last month</span>\n              </p>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n<div class="container-fluid mt--7">\n  <div class="row">\n    <div class="col-xl-8 mb-5 mb-xl-0">\n      <div class="card bg-gradient-default shadow">\n        <div class="card-header bg-transparent">\n          <div class="row align-items-center">\n            <div class="col">\n              <h6 class="text-uppercase text-light ls-1 mb-1">Overview</h6>\n              <h2 class="text-white mb-0">Sales value</h2>\n            </div>\n            <div class="col">\n              <ul class="nav nav-pills justify-content-end">\n                <li\n                  class="nav-item mr-2 mr-md-0"\n                  data-toggle="chart"\n                  data-target="#chart-sales"\n                  (click)="data = datasets[0]; updateOptions()"\n                >\n                  <a\n                    href="javascript:void(0)"\n                    class="nav-link py-2 px-3"\n                    [ngClass]="{ active: clicked === true }"\n                    data-toggle="tab"\n                    (click)="clicked = true; clicked1 = false"\n                  >\n                    <span class="d-none d-md-block">Month</span>\n                    <span class="d-md-none">M</span>\n                  </a>\n                </li>\n                <li\n                  class="nav-item"\n                  data-toggle="chart"\n                  data-target="#chart-sales"\n                  (click)="data = datasets[1]; updateOptions()"\n                >\n                  <a\n                    href="javascript:void(0)"\n                    class="nav-link py-2 px-3"\n                    [ngClass]="{ active: clicked1 === true }"\n                    data-toggle="tab"\n                    (click)="clicked = false; clicked1 = true"\n                  >\n                    <span class="d-none d-md-block">Week</span>\n                    <span class="d-md-none">W</span>\n                  </a>\n                </li>\n              </ul>\n            </div>\n          </div>\n        </div>\n        <div class="card-body">\n          <!-- Chart -->\n          <div class="chart">\n            <!-- Chart wrapper -->\n            <canvas id="chart-sales" class="chart-canvas"></canvas>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class="col-xl-4">\n      <div class="card shadow">\n        <div class="card-header bg-transparent">\n          <div class="row align-items-center">\n            <div class="col">\n              <h6 class="text-uppercase text-muted ls-1 mb-1">Performance</h6>\n              <h2 class="mb-0">Total orders</h2>\n            </div>\n          </div>\n        </div>\n        <div class="card-body">\n          <!-- Chart -->\n          <div class="chart">\n            <canvas id="chart-orders" class="chart-canvas"></canvas>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n  <div class="row mt-5">\n    <div class="col-xl-8 mb-5 mb-xl-0">\n      <div class="card shadow">\n        <div class="card-header border-0">\n          <div class="row align-items-center">\n            <div class="col">\n              <h3 class="mb-0">Page visits</h3>\n            </div>\n            <div class="col text-right">\n              <a href="#!" class="btn btn-sm btn-primary">See all</a>\n            </div>\n          </div>\n        </div>\n        <div class="table-responsive">\n          <!-- Projects table -->\n          <table class="table align-items-center table-flush">\n            <thead class="thead-light">\n              <tr>\n                <th scope="col">Page name</th>\n                <th scope="col">Visitors</th>\n                <th scope="col">Unique users</th>\n                <th scope="col">Bounce rate</th>\n              </tr>\n            </thead>\n            <tbody>\n              <tr>\n                <th scope="row">/argon/</th>\n                <td>4,569</td>\n                <td>340</td>\n                <td>\n                  <i class="fas fa-arrow-up text-success mr-3"></i> 46,53%\n                </td>\n              </tr>\n              <tr>\n                <th scope="row">/argon/index.html</th>\n                <td>3,985</td>\n                <td>319</td>\n                <td>\n                  <i class="fas fa-arrow-down text-warning mr-3"></i> 46,53%\n                </td>\n              </tr>\n              <tr>\n                <th scope="row">/argon/charts.html</th>\n                <td>3,513</td>\n                <td>294</td>\n                <td>\n                  <i class="fas fa-arrow-down text-warning mr-3"></i> 36,49%\n                </td>\n              </tr>\n              <tr>\n                <th scope="row">/argon/tables.html</th>\n                <td>2,050</td>\n                <td>147</td>\n                <td>\n                  <i class="fas fa-arrow-up text-success mr-3"></i> 50,87%\n                </td>\n              </tr>\n              <tr>\n                <th scope="row">/argon/profile.html</th>\n                <td>1,795</td>\n                <td>190</td>\n                <td>\n                  <i class="fas fa-arrow-down text-danger mr-3"></i> 46,53%\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </div>\n      </div>\n    </div>\n    <div class="col-xl-4">\n      <div class="card shadow">\n        <div class="card-header border-0">\n          <div class="row align-items-center">\n            <div class="col">\n              <h3 class="mb-0">Social traffic</h3>\n            </div>\n            <div class="col text-right">\n              <a href="#!" class="btn btn-sm btn-primary">See all</a>\n            </div>\n          </div>\n        </div>\n        <div class="table-responsive">\n          <!-- Projects table -->\n          <table class="table align-items-center table-flush">\n            <thead class="thead-light">\n              <tr>\n                <th scope="col">Referral</th>\n                <th scope="col">Visitors</th>\n                <th scope="col"></th>\n              </tr>\n            </thead>\n            <tbody>\n              <tr>\n                <th scope="row">Facebook</th>\n                <td>1,480</td>\n                <td>\n                  <div class="d-flex align-items-center">\n                    <span class="mr-2">60%</span>\n                    <div>\n                      <div class="progress">\n                        <div\n                          class="progress-bar bg-gradient-danger"\n                          role="progressbar"\n                          aria-valuenow="60"\n                          aria-valuemin="0"\n                          aria-valuemax="100"\n                          style="width: 60%"\n                        ></div>\n                      </div>\n                    </div>\n                  </div>\n                </td>\n              </tr>\n              <tr>\n                <th scope="row">Facebook</th>\n                <td>5,480</td>\n                <td>\n                  <div class="d-flex align-items-center">\n                    <span class="mr-2">70%</span>\n                    <div>\n                      <div class="progress">\n                        <div\n                          class="progress-bar bg-gradient-success"\n                          role="progressbar"\n                          aria-valuenow="70"\n                          aria-valuemin="0"\n                          aria-valuemax="100"\n                          style="width: 70%"\n                        ></div>\n                      </div>\n                    </div>\n                  </div>\n                </td>\n              </tr>\n              <tr>\n                <th scope="row">Google</th>\n                <td>4,807</td>\n                <td>\n                  <div class="d-flex align-items-center">\n                    <span class="mr-2">80%</span>\n                    <div>\n                      <div class="progress">\n                        <div\n                          class="progress-bar bg-gradient-primary"\n                          role="progressbar"\n                          aria-valuenow="80"\n                          aria-valuemin="0"\n                          aria-valuemax="100"\n                          style="width: 80%"\n                        ></div>\n                      </div>\n                    </div>\n                  </div>\n                </td>\n              </tr>\n              <tr>\n                <th scope="row">Instagram</th>\n                <td>3,678</td>\n                <td>\n                  <div class="d-flex align-items-center">\n                    <span class="mr-2">75%</span>\n                    <div>\n                      <div class="progress">\n                        <div\n                          class="progress-bar bg-gradient-info"\n                          role="progressbar"\n                          aria-valuenow="75"\n                          aria-valuemin="0"\n                          aria-valuemax="100"\n                          style="width: 75%"\n                        ></div>\n                      </div>\n                    </div>\n                  </div>\n                </td>\n              </tr>\n              <tr>\n                <th scope="row">twitter</th>\n                <td>2,645</td>\n                <td>\n                  <div class="d-flex align-items-center">\n                    <span class="mr-2">30%</span>\n                    <div>\n                      <div class="progress">\n                        <div\n                          class="progress-bar bg-gradient-warning"\n                          role="progressbar"\n                          aria-valuenow="30"\n                          aria-valuemin="0"\n                          aria-valuemax="100"\n                          style="width: 30%"\n                        ></div>\n                      </div>\n                    </div>\n                  </div>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n' }]
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(TransactionService, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
   }], null, null);
 })();
+
+// src/app/pages/supplier/statement-of-account/statement-of-account.component.ts
+function StatementOfAccountComponent_For_46_Conditional_10_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td");
+    \u0275\u0275text(1);
+    \u0275\u0275pipe(2, "currency");
+    \u0275\u0275domElementEnd();
+  }
+  if (rf & 2) {
+    const transaction_r2 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind1(2, 1, transaction_r2.amount), " ");
+  }
+}
+function StatementOfAccountComponent_For_46_Conditional_11_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td");
+    \u0275\u0275text(1, "-");
+    \u0275\u0275domElementEnd();
+  }
+}
+function StatementOfAccountComponent_For_46_Conditional_12_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td");
+    \u0275\u0275text(1);
+    \u0275\u0275pipe(2, "currency");
+    \u0275\u0275domElementEnd();
+  }
+  if (rf & 2) {
+    const transaction_r2 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind1(2, 1, transaction_r2.amount), " ");
+  }
+}
+function StatementOfAccountComponent_For_46_Conditional_13_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td");
+    \u0275\u0275text(1, "-");
+    \u0275\u0275domElementEnd();
+  }
+}
+function StatementOfAccountComponent_For_46_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275domElementStart(0, "tr", 14);
+    \u0275\u0275domListener("click", function StatementOfAccountComponent_For_46_Template_tr_click_0_listener() {
+      const transaction_r2 = \u0275\u0275restoreView(_r1).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.selectTransaction(transaction_r2));
+    })("Keyup", function StatementOfAccountComponent_For_46_Template_tr_Keyup_0_listener() {
+      const transaction_r2 = \u0275\u0275restoreView(_r1).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.selectTransaction(transaction_r2));
+    });
+    \u0275\u0275domElementStart(1, "td");
+    \u0275\u0275text(2);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(3, "td");
+    \u0275\u0275text(4);
+    \u0275\u0275pipe(5, "date");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(6, "td");
+    \u0275\u0275text(7);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(8, "td");
+    \u0275\u0275text(9);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275conditionalCreate(10, StatementOfAccountComponent_For_46_Conditional_10_Template, 3, 3, "td");
+    \u0275\u0275conditionalCreate(11, StatementOfAccountComponent_For_46_Conditional_11_Template, 2, 0, "td");
+    \u0275\u0275conditionalCreate(12, StatementOfAccountComponent_For_46_Conditional_12_Template, 3, 3, "td");
+    \u0275\u0275conditionalCreate(13, StatementOfAccountComponent_For_46_Conditional_13_Template, 2, 0, "td");
+    \u0275\u0275domElementStart(14, "td");
+    \u0275\u0275text(15);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(16, "td");
+    \u0275\u0275text(17);
+    \u0275\u0275pipe(18, "currency");
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const transaction_r2 = ctx.$implicit;
+    const \u0275$index_73_r4 = ctx.$index;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275classProp("selected", transaction_r2 === ctx_r2.currentTransaction);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(transaction_r2.transactionId);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind2(5, 14, transaction_r2.date, "dd-MM-yyyy"));
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(transaction_r2.transactionNumber);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(transaction_r2.type);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(transaction_r2.type === "invoice" ? 10 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(transaction_r2.type !== "invoice" ? 11 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(transaction_r2.type === "recipe" ? 12 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(transaction_r2.type !== "recipe" ? 13 : -1);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(transaction_r2.description);
+    \u0275\u0275advance();
+    \u0275\u0275styleProp("color", ctx_r2.calculateBalance()[\u0275$index_73_r4] < 0 ? "red" : "black");
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind1(18, 17, ctx_r2.calculateBalance()[\u0275$index_73_r4]), " ");
+  }
+}
+var StatementOfAccountComponent = class _StatementOfAccountComponent {
+  constructor() {
+    this.route = inject(ActivatedRoute);
+    this.supplier = null;
+    this.transactionList = [];
+    this.selectedTransaction = null;
+    this.totalB = 0;
+    this.totalN = 0;
+    this.totalBalance = 0;
+    this.supplierId = null;
+    this.balance = 0;
+    this.currentTransaction = null;
+    this.modalDialogService = inject(ModalDialogService);
+    this._transactionService = inject(TransactionService);
+    this.totals = {
+      totalB: 10,
+      totalN: 20,
+      totalBalance: 30
+    };
+  }
+  ngOnInit() {
+    this.route.paramMap.subscribe((params) => {
+      this.supplierId = params.get("id");
+      if (this.supplierId) {
+        this._transactionService.getTransactions(this.supplierId).subscribe((data) => {
+          this.transactionList = data;
+        });
+      }
+    });
+    this.calculateTotals();
+  }
+  // Definir la función trackByFn para usar en el *ngFor
+  trackByFn(index, item) {
+    return item.transactionId;
+  }
+  calculateBalance() {
+    let balance = 0;
+    const balanceList = this.transactionList.map((transaction) => {
+      balance += transaction.type === "invoice" ? transaction.amount : -transaction.amount;
+      return balance;
+    });
+    return balanceList;
+  }
+  getTotalBalance() {
+    const balanceList = this.calculateBalance();
+    return balanceList.length > 0 ? balanceList[balanceList.length - 1] : 0;
+  }
+  calculateTotals() {
+    let balance = 0;
+    let totalB = 0;
+    let totalN = 0;
+    this.transactionList.forEach((transaction) => {
+      balance += transaction.type === "invoice" ? transaction.amount : -transaction.amount;
+      if (transaction.taxSave) {
+        totalB += transaction.amount;
+      } else {
+        totalN += transaction.amount;
+      }
+    });
+    this.totals.totalB = totalB;
+    this.totals.totalN = totalN;
+    this.totals.totalBalance = balance;
+  }
+  selectTransaction(transaction) {
+    console.log(transaction.description);
+    this._transactionService.setSelectedTransaction(transaction);
+    this.currentTransaction = __spreadValues({}, transaction);
+  }
+  openCreateModal() {
+  }
+  openEditModal() {
+  }
+  openDeleteModal() {
+  }
+  static {
+    this.\u0275fac = function StatementOfAccountComponent_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _StatementOfAccountComponent)();
+    };
+  }
+  static {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _StatementOfAccountComponent, selectors: [["app-statement-of-account"]], inputs: { supplier: "supplier" }, decls: 47, vars: 11, consts: [[1, "container"], [1, "row"], [1, "col", "card", "shadow", "m-3", "p-3"], [1, "d-flex", "gap-2"], [1, "btn", "btn-sm", "btn-success", 3, "click"], [1, "btn", "btn-sm", "btn-warning", 3, "click", "disabled"], [1, "btn", "btn-sm", "btn-danger", 3, "click", "disabled"], [1, "totals"], [1, "container-fluid"], ["id", "table-container", 1, "table-responsive"], [1, "table", "table-striped", "table-hover", "align-middle", "table-sm"], [1, "table-dark"], ["scope", "col"], [3, "selected"], [3, "click", "Keyup"]], template: function StatementOfAccountComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        \u0275\u0275domElementStart(0, "h3");
+        \u0275\u0275text(1, "Outstanding balance");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(2, "div", 0)(3, "div", 1)(4, "div", 2)(5, "div", 3)(6, "button", 4);
+        \u0275\u0275domListener("click", function StatementOfAccountComponent_Template_button_click_6_listener() {
+          return ctx.openCreateModal();
+        });
+        \u0275\u0275text(7, " Create ");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(8, "button", 5);
+        \u0275\u0275domListener("click", function StatementOfAccountComponent_Template_button_click_8_listener() {
+          return ctx.openEditModal();
+        });
+        \u0275\u0275text(9, " Edit ");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(10, "button", 6);
+        \u0275\u0275domListener("click", function StatementOfAccountComponent_Template_button_click_10_listener() {
+          return ctx.openDeleteModal();
+        });
+        \u0275\u0275text(11, " Delete ");
+        \u0275\u0275domElementEnd()()();
+        \u0275\u0275domElementStart(12, "div", 2)(13, "div", 7)(14, "p");
+        \u0275\u0275text(15);
+        \u0275\u0275pipe(16, "currency");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(17, "p");
+        \u0275\u0275text(18);
+        \u0275\u0275pipe(19, "currency");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(20, "p");
+        \u0275\u0275text(21);
+        \u0275\u0275pipe(22, "currency");
+        \u0275\u0275domElementEnd()()()()();
+        \u0275\u0275domElementStart(23, "div", 8)(24, "div", 9)(25, "table", 10)(26, "thead", 11)(27, "tr")(28, "th", 12);
+        \u0275\u0275text(29, "#Id");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(30, "th", 12);
+        \u0275\u0275text(31, "Date");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(32, "th", 12);
+        \u0275\u0275text(33, "Number");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(34, "th", 12);
+        \u0275\u0275text(35, "Type");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(36, "th", 12);
+        \u0275\u0275text(37, "Income");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(38, "th", 12);
+        \u0275\u0275text(39, "Expense");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(40, "th", 12);
+        \u0275\u0275text(41, "Description");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(42, "th", 12);
+        \u0275\u0275text(43, "Balance");
+        \u0275\u0275domElementEnd()()();
+        \u0275\u0275domElementStart(44, "tbody");
+        \u0275\u0275repeaterCreate(45, StatementOfAccountComponent_For_46_Template, 19, 19, "tr", 13, ctx.trackByFn, true);
+        \u0275\u0275domElementEnd()()()();
+      }
+      if (rf & 2) {
+        \u0275\u0275advance(8);
+        \u0275\u0275domProperty("disabled", !ctx.currentTransaction);
+        \u0275\u0275advance(2);
+        \u0275\u0275domProperty("disabled", !ctx.currentTransaction);
+        \u0275\u0275advance(5);
+        \u0275\u0275textInterpolate1("Total B ", \u0275\u0275pipeBind1(16, 5, ctx.totals.totalB));
+        \u0275\u0275advance(3);
+        \u0275\u0275textInterpolate1("Total N ", \u0275\u0275pipeBind1(19, 7, ctx.totals.totalN));
+        \u0275\u0275advance(3);
+        \u0275\u0275textInterpolate1("Total Balance: ", \u0275\u0275pipeBind1(22, 9, ctx.totals.totalBalance));
+        \u0275\u0275advance(24);
+        \u0275\u0275repeater(ctx.transactionList);
+      }
+    }, dependencies: [
+      CommonModule,
+      FormsModule,
+      ReactiveFormsModule,
+      CurrencyPipe,
+      DatePipe
+    ], styles: ["\ntr.selected[_ngcontent-%COMP%] {\n  background-color: #eb4343;\n}\n#table-container[_ngcontent-%COMP%] {\n  max-height: 400px;\n  overflow-y: auto;\n}\n.table[_ngcontent-%COMP%]   thead[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 0;\n  background-color: #343a40;\n  z-index: 1;\n}\n/*# sourceMappingURL=statement-of-account.component.css.map */"] });
+  }
+};
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(DashboardComponent, { className: "DashboardComponent", filePath: "src/app/pages/dashboard/dashboard.component.ts", lineNumber: 10 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(StatementOfAccountComponent, [{
+    type: Component,
+    args: [{ selector: "app-statement-of-account", imports: [
+      CommonModule,
+      FormsModule,
+      ReactiveFormsModule
+    ], template: `<h3>Outstanding balance</h3>
+
+<div class="container">
+  <div class="row">
+    <div class="col card shadow m-3 p-3">
+      <!-- Botones de acci\xF3n -->
+      <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-success" (click)="openCreateModal()">
+          Create
+        </button>
+        <button
+          class="btn btn-sm btn-warning"
+          [disabled]="!currentTransaction"
+          (click)="openEditModal()"
+          >
+          Edit
+        </button>
+        <button
+          class="btn btn-sm btn-danger"
+          [disabled]="!currentTransaction"
+          (click)="openDeleteModal()"
+          >
+          Delete
+        </button>
+      </div>
+    </div>
+    <div class="col card shadow m-3 p-3">
+      <div class="totals">
+        <!-- Totales -->
+        <p>Total B {{ totals.totalB | currency }}</p>
+        <p>Total N {{ totals.totalN | currency }}</p>
+        <p>Total Balance: {{ totals.totalBalance | currency }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla de transacciones -->
+<div class="container-fluid">
+  <div class="table-responsive" id="table-container">
+    <table class="table table-striped table-hover align-middle table-sm">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#Id</th>
+          <th scope="col">Date</th>
+          <th scope="col">Number</th>
+          <th scope="col">Type</th>
+          <th scope="col">Income</th>
+          <th scope="col">Expense</th>
+          <th scope="col">Description</th>
+          <th scope="col">Balance</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (
+          transaction of transactionList; track trackByFn(i,
+          transaction); let i = $index) {
+          <tr
+            (click)="selectTransaction(transaction)"
+            (Keyup)="selectTransaction(transaction)"
+            [class.selected]="transaction === currentTransaction"
+            >
+            <td>{{ transaction.transactionId }}</td>
+            <td>{{ transaction.date | date : "dd-MM-yyyy" }}</td>
+            <td>{{ transaction.transactionNumber }}</td>
+            <td>{{ transaction.type }}</td>
+            <!-- Ingresos -->
+            @if (transaction.type === 'invoice') {
+              <td>
+                {{ transaction.amount | currency }}
+              </td>
+            }
+            @if (transaction.type !== 'invoice') {
+              <td>-</td>
+            }
+            <!-- Egresos -->
+            @if (transaction.type === 'recipe') {
+              <td>
+                {{ transaction.amount | currency }}
+              </td>
+            }
+            @if (transaction.type !== 'recipe') {
+              <td>-</td>
+            }
+            <td>{{ transaction.description }}</td>
+            <!-- Calcular balance acumulado -->
+            <td [style.color]="calculateBalance()[i] < 0 ? 'red' : 'black'">
+              {{ calculateBalance()[i] | currency }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+`, styles: ["/* src/app/pages/supplier/statement-of-account/statement-of-account.component.css */\ntr.selected {\n  background-color: #eb4343;\n}\n#table-container {\n  max-height: 400px;\n  overflow-y: auto;\n}\n.table thead th {\n  position: sticky;\n  top: 0;\n  background-color: #343a40;\n  z-index: 1;\n}\n/*# sourceMappingURL=statement-of-account.component.css.map */\n"] }]
+  }], null, { supplier: [{
+    type: Input
+  }] });
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(StatementOfAccountComponent, { className: "StatementOfAccountComponent", filePath: "src/app/pages/supplier/statement-of-account/statement-of-account.component.ts", lineNumber: 20 });
 })();
 
 // src/app/pages/supplier-price-list/supplier-price-list.component.ts
@@ -42643,109 +42907,216 @@ var SupplierPriceListComponent = class _SupplierPriceListComponent {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(SupplierPriceListComponent, { className: "SupplierPriceListComponent", filePath: "src/app/pages/supplier-price-list/supplier-price-list.component.ts", lineNumber: 23 });
 })();
 
-// src/app/pages/product/product-edit/product-edit.component.ts
-var ProductEditComponent = class _ProductEditComponent {
+// src/app/pages/dashboard/dashboard.component.ts
+var DashboardComponent = class _DashboardComponent {
   static {
-    this.\u0275fac = function ProductEditComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _ProductEditComponent)();
+    this.\u0275fac = function DashboardComponent_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _DashboardComponent)();
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductEditComponent, selectors: [["app-product-edit"]], decls: 69, vars: 0, consts: [[1, "container"], [1, "form-group", "mb-3"], ["for", "brand", 1, "form-label"], ["id", "brand", 1, "form-control"], [1, "form-group"], ["for", "model", 1, "form-label"], ["type", "text", "id", "model", 1, "form-control"], ["for", "description", 1, "form-label"], ["type", "text", "id", "description", 1, "form-control"], ["for", "supplier", 1, "form-label"], ["id", "supplier", 1, "form-control"], ["for", "category", 1, "form-label"], ["id", "category", 1, "form-control"], ["for", "barcode", 1, "form-label"], ["type", "text", "id", "barcode", 1, "form-control"], ["for", "supplierCode", 1, "form-label"], ["type", "text", "id", "supplierCode", 1, "form-control"], ["for", "purchasePrice", 1, "form-label"], ["type", "text", "id", "purchasePrice", 1, "form-control"], ["for", "currency", 1, "form-label"], ["id", "currency", 1, "form-control"], ["value", "currency"], ["for", "discount", 1, "form-label"], ["type", "text", "id", "discount", 1, "form-control"], ["for", "taxRate", 1, "form-label"], ["type", "text", "id", "taxRate", 1, "form-control"], ["type", "submit", 1, "btn", "btn-primary"]], template: function ProductEditComponent_Template(rf, ctx) {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DashboardComponent, selectors: [["app-dashboard"]], decls: 178, vars: 0, consts: [[1, "dash-header"], [1, "dash-header__title"], [1, "dash-header__subtitle"], [1, "dash-header__date"], [1, "material-icons"], [1, "dash-kpis"], [1, "kpi-card", "kpi-card--teal"], [1, "kpi-card__icon"], [1, "kpi-card__body"], [1, "kpi-card__label"], [1, "kpi-card__value"], [1, "kpi-card__trend", "kpi-card__trend--up"], [1, "kpi-card", "kpi-card--blue"], [1, "kpi-card__trend", "kpi-card__trend--down"], [1, "kpi-card", "kpi-card--amber"], [1, "kpi-card", "kpi-card--violet"], [1, "dash-charts"], [1, "dash-chart-card", "dash-chart-card--wide"], [1, "dash-chart-card__header"], [1, "dash-chart-card__label"], [1, "dash-chart-card__title"], [1, "dash-chart-card__body", "dash-chart-card__body--placeholder"], [1, "material-icons", 2, "font-size", "3rem", "opacity", ".2"], [1, "dash-chart-card"], [1, "dash-recent"], [1, "dash-recent-card"], [1, "dash-recent-card__header"], [1, "dash-recent-card__title"], ["routerLink", "/customerInvoice", 1, "dash-recent-card__link"], [1, "table"], [1, "badge", "bg-success"], [1, "badge", "bg-warning"], ["routerLink", "/products", 1, "dash-recent-card__link"], [1, "badge", "bg-danger"]], template: function DashboardComponent_Template(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275domElementStart(0, "div", 0)(1, "form")(2, "fieldset")(3, "legend");
-        \u0275\u0275text(4, "General Data");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(5, "div", 1)(6, "label", 2);
-        \u0275\u0275text(7, "Brand");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElement(8, "select", 3);
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(9, "div", 4)(10, "label", 5);
-        \u0275\u0275text(11, "Model");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElement(12, "input", 6);
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(13, "div", 4)(14, "label", 7);
-        \u0275\u0275text(15, "Description");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElement(16, "input", 8);
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(17, "div", 4)(18, "label", 9);
-        \u0275\u0275text(19, "Supplier");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElement(20, "select", 10);
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(21, "div", 4)(22, "label", 11);
-        \u0275\u0275text(23, "Category");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElement(24, "select", 12);
-        \u0275\u0275domElementEnd()();
-        \u0275\u0275domElement(25, "hr");
-        \u0275\u0275domElementStart(26, "fieldset")(27, "legend");
-        \u0275\u0275text(28, "Codes");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(29, "div", 4)(30, "label", 13);
-        \u0275\u0275text(31, "Barcode");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElement(32, "input", 14);
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(33, "div", 4)(34, "label", 15);
-        \u0275\u0275text(35, "Supplier Code");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElement(36, "input", 16);
-        \u0275\u0275domElementEnd()();
-        \u0275\u0275domElement(37, "hr");
-        \u0275\u0275domElementStart(38, "fieldset")(39, "legend");
-        \u0275\u0275text(40, "Purchase Prices");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(41, "div", 4)(42, "label", 17);
-        \u0275\u0275text(43, "Purchase Price");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElement(44, "input", 18);
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(45, "div", 4)(46, "label", 19);
-        \u0275\u0275text(47, "Currency");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(48, "select", 20)(49, "option", 21);
-        \u0275\u0275text(50, "$");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(51, "option", 21);
-        \u0275\u0275text(52, "EU");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(53, "option", 21);
-        \u0275\u0275text(54, "USD");
-        \u0275\u0275domElementEnd()()();
-        \u0275\u0275domElementStart(55, "div", 4)(56, "label", 22);
-        \u0275\u0275text(57, "Discount");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElement(58, "input", 23);
-        \u0275\u0275text(59, "% ");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(60, "div", 4)(61, "label", 24);
-        \u0275\u0275text(62, "Tax Rate");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElement(63, "input", 25);
-        \u0275\u0275domElementEnd();
-        \u0275\u0275text(64, " Costo contado FOB + currency Lista proveedor menos descuento Internal Tax ");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275text(65, " Precios de venta check mantener porcentaje check mantener precio Precio mayorista Precio Oferta Precio Lista Precio comercio Precio Alternativo Habilitaciones publicado en web doble unidad de stock etiqueta de gondola insumo Destacado en web Stock fraccionable LLeva numero de serie Servicio Precio visible en web Se vende por mayor Fabricacion propia Dimensiones y peso Alto Profundidad Ancho Peso Volumen Ficha t\xE9cnica Descripcion larga Fotos Articulos complementarios SEO Etiquetas Asignacion libre Existentes Otros datos Comision Garantia Compra minima por mayor Stock minimo Unidades por caja Ubicacion Venta minima por mayor Factor de doble unidad de stock Stock minimo ");
-        \u0275\u0275domElement(66, "hr");
-        \u0275\u0275domElementStart(67, "button", 26);
-        \u0275\u0275text(68, "Submit");
-        \u0275\u0275domElementEnd()()();
+        \u0275\u0275elementStart(0, "div", 0)(1, "div")(2, "h1", 1);
+        \u0275\u0275text(3, "Dashboard");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(4, "p", 2);
+        \u0275\u0275text(5, "Resumen general del negocio");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(6, "div", 3)(7, "span", 4);
+        \u0275\u0275text(8, "today");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(9, "span");
+        \u0275\u0275text(10, "20 de abril, 2026");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(11, "div", 5)(12, "div", 6)(13, "div", 7)(14, "span", 4);
+        \u0275\u0275text(15, "trending_up");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(16, "div", 8)(17, "p", 9);
+        \u0275\u0275text(18, "Ventas del mes");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(19, "p", 10);
+        \u0275\u0275text(20, "$350.897");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(21, "p", 11)(22, "span", 4);
+        \u0275\u0275text(23, "arrow_upward");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(24, " 3.48% vs mes anterior ");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(25, "div", 12)(26, "div", 7)(27, "span", 4);
+        \u0275\u0275text(28, "people");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(29, "div", 8)(30, "p", 9);
+        \u0275\u0275text(31, "Nuevos clientes");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(32, "p", 10);
+        \u0275\u0275text(33, "2.356");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(34, "p", 13)(35, "span", 4);
+        \u0275\u0275text(36, "arrow_downward");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(37, " 3.48% vs semana ant. ");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(38, "div", 14)(39, "div", 7)(40, "span", 4);
+        \u0275\u0275text(41, "shopping_cart");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(42, "div", 8)(43, "p", 9);
+        \u0275\u0275text(44, "Comprobantes emitidos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(45, "p", 10);
+        \u0275\u0275text(46, "924");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(47, "p", 13)(48, "span", 4);
+        \u0275\u0275text(49, "arrow_downward");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(50, " 1.10% vs ayer ");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(51, "div", 15)(52, "div", 7)(53, "span", 4);
+        \u0275\u0275text(54, "percent");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(55, "div", 8)(56, "p", 9);
+        \u0275\u0275text(57, "Performance");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(58, "p", 10);
+        \u0275\u0275text(59, "49.65%");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(60, "p", 11)(61, "span", 4);
+        \u0275\u0275text(62, "arrow_upward");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(63, " 12% vs mes anterior ");
+        \u0275\u0275elementEnd()()()();
+        \u0275\u0275elementStart(64, "div", 16)(65, "div", 17)(66, "div", 18)(67, "div")(68, "p", 19);
+        \u0275\u0275text(69, "Resumen");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(70, "h2", 20);
+        \u0275\u0275text(71, "Ventas del per\xEDodo");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(72, "div", 21)(73, "span", 22);
+        \u0275\u0275text(74, "bar_chart");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(75, "p");
+        \u0275\u0275text(76, "Gr\xE1fico en construcci\xF3n");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(77, "div", 23)(78, "div", 18)(79, "div")(80, "p", 19);
+        \u0275\u0275text(81, "Performance");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(82, "h2", 20);
+        \u0275\u0275text(83, "Total de \xF3rdenes");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(84, "div", 21)(85, "span", 22);
+        \u0275\u0275text(86, "donut_large");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(87, "p");
+        \u0275\u0275text(88, "Gr\xE1fico en construcci\xF3n");
+        \u0275\u0275elementEnd()()()();
+        \u0275\u0275elementStart(89, "div", 24)(90, "div", 25)(91, "div", 26)(92, "h3", 27);
+        \u0275\u0275text(93, "\xDAltimas ventas");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(94, "a", 28);
+        \u0275\u0275text(95, "Ver todas");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(96, "table", 29)(97, "thead")(98, "tr")(99, "th");
+        \u0275\u0275text(100, "Comprobante");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(101, "th");
+        \u0275\u0275text(102, "Cliente");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(103, "th");
+        \u0275\u0275text(104, "Importe");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(105, "th");
+        \u0275\u0275text(106, "Estado");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(107, "tbody")(108, "tr")(109, "td");
+        \u0275\u0275text(110, "FAC-0001");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(111, "td");
+        \u0275\u0275text(112, "Juan Garc\xEDa");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(113, "td");
+        \u0275\u0275text(114, "$12.500");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(115, "td")(116, "span", 30);
+        \u0275\u0275text(117, "Cobrado");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(118, "tr")(119, "td");
+        \u0275\u0275text(120, "FAC-0002");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(121, "td");
+        \u0275\u0275text(122, "Mar\xEDa L\xF3pez");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(123, "td");
+        \u0275\u0275text(124, "$8.300");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(125, "td")(126, "span", 31);
+        \u0275\u0275text(127, "Pendiente");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(128, "tr")(129, "td");
+        \u0275\u0275text(130, "FAC-0003");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(131, "td");
+        \u0275\u0275text(132, "Carlos Ruiz");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(133, "td");
+        \u0275\u0275text(134, "$23.750");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(135, "td")(136, "span", 30);
+        \u0275\u0275text(137, "Cobrado");
+        \u0275\u0275elementEnd()()()()()();
+        \u0275\u0275elementStart(138, "div", 25)(139, "div", 26)(140, "h3", 27);
+        \u0275\u0275text(141, "Stock cr\xEDtico");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(142, "a", 32);
+        \u0275\u0275text(143, "Ver todo");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(144, "table", 29)(145, "thead")(146, "tr")(147, "th");
+        \u0275\u0275text(148, "Producto");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(149, "th");
+        \u0275\u0275text(150, "Stock");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(151, "th");
+        \u0275\u0275text(152, "Estado");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(153, "tbody")(154, "tr")(155, "td");
+        \u0275\u0275text(156, "Notebook HP i5");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(157, "td");
+        \u0275\u0275text(158, "2");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(159, "td")(160, "span", 33);
+        \u0275\u0275text(161, "Cr\xEDtico");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(162, "tr")(163, "td");
+        \u0275\u0275text(164, "Mouse Logitech");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(165, "td");
+        \u0275\u0275text(166, "5");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(167, "td")(168, "span", 31);
+        \u0275\u0275text(169, "Bajo");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(170, "tr")(171, "td");
+        \u0275\u0275text(172, "Teclado Redragon");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(173, "td");
+        \u0275\u0275text(174, "0");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(175, "td")(176, "span", 33);
+        \u0275\u0275text(177, "Sin stock");
+        \u0275\u0275elementEnd()()()()()()();
       }
-    }, encapsulation: 2 });
+    }, dependencies: [RouterLink], styles: ["\n.dash-header[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 1.5rem;\n  flex-wrap: wrap;\n  gap: .5rem;\n}\n.dash-header__title[_ngcontent-%COMP%] {\n  font-size: 1.375rem;\n  font-weight: 700;\n  color: #0f172a;\n  margin: 0;\n}\n.dash-header__subtitle[_ngcontent-%COMP%] {\n  font-size: .8125rem;\n  color: #64748b;\n  margin: .125rem 0 0;\n}\n.dash-header__date[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .375rem;\n  font-size: .8125rem;\n  color: #64748b;\n}\n.dash-header__date[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: 1rem;\n}\n.dash-kpis[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));\n  gap: 1rem;\n  margin-bottom: 1.5rem;\n}\n.kpi-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: .625rem;\n  border: 1px solid #e2e8f0;\n  padding: 1.25rem;\n  display: flex;\n  gap: 1rem;\n  align-items: flex-start;\n}\n.kpi-card__icon[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  border-radius: .5rem;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n.kpi-card__icon[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: 1.5rem;\n  color: white;\n}\n.kpi-card--teal[_ngcontent-%COMP%]   .kpi-card__icon[_ngcontent-%COMP%] {\n  background: #0d9488;\n}\n.kpi-card--blue[_ngcontent-%COMP%]   .kpi-card__icon[_ngcontent-%COMP%] {\n  background: #3b82f6;\n}\n.kpi-card--amber[_ngcontent-%COMP%]   .kpi-card__icon[_ngcontent-%COMP%] {\n  background: #f59e0b;\n}\n.kpi-card--violet[_ngcontent-%COMP%]   .kpi-card__icon[_ngcontent-%COMP%] {\n  background: #8b5cf6;\n}\n.kpi-card__label[_ngcontent-%COMP%] {\n  font-size: .75rem;\n  font-weight: 600;\n  text-transform: uppercase;\n  letter-spacing: .05em;\n  color: #64748b;\n  margin: 0 0 .25rem;\n}\n.kpi-card__value[_ngcontent-%COMP%] {\n  font-size: 1.5rem;\n  font-weight: 700;\n  color: #0f172a;\n  margin: 0 0 .25rem;\n}\n.kpi-card__trend[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .125rem;\n  font-size: .75rem;\n  margin: 0;\n}\n.kpi-card__trend[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: .875rem;\n}\n.kpi-card__trend--up[_ngcontent-%COMP%] {\n  color: #16a34a;\n}\n.kpi-card__trend--down[_ngcontent-%COMP%] {\n  color: #dc2626;\n}\n.dash-charts[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 2fr 1fr;\n  gap: 1rem;\n  margin-bottom: 1.5rem;\n}\n@media (max-width: 900px) {\n  .dash-charts[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n.dash-chart-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: .625rem;\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.dash-chart-card__header[_ngcontent-%COMP%] {\n  padding: 1rem 1.25rem;\n  border-bottom: 1px solid #f1f5f9;\n}\n.dash-chart-card__label[_ngcontent-%COMP%] {\n  font-size: .75rem;\n  font-weight: 600;\n  text-transform: uppercase;\n  letter-spacing: .05em;\n  color: #64748b;\n  margin: 0;\n}\n.dash-chart-card__title[_ngcontent-%COMP%] {\n  font-size: 1rem;\n  font-weight: 700;\n  color: #0f172a;\n  margin: .25rem 0 0;\n}\n.dash-chart-card__body[_ngcontent-%COMP%] {\n  padding: 1.25rem;\n  min-height: 200px;\n}\n.dash-chart-card__body--placeholder[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  color: #94a3b8;\n  font-size: .8125rem;\n  gap: .5rem;\n}\n.dash-recent[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 1rem;\n}\n@media (max-width: 900px) {\n  .dash-recent[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n.dash-recent-card[_ngcontent-%COMP%] {\n  background: white;\n  border-radius: .625rem;\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.dash-recent-card__header[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 1rem 1.25rem;\n  border-bottom: 1px solid #f1f5f9;\n}\n.dash-recent-card__title[_ngcontent-%COMP%] {\n  font-size: .9375rem;\n  font-weight: 600;\n  color: #0f172a;\n  margin: 0;\n}\n.dash-recent-card__link[_ngcontent-%COMP%] {\n  font-size: .8125rem;\n  color: #0d9488;\n  text-decoration: none;\n  font-weight: 500;\n}\n.dash-recent-card__link[_ngcontent-%COMP%]:hover {\n  text-decoration: underline;\n}\n/*# sourceMappingURL=dashboard.component.css.map */"] });
   }
 };
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductEditComponent, [{
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(DashboardComponent, [{
     type: Component,
-    args: [{ selector: "app-product-edit", imports: [], template: '<div class="container">\n    <form>\n      <!-- Datos generales -->\n      <fieldset>\n        <legend>General Data</legend>\n        <div class="form-group mb-3">\n          <label for="brand" class="form-label">Brand</label>\n          <select class="form-control" id="brand">\n            <!-- OPTIONS -->\n          </select>\n        </div>\n        <div class="form-group">\n          <label for="model" class="form-label">Model</label>\n          <input type="text" class="form-control" id="model">\n        </div>\n        <div class="form-group">\n          <label for="description" class="form-label">Description</label>\n          <input type="text" class="form-control" id="description">\n        </div>\n        <div class="form-group">\n          <label for="supplier" class="form-label">Supplier</label>\n          <select class="form-control" id="supplier">\n            <!-- OPTIONS -->\n          </select>\n        </div>\n        <div class="form-group">\n          <label for="category" class="form-label">Category</label>\n          <select class="form-control" id="category">\n            <!-- OPTIONS -->\n          </select>\n        </div>\n      </fieldset>\n      \n      <hr>\n      \n      <!-- Detalles -->\n      <fieldset>\n        <legend>Codes</legend>\n        <div class="form-group">\n          <label for="barcode" class="form-label">Barcode</label>\n          <input type="text" class="form-control" id="barcode">\n        </div>\n        <div class="form-group">\n          <label for="supplierCode" class="form-label">Supplier Code</label>\n          <input type="text" class="form-control" id="supplierCode">\n        </div>\n      </fieldset>\n\n      <hr>\n      \n      <!-- Precios -->\n      <fieldset>\n        <legend>Purchase Prices</legend>\n        <div class="form-group">\n          <label for="purchasePrice" class="form-label">Purchase Price</label>\n          <input type="text" class="form-control" id="purchasePrice">\n        </div>\n        <div class="form-group">\n          <label for="currency" class="form-label">Currency</label>\n          <select class="form-control" id="currency">\n            <option value="currency">$</option>\n            <option value="currency">EU</option>\n            <option value="currency">USD</option>\n          </select>\n        </div>\n        <div class="form-group">\n          <label for="discount" class="form-label">Discount</label>\n          <input type="text" class="form-control" id="discount">%\n        </div>\n        <div class="form-group">\n          <label for="taxRate" class="form-label">Tax Rate</label>\n          <input type="text" class="form-control" id="taxRate">\n        </div>\n        Costo contado\n        FOB + currency\n        Lista proveedor menos descuento\n        Internal Tax\n      </fieldset>\n\n      Precios de venta\n      check mantener porcentaje\n      check mantener precio\n\n      Precio mayorista\n      Precio Oferta\n      Precio Lista\n      Precio comercio\n      Precio Alternativo\n\n\n      Habilitaciones\n      publicado en web\n      doble unidad de stock\n      etiqueta de gondola\n      insumo\n      Destacado en web\n      Stock fraccionable\n      LLeva numero de serie\n      Servicio\n      Precio visible en web\n      Se vende por mayor\n      Fabricacion propia\n\n\n      Dimensiones y peso\n      \n      Alto\n      Profundidad\n      Ancho\n      Peso\n      Volumen\n\n      Ficha t\xE9cnica\n\n      Descripcion larga\n      Fotos\n      Articulos complementarios\n      SEO\n\n      Etiquetas\n      Asignacion libre\n      Existentes\n\n\n      Otros datos\n      Comision\n      Garantia\n      Compra minima por mayor\n      Stock minimo\n      Unidades por caja\n      Ubicacion\n      Venta minima por mayor\n      Factor de doble unidad de stock\n      Stock minimo\n\n\n      <hr>\n  \n      <button type="submit" class="btn btn-primary">Submit</button>\n    </form>\n  </div>\n  ' }]
+    args: [{ selector: "app-dashboard", standalone: true, imports: [RouterLink], template: '<!-- Page header -->\n<div class="dash-header">\n  <div>\n    <h1 class="dash-header__title">Dashboard</h1>\n    <p class="dash-header__subtitle">Resumen general del negocio</p>\n  </div>\n  <div class="dash-header__date">\n    <span class="material-icons">today</span>\n    <span>20 de abril, 2026</span>\n  </div>\n</div>\n\n<!-- KPI Cards -->\n<div class="dash-kpis">\n  <div class="kpi-card kpi-card--teal">\n    <div class="kpi-card__icon"><span class="material-icons">trending_up</span></div>\n    <div class="kpi-card__body">\n      <p class="kpi-card__label">Ventas del mes</p>\n      <p class="kpi-card__value">$350.897</p>\n      <p class="kpi-card__trend kpi-card__trend--up">\n        <span class="material-icons">arrow_upward</span> 3.48% vs mes anterior\n      </p>\n    </div>\n  </div>\n  <div class="kpi-card kpi-card--blue">\n    <div class="kpi-card__icon"><span class="material-icons">people</span></div>\n    <div class="kpi-card__body">\n      <p class="kpi-card__label">Nuevos clientes</p>\n      <p class="kpi-card__value">2.356</p>\n      <p class="kpi-card__trend kpi-card__trend--down">\n        <span class="material-icons">arrow_downward</span> 3.48% vs semana ant.\n      </p>\n    </div>\n  </div>\n  <div class="kpi-card kpi-card--amber">\n    <div class="kpi-card__icon"><span class="material-icons">shopping_cart</span></div>\n    <div class="kpi-card__body">\n      <p class="kpi-card__label">Comprobantes emitidos</p>\n      <p class="kpi-card__value">924</p>\n      <p class="kpi-card__trend kpi-card__trend--down">\n        <span class="material-icons">arrow_downward</span> 1.10% vs ayer\n      </p>\n    </div>\n  </div>\n  <div class="kpi-card kpi-card--violet">\n    <div class="kpi-card__icon"><span class="material-icons">percent</span></div>\n    <div class="kpi-card__body">\n      <p class="kpi-card__label">Performance</p>\n      <p class="kpi-card__value">49.65%</p>\n      <p class="kpi-card__trend kpi-card__trend--up">\n        <span class="material-icons">arrow_upward</span> 12% vs mes anterior\n      </p>\n    </div>\n  </div>\n</div>\n\n<!-- Charts row placeholder -->\n<div class="dash-charts">\n  <div class="dash-chart-card dash-chart-card--wide">\n    <div class="dash-chart-card__header">\n      <div>\n        <p class="dash-chart-card__label">Resumen</p>\n        <h2 class="dash-chart-card__title">Ventas del per\xEDodo</h2>\n      </div>\n    </div>\n    <div class="dash-chart-card__body dash-chart-card__body--placeholder">\n      <span class="material-icons" style="font-size:3rem;opacity:.2">bar_chart</span>\n      <p>Gr\xE1fico en construcci\xF3n</p>\n    </div>\n  </div>\n  <div class="dash-chart-card">\n    <div class="dash-chart-card__header">\n      <div>\n        <p class="dash-chart-card__label">Performance</p>\n        <h2 class="dash-chart-card__title">Total de \xF3rdenes</h2>\n      </div>\n    </div>\n    <div class="dash-chart-card__body dash-chart-card__body--placeholder">\n      <span class="material-icons" style="font-size:3rem;opacity:.2">donut_large</span>\n      <p>Gr\xE1fico en construcci\xF3n</p>\n    </div>\n  </div>\n</div>\n\n<!-- Recent activity -->\n<div class="dash-recent">\n  <div class="dash-recent-card">\n    <div class="dash-recent-card__header">\n      <h3 class="dash-recent-card__title">\xDAltimas ventas</h3>\n      <a routerLink="/customerInvoice" class="dash-recent-card__link">Ver todas</a>\n    </div>\n    <table class="table">\n      <thead>\n        <tr>\n          <th>Comprobante</th>\n          <th>Cliente</th>\n          <th>Importe</th>\n          <th>Estado</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>FAC-0001</td>\n          <td>Juan Garc\xEDa</td>\n          <td>$12.500</td>\n          <td><span class="badge bg-success">Cobrado</span></td>\n        </tr>\n        <tr>\n          <td>FAC-0002</td>\n          <td>Mar\xEDa L\xF3pez</td>\n          <td>$8.300</td>\n          <td><span class="badge bg-warning">Pendiente</span></td>\n        </tr>\n        <tr>\n          <td>FAC-0003</td>\n          <td>Carlos Ruiz</td>\n          <td>$23.750</td>\n          <td><span class="badge bg-success">Cobrado</span></td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n\n  <div class="dash-recent-card">\n    <div class="dash-recent-card__header">\n      <h3 class="dash-recent-card__title">Stock cr\xEDtico</h3>\n      <a routerLink="/products" class="dash-recent-card__link">Ver todo</a>\n    </div>\n    <table class="table">\n      <thead>\n        <tr>\n          <th>Producto</th>\n          <th>Stock</th>\n          <th>Estado</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <td>Notebook HP i5</td>\n          <td>2</td>\n          <td><span class="badge bg-danger">Cr\xEDtico</span></td>\n        </tr>\n        <tr>\n          <td>Mouse Logitech</td>\n          <td>5</td>\n          <td><span class="badge bg-warning">Bajo</span></td>\n        </tr>\n        <tr>\n          <td>Teclado Redragon</td>\n          <td>0</td>\n          <td><span class="badge bg-danger">Sin stock</span></td>\n        </tr>\n      </tbody>\n    </table>\n  </div>\n</div>\n', styles: ["/* src/app/pages/dashboard/dashboard.component.css */\n.dash-header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 1.5rem;\n  flex-wrap: wrap;\n  gap: .5rem;\n}\n.dash-header__title {\n  font-size: 1.375rem;\n  font-weight: 700;\n  color: #0f172a;\n  margin: 0;\n}\n.dash-header__subtitle {\n  font-size: .8125rem;\n  color: #64748b;\n  margin: .125rem 0 0;\n}\n.dash-header__date {\n  display: flex;\n  align-items: center;\n  gap: .375rem;\n  font-size: .8125rem;\n  color: #64748b;\n}\n.dash-header__date .material-icons {\n  font-size: 1rem;\n}\n.dash-kpis {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));\n  gap: 1rem;\n  margin-bottom: 1.5rem;\n}\n.kpi-card {\n  background: white;\n  border-radius: .625rem;\n  border: 1px solid #e2e8f0;\n  padding: 1.25rem;\n  display: flex;\n  gap: 1rem;\n  align-items: flex-start;\n}\n.kpi-card__icon {\n  width: 48px;\n  height: 48px;\n  border-radius: .5rem;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n.kpi-card__icon .material-icons {\n  font-size: 1.5rem;\n  color: white;\n}\n.kpi-card--teal .kpi-card__icon {\n  background: #0d9488;\n}\n.kpi-card--blue .kpi-card__icon {\n  background: #3b82f6;\n}\n.kpi-card--amber .kpi-card__icon {\n  background: #f59e0b;\n}\n.kpi-card--violet .kpi-card__icon {\n  background: #8b5cf6;\n}\n.kpi-card__label {\n  font-size: .75rem;\n  font-weight: 600;\n  text-transform: uppercase;\n  letter-spacing: .05em;\n  color: #64748b;\n  margin: 0 0 .25rem;\n}\n.kpi-card__value {\n  font-size: 1.5rem;\n  font-weight: 700;\n  color: #0f172a;\n  margin: 0 0 .25rem;\n}\n.kpi-card__trend {\n  display: flex;\n  align-items: center;\n  gap: .125rem;\n  font-size: .75rem;\n  margin: 0;\n}\n.kpi-card__trend .material-icons {\n  font-size: .875rem;\n}\n.kpi-card__trend--up {\n  color: #16a34a;\n}\n.kpi-card__trend--down {\n  color: #dc2626;\n}\n.dash-charts {\n  display: grid;\n  grid-template-columns: 2fr 1fr;\n  gap: 1rem;\n  margin-bottom: 1.5rem;\n}\n@media (max-width: 900px) {\n  .dash-charts {\n    grid-template-columns: 1fr;\n  }\n}\n.dash-chart-card {\n  background: white;\n  border-radius: .625rem;\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.dash-chart-card__header {\n  padding: 1rem 1.25rem;\n  border-bottom: 1px solid #f1f5f9;\n}\n.dash-chart-card__label {\n  font-size: .75rem;\n  font-weight: 600;\n  text-transform: uppercase;\n  letter-spacing: .05em;\n  color: #64748b;\n  margin: 0;\n}\n.dash-chart-card__title {\n  font-size: 1rem;\n  font-weight: 700;\n  color: #0f172a;\n  margin: .25rem 0 0;\n}\n.dash-chart-card__body {\n  padding: 1.25rem;\n  min-height: 200px;\n}\n.dash-chart-card__body--placeholder {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  color: #94a3b8;\n  font-size: .8125rem;\n  gap: .5rem;\n}\n.dash-recent {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 1rem;\n}\n@media (max-width: 900px) {\n  .dash-recent {\n    grid-template-columns: 1fr;\n  }\n}\n.dash-recent-card {\n  background: white;\n  border-radius: .625rem;\n  border: 1px solid #e2e8f0;\n  overflow: hidden;\n}\n.dash-recent-card__header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 1rem 1.25rem;\n  border-bottom: 1px solid #f1f5f9;\n}\n.dash-recent-card__title {\n  font-size: .9375rem;\n  font-weight: 600;\n  color: #0f172a;\n  margin: 0;\n}\n.dash-recent-card__link {\n  font-size: .8125rem;\n  color: #0d9488;\n  text-decoration: none;\n  font-weight: 500;\n}\n.dash-recent-card__link:hover {\n  text-decoration: underline;\n}\n/*# sourceMappingURL=dashboard.component.css.map */\n"] }]
   }], null, null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductEditComponent, { className: "ProductEditComponent", filePath: "src/app/pages/product/product-edit/product-edit.component.ts", lineNumber: 10 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(DashboardComponent, { className: "DashboardComponent", filePath: "src/app/pages/dashboard/dashboard.component.ts", lineNumber: 11 });
 })();
 
 // src/app/services/customer-invoice.service.ts
@@ -42779,7 +43150,7 @@ var CustomerInvoiceService = class _CustomerInvoiceService {
 })();
 
 // src/app/pages/customer/customer-invoice/customer-invoice.component.ts
-var _c014 = (a0) => ({ active: a0 });
+var _c013 = (a0) => ({ active: a0 });
 function CustomerInvoiceComponent_Conditional_12_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 11)(1, "h4");
@@ -43533,11 +43904,11 @@ var CustomerInvoiceComponent = class _CustomerInvoiceComponent {
         \u0275\u0275advance(12);
         \u0275\u0275conditional(ctx.productList.length == 0 && ctx.isFormSubmitted ? 12 : 13);
         \u0275\u0275advance(13);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(6, _c014, ctx.selectedComponent === "header"));
+        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(6, _c013, ctx.selectedComponent === "header"));
         \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(8, _c014, ctx.selectedComponent === "items"));
+        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(8, _c013, ctx.selectedComponent === "items"));
         \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(10, _c014, ctx.selectedComponent === "pagos"));
+        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(10, _c013, ctx.selectedComponent === "pagos"));
         \u0275\u0275advance(3);
         \u0275\u0275conditional((tmp_5_0 = ctx.selectedComponent) === "header" ? 32 : tmp_5_0 === "items" ? 33 : -1);
       }
@@ -44167,443 +44538,131 @@ var CustomerInvoiceComponent = class _CustomerInvoiceComponent {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(CustomerInvoiceComponent, { className: "CustomerInvoiceComponent", filePath: "src/app/pages/customer/customer-invoice/customer-invoice.component.ts", lineNumber: 45 });
 })();
 
-// src/app/services/transaction.service.ts
-var TransactionService = class _TransactionService {
+// src/app/shared/en-construccion/en-construccion.component.ts
+var EnConstruccionComponent = class _EnConstruccionComponent {
   constructor() {
-    this._http = inject(HttpClient);
-    this._urlBase = "http://localhost:8080/transaction-sv/transaction";
-    this.transactionSource = new BehaviorSubject(null);
-  }
-  getTransactions(id) {
-    return this._http.get(`${this._urlBase}/getAllBySupplier/${id}`);
-  }
-  setSelectedTransaction(transaction) {
-    this.transactionSource.next(transaction);
+    this.route = inject(ActivatedRoute);
+    this.titulo = this.route.snapshot.data["titulo"] ?? "Secci\xF3n en construcci\xF3n";
   }
   static {
-    this.\u0275fac = function TransactionService_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _TransactionService)();
+    this.\u0275fac = function EnConstruccionComponent_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _EnConstruccionComponent)();
     };
   }
   static {
-    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _TransactionService, factory: _TransactionService.\u0275fac, providedIn: "root" });
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _EnConstruccionComponent, selectors: [["app-en-construccion"]], decls: 12, vars: 1, consts: [[1, "flex", "flex-col", "items-center", "justify-center", "min-h-[60vh]", "text-center", "px-4"], [1, "w-24", "h-24", "rounded-full", "bg-primary-50", "flex", "items-center", "justify-center", "mb-6"], [1, "material-icons", "text-primary-500", 2, "font-size", "3rem"], [1, "text-2xl", "font-semibold", "text-slate-800", "mb-2"], [1, "text-slate-500", "max-w-md"], [1, "mt-6", "flex", "gap-2", "items-center"], [1, "inline-block", "w-2", "h-2", "rounded-full", "bg-primary-400", "animate-bounce", 2, "animation-delay", "0s"], [1, "inline-block", "w-2", "h-2", "rounded-full", "bg-primary-400", "animate-bounce", 2, "animation-delay", ".15s"], [1, "inline-block", "w-2", "h-2", "rounded-full", "bg-primary-400", "animate-bounce", 2, "animation-delay", ".3s"]], template: function EnConstruccionComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        \u0275\u0275domElementStart(0, "div", 0)(1, "div", 1)(2, "span", 2);
+        \u0275\u0275text(3, "construction");
+        \u0275\u0275domElementEnd()();
+        \u0275\u0275domElementStart(4, "h2", 3);
+        \u0275\u0275text(5);
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(6, "p", 4);
+        \u0275\u0275text(7, " Esta secci\xF3n est\xE1 en construcci\xF3n. Pr\xF3ximamente disponible. ");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(8, "div", 5);
+        \u0275\u0275domElement(9, "span", 6)(10, "span", 7)(11, "span", 8);
+        \u0275\u0275domElementEnd()();
+      }
+      if (rf & 2) {
+        \u0275\u0275advance(5);
+        \u0275\u0275textInterpolate1(" ", ctx.titulo, " ");
+      }
+    }, encapsulation: 2 });
   }
 };
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(TransactionService, [{
-    type: Injectable,
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(EnConstruccionComponent, [{
+    type: Component,
     args: [{
-      providedIn: "root"
+      selector: "app-en-construccion",
+      standalone: true,
+      imports: [],
+      template: `
+    <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+      <div class="w-24 h-24 rounded-full bg-primary-50 flex items-center justify-center mb-6">
+        <span class="material-icons text-primary-500" style="font-size:3rem">construction</span>
+      </div>
+      <h2 class="text-2xl font-semibold text-slate-800 mb-2">
+        {{ titulo }}
+      </h2>
+      <p class="text-slate-500 max-w-md">
+        Esta secci\xF3n est\xE1 en construcci\xF3n. Pr\xF3ximamente disponible.
+      </p>
+      <div class="mt-6 flex gap-2 items-center">
+        <span class="inline-block w-2 h-2 rounded-full bg-primary-400 animate-bounce" style="animation-delay:0s"></span>
+        <span class="inline-block w-2 h-2 rounded-full bg-primary-400 animate-bounce" style="animation-delay:.15s"></span>
+        <span class="inline-block w-2 h-2 rounded-full bg-primary-400 animate-bounce" style="animation-delay:.3s"></span>
+      </div>
+    </div>
+  `
     }]
   }], null, null);
 })();
-
-// src/app/pages/supplier/statement-of-account/statement-of-account.component.ts
-function StatementOfAccountComponent_For_46_Conditional_10_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275domElementStart(0, "td");
-    \u0275\u0275text(1);
-    \u0275\u0275pipe(2, "currency");
-    \u0275\u0275domElementEnd();
-  }
-  if (rf & 2) {
-    const transaction_r2 = \u0275\u0275nextContext().$implicit;
-    \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind1(2, 1, transaction_r2.amount), " ");
-  }
-}
-function StatementOfAccountComponent_For_46_Conditional_11_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275domElementStart(0, "td");
-    \u0275\u0275text(1, "-");
-    \u0275\u0275domElementEnd();
-  }
-}
-function StatementOfAccountComponent_For_46_Conditional_12_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275domElementStart(0, "td");
-    \u0275\u0275text(1);
-    \u0275\u0275pipe(2, "currency");
-    \u0275\u0275domElementEnd();
-  }
-  if (rf & 2) {
-    const transaction_r2 = \u0275\u0275nextContext().$implicit;
-    \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind1(2, 1, transaction_r2.amount), " ");
-  }
-}
-function StatementOfAccountComponent_For_46_Conditional_13_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275domElementStart(0, "td");
-    \u0275\u0275text(1, "-");
-    \u0275\u0275domElementEnd();
-  }
-}
-function StatementOfAccountComponent_For_46_Template(rf, ctx) {
-  if (rf & 1) {
-    const _r1 = \u0275\u0275getCurrentView();
-    \u0275\u0275domElementStart(0, "tr", 14);
-    \u0275\u0275domListener("click", function StatementOfAccountComponent_For_46_Template_tr_click_0_listener() {
-      const transaction_r2 = \u0275\u0275restoreView(_r1).$implicit;
-      const ctx_r2 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r2.selectTransaction(transaction_r2));
-    })("Keyup", function StatementOfAccountComponent_For_46_Template_tr_Keyup_0_listener() {
-      const transaction_r2 = \u0275\u0275restoreView(_r1).$implicit;
-      const ctx_r2 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r2.selectTransaction(transaction_r2));
-    });
-    \u0275\u0275domElementStart(1, "td");
-    \u0275\u0275text(2);
-    \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(3, "td");
-    \u0275\u0275text(4);
-    \u0275\u0275pipe(5, "date");
-    \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(6, "td");
-    \u0275\u0275text(7);
-    \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(8, "td");
-    \u0275\u0275text(9);
-    \u0275\u0275domElementEnd();
-    \u0275\u0275conditionalCreate(10, StatementOfAccountComponent_For_46_Conditional_10_Template, 3, 3, "td");
-    \u0275\u0275conditionalCreate(11, StatementOfAccountComponent_For_46_Conditional_11_Template, 2, 0, "td");
-    \u0275\u0275conditionalCreate(12, StatementOfAccountComponent_For_46_Conditional_12_Template, 3, 3, "td");
-    \u0275\u0275conditionalCreate(13, StatementOfAccountComponent_For_46_Conditional_13_Template, 2, 0, "td");
-    \u0275\u0275domElementStart(14, "td");
-    \u0275\u0275text(15);
-    \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(16, "td");
-    \u0275\u0275text(17);
-    \u0275\u0275pipe(18, "currency");
-    \u0275\u0275domElementEnd()();
-  }
-  if (rf & 2) {
-    const transaction_r2 = ctx.$implicit;
-    const \u0275$index_73_r4 = ctx.$index;
-    const ctx_r2 = \u0275\u0275nextContext();
-    \u0275\u0275classProp("selected", transaction_r2 === ctx_r2.currentTransaction);
-    \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(transaction_r2.transactionId);
-    \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(\u0275\u0275pipeBind2(5, 14, transaction_r2.date, "dd-MM-yyyy"));
-    \u0275\u0275advance(3);
-    \u0275\u0275textInterpolate(transaction_r2.transactionNumber);
-    \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(transaction_r2.type);
-    \u0275\u0275advance();
-    \u0275\u0275conditional(transaction_r2.type === "invoice" ? 10 : -1);
-    \u0275\u0275advance();
-    \u0275\u0275conditional(transaction_r2.type !== "invoice" ? 11 : -1);
-    \u0275\u0275advance();
-    \u0275\u0275conditional(transaction_r2.type === "recipe" ? 12 : -1);
-    \u0275\u0275advance();
-    \u0275\u0275conditional(transaction_r2.type !== "recipe" ? 13 : -1);
-    \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(transaction_r2.description);
-    \u0275\u0275advance();
-    \u0275\u0275styleProp("color", ctx_r2.calculateBalance()[\u0275$index_73_r4] < 0 ? "red" : "black");
-    \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind1(18, 17, ctx_r2.calculateBalance()[\u0275$index_73_r4]), " ");
-  }
-}
-var StatementOfAccountComponent = class _StatementOfAccountComponent {
-  constructor() {
-    this.route = inject(ActivatedRoute);
-    this.supplier = null;
-    this.transactionList = [];
-    this.selectedTransaction = null;
-    this.totalB = 0;
-    this.totalN = 0;
-    this.totalBalance = 0;
-    this.supplierId = null;
-    this.balance = 0;
-    this.currentTransaction = null;
-    this.modalDialogService = inject(ModalDialogService);
-    this._transactionService = inject(TransactionService);
-    this.totals = {
-      totalB: 10,
-      totalN: 20,
-      totalBalance: 30
-    };
-  }
-  ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
-      this.supplierId = params.get("id");
-      if (this.supplierId) {
-        this._transactionService.getTransactions(this.supplierId).subscribe((data) => {
-          this.transactionList = data;
-        });
-      }
-    });
-    this.calculateTotals();
-  }
-  // Definir la función trackByFn para usar en el *ngFor
-  trackByFn(index, item) {
-    return item.transactionId;
-  }
-  calculateBalance() {
-    let balance = 0;
-    const balanceList = this.transactionList.map((transaction) => {
-      balance += transaction.type === "invoice" ? transaction.amount : -transaction.amount;
-      return balance;
-    });
-    return balanceList;
-  }
-  getTotalBalance() {
-    const balanceList = this.calculateBalance();
-    return balanceList.length > 0 ? balanceList[balanceList.length - 1] : 0;
-  }
-  calculateTotals() {
-    let balance = 0;
-    let totalB = 0;
-    let totalN = 0;
-    this.transactionList.forEach((transaction) => {
-      balance += transaction.type === "invoice" ? transaction.amount : -transaction.amount;
-      if (transaction.taxSave) {
-        totalB += transaction.amount;
-      } else {
-        totalN += transaction.amount;
-      }
-    });
-    this.totals.totalB = totalB;
-    this.totals.totalN = totalN;
-    this.totals.totalBalance = balance;
-  }
-  selectTransaction(transaction) {
-    console.log(transaction.description);
-    this._transactionService.setSelectedTransaction(transaction);
-    this.currentTransaction = __spreadValues({}, transaction);
-  }
-  openCreateModal() {
-  }
-  openEditModal() {
-  }
-  openDeleteModal() {
-  }
-  static {
-    this.\u0275fac = function StatementOfAccountComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _StatementOfAccountComponent)();
-    };
-  }
-  static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _StatementOfAccountComponent, selectors: [["app-statement-of-account"]], inputs: { supplier: "supplier" }, decls: 47, vars: 11, consts: [[1, "container"], [1, "row"], [1, "col", "card", "shadow", "m-3", "p-3"], [1, "d-flex", "gap-2"], [1, "btn", "btn-sm", "btn-success", 3, "click"], [1, "btn", "btn-sm", "btn-warning", 3, "click", "disabled"], [1, "btn", "btn-sm", "btn-danger", 3, "click", "disabled"], [1, "totals"], [1, "container-fluid"], ["id", "table-container", 1, "table-responsive"], [1, "table", "table-striped", "table-hover", "align-middle", "table-sm"], [1, "table-dark"], ["scope", "col"], [3, "selected"], [3, "click", "Keyup"]], template: function StatementOfAccountComponent_Template(rf, ctx) {
-      if (rf & 1) {
-        \u0275\u0275domElementStart(0, "h3");
-        \u0275\u0275text(1, "Outstanding balance");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(2, "div", 0)(3, "div", 1)(4, "div", 2)(5, "div", 3)(6, "button", 4);
-        \u0275\u0275domListener("click", function StatementOfAccountComponent_Template_button_click_6_listener() {
-          return ctx.openCreateModal();
-        });
-        \u0275\u0275text(7, " Create ");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(8, "button", 5);
-        \u0275\u0275domListener("click", function StatementOfAccountComponent_Template_button_click_8_listener() {
-          return ctx.openEditModal();
-        });
-        \u0275\u0275text(9, " Edit ");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(10, "button", 6);
-        \u0275\u0275domListener("click", function StatementOfAccountComponent_Template_button_click_10_listener() {
-          return ctx.openDeleteModal();
-        });
-        \u0275\u0275text(11, " Delete ");
-        \u0275\u0275domElementEnd()()();
-        \u0275\u0275domElementStart(12, "div", 2)(13, "div", 7)(14, "p");
-        \u0275\u0275text(15);
-        \u0275\u0275pipe(16, "currency");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(17, "p");
-        \u0275\u0275text(18);
-        \u0275\u0275pipe(19, "currency");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(20, "p");
-        \u0275\u0275text(21);
-        \u0275\u0275pipe(22, "currency");
-        \u0275\u0275domElementEnd()()()()();
-        \u0275\u0275domElementStart(23, "div", 8)(24, "div", 9)(25, "table", 10)(26, "thead", 11)(27, "tr")(28, "th", 12);
-        \u0275\u0275text(29, "#Id");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(30, "th", 12);
-        \u0275\u0275text(31, "Date");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(32, "th", 12);
-        \u0275\u0275text(33, "Number");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(34, "th", 12);
-        \u0275\u0275text(35, "Type");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(36, "th", 12);
-        \u0275\u0275text(37, "Income");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(38, "th", 12);
-        \u0275\u0275text(39, "Expense");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(40, "th", 12);
-        \u0275\u0275text(41, "Description");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(42, "th", 12);
-        \u0275\u0275text(43, "Balance");
-        \u0275\u0275domElementEnd()()();
-        \u0275\u0275domElementStart(44, "tbody");
-        \u0275\u0275repeaterCreate(45, StatementOfAccountComponent_For_46_Template, 19, 19, "tr", 13, ctx.trackByFn, true);
-        \u0275\u0275domElementEnd()()()();
-      }
-      if (rf & 2) {
-        \u0275\u0275advance(8);
-        \u0275\u0275domProperty("disabled", !ctx.currentTransaction);
-        \u0275\u0275advance(2);
-        \u0275\u0275domProperty("disabled", !ctx.currentTransaction);
-        \u0275\u0275advance(5);
-        \u0275\u0275textInterpolate1("Total B ", \u0275\u0275pipeBind1(16, 5, ctx.totals.totalB));
-        \u0275\u0275advance(3);
-        \u0275\u0275textInterpolate1("Total N ", \u0275\u0275pipeBind1(19, 7, ctx.totals.totalN));
-        \u0275\u0275advance(3);
-        \u0275\u0275textInterpolate1("Total Balance: ", \u0275\u0275pipeBind1(22, 9, ctx.totals.totalBalance));
-        \u0275\u0275advance(24);
-        \u0275\u0275repeater(ctx.transactionList);
-      }
-    }, dependencies: [
-      CommonModule,
-      FormsModule,
-      ReactiveFormsModule,
-      CurrencyPipe,
-      DatePipe
-    ], styles: ["\ntr.selected[_ngcontent-%COMP%] {\n  background-color: #eb4343;\n}\n#table-container[_ngcontent-%COMP%] {\n  max-height: 400px;\n  overflow-y: auto;\n}\n.table[_ngcontent-%COMP%]   thead[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 0;\n  background-color: #343a40;\n  z-index: 1;\n}\n/*# sourceMappingURL=statement-of-account.component.css.map */"] });
-  }
-};
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(StatementOfAccountComponent, [{
-    type: Component,
-    args: [{ selector: "app-statement-of-account", imports: [
-      CommonModule,
-      FormsModule,
-      ReactiveFormsModule
-    ], template: `<h3>Outstanding balance</h3>
-
-<div class="container">
-  <div class="row">
-    <div class="col card shadow m-3 p-3">
-      <!-- Botones de acci\xF3n -->
-      <div class="d-flex gap-2">
-        <button class="btn btn-sm btn-success" (click)="openCreateModal()">
-          Create
-        </button>
-        <button
-          class="btn btn-sm btn-warning"
-          [disabled]="!currentTransaction"
-          (click)="openEditModal()"
-          >
-          Edit
-        </button>
-        <button
-          class="btn btn-sm btn-danger"
-          [disabled]="!currentTransaction"
-          (click)="openDeleteModal()"
-          >
-          Delete
-        </button>
-      </div>
-    </div>
-    <div class="col card shadow m-3 p-3">
-      <div class="totals">
-        <!-- Totales -->
-        <p>Total B {{ totals.totalB | currency }}</p>
-        <p>Total N {{ totals.totalN | currency }}</p>
-        <p>Total Balance: {{ totals.totalBalance | currency }}</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Tabla de transacciones -->
-<div class="container-fluid">
-  <div class="table-responsive" id="table-container">
-    <table class="table table-striped table-hover align-middle table-sm">
-      <thead class="table-dark">
-        <tr>
-          <th scope="col">#Id</th>
-          <th scope="col">Date</th>
-          <th scope="col">Number</th>
-          <th scope="col">Type</th>
-          <th scope="col">Income</th>
-          <th scope="col">Expense</th>
-          <th scope="col">Description</th>
-          <th scope="col">Balance</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        @for (
-          transaction of transactionList; track trackByFn(i,
-          transaction); let i = $index) {
-          <tr
-            (click)="selectTransaction(transaction)"
-            (Keyup)="selectTransaction(transaction)"
-            [class.selected]="transaction === currentTransaction"
-            >
-            <td>{{ transaction.transactionId }}</td>
-            <td>{{ transaction.date | date : "dd-MM-yyyy" }}</td>
-            <td>{{ transaction.transactionNumber }}</td>
-            <td>{{ transaction.type }}</td>
-            <!-- Ingresos -->
-            @if (transaction.type === 'invoice') {
-              <td>
-                {{ transaction.amount | currency }}
-              </td>
-            }
-            @if (transaction.type !== 'invoice') {
-              <td>-</td>
-            }
-            <!-- Egresos -->
-            @if (transaction.type === 'recipe') {
-              <td>
-                {{ transaction.amount | currency }}
-              </td>
-            }
-            @if (transaction.type !== 'recipe') {
-              <td>-</td>
-            }
-            <td>{{ transaction.description }}</td>
-            <!-- Calcular balance acumulado -->
-            <td [style.color]="calculateBalance()[i] < 0 ? 'red' : 'black'">
-              {{ calculateBalance()[i] | currency }}
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-</div>
-`, styles: ["/* src/app/pages/supplier/statement-of-account/statement-of-account.component.css */\ntr.selected {\n  background-color: #eb4343;\n}\n#table-container {\n  max-height: 400px;\n  overflow-y: auto;\n}\n.table thead th {\n  position: sticky;\n  top: 0;\n  background-color: #343a40;\n  z-index: 1;\n}\n/*# sourceMappingURL=statement-of-account.component.css.map */\n"] }]
-  }], null, { supplier: [{
-    type: Input
-  }] });
-})();
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(StatementOfAccountComponent, { className: "StatementOfAccountComponent", filePath: "src/app/pages/supplier/statement-of-account/statement-of-account.component.ts", lineNumber: 20 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(EnConstruccionComponent, { className: "EnConstruccionComponent", filePath: "src/app/shared/en-construccion/en-construccion.component.ts", lineNumber: 27 });
 })();
 
 // src/app/app.routes.ts
 var routes = [
+  // ── Principal ──────────────────────────────────────
   { path: "", component: HomeComponent },
+  { path: "dashboard", component: DashboardComponent },
+  // ── Catálogo ───────────────────────────────────────
   { path: "products", component: ProductsComponent },
   { path: "products/:id", component: ProductDetailsComponent },
   { path: "products/:id/edit", component: ProductEditComponent },
-  { path: "customerInvoice", component: CustomerInvoiceComponent },
   { path: "brand", component: BrandComponent },
   { path: "brand/create", component: BrandCreateComponent },
   { path: "brand/:id", component: BrandDetailsComponent },
   { path: "brand/:id/edit", component: BrandEditComponent },
   { path: "category", component: CategoryComponent },
   { path: "category/:id", component: CategoryDetailsComponent },
+  // ── Ventas / Comprobantes ──────────────────────────
+  { path: "customerInvoice", component: CustomerInvoiceComponent },
+  { path: "comprobantes/nota-credito", component: EnConstruccionComponent, data: { titulo: "Nota de Cr\xE9dito" } },
+  { path: "comprobantes/nota-debito", component: EnConstruccionComponent, data: { titulo: "Nota de D\xE9bito" } },
+  { path: "comprobantes/presupuesto", component: EnConstruccionComponent, data: { titulo: "Presupuesto" } },
+  { path: "comprobantes/ver", component: EnConstruccionComponent, data: { titulo: "Ver Comprobantes" } },
+  { path: "comprobantes/recibos", component: EnConstruccionComponent, data: { titulo: "Recibos" } },
+  { path: "comprobantes/pagos", component: EnConstruccionComponent, data: { titulo: "Pagos" } },
+  // ── Proveedores ────────────────────────────────────
   { path: "supplier", component: SupplierComponent },
   { path: "supplier/:id", component: SupplierDetailsComponent },
   { path: "supplierInvoice", component: SupplierInvoiceComponent },
-  { path: "dashboard", component: DashboardComponent },
   { path: "supplierPriceList", component: SupplierPriceListComponent },
   { path: "statementAccount", component: StatementOfAccountComponent },
   { path: "statementAccount/:id", component: StatementOfAccountComponent },
+  // ── Clientes ───────────────────────────────────────
+  { path: "clientes", component: EnConstruccionComponent, data: { titulo: "Clientes" } },
+  // ── Almacén ────────────────────────────────────────
+  { path: "almacen/remito", component: EnConstruccionComponent, data: { titulo: "Remito" } },
+  { path: "almacen/inventario", component: EnConstruccionComponent, data: { titulo: "Inventario" } },
+  // ── Caja ───────────────────────────────────────────
+  { path: "caja", component: EnConstruccionComponent, data: { titulo: "Caja Diaria" } },
+  // ── Ecommerce ──────────────────────────────────────
+  { path: "ecommerce/ordenes", component: EnConstruccionComponent, data: { titulo: "\xD3rdenes Ecommerce" } },
+  { path: "ecommerce/config", component: EnConstruccionComponent, data: { titulo: "Configuraci\xF3n Ecommerce" } },
+  { path: "ecommerce/seo", component: EnConstruccionComponent, data: { titulo: "SEO" } },
+  { path: "ecommerce/etiquetas", component: EnConstruccionComponent, data: { titulo: "Etiquetas" } },
+  // ── Servicio Técnico ───────────────────────────────
+  { path: "servicio-tecnico", component: EnConstruccionComponent, data: { titulo: "\xD3rdenes de Servicio T\xE9cnico" } },
+  { path: "servicio-tecnico/turnos", component: EnConstruccionComponent, data: { titulo: "Turnos" } },
+  // ── Informes ───────────────────────────────────────
+  { path: "informes/ventas", component: EnConstruccionComponent, data: { titulo: "Ventas en Tiempo Real" } },
+  { path: "informes/movimientos", component: EnConstruccionComponent, data: { titulo: "Movimientos de Art\xEDculos" } },
+  { path: "informes/excel", component: EnConstruccionComponent, data: { titulo: "Exportar a Excel" } },
+  // ── Contabilidad ───────────────────────────────────
+  { path: "contabilidad/libro-iva", component: EnConstruccionComponent, data: { titulo: "Libro IVA" } },
+  { path: "contabilidad/retenciones", component: EnConstruccionComponent, data: { titulo: "Retenciones de IIBB" } },
+  { path: "contabilidad/libro-mayor", component: EnConstruccionComponent, data: { titulo: "Libro Mayor" } },
+  // ── Configuración ──────────────────────────────────
+  { path: "configuracion/general", component: EnConstruccionComponent, data: { titulo: "Configuraci\xF3n General" } },
+  { path: "configuracion/usuarios", component: EnConstruccionComponent, data: { titulo: "Usuarios" } },
+  { path: "configuracion/archivos", component: EnConstruccionComponent, data: { titulo: "Archivos Maestros" } },
+  { path: "importaciones", component: EnConstruccionComponent, data: { titulo: "Importaciones" } },
+  // ── Fallback ───────────────────────────────────────
   { path: "**", redirectTo: "", pathMatch: "full" }
 ];
 
@@ -44834,14 +44893,464 @@ var appConfig = {
   ]
 };
 
+// src/app/layout/sidebar/sidebar.component.ts
+var _c014 = (a0) => ({ exact: a0 });
+var _forTrack06 = ($index, $item) => $item.title;
+var _forTrack12 = ($index, $item) => $item.label;
+function SidebarComponent_Conditional_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 4);
+    \u0275\u0275text(1, "RetailManager");
+    \u0275\u0275elementEnd();
+  }
+}
+function SidebarComponent_For_8_Conditional_1_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "p", 9);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const section_r1 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(section_r1.title);
+  }
+}
+function SidebarComponent_For_8_For_3_Conditional_3_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 12);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const item_r2 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(item_r2.label);
+  }
+}
+function SidebarComponent_For_8_For_3_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "a", 10)(1, "span", 11);
+    \u0275\u0275text(2);
+    \u0275\u0275elementEnd();
+    \u0275\u0275conditionalCreate(3, SidebarComponent_For_8_For_3_Conditional_3_Template, 2, 1, "span", 12);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const item_r2 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275property("routerLink", item_r2.route)("routerLinkActiveOptions", \u0275\u0275pureFunction1(5, _c014, item_r2.route === "/"))("title", ctx_r2.collapsed ? item_r2.label : "");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r2.icon);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(!ctx_r2.collapsed ? 3 : -1);
+  }
+}
+function SidebarComponent_For_8_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 6);
+    \u0275\u0275conditionalCreate(1, SidebarComponent_For_8_Conditional_1_Template, 2, 1, "p", 9);
+    \u0275\u0275repeaterCreate(2, SidebarComponent_For_8_For_3_Template, 4, 7, "a", 10, _forTrack12);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const section_r1 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275conditional(!ctx_r2.collapsed ? 1 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275repeater(section_r1.items);
+  }
+}
+function SidebarComponent_Conditional_10_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "p", 8);
+    \u0275\u0275text(1, "v1.0.0 \u2022 RetailManager");
+    \u0275\u0275elementEnd();
+  }
+}
+var SidebarComponent = class _SidebarComponent {
+  constructor() {
+    this.collapsed = false;
+    this.sections = [
+      {
+        title: "Principal",
+        items: [
+          { label: "Inicio", icon: "home", route: "/" },
+          { label: "Dashboard", icon: "dashboard", route: "/dashboard" }
+        ]
+      },
+      {
+        title: "Cat\xE1logo",
+        items: [
+          { label: "Productos", icon: "inventory_2", route: "/products" },
+          { label: "Marcas", icon: "label", route: "/brand" },
+          { label: "Categor\xEDas", icon: "category", route: "/category" }
+        ]
+      },
+      {
+        title: "Ventas",
+        items: [
+          { label: "Factura de venta", icon: "receipt", route: "/customerInvoice" },
+          { label: "Nota de cr\xE9dito", icon: "note_alt", route: "/comprobantes/nota-credito" },
+          { label: "Nota de d\xE9bito", icon: "note", route: "/comprobantes/nota-debito" },
+          { label: "Presupuesto", icon: "request_quote", route: "/comprobantes/presupuesto" },
+          { label: "Ver comprobantes", icon: "list_alt", route: "/comprobantes/ver" },
+          { label: "Recibos", icon: "receipt_long", route: "/comprobantes/recibos" },
+          { label: "Pagos", icon: "payments", route: "/comprobantes/pagos" }
+        ]
+      },
+      {
+        title: "Proveedores",
+        items: [
+          { label: "Listado", icon: "storefront", route: "/supplier" },
+          { label: "Factura proveedor", icon: "description", route: "/supplierInvoice" },
+          { label: "Lista de precios", icon: "price_check", route: "/supplierPriceList" },
+          { label: "Cuenta corriente", icon: "account_balance", route: "/statementAccount" }
+        ]
+      },
+      {
+        title: "Clientes",
+        items: [
+          { label: "Listado", icon: "people", route: "/clientes" }
+        ]
+      },
+      {
+        title: "Almac\xE9n",
+        items: [
+          { label: "Remito", icon: "local_shipping", route: "/almacen/remito" },
+          { label: "Inventario", icon: "warehouse", route: "/almacen/inventario" }
+        ]
+      },
+      {
+        title: "Caja",
+        items: [
+          { label: "Caja diaria", icon: "point_of_sale", route: "/caja" }
+        ]
+      },
+      {
+        title: "Ecommerce",
+        items: [
+          { label: "\xD3rdenes", icon: "shopping_cart", route: "/ecommerce/ordenes" },
+          { label: "Configuraci\xF3n", icon: "tune", route: "/ecommerce/config" },
+          { label: "SEO", icon: "search", route: "/ecommerce/seo" },
+          { label: "Etiquetas", icon: "sell", route: "/ecommerce/etiquetas" }
+        ]
+      },
+      {
+        title: "Serv. T\xE9cnico",
+        items: [
+          { label: "\xD3rdenes", icon: "build", route: "/servicio-tecnico" },
+          { label: "Turnos", icon: "event", route: "/servicio-tecnico/turnos" }
+        ]
+      },
+      {
+        title: "Informes",
+        items: [
+          { label: "Ventas en tiempo real", icon: "trending_up", route: "/informes/ventas" },
+          { label: "Movimientos", icon: "swap_vert", route: "/informes/movimientos" },
+          { label: "Exportar Excel", icon: "table_chart", route: "/informes/excel" }
+        ]
+      },
+      {
+        title: "Contabilidad",
+        items: [
+          { label: "Libro IVA", icon: "menu_book", route: "/contabilidad/libro-iva" },
+          { label: "Retenciones", icon: "gavel", route: "/contabilidad/retenciones" },
+          { label: "Libro Mayor", icon: "auto_stories", route: "/contabilidad/libro-mayor" }
+        ]
+      },
+      {
+        title: "Configuraci\xF3n",
+        items: [
+          { label: "General", icon: "settings", route: "/configuracion/general" },
+          { label: "Usuarios", icon: "manage_accounts", route: "/configuracion/usuarios" },
+          { label: "Archivos maestros", icon: "folder_open", route: "/configuracion/archivos" },
+          { label: "Importaciones", icon: "upload_file", route: "/importaciones" }
+        ]
+      }
+    ];
+  }
+  static {
+    this.\u0275fac = function SidebarComponent_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _SidebarComponent)();
+    };
+  }
+  static {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _SidebarComponent, selectors: [["app-sidebar"]], inputs: { collapsed: "collapsed" }, decls: 11, vars: 4, consts: [["aria-label", "Men\xFA de navegaci\xF3n principal", 1, "sidebar"], [1, "sidebar__header"], [1, "sidebar__logo"], [1, "material-icons", "sidebar__logo-icon"], [1, "sidebar__logo-text"], [1, "sidebar__nav"], [1, "sidebar__section"], [1, "sidebar__footer"], [1, "sidebar__footer-text"], [1, "sidebar__section-label"], ["routerLinkActive", "sidebar__item--active", 1, "sidebar__item", 3, "routerLink", "routerLinkActiveOptions", "title"], [1, "material-icons", "sidebar__item-icon"], [1, "sidebar__item-label"]], template: function SidebarComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        \u0275\u0275elementStart(0, "aside", 0)(1, "div", 1)(2, "div", 2)(3, "span", 3);
+        \u0275\u0275text(4, "storefront");
+        \u0275\u0275elementEnd();
+        \u0275\u0275conditionalCreate(5, SidebarComponent_Conditional_5_Template, 2, 0, "span", 4);
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(6, "nav", 5);
+        \u0275\u0275repeaterCreate(7, SidebarComponent_For_8_Template, 4, 1, "div", 6, _forTrack06);
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(9, "div", 7);
+        \u0275\u0275conditionalCreate(10, SidebarComponent_Conditional_10_Template, 2, 0, "p", 8);
+        \u0275\u0275elementEnd()();
+      }
+      if (rf & 2) {
+        \u0275\u0275classProp("sidebar--collapsed", ctx.collapsed);
+        \u0275\u0275advance(5);
+        \u0275\u0275conditional(!ctx.collapsed ? 5 : -1);
+        \u0275\u0275advance(2);
+        \u0275\u0275repeater(ctx.sections);
+        \u0275\u0275advance(3);
+        \u0275\u0275conditional(!ctx.collapsed ? 10 : -1);
+      }
+    }, dependencies: [CommonModule, RouterLink, RouterLinkActive], styles: ["\n.sidebar[_ngcontent-%COMP%] {\n  position: fixed;\n  top: 0;\n  left: 0;\n  height: 100vh;\n  width: var(--sidebar-width);\n  background: var(--color-sidebar-bg);\n  color: var(--color-sidebar-text);\n  display: flex;\n  flex-direction: column;\n  z-index: 200;\n  transition: width .2s ease;\n  overflow: hidden;\n}\n.sidebar--collapsed[_ngcontent-%COMP%] {\n  width: var(--sidebar-collapsed-width);\n}\n.sidebar__header[_ngcontent-%COMP%] {\n  height: var(--topbar-height);\n  display: flex;\n  align-items: center;\n  padding: 0 1rem;\n  border-bottom: 1px solid rgba(255, 255, 255, .06);\n  flex-shrink: 0;\n}\n.sidebar__logo[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .625rem;\n  overflow: hidden;\n  white-space: nowrap;\n}\n.sidebar__logo-icon[_ngcontent-%COMP%] {\n  font-size: 1.5rem;\n  color: var(--color-primary);\n  flex-shrink: 0;\n}\n.sidebar__logo-text[_ngcontent-%COMP%] {\n  font-size: .9375rem;\n  font-weight: 700;\n  color: #f1f5f9;\n  letter-spacing: -.01em;\n}\n.sidebar__nav[_ngcontent-%COMP%] {\n  flex: 1;\n  overflow-y: auto;\n  overflow-x: hidden;\n  padding: .5rem 0;\n  scrollbar-width: thin;\n  scrollbar-color: rgba(255, 255, 255, .1) transparent;\n}\n.sidebar__nav[_ngcontent-%COMP%]::-webkit-scrollbar {\n  width: 4px;\n}\n.sidebar__nav[_ngcontent-%COMP%]::-webkit-scrollbar-thumb {\n  background: rgba(255, 255, 255, .08);\n  border-radius: 2px;\n}\n.sidebar__section[_ngcontent-%COMP%] {\n  padding: .25rem 0;\n  border-bottom: 1px solid rgba(255, 255, 255, .04);\n}\n.sidebar__section[_ngcontent-%COMP%]:last-child {\n  border-bottom: none;\n}\n.sidebar__section-label[_ngcontent-%COMP%] {\n  margin: 0;\n  padding: .625rem 1rem .25rem;\n  font-size: .625rem;\n  font-weight: 700;\n  letter-spacing: .08em;\n  text-transform: uppercase;\n  color: rgba(255, 255, 255, .3);\n  white-space: nowrap;\n  overflow: hidden;\n}\n.sidebar__item[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .625rem;\n  padding: .5rem 1rem;\n  margin: .125rem .5rem;\n  border-radius: .375rem;\n  color: var(--color-sidebar-text);\n  text-decoration: none;\n  font-size: .8125rem;\n  font-weight: 400;\n  white-space: nowrap;\n  overflow: hidden;\n  transition: background .12s, color .12s;\n  cursor: pointer;\n}\n.sidebar__item[_ngcontent-%COMP%]:hover {\n  background: rgba(255, 255, 255, .07);\n  color: #f1f5f9;\n}\n.sidebar__item--active[_ngcontent-%COMP%] {\n  background: rgba(13, 148, 136, .25) !important;\n  color: #5eead4 !important;\n  font-weight: 500;\n}\n.sidebar__item-icon[_ngcontent-%COMP%] {\n  font-size: 1.1rem;\n  flex-shrink: 0;\n  transition: color .12s;\n}\n.sidebar__item--active[_ngcontent-%COMP%]   .sidebar__item-icon[_ngcontent-%COMP%] {\n  color: #5eead4;\n}\n.sidebar__item-label[_ngcontent-%COMP%] {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.sidebar__footer[_ngcontent-%COMP%] {\n  padding: .75rem 1rem;\n  border-top: 1px solid rgba(255, 255, 255, .06);\n  flex-shrink: 0;\n}\n.sidebar__footer-text[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: .6875rem;\n  color: rgba(255, 255, 255, .25);\n  white-space: nowrap;\n}\n.sidebar--collapsed[_ngcontent-%COMP%]   .sidebar__item[_ngcontent-%COMP%] {\n  justify-content: center;\n  padding: .5rem;\n  margin: .125rem auto;\n  width: 40px;\n}\n.sidebar--collapsed[_ngcontent-%COMP%]   .sidebar__section[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n@media (max-width: 767px) {\n  .sidebar[_ngcontent-%COMP%] {\n    transform: translateX(-100%);\n    transition: transform .2s ease, width .2s ease;\n  }\n  .sidebar[_ngcontent-%COMP%]:not(.sidebar--collapsed) {\n    transform: translateX(0);\n  }\n}\n/*# sourceMappingURL=sidebar.component.css.map */"] });
+  }
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SidebarComponent, [{
+    type: Component,
+    args: [{ selector: "app-sidebar", standalone: true, imports: [CommonModule, RouterLink, RouterLinkActive], template: `<aside class="sidebar" [class.sidebar--collapsed]="collapsed" aria-label="Men\xFA de navegaci\xF3n principal">
+
+  <!-- Logo / Brand -->
+  <div class="sidebar__header">
+    <div class="sidebar__logo">
+      <span class="material-icons sidebar__logo-icon">storefront</span>
+      @if (!collapsed) {
+        <span class="sidebar__logo-text">RetailManager</span>
+      }
+    </div>
+  </div>
+
+  <!-- Nav content -->
+  <nav class="sidebar__nav">
+    @for (section of sections; track section.title) {
+      <div class="sidebar__section">
+        @if (!collapsed) {
+          <p class="sidebar__section-label">{{ section.title }}</p>
+        }
+        @for (item of section.items; track item.label) {
+          <a
+            class="sidebar__item"
+            [routerLink]="item.route"
+            routerLinkActive="sidebar__item--active"
+            [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+            [title]="collapsed ? item.label : ''"
+          >
+            <span class="material-icons sidebar__item-icon">{{ item.icon }}</span>
+            @if (!collapsed) {
+              <span class="sidebar__item-label">{{ item.label }}</span>
+            }
+          </a>
+        }
+      </div>
+    }
+  </nav>
+
+  <!-- Footer -->
+  <div class="sidebar__footer">
+    @if (!collapsed) {
+      <p class="sidebar__footer-text">v1.0.0 &bull; RetailManager</p>
+    }
+  </div>
+
+</aside>
+`, styles: ["/* src/app/layout/sidebar/sidebar.component.css */\n.sidebar {\n  position: fixed;\n  top: 0;\n  left: 0;\n  height: 100vh;\n  width: var(--sidebar-width);\n  background: var(--color-sidebar-bg);\n  color: var(--color-sidebar-text);\n  display: flex;\n  flex-direction: column;\n  z-index: 200;\n  transition: width .2s ease;\n  overflow: hidden;\n}\n.sidebar--collapsed {\n  width: var(--sidebar-collapsed-width);\n}\n.sidebar__header {\n  height: var(--topbar-height);\n  display: flex;\n  align-items: center;\n  padding: 0 1rem;\n  border-bottom: 1px solid rgba(255, 255, 255, .06);\n  flex-shrink: 0;\n}\n.sidebar__logo {\n  display: flex;\n  align-items: center;\n  gap: .625rem;\n  overflow: hidden;\n  white-space: nowrap;\n}\n.sidebar__logo-icon {\n  font-size: 1.5rem;\n  color: var(--color-primary);\n  flex-shrink: 0;\n}\n.sidebar__logo-text {\n  font-size: .9375rem;\n  font-weight: 700;\n  color: #f1f5f9;\n  letter-spacing: -.01em;\n}\n.sidebar__nav {\n  flex: 1;\n  overflow-y: auto;\n  overflow-x: hidden;\n  padding: .5rem 0;\n  scrollbar-width: thin;\n  scrollbar-color: rgba(255, 255, 255, .1) transparent;\n}\n.sidebar__nav::-webkit-scrollbar {\n  width: 4px;\n}\n.sidebar__nav::-webkit-scrollbar-thumb {\n  background: rgba(255, 255, 255, .08);\n  border-radius: 2px;\n}\n.sidebar__section {\n  padding: .25rem 0;\n  border-bottom: 1px solid rgba(255, 255, 255, .04);\n}\n.sidebar__section:last-child {\n  border-bottom: none;\n}\n.sidebar__section-label {\n  margin: 0;\n  padding: .625rem 1rem .25rem;\n  font-size: .625rem;\n  font-weight: 700;\n  letter-spacing: .08em;\n  text-transform: uppercase;\n  color: rgba(255, 255, 255, .3);\n  white-space: nowrap;\n  overflow: hidden;\n}\n.sidebar__item {\n  display: flex;\n  align-items: center;\n  gap: .625rem;\n  padding: .5rem 1rem;\n  margin: .125rem .5rem;\n  border-radius: .375rem;\n  color: var(--color-sidebar-text);\n  text-decoration: none;\n  font-size: .8125rem;\n  font-weight: 400;\n  white-space: nowrap;\n  overflow: hidden;\n  transition: background .12s, color .12s;\n  cursor: pointer;\n}\n.sidebar__item:hover {\n  background: rgba(255, 255, 255, .07);\n  color: #f1f5f9;\n}\n.sidebar__item--active {\n  background: rgba(13, 148, 136, .25) !important;\n  color: #5eead4 !important;\n  font-weight: 500;\n}\n.sidebar__item-icon {\n  font-size: 1.1rem;\n  flex-shrink: 0;\n  transition: color .12s;\n}\n.sidebar__item--active .sidebar__item-icon {\n  color: #5eead4;\n}\n.sidebar__item-label {\n  flex: 1;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.sidebar__footer {\n  padding: .75rem 1rem;\n  border-top: 1px solid rgba(255, 255, 255, .06);\n  flex-shrink: 0;\n}\n.sidebar__footer-text {\n  margin: 0;\n  font-size: .6875rem;\n  color: rgba(255, 255, 255, .25);\n  white-space: nowrap;\n}\n.sidebar--collapsed .sidebar__item {\n  justify-content: center;\n  padding: .5rem;\n  margin: .125rem auto;\n  width: 40px;\n}\n.sidebar--collapsed .sidebar__section {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n@media (max-width: 767px) {\n  .sidebar {\n    transform: translateX(-100%);\n    transition: transform .2s ease, width .2s ease;\n  }\n  .sidebar:not(.sidebar--collapsed) {\n    transform: translateX(0);\n  }\n}\n/*# sourceMappingURL=sidebar.component.css.map */\n"] }]
+  }], null, { collapsed: [{
+    type: Input
+  }] });
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(SidebarComponent, { className: "SidebarComponent", filePath: "src/app/layout/sidebar/sidebar.component.ts", lineNumber: 25 });
+})();
+
+// src/app/layout/topbar/topbar.component.ts
+function TopbarComponent_Conditional_14_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "span", 8);
+    \u0275\u0275text(1);
+    \u0275\u0275domElementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r0 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r0.notificationCount);
+  }
+}
+function TopbarComponent_Conditional_23_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "div", 13)(1, "div", 14)(2, "p", 15);
+    \u0275\u0275text(3, "Administrador");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(4, "p", 16);
+    \u0275\u0275text(5, "admin@retailmanager.com");
+    \u0275\u0275domElementEnd()();
+    \u0275\u0275domElement(6, "hr", 17);
+    \u0275\u0275domElementStart(7, "button", 18)(8, "span", 2);
+    \u0275\u0275text(9, "account_circle");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(10, " Mi perfil ");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(11, "button", 18)(12, "span", 2);
+    \u0275\u0275text(13, "settings");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(14, " Configuraci\xF3n ");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElement(15, "hr", 17);
+    \u0275\u0275domElementStart(16, "button", 19)(17, "span", 2);
+    \u0275\u0275text(18, "logout");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(19, " Cerrar sesi\xF3n ");
+    \u0275\u0275domElementEnd()();
+  }
+}
+var TopbarComponent = class _TopbarComponent {
+  constructor() {
+    this.sidebarCollapsed = false;
+    this.toggleSidebar = new EventEmitter();
+    this.notificationCount = 3;
+    this.showUserMenu = false;
+  }
+  onToggle() {
+    this.toggleSidebar.emit();
+  }
+  toggleUserMenu() {
+    this.showUserMenu = !this.showUserMenu;
+  }
+  static {
+    this.\u0275fac = function TopbarComponent_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _TopbarComponent)();
+    };
+  }
+  static {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _TopbarComponent, selectors: [["app-topbar"]], inputs: { sidebarCollapsed: "sidebarCollapsed" }, outputs: { toggleSidebar: "toggleSidebar" }, decls: 24, vars: 5, consts: [[1, "topbar"], ["aria-label", "Alternar men\xFA", 1, "topbar__toggle", 3, "click"], [1, "material-icons"], [1, "topbar__brand"], [1, "topbar__spacer"], [1, "topbar__actions"], ["aria-label", "Buscar", 1, "topbar__icon-btn"], ["aria-label", "Notificaciones", 1, "topbar__icon-btn", "topbar__icon-btn--notif"], [1, "topbar__badge"], ["tabindex", "0", 1, "topbar__user", 3, "click", "keydown.enter"], [1, "topbar__avatar"], [1, "topbar__username"], [1, "material-icons", "topbar__chevron"], [1, "topbar__user-menu"], [1, "topbar__user-menu-header"], [1, "topbar__user-name"], [1, "topbar__user-role"], [1, "topbar__divider"], [1, "topbar__user-menu-item"], [1, "topbar__user-menu-item", "topbar__user-menu-item--danger"]], template: function TopbarComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        \u0275\u0275domElementStart(0, "header", 0)(1, "button", 1);
+        \u0275\u0275domListener("click", function TopbarComponent_Template_button_click_1_listener() {
+          return ctx.onToggle();
+        });
+        \u0275\u0275domElementStart(2, "span", 2);
+        \u0275\u0275text(3);
+        \u0275\u0275domElementEnd()();
+        \u0275\u0275domElementStart(4, "span", 3);
+        \u0275\u0275text(5, "RetailManager");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElement(6, "div", 4);
+        \u0275\u0275domElementStart(7, "div", 5)(8, "button", 6)(9, "span", 2);
+        \u0275\u0275text(10, "search");
+        \u0275\u0275domElementEnd()();
+        \u0275\u0275domElementStart(11, "button", 7)(12, "span", 2);
+        \u0275\u0275text(13, "notifications");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275conditionalCreate(14, TopbarComponent_Conditional_14_Template, 2, 1, "span", 8);
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(15, "div", 9);
+        \u0275\u0275domListener("click", function TopbarComponent_Template_div_click_15_listener() {
+          return ctx.toggleUserMenu();
+        })("keydown.enter", function TopbarComponent_Template_div_keydown_enter_15_listener() {
+          return ctx.toggleUserMenu();
+        });
+        \u0275\u0275domElementStart(16, "div", 10)(17, "span", 2);
+        \u0275\u0275text(18, "person");
+        \u0275\u0275domElementEnd()();
+        \u0275\u0275domElementStart(19, "span", 11);
+        \u0275\u0275text(20, "Admin");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275domElementStart(21, "span", 12);
+        \u0275\u0275text(22, "expand_more");
+        \u0275\u0275domElementEnd();
+        \u0275\u0275conditionalCreate(23, TopbarComponent_Conditional_23_Template, 20, 0, "div", 13);
+        \u0275\u0275domElementEnd()()();
+      }
+      if (rf & 2) {
+        \u0275\u0275styleProp("left", ctx.sidebarCollapsed ? "var(--sidebar-collapsed-width)" : "var(--sidebar-width)");
+        \u0275\u0275advance(3);
+        \u0275\u0275textInterpolate(ctx.sidebarCollapsed ? "menu" : "menu_open");
+        \u0275\u0275advance(11);
+        \u0275\u0275conditional(ctx.notificationCount > 0 ? 14 : -1);
+        \u0275\u0275advance(9);
+        \u0275\u0275conditional(ctx.showUserMenu ? 23 : -1);
+      }
+    }, styles: ["\n.topbar[_ngcontent-%COMP%] {\n  position: fixed;\n  top: 0;\n  left: var(--sidebar-width);\n  right: 0;\n  height: var(--topbar-height);\n  background: var(--color-surface);\n  border-bottom: 1px solid var(--color-border);\n  display: flex;\n  align-items: center;\n  padding: 0 1rem;\n  gap: .5rem;\n  z-index: 150;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, .06);\n  transition: left .2s ease;\n}\n.topbar__toggle[_ngcontent-%COMP%] {\n  width: 36px;\n  height: 36px;\n  border: none;\n  background: transparent;\n  border-radius: .375rem;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--color-text-muted);\n  transition: background .15s, color .15s;\n  flex-shrink: 0;\n}\n.topbar__toggle[_ngcontent-%COMP%]:hover {\n  background: #f1f5f9;\n  color: var(--color-primary);\n}\n.topbar__toggle[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: 1.25rem;\n}\n.topbar__brand[_ngcontent-%COMP%] {\n  font-weight: 700;\n  font-size: .9rem;\n  color: var(--color-primary);\n  display: none;\n}\n.topbar__spacer[_ngcontent-%COMP%] {\n  flex: 1;\n}\n.topbar__actions[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .25rem;\n}\n.topbar__icon-btn[_ngcontent-%COMP%] {\n  width: 36px;\n  height: 36px;\n  border: none;\n  background: transparent;\n  border-radius: .375rem;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--color-text-muted);\n  position: relative;\n  transition: background .15s, color .15s;\n}\n.topbar__icon-btn[_ngcontent-%COMP%]:hover {\n  background: #f1f5f9;\n  color: var(--color-primary);\n}\n.topbar__icon-btn[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: 1.25rem;\n}\n.topbar__badge[_ngcontent-%COMP%] {\n  position: absolute;\n  top: 4px;\n  right: 4px;\n  width: 16px;\n  height: 16px;\n  background: #ef4444;\n  color: white;\n  font-size: .6rem;\n  font-weight: 700;\n  border-radius: 50%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.topbar__user[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .375rem;\n  padding: .25rem .5rem;\n  border-radius: .5rem;\n  cursor: pointer;\n  position: relative;\n  transition: background .15s;\n  margin-left: .25rem;\n}\n.topbar__user[_ngcontent-%COMP%]:hover {\n  background: #f1f5f9;\n}\n.topbar__avatar[_ngcontent-%COMP%] {\n  width: 32px;\n  height: 32px;\n  border-radius: 50%;\n  background:\n    linear-gradient(\n      135deg,\n      var(--color-primary),\n      var(--color-primary-dark));\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: white;\n  flex-shrink: 0;\n}\n.topbar__avatar[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: 1.1rem;\n}\n.topbar__username[_ngcontent-%COMP%] {\n  font-size: .8125rem;\n  font-weight: 500;\n  color: var(--color-text);\n}\n.topbar__chevron[_ngcontent-%COMP%] {\n  font-size: 1rem !important;\n  color: var(--color-text-muted);\n}\n.topbar__user-menu[_ngcontent-%COMP%] {\n  position: absolute;\n  top: calc(100% + .5rem);\n  right: 0;\n  min-width: 220px;\n  background: white;\n  border: 1px solid var(--color-border);\n  border-radius: .5rem;\n  box-shadow: 0 10px 25px rgba(0, 0, 0, .1);\n  z-index: 200;\n  overflow: hidden;\n}\n.topbar__user-menu-header[_ngcontent-%COMP%] {\n  padding: .75rem 1rem;\n  background: #f8fafc;\n}\n.topbar__user-name[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: .8125rem;\n  font-weight: 600;\n  color: var(--color-text);\n}\n.topbar__user-role[_ngcontent-%COMP%] {\n  margin: .125rem 0 0;\n  font-size: .75rem;\n  color: var(--color-text-muted);\n}\n.topbar__divider[_ngcontent-%COMP%] {\n  border: none;\n  border-top: 1px solid var(--color-border);\n  margin: 0;\n}\n.topbar__user-menu-item[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  gap: .5rem;\n  padding: .5rem 1rem;\n  border: none;\n  background: transparent;\n  font-size: .8125rem;\n  color: var(--color-text);\n  cursor: pointer;\n  text-align: left;\n  transition: background .12s;\n}\n.topbar__user-menu-item[_ngcontent-%COMP%]:hover {\n  background: #f0fdfa;\n  color: var(--color-primary);\n}\n.topbar__user-menu-item[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: 1rem;\n  color: var(--color-text-muted);\n}\n.topbar__user-menu-item--danger[_ngcontent-%COMP%] {\n  color: #dc2626;\n}\n.topbar__user-menu-item--danger[_ngcontent-%COMP%]:hover {\n  background: #fef2f2;\n  color: #dc2626;\n}\n@media (max-width: 640px) {\n  .topbar[_ngcontent-%COMP%] {\n    left: 0 !important;\n  }\n  .topbar__brand[_ngcontent-%COMP%] {\n    display: block;\n  }\n  .topbar__username[_ngcontent-%COMP%] {\n    display: none;\n  }\n}\n/*# sourceMappingURL=topbar.component.css.map */"] });
+  }
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(TopbarComponent, [{
+    type: Component,
+    args: [{ selector: "app-topbar", standalone: true, imports: [], template: `<header class="topbar" [style.left]="sidebarCollapsed ? 'var(--sidebar-collapsed-width)' : 'var(--sidebar-width)'">
+  <!-- Hamburger -->
+  <button class="topbar__toggle" (click)="onToggle()" aria-label="Alternar men\xFA">
+    <span class="material-icons">{{ sidebarCollapsed ? 'menu' : 'menu_open' }}</span>
+  </button>
+
+  <!-- Brand (visible solo en mobile) -->
+  <span class="topbar__brand">RetailManager</span>
+
+  <div class="topbar__spacer"></div>
+
+  <!-- Actions -->
+  <div class="topbar__actions">
+
+    <!-- B\xFAsqueda r\xE1pida -->
+    <button class="topbar__icon-btn" aria-label="Buscar">
+      <span class="material-icons">search</span>
+    </button>
+
+    <!-- Notificaciones -->
+    <button class="topbar__icon-btn topbar__icon-btn--notif" aria-label="Notificaciones">
+      <span class="material-icons">notifications</span>
+      @if (notificationCount > 0) {
+        <span class="topbar__badge">{{ notificationCount }}</span>
+      }
+    </button>
+
+    <!-- Usuario -->
+    <div class="topbar__user" (click)="toggleUserMenu()" (keydown.enter)="toggleUserMenu()" tabindex="0">
+      <div class="topbar__avatar">
+        <span class="material-icons">person</span>
+      </div>
+      <span class="topbar__username">Admin</span>
+      <span class="material-icons topbar__chevron">expand_more</span>
+
+      @if (showUserMenu) {
+        <div class="topbar__user-menu">
+          <div class="topbar__user-menu-header">
+            <p class="topbar__user-name">Administrador</p>
+            <p class="topbar__user-role">admin&#64;retailmanager.com</p>
+          </div>
+          <hr class="topbar__divider" />
+          <button class="topbar__user-menu-item">
+            <span class="material-icons">account_circle</span>
+            Mi perfil
+          </button>
+          <button class="topbar__user-menu-item">
+            <span class="material-icons">settings</span>
+            Configuraci\xF3n
+          </button>
+          <hr class="topbar__divider" />
+          <button class="topbar__user-menu-item topbar__user-menu-item--danger">
+            <span class="material-icons">logout</span>
+            Cerrar sesi\xF3n
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</header>
+`, styles: ["/* src/app/layout/topbar/topbar.component.css */\n.topbar {\n  position: fixed;\n  top: 0;\n  left: var(--sidebar-width);\n  right: 0;\n  height: var(--topbar-height);\n  background: var(--color-surface);\n  border-bottom: 1px solid var(--color-border);\n  display: flex;\n  align-items: center;\n  padding: 0 1rem;\n  gap: .5rem;\n  z-index: 150;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, .06);\n  transition: left .2s ease;\n}\n.topbar__toggle {\n  width: 36px;\n  height: 36px;\n  border: none;\n  background: transparent;\n  border-radius: .375rem;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--color-text-muted);\n  transition: background .15s, color .15s;\n  flex-shrink: 0;\n}\n.topbar__toggle:hover {\n  background: #f1f5f9;\n  color: var(--color-primary);\n}\n.topbar__toggle .material-icons {\n  font-size: 1.25rem;\n}\n.topbar__brand {\n  font-weight: 700;\n  font-size: .9rem;\n  color: var(--color-primary);\n  display: none;\n}\n.topbar__spacer {\n  flex: 1;\n}\n.topbar__actions {\n  display: flex;\n  align-items: center;\n  gap: .25rem;\n}\n.topbar__icon-btn {\n  width: 36px;\n  height: 36px;\n  border: none;\n  background: transparent;\n  border-radius: .375rem;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--color-text-muted);\n  position: relative;\n  transition: background .15s, color .15s;\n}\n.topbar__icon-btn:hover {\n  background: #f1f5f9;\n  color: var(--color-primary);\n}\n.topbar__icon-btn .material-icons {\n  font-size: 1.25rem;\n}\n.topbar__badge {\n  position: absolute;\n  top: 4px;\n  right: 4px;\n  width: 16px;\n  height: 16px;\n  background: #ef4444;\n  color: white;\n  font-size: .6rem;\n  font-weight: 700;\n  border-radius: 50%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.topbar__user {\n  display: flex;\n  align-items: center;\n  gap: .375rem;\n  padding: .25rem .5rem;\n  border-radius: .5rem;\n  cursor: pointer;\n  position: relative;\n  transition: background .15s;\n  margin-left: .25rem;\n}\n.topbar__user:hover {\n  background: #f1f5f9;\n}\n.topbar__avatar {\n  width: 32px;\n  height: 32px;\n  border-radius: 50%;\n  background:\n    linear-gradient(\n      135deg,\n      var(--color-primary),\n      var(--color-primary-dark));\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: white;\n  flex-shrink: 0;\n}\n.topbar__avatar .material-icons {\n  font-size: 1.1rem;\n}\n.topbar__username {\n  font-size: .8125rem;\n  font-weight: 500;\n  color: var(--color-text);\n}\n.topbar__chevron {\n  font-size: 1rem !important;\n  color: var(--color-text-muted);\n}\n.topbar__user-menu {\n  position: absolute;\n  top: calc(100% + .5rem);\n  right: 0;\n  min-width: 220px;\n  background: white;\n  border: 1px solid var(--color-border);\n  border-radius: .5rem;\n  box-shadow: 0 10px 25px rgba(0, 0, 0, .1);\n  z-index: 200;\n  overflow: hidden;\n}\n.topbar__user-menu-header {\n  padding: .75rem 1rem;\n  background: #f8fafc;\n}\n.topbar__user-name {\n  margin: 0;\n  font-size: .8125rem;\n  font-weight: 600;\n  color: var(--color-text);\n}\n.topbar__user-role {\n  margin: .125rem 0 0;\n  font-size: .75rem;\n  color: var(--color-text-muted);\n}\n.topbar__divider {\n  border: none;\n  border-top: 1px solid var(--color-border);\n  margin: 0;\n}\n.topbar__user-menu-item {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  gap: .5rem;\n  padding: .5rem 1rem;\n  border: none;\n  background: transparent;\n  font-size: .8125rem;\n  color: var(--color-text);\n  cursor: pointer;\n  text-align: left;\n  transition: background .12s;\n}\n.topbar__user-menu-item:hover {\n  background: #f0fdfa;\n  color: var(--color-primary);\n}\n.topbar__user-menu-item .material-icons {\n  font-size: 1rem;\n  color: var(--color-text-muted);\n}\n.topbar__user-menu-item--danger {\n  color: #dc2626;\n}\n.topbar__user-menu-item--danger:hover {\n  background: #fef2f2;\n  color: #dc2626;\n}\n@media (max-width: 640px) {\n  .topbar {\n    left: 0 !important;\n  }\n  .topbar__brand {\n    display: block;\n  }\n  .topbar__username {\n    display: none;\n  }\n}\n/*# sourceMappingURL=topbar.component.css.map */\n"] }]
+  }], null, { sidebarCollapsed: [{
+    type: Input
+  }], toggleSidebar: [{
+    type: Output
+  }] });
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(TopbarComponent, { className: "TopbarComponent", filePath: "src/app/layout/topbar/topbar.component.ts", lineNumber: 10 });
+})();
+
 // src/app/app.component.ts
-var _c015 = (a0) => ({ active: a0 });
 var AppComponent = class _AppComponent {
   constructor() {
-    this.menuOption = "";
+    this.sidebarCollapsed = false;
   }
-  onOption(menuOption) {
-    this.menuOption = menuOption;
+  toggleSidebar() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
   static {
     this.\u0275fac = function AppComponent_Factory(__ngFactoryType__) {
@@ -44849,807 +45358,36 @@ var AppComponent = class _AppComponent {
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _AppComponent, selectors: [["app-root"]], decls: 298, vars: 15, consts: [["data-bs-theme", "dark", 1, "navbar", "navbar-expand-lg", "navbar-dark", "text-light"], [1, "container-fluid"], ["href", "", 1, "navbar-brand"], ["type", "button", "data-bs-toggle", "collapse", "data-bs-target", "#navbarSupportedMain", "aria-controls", "navbarSupportedMain", "aria-expanded", "false", "aria-label", "Toggle navigation", 1, "navbar-toggler"], [1, "navbar-toggler-icon"], ["id", "navbarSupportedMain", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "me-auto", "mb-2", "mb-lg-0"], [1, "nav-item"], ["routerLink", "", 1, "nav-link", 3, "click", "ngClass"], ["routerLink", "dashboard", 1, "nav-link", 3, "click", "ngClass"], ["routerLink", "products", 1, "nav-link", 3, "click", "ngClass"], [1, "nav-item", "dropdown"], ["href", "#", "role", "button", "data-bs-toggle", "dropdown", "aria-expanded", "false", 1, "nav-link", "dropdown-toggle"], [1, "dropdown-menu"], [1, "dropdown-menu", "sub-menu"], ["routerLink", "customerInvoice", 1, "dropdown-item", 3, "click", "ngClass"], ["href", "#", 1, "dropdown-item"], [1, "dropdown-divider"], ["href", "#", 1, "nav-link"], ["routerLink", "supplier", 1, "nav-link", 3, "click", "ngClass"], ["role", "search", 1, "d-flex"], ["type", "search", "placeholder", "Search", "aria-label", "Search", 1, "form-control", "me-2"], ["type", "submit", 1, "btn", "btn-outline-success"], [1, "navbar-dark", "text-light", "mt-5", "py-3", "bg-dark"], [1, "container"], [1, "d-inline-block"], [1, "navbar-nav", "me-auto", "list-inline", "flex-row"], [1, "nav-item", "list-inline-item"]], template: function AppComponent_Template(rf, ctx) {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _AppComponent, selectors: [["app-root"]], decls: 5, vars: 4, consts: [[3, "collapsed"], [1, "app-shell"], [3, "toggleSidebar", "sidebarCollapsed"], [1, "app-shell__content"]], template: function AppComponent_Template(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275elementStart(0, "nav", 0)(1, "div", 1)(2, "a", 2);
-        \u0275\u0275text(3, "RetailManager");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(4, "button", 3);
-        \u0275\u0275element(5, "span", 4);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(6, "div", 5)(7, "ul", 6)(8, "li", 7)(9, "a", 8);
-        \u0275\u0275listener("click", function AppComponent_Template_a_click_9_listener() {
-          return ctx.onOption("home");
+        \u0275\u0275element(0, "app-sidebar", 0);
+        \u0275\u0275elementStart(1, "div", 1)(2, "app-topbar", 2);
+        \u0275\u0275listener("toggleSidebar", function AppComponent_Template_app_topbar_toggleSidebar_2_listener() {
+          return ctx.toggleSidebar();
         });
-        \u0275\u0275text(10, "Home");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(11, "li", 7)(12, "a", 9);
-        \u0275\u0275listener("click", function AppComponent_Template_a_click_12_listener() {
-          return ctx.onOption("dashboard");
-        });
-        \u0275\u0275text(13, "Dashboard");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(14, "li", 7)(15, "a", 10);
-        \u0275\u0275listener("click", function AppComponent_Template_a_click_15_listener() {
-          return ctx.onOption("products");
-        });
-        \u0275\u0275text(16, "Products");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(17, "li", 11)(18, "a", 12);
-        \u0275\u0275text(19, "Comprobantes");
         \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(20, "ul", 13)(21, "li", 11)(22, "a", 12);
-        \u0275\u0275text(23, "Nuevo comprobante");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(24, "ul", 14)(25, "li")(26, "a", 15);
-        \u0275\u0275listener("click", function AppComponent_Template_a_click_26_listener() {
-          return ctx.onOption("customerInvoice");
-        });
-        \u0275\u0275text(27, "Invoice");
+        \u0275\u0275elementStart(3, "main", 3);
+        \u0275\u0275element(4, "router-outlet");
         \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(28, "li")(29, "a", 16);
-        \u0275\u0275text(30, "Nota de cr\xE9dito");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(31, "li")(32, "a", 16);
-        \u0275\u0275text(33, "Nota de D\xE9bito");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(34, "li")(35, "a", 16);
-        \u0275\u0275text(36, "Presupuesto");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(37, "li");
-        \u0275\u0275element(38, "hr", 17);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(39, "li")(40, "a", 16);
-        \u0275\u0275text(41, "Remito");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(42, "li")(43, "a", 16);
-        \u0275\u0275text(44, "Remito de ingreso");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(45, "li");
-        \u0275\u0275element(46, "hr", 17);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(47, "li")(48, "a", 16);
-        \u0275\u0275text(49, "Env\xEDo a sucursal");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(50, "li")(51, "a", 16);
-        \u0275\u0275text(52, "Env\xEDo a dep\xF3sito");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(53, "li");
-        \u0275\u0275element(54, "hr", 17);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(55, "li")(56, "a", 16);
-        \u0275\u0275text(57, "Recepci\xF3n de sucursal");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(58, "li")(59, "a", 16);
-        \u0275\u0275text(60, "Pedido a sucursal");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(61, "li");
-        \u0275\u0275element(62, "hr", 17);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(63, "li")(64, "a", 16);
-        \u0275\u0275text(65, "Pedido de comercio");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(66, "li");
-        \u0275\u0275element(67, "hr", 17);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(68, "li")(69, "a", 16);
-        \u0275\u0275text(70, "Recibos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(71, "li")(72, "a", 16);
-        \u0275\u0275text(73, "Pagos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(74, "li");
-        \u0275\u0275element(75, "hr", 17);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(76, "li")(77, "a", 16);
-        \u0275\u0275text(78, "Ver comprobantes");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(79, "li", 11)(80, "a", 12);
-        \u0275\u0275text(81, "Pendientes");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(82, "ul", 14)(83, "li")(84, "a", 16);
-        \u0275\u0275text(85, "Pedidos pendientes");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(86, "li")(87, "a", 16);
-        \u0275\u0275text(88, "Descuentos pendientes de autorizaci\xF3n");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(89, "li")(90, "a", 16);
-        \u0275\u0275text(91, "Art\xEDculos pendientes de entrega");
-        \u0275\u0275elementEnd()()()()()();
-        \u0275\u0275elementStart(92, "li", 11)(93, "a", 12);
-        \u0275\u0275text(94, "Ecommerce");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(95, "ul", 13)(96, "li")(97, "a", 16);
-        \u0275\u0275text(98, "Menu");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(99, "li")(100, "a", 16);
-        \u0275\u0275text(101, "Mis Ordenes");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(102, "li")(103, "a", 16);
-        \u0275\u0275text(104, "SEO");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(105, "li")(106, "a", 16);
-        \u0275\u0275text(107, "Articulos complementarios");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(108, "li")(109, "a", 16);
-        \u0275\u0275text(110, "Etiquetas");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(111, "li")(112, "a", 16);
-        \u0275\u0275text(113, "Sinonimos de busqueda");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(114, "li", 11)(115, "a", 12);
-        \u0275\u0275text(116, "Servicio t\xE9cnico");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(117, "ul", 13)(118, "li")(119, "a", 16);
-        \u0275\u0275text(120, "Servicio t\xE9cnico");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(121, "li")(122, "a", 16);
-        \u0275\u0275text(123, "Turnos");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(124, "li", 7)(125, "a", 18);
-        \u0275\u0275text(126, "Caja diaria");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(127, "li", 7)(128, "a", 19);
-        \u0275\u0275listener("click", function AppComponent_Template_a_click_128_listener() {
-          return ctx.onOption("supplier");
-        });
-        \u0275\u0275text(129, "Suppliers");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(130, "li", 7)(131, "a", 18);
-        \u0275\u0275text(132, "Clientes");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(133, "li", 7)(134, "a", 18);
-        \u0275\u0275text(135, "Importaciones");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(136, "li", 11)(137, "a", 12);
-        \u0275\u0275text(138, "Informes");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(139, "ul", 13)(140, "li")(141, "a", 16);
-        \u0275\u0275text(142, "Informes din\xE1micos en excel");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(143, "li");
-        \u0275\u0275element(144, "hr", 17);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(145, "li", 11)(146, "a", 12);
-        \u0275\u0275text(147, "Informes y estad\xEDsticas");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(148, "ul", 14)(149, "li")(150, "a", 16);
-        \u0275\u0275text(151, "Buscar auditor\xEDas");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(152, "li")(153, "a", 16);
-        \u0275\u0275text(154, "Descuentos por per\xEDodo");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(155, "li")(156, "a", 16);
-        \u0275\u0275text(157, "Detalle de facturas de Proveedores de bienes de uso");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(158, "li")(159, "a", 16);
-        \u0275\u0275text(160, "Detalle de los movimientos de caja");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(161, "li")(162, "a", 16);
-        \u0275\u0275text(163, "Distribuci\xF3n de gastos entre los clientes socios");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(164, "li")(165, "a", 16);
-        \u0275\u0275text(166, "Exportaci\xF3n de datos del servicio t\xE9cnico");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(167, "li")(168, "a", 16);
-        \u0275\u0275text(169, "Garant\xEDas extendidas");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(170, "li")(171, "a", 16);
-        \u0275\u0275text(172, "Listado de recibos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(173, "li")(174, "a", 16);
-        \u0275\u0275text(175, "Listado de Ubicaciones de art\xEDculos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(176, "li")(177, "a", 16);
-        \u0275\u0275text(178, "Movimientos de art\xEDculos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(179, "li")(180, "a", 16);
-        \u0275\u0275text(181, "Movimientos de stock por grupo de art\xEDculos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(182, "li")(183, "a", 16);
-        \u0275\u0275text(184, "Movimientos de pesos, d\xF3lares y cheques");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(185, "li");
-        \u0275\u0275element(186, "hr", 17);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(187, "li")(188, "a", 16);
-        \u0275\u0275text(189, "Totales de venta en tiempo real");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(190, "li")(191, "a", 16);
-        \u0275\u0275text(192, "Informes de despacho a plaza");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(193, "li");
-        \u0275\u0275element(194, "hr", 17);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(195, "li")(196, "a", 16);
-        \u0275\u0275text(197, "Dashboard");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(198, "li", 11)(199, "a", 12);
-        \u0275\u0275text(200, "Contabilidad");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(201, "ul", 13)(202, "li")(203, "a", 16);
-        \u0275\u0275text(204, "Libro IVA");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(205, "li")(206, "a", 16);
-        \u0275\u0275text(207, "Listado de retenciones de IIBB realizadas");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(208, "li")(209, "a", 16);
-        \u0275\u0275text(210, "Listado de retenciones de IIBB recibidas");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(211, "li");
-        \u0275\u0275element(212, "hr", 17);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(213, "li")(214, "a", 16);
-        \u0275\u0275text(215, "Libro Mayor");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(216, "li", 11)(217, "a", 12);
-        \u0275\u0275text(218, "Configuracion del sistema");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(219, "ul", 13)(220, "li")(221, "a", 16);
-        \u0275\u0275text(222, "General");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(223, "li")(224, "a", 16);
-        \u0275\u0275text(225, "Usuarios");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(226, "li", 11)(227, "a", 12);
-        \u0275\u0275text(228, "Administracion de Archivos");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(229, "ul", 14)(230, "li")(231, "a", 16);
-        \u0275\u0275text(232, "Cuenta corriente entre sucursales");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(233, "li")(234, "a", 16);
-        \u0275\u0275text(235, "Marcas");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(236, "li")(237, "a", 16);
-        \u0275\u0275text(238, "Proveedores eventuales");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(239, "li")(240, "a", 16);
-        \u0275\u0275text(241, "Categorias");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(242, "li")(243, "a", 16);
-        \u0275\u0275text(244, "Tipos de cliente");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(245, "li")(246, "a", 16);
-        \u0275\u0275text(247, "Transportes");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(248, "li", 11)(249, "a", 12);
-        \u0275\u0275text(250, "Valores");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(251, "ul", 14)(252, "li")(253, "a", 16);
-        \u0275\u0275text(254, "Cheques de tercero");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(255, "li")(256, "a", 16);
-        \u0275\u0275text(257, "Cheques propios");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(258, "li")(259, "a", 16);
-        \u0275\u0275text(260, "Documentos en cartera");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(261, "li")(262, "a", 16);
-        \u0275\u0275text(263, "Se\xF1as");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(264, "li")(265, "a", 16);
-        \u0275\u0275text(266, "Tarjetas en cartera");
-        \u0275\u0275elementEnd()()()()()();
-        \u0275\u0275elementStart(267, "li")(268, "a", 16);
-        \u0275\u0275text(269, "Mi cuenta");
-        \u0275\u0275elementEnd()()()()();
-        \u0275\u0275elementStart(270, "form", 20);
-        \u0275\u0275element(271, "input", 21);
-        \u0275\u0275elementStart(272, "button", 22);
-        \u0275\u0275text(273, "Search");
-        \u0275\u0275elementEnd()()()()();
-        \u0275\u0275element(274, "router-outlet");
-        \u0275\u0275elementStart(275, "footer", 23)(276, "div", 24)(277, "div", 25)(278, "div")(279, "p");
-        \u0275\u0275text(280, "\xA9 2026 RetailManager, Inc");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(281, "div")(282, "ul", 26)(283, "li", 27)(284, "a", 18);
-        \u0275\u0275text(285, "Home");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(286, "li", 27)(287, "a", 18);
-        \u0275\u0275text(288, "Features");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(289, "li", 27)(290, "a", 18);
-        \u0275\u0275text(291, "Pricing");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(292, "li", 27)(293, "a", 18);
-        \u0275\u0275text(294, "FAQs");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(295, "li", 27)(296, "a", 18);
-        \u0275\u0275text(297, "About");
-        \u0275\u0275elementEnd()()()()()()();
       }
       if (rf & 2) {
-        \u0275\u0275advance(9);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(5, _c015, ctx.menuOption == "home"));
-        \u0275\u0275advance(3);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(7, _c015, ctx.menuOption == "dashboard"));
-        \u0275\u0275advance(3);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(9, _c015, ctx.menuOption == "products"));
-        \u0275\u0275advance(11);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(11, _c015, ctx.menuOption == "customerInvoice"));
-        \u0275\u0275advance(102);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(13, _c015, ctx.menuOption == "supplier"));
+        \u0275\u0275property("collapsed", ctx.sidebarCollapsed);
+        \u0275\u0275advance();
+        \u0275\u0275classProp("app-shell--collapsed", ctx.sidebarCollapsed);
+        \u0275\u0275advance();
+        \u0275\u0275property("sidebarCollapsed", ctx.sidebarCollapsed);
       }
-    }, dependencies: [CommonModule, NgClass, RouterOutlet, RouterLink], styles: ["\nnav[_ngcontent-%COMP%] {\n  background: #8e0e00;\n  background: -webkit-linear-gradient(to bottom, #1f1c18, #8e0e00);\n  background:\n    linear-gradient(\n      to bottom,\n      #1f1c18,\n      #8e0e00);\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  z-index: 1000;\n}\nfooter[_ngcontent-%COMP%] {\n  background: #8e0e00;\n  background: -webkit-linear-gradient(to top, #1f1c18, #8e0e00);\n  background:\n    linear-gradient(\n      to top,\n      #1f1c18,\n      #8e0e00);\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  width: 100%;\n  text-align: center;\n  padding: 10px;\n}\n[_nghost-%COMP%] {\n  display: block;\n  margin-bottom: 90px;\n  margin-top: 80px;\n}\n.icon-small[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n}\n.sidebar-nav[_ngcontent-%COMP%] {\n  padding: 9px 0;\n}\n.dropdown-menu[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%] {\n  left: 100%;\n  position: absolute;\n  top: 0;\n  visibility: hidden;\n  margin-top: -1px;\n}\n.dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]:hover   .sub-menu[_ngcontent-%COMP%] {\n  visibility: visible;\n}\n.dropdown[_ngcontent-%COMP%]:hover   .dropdown-menu[_ngcontent-%COMP%] {\n  display: block;\n}\n.nav-tabs[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%], \n.nav-pills[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%], \n.navbar[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%] {\n  margin-top: 0;\n}\n.navbar[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%]:before {\n  border-bottom: 7px solid transparent;\n  border-left: none;\n  border-right: 7px solid rgba(0, 0, 0, 0.2);\n  border-top: 7px solid transparent;\n  left: -7px;\n  top: 10px;\n}\n.navbar[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%]:after {\n  border-top: 6px solid transparent;\n  border-left: none;\n  border-right: 6px solid #fff;\n  border-bottom: 6px solid transparent;\n  left: 10px;\n  top: 11px;\n  left: -6px;\n}\na[_ngcontent-%COMP%]:hover {\n  cursor: pointer;\n}\n/*# sourceMappingURL=app.component.css.map */"] });
+    }, dependencies: [RouterOutlet, SidebarComponent, TopbarComponent], styles: ["\n[_nghost-%COMP%] {\n  display: block;\n}\n.app-shell[_ngcontent-%COMP%] {\n  margin-left: var(--sidebar-width);\n  min-height: 100vh;\n  transition: margin-left .2s ease;\n  background: var(--color-bg);\n}\n.app-shell--collapsed[_ngcontent-%COMP%] {\n  margin-left: var(--sidebar-collapsed-width);\n}\n.app-shell__content[_ngcontent-%COMP%] {\n  padding-top: var(--topbar-height);\n  padding: var(--topbar-height) 1.5rem 1.5rem;\n  min-height: calc(100vh - var(--topbar-height));\n}\n@media (max-width: 767px) {\n  .app-shell[_ngcontent-%COMP%] {\n    margin-left: 0;\n  }\n  .app-shell--collapsed[_ngcontent-%COMP%] {\n    margin-left: 0;\n  }\n}\n.icon-small[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n}\n.sidebar-nav[_ngcontent-%COMP%] {\n  padding: 9px 0;\n}\n.dropdown-menu[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%] {\n  left: 100%;\n  position: absolute;\n  top: 0;\n  visibility: hidden;\n  margin-top: -1px;\n}\n.dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]:hover   .sub-menu[_ngcontent-%COMP%] {\n  visibility: visible;\n}\n.dropdown[_ngcontent-%COMP%]:hover   .dropdown-menu[_ngcontent-%COMP%] {\n  display: block;\n}\n.nav-tabs[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%], \n.nav-pills[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%], \n.navbar[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%] {\n  margin-top: 0;\n}\n.navbar[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%]:before {\n  border-bottom: 7px solid transparent;\n  border-left: none;\n  border-right: 7px solid rgba(0, 0, 0, 0.2);\n  border-top: 7px solid transparent;\n  left: -7px;\n  top: 10px;\n}\n.navbar[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%]:after {\n  border-top: 6px solid transparent;\n  border-left: none;\n  border-right: 6px solid #fff;\n  border-bottom: 6px solid transparent;\n  left: 10px;\n  top: 11px;\n  left: -6px;\n}\na[_ngcontent-%COMP%]:hover {\n  cursor: pointer;\n}\n/*# sourceMappingURL=app.component.css.map */"] });
   }
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(AppComponent, [{
     type: Component,
-    args: [{ selector: "app-root", imports: [CommonModule, RouterOutlet, RouterLink], template: `<nav
-  class="navbar navbar-expand-lg navbar-dark text-light"
-  data-bs-theme="dark"
->
-  <div class="container-fluid">
-    <a class="navbar-brand" href="">RetailManager</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedMain"
-      aria-controls="navbarSupportedMain"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedMain">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <!-- Home -->
-
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLink=""
-            [ngClass]="{ active: menuOption == 'home' }"
-            (click)="onOption('home')"
-            >Home</a
-          >
-        </li>
-
-        <!-- Dashboard -->
-
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="dashboard"
-            [ngClass]="{ active: menuOption == 'dashboard' }"
-            (click)="onOption('dashboard')"
-            >Dashboard</a
-          >
-        </li>
-
-        <!-- Productos -->
-
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="products"
-            [ngClass]="{ active: menuOption == 'products' }"
-            (click)="onOption('products')"
-            >Products</a
-          >
-        </li>
-
-        <!-- Comprobantes -->
-
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            >Comprobantes</a
-          >
-
-          <ul class="dropdown-menu">
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                >Nuevo comprobante</a
-              >
-
-              <ul class="dropdown-menu sub-menu">
-                <li>
-                  <a
-                    class="dropdown-item"
-                    routerLink="customerInvoice"
-                    [ngClass]="{ active: menuOption == 'customerInvoice' }"
-                    (click)="onOption('customerInvoice')"
-                    >Invoice</a
-                  >
-                </li>
-                <li><a class="dropdown-item" href="#">Nota de cr\xE9dito</a></li>
-                <li><a class="dropdown-item" href="#">Nota de D\xE9bito</a></li>
-                <li><a class="dropdown-item" href="#">Presupuesto</a></li>
-
-                <li><hr class="dropdown-divider" /></li>
-
-                <li><a class="dropdown-item" href="#">Remito</a></li>
-                <li><a class="dropdown-item" href="#">Remito de ingreso</a></li>
-
-                <li><hr class="dropdown-divider" /></li>
-
-                <li><a class="dropdown-item" href="#">Env\xEDo a sucursal</a></li>
-                <li><a class="dropdown-item" href="#">Env\xEDo a dep\xF3sito</a></li>
-
-                <li><hr class="dropdown-divider" /></li>
-
-                <li>
-                  <a class="dropdown-item" href="#">Recepci\xF3n de sucursal</a>
-                </li>
-                <li><a class="dropdown-item" href="#">Pedido a sucursal</a></li>
-
-                <li><hr class="dropdown-divider" /></li>
-
-                <li>
-                  <a class="dropdown-item" href="#">Pedido de comercio</a>
-                </li>
-              </ul>
-            </li>
-
-            <li><hr class="dropdown-divider" /></li>
-
-            <li><a class="dropdown-item" href="#">Recibos</a></li>
-            <li><a class="dropdown-item" href="#">Pagos</a></li>
-
-            <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" href="#">Ver comprobantes</a></li>
-
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                >Pendientes</a
-              >
-
-              <ul class="dropdown-menu sub-menu">
-                <li>
-                  <a class="dropdown-item" href="#">Pedidos pendientes</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Descuentos pendientes de autorizaci\xF3n</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Art\xEDculos pendientes de entrega</a
-                  >
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        <!-- Ecommerce -->
-
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            >Ecommerce</a
-          >
-
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Menu</a></li>
-            <li><a class="dropdown-item" href="#">Mis Ordenes</a></li>
-            <li><a class="dropdown-item" href="#">SEO</a></li>
-            <li>
-              <a class="dropdown-item" href="#">Articulos complementarios</a>
-            </li>
-            <li><a class="dropdown-item" href="#">Etiquetas</a></li>
-            <li><a class="dropdown-item" href="#">Sinonimos de busqueda</a></li>
-          </ul>
-        </li>
-
-        <!-- Servicio T\xE9cnico -->
-
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            >Servicio t\xE9cnico</a
-          >
-
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Servicio t\xE9cnico</a></li>
-            <li><a class="dropdown-item" href="#">Turnos</a></li>
-          </ul>
-        </li>
-
-        <!-- Caja diaria -->
-
-        <li class="nav-item"><a class="nav-link" href="#">Caja diaria</a></li>
-
-        <!-- Suppliers -->
-
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="supplier"
-            [ngClass]="{ active: menuOption == 'supplier' }"
-            (click)="onOption('supplier')"
-            >Suppliers</a
-          >
-        </li>
-
-        <!-- Clientes -->
-
-        <li class="nav-item"><a class="nav-link" href="#">Clientes</a></li>
-
-        <!-- Importaciones -->
-
-        <li class="nav-item"><a class="nav-link" href="#">Importaciones</a></li>
-
-        <!-- Informes -->
-
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            >Informes</a
-          >
-
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="#">Informes din\xE1micos en excel</a>
-            </li>
-
-            <li><hr class="dropdown-divider" /></li>
-
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                >Informes y estad\xEDsticas</a
-              >
-
-              <ul class="dropdown-menu sub-menu">
-                <li><a class="dropdown-item" href="#">Buscar auditor\xEDas</a></li>
-                <li>
-                  <a class="dropdown-item" href="#">Descuentos por per\xEDodo</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Detalle de facturas de Proveedores de bienes de uso</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Detalle de los movimientos de caja</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Distribuci\xF3n de gastos entre los clientes socios</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Exportaci\xF3n de datos del servicio t\xE9cnico</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#">Garant\xEDas extendidas</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#">Listado de recibos</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Listado de Ubicaciones de art\xEDculos</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#">Movimientos de art\xEDculos</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Movimientos de stock por grupo de art\xEDculos</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Movimientos de pesos, d\xF3lares y cheques</a
-                  >
-                </li>
-              </ul>
-            </li>
-
-            <li><hr class="dropdown-divider" /></li>
-
-            <li>
-              <a class="dropdown-item" href="#"
-                >Totales de venta en tiempo real</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">Informes de despacho a plaza</a>
-            </li>
-
-            <li><hr class="dropdown-divider" /></li>
-
-            <li><a class="dropdown-item" href="#">Dashboard</a></li>
-          </ul>
-        </li>
-
-        <!-- Contabilidad -->
-
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            >Contabilidad</a
-          >
-
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Libro IVA</a></li>
-            <li>
-              <a class="dropdown-item" href="#"
-                >Listado de retenciones de IIBB realizadas</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#"
-                >Listado de retenciones de IIBB recibidas</a
-              >
-            </li>
-
-            <li><hr class="dropdown-divider" /></li>
-
-            <li><a class="dropdown-item" href="#">Libro Mayor</a></li>
-          </ul>
-        </li>
-
-        <!-- Configuracion del sistema -->
-
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            >Configuracion del sistema</a
-          >
-
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">General</a></li>
-            <li><a class="dropdown-item" href="#">Usuarios</a></li>
-
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                >Administracion de Archivos</a
-              >
-
-              <ul class="dropdown-menu sub-menu">
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Cuenta corriente entre sucursales</a
-                  >
-                </li>
-                <li><a class="dropdown-item" href="#">Marcas</a></li>
-                <li>
-                  <a class="dropdown-item" href="#">Proveedores eventuales</a>
-                </li>
-                <li><a class="dropdown-item" href="#">Categorias</a></li>
-                <li><a class="dropdown-item" href="#">Tipos de cliente</a></li>
-                <li><a class="dropdown-item" href="#">Transportes</a></li>
-                <li class="nav-item dropdown">
-                  <a
-                    class="nav-link dropdown-toggle"
-                    href="#"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    >Valores</a
-                  >
-
-                  <ul class="dropdown-menu sub-menu">
-                    <li>
-                      <a class="dropdown-item" href="#">Cheques de tercero</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">Cheques propios</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#"
-                        >Documentos en cartera</a
-                      >
-                    </li>
-                    <li><a class="dropdown-item" href="#">Se\xF1as</a></li>
-                    <li>
-                      <a class="dropdown-item" href="#">Tarjetas en cartera</a>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-
-            <li><a class="dropdown-item" href="#">Mi cuenta</a></li>
-          </ul>
-        </li>
-      </ul>
-
-      <form class="d-flex" role="search">
-        <input
-          class="form-control me-2"
-          type="search"
-          placeholder="Search"
-          aria-label="Search"
-        />
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-    </div>
-  </div>
-</nav>
-
-<router-outlet />
-
-<footer class="navbar-dark text-light mt-5 py-3 bg-dark">
-  <div class="container">
-    <div class="d-inline-block">
-      <div>
-        <p>\xA9 2026 RetailManager, Inc</p>
-      </div>
-
-      <div>
-        <ul class="navbar-nav me-auto list-inline flex-row">
-          <li class="nav-item list-inline-item">
-            <a class="nav-link" href="#">Home</a>
-          </li>
-          <li class="nav-item list-inline-item">
-            <a class="nav-link" href="#">Features</a>
-          </li>
-          <li class="nav-item list-inline-item">
-            <a class="nav-link" href="#">Pricing</a>
-          </li>
-          <li class="nav-item list-inline-item">
-            <a class="nav-link" href="#">FAQs</a>
-          </li>
-          <li class="nav-item list-inline-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</footer>
-`, styles: ["/* src/app/app.component.css */\nnav {\n  background: #8e0e00;\n  background: -webkit-linear-gradient(to bottom, #1f1c18, #8e0e00);\n  background:\n    linear-gradient(\n      to bottom,\n      #1f1c18,\n      #8e0e00);\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  z-index: 1000;\n}\nfooter {\n  background: #8e0e00;\n  background: -webkit-linear-gradient(to top, #1f1c18, #8e0e00);\n  background:\n    linear-gradient(\n      to top,\n      #1f1c18,\n      #8e0e00);\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  width: 100%;\n  text-align: center;\n  padding: 10px;\n}\n:host {\n  display: block;\n  margin-bottom: 90px;\n  margin-top: 80px;\n}\n.icon-small {\n  width: 24px;\n  height: 24px;\n}\n.sidebar-nav {\n  padding: 9px 0;\n}\n.dropdown-menu .sub-menu {\n  left: 100%;\n  position: absolute;\n  top: 0;\n  visibility: hidden;\n  margin-top: -1px;\n}\n.dropdown-menu li:hover .sub-menu {\n  visibility: visible;\n}\n.dropdown:hover .dropdown-menu {\n  display: block;\n}\n.nav-tabs .dropdown-menu,\n.nav-pills .dropdown-menu,\n.navbar .dropdown-menu {\n  margin-top: 0;\n}\n.navbar .sub-menu:before {\n  border-bottom: 7px solid transparent;\n  border-left: none;\n  border-right: 7px solid rgba(0, 0, 0, 0.2);\n  border-top: 7px solid transparent;\n  left: -7px;\n  top: 10px;\n}\n.navbar .sub-menu:after {\n  border-top: 6px solid transparent;\n  border-left: none;\n  border-right: 6px solid #fff;\n  border-bottom: 6px solid transparent;\n  left: 10px;\n  top: 11px;\n  left: -6px;\n}\na:hover {\n  cursor: pointer;\n}\n/*# sourceMappingURL=app.component.css.map */\n"] }]
+    args: [{ selector: "app-root", imports: [RouterOutlet, SidebarComponent, TopbarComponent], template: '<app-sidebar [collapsed]="sidebarCollapsed"></app-sidebar>\n\n<div class="app-shell" [class.app-shell--collapsed]="sidebarCollapsed">\n  <app-topbar\n    [sidebarCollapsed]="sidebarCollapsed"\n    (toggleSidebar)="toggleSidebar()"\n  ></app-topbar>\n\n  <main class="app-shell__content">\n    <router-outlet></router-outlet>\n  </main>\n</div>\n', styles: ["/* src/app/app.component.css */\n:host {\n  display: block;\n}\n.app-shell {\n  margin-left: var(--sidebar-width);\n  min-height: 100vh;\n  transition: margin-left .2s ease;\n  background: var(--color-bg);\n}\n.app-shell--collapsed {\n  margin-left: var(--sidebar-collapsed-width);\n}\n.app-shell__content {\n  padding-top: var(--topbar-height);\n  padding: var(--topbar-height) 1.5rem 1.5rem;\n  min-height: calc(100vh - var(--topbar-height));\n}\n@media (max-width: 767px) {\n  .app-shell {\n    margin-left: 0;\n  }\n  .app-shell--collapsed {\n    margin-left: 0;\n  }\n}\n.icon-small {\n  width: 24px;\n  height: 24px;\n}\n.sidebar-nav {\n  padding: 9px 0;\n}\n.dropdown-menu .sub-menu {\n  left: 100%;\n  position: absolute;\n  top: 0;\n  visibility: hidden;\n  margin-top: -1px;\n}\n.dropdown-menu li:hover .sub-menu {\n  visibility: visible;\n}\n.dropdown:hover .dropdown-menu {\n  display: block;\n}\n.nav-tabs .dropdown-menu,\n.nav-pills .dropdown-menu,\n.navbar .dropdown-menu {\n  margin-top: 0;\n}\n.navbar .sub-menu:before {\n  border-bottom: 7px solid transparent;\n  border-left: none;\n  border-right: 7px solid rgba(0, 0, 0, 0.2);\n  border-top: 7px solid transparent;\n  left: -7px;\n  top: 10px;\n}\n.navbar .sub-menu:after {\n  border-top: 6px solid transparent;\n  border-left: none;\n  border-right: 6px solid #fff;\n  border-bottom: 6px solid transparent;\n  left: 10px;\n  top: 11px;\n  left: -6px;\n}\na:hover {\n  cursor: pointer;\n}\n/*# sourceMappingURL=app.component.css.map */\n"] }]
   }], null, null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AppComponent, { className: "AppComponent", filePath: "src/app/app.component.ts", lineNumber: 11 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AppComponent, { className: "AppComponent", filePath: "src/app/app.component.ts", lineNumber: 12 });
 })();
 
 // src/main.ts
