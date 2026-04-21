@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/pages/supplier/statement-of-account/statement-of-account.component.css"],
-  "sourcesContent": ["tr.selected {\n  background-color: #eb4343;\n}\n\n#table-container {\n  max-height: 400px; /* Ajusta la altura seg\u00FAn sea necesario */\n  overflow-y: auto;\n}\n\n.table thead th {\n  position: sticky;\n  top: 0;\n  background-color: #343a40; /* Aseg\u00FArate de que coincida con el color de la tabla */\n  z-index: 1;\n}\n"],
-  "mappings": ";AAAA,EAAE,CAAC;AACD,oBAAkB;AACpB;AAEA,CAAC;AACC,cAAY;AACZ,cAAY;AACd;AAEA,CAAC,MAAM,MAAM;AACX,YAAU;AACV,OAAK;AACL,oBAAkB;AAClB,WAAS;AACX;",
-  "names": []
-}

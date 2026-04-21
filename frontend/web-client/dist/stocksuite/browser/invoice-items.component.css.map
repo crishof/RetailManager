@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/pages/supplier/supplier-invoice/invoice-items/invoice-items.component.css"],
-  "sourcesContent": [".table-responsive {\n  max-width: 100%;\n  overflow-x: scroll;\n}\n#page-title {\n  margin: 30px;\n}\n\n#table-container {\n  height: 400px;\n  overflow-y: auto;\n}\n\n.table thead th {\n  position: sticky;\n  top: 0;\n  z-index: 1;\n  /*background-color: white; /* Aseg\u00FArate de que los encabezados sean visibles */\n}\n\n.nowrap {\n  white-space: nowrap; /* Evita que el contenido se divida en varias l\u00EDneas */\n  overflow: hidden; /* Oculta el contenido excedente */\n  text-overflow: ellipsis; /* Agrega puntos suspensivos (...) si el contenido se desborda */\n}\n\n.description-cell {\n  white-space: nowrap; /* Evita que el contenido se divida en varias l\u00EDneas */\n  overflow: hidden; /* Oculta el contenido excedente */\n  text-overflow: ellipsis; /* Agrega puntos suspensivos (...) si el contenido se desborda */\n  max-width: 300px; /* Establece el tama\u00F1o m\u00E1ximo para la celda */\n}\n"],
-  "mappings": ";AAAA,CAAC;AACC,aAAW;AACX,cAAY;AACd;AACA,CAAC;AACC,UAAQ;AACV;AAEA,CAAC;AACC,UAAQ;AACR,cAAY;AACd;AAEA,CAAC,MAAM,MAAM;AACX,YAAU;AACV,OAAK;AACL,WAAS;AAEX;AAEA,CAAC;AACC,eAAa;AACb,YAAU;AACV,iBAAe;AACjB;AAEA,CAAC;AACC,eAAa;AACb,YAAU;AACV,iBAAe;AACf,aAAW;AACb;",
-  "names": []
-}
