@@ -218,6 +218,7 @@ import {
   ɵɵpipe,
   ɵɵpipeBind1,
   ɵɵpipeBind2,
+  ɵɵpipeBind4,
   ɵɵprojection,
   ɵɵprojectionDef,
   ɵɵproperty,
@@ -229,6 +230,7 @@ import {
   ɵɵrepeaterCreate,
   ɵɵrepeaterTrackByIdentity,
   ɵɵresetView,
+  ɵɵresolveDocument,
   ɵɵrestoreView,
   ɵɵsanitizeUrl,
   ɵɵsanitizeUrlOrResourceUrl,
@@ -244,7 +246,7 @@ import {
   ɵɵtwoWayProperty,
   ɵɵviewQuery,
   ɵɵviewQuerySignal
-} from "./chunk-VNFF53KL.js";
+} from "./chunk-D6OWF2RF.js";
 
 // node_modules/@angular/common/fesm2022/_platform_location-chunk.mjs
 /**
@@ -14583,639 +14585,6 @@ var HomeComponent = class _HomeComponent {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HomeComponent, { className: "HomeComponent", filePath: "src/app/pages/home/home.component.ts", lineNumber: 11 });
 })();
 
-// src/app/services/product.service.ts
-var ProductService = class _ProductService {
-  constructor() {
-    this._http = inject(HttpClient);
-    this._urlBase = "http://localhost:8080/api/v1/products";
-  }
-  // ============================
-  // GET ALL PRODUCTS (PAGINATED + FILTERS)
-  // ============================
-  getProducts(params) {
-    let httpParams = new HttpParams();
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== void 0 && value !== null && value !== "") {
-        httpParams = httpParams.set(key, value.toString());
-      }
-    });
-    return this._http.get(this._urlBase, {
-      params: httpParams
-    });
-  }
-  // ============================
-  // GET PRODUCT BY ID
-  // ============================
-  getProduct(id) {
-    return this._http.get(`${this._urlBase}/${id}`);
-  }
-  // ============================
-  // CREATE PRODUCT
-  // ============================
-  createProduct(product) {
-    return this._http.post(this._urlBase, product);
-  }
-  // ============================
-  // UPDATE PRODUCT
-  // ============================
-  updateProduct(id, product) {
-    return this._http.patch(`${this._urlBase}/${id}`, product);
-  }
-  // ============================
-  // SOFT DELETE PRODUCT
-  // ============================
-  deleteProduct(id) {
-    return this._http.delete(`${this._urlBase}/${id}`);
-  }
-  // ============================
-  // HARD DELETE PRODUCT
-  // ============================
-  forceDeleteProduct(id) {
-    return this._http.delete(`${this._urlBase}/${id}/force`);
-  }
-  // ============================
-  // RESTORE PRODUCT
-  // ============================
-  restoreProduct(id) {
-    return this._http.patch(`${this._urlBase}/${id}/restore`, {});
-  }
-  // ============================
-  // COUNT PRODUCTS
-  // ============================
-  countProducts(params) {
-    let httpParams = new HttpParams();
-    Object.entries(params).forEach(([key, value]) => {
-      if (value) {
-        httpParams = httpParams.set(key, value);
-      }
-    });
-    return this._http.get(`${this._urlBase}/count`, {
-      params: httpParams
-    });
-  }
-  static {
-    this.\u0275fac = function ProductService_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _ProductService)();
-    };
-  }
-  static {
-    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ProductService, factory: _ProductService.\u0275fac, providedIn: "root" });
-  }
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductService, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], null, null);
-})();
-
-// src/app/services/brand.service.ts
-var BrandService = class _BrandService {
-  constructor() {
-    this.http = inject(HttpClient);
-    this.urlBase = "http://localhost:8080/api/v1/brands";
-  }
-  // ============================
-  // CREATE BRAND (multipart)
-  // ============================
-  createBrand(name, logo) {
-    const formData = new FormData();
-    formData.append("name", name);
-    if (logo) {
-      formData.append("logo", logo, logo.name);
-    }
-    return this.http.post(this.urlBase, formData);
-  }
-  // ============================
-  // GET ALL BRANDS (paginated)
-  // ============================
-  getBrands(params) {
-    let httpParams = new HttpParams();
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== void 0 && value !== null) {
-          httpParams = httpParams.set(key, value.toString());
-        }
-      });
-    }
-    return this.http.get(this.urlBase, {
-      params: httpParams
-    });
-  }
-  // ============================
-  // GET BRAND BY ID
-  // ============================
-  getBrand(id) {
-    return this.http.get(`${this.urlBase}/${id}`);
-  }
-  // ============================
-  // UPDATE BRAND (multipart PATCH)
-  // ============================
-  updateBrand(id, name, logo) {
-    const formData = new FormData();
-    if (name) {
-      formData.append("name", name);
-    }
-    if (logo) {
-      formData.append("logo", logo, logo.name);
-    }
-    return this.http.patch(`${this.urlBase}/${id}`, formData);
-  }
-  // ============================
-  // SOFT DELETE BRAND
-  // ============================
-  deleteBrand(id) {
-    return this.http.delete(`${this.urlBase}/${id}`);
-  }
-  // ============================
-  // FORCE DELETE BRAND
-  // ============================
-  forceDeleteBrand(id) {
-    return this.http.delete(`${this.urlBase}/${id}/force`);
-  }
-  // ============================
-  // DELETE BRAND LOGO
-  // ============================
-  deleteBrandLogo(id) {
-    return this.http.patch(`${this.urlBase}/${id}/logo`, null);
-  }
-  // ============================
-  // RESTORE BRAND
-  // ============================
-  restoreBrand(id) {
-    return this.http.patch(`${this.urlBase}/${id}/restore`, null);
-  }
-  // ============================
-  // COUNT BRANDS
-  // ============================
-  getBrandCount() {
-    return this.http.get(`${this.urlBase}/count`);
-  }
-  // ============================
-  // MERGE BRANDS
-  // ============================
-  mergeBrands(sourceBrandId, targetBrandId) {
-    return this.http.put(`${this.urlBase}/${sourceBrandId}/merge`, null, {
-      params: {
-        targetBrandId
-      }
-    });
-  }
-  static {
-    this.\u0275fac = function BrandService_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _BrandService)();
-    };
-  }
-  static {
-    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _BrandService, factory: _BrandService.\u0275fac, providedIn: "root" });
-  }
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(BrandService, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], null, null);
-})();
-
-// src/app/pages/product/product-navbar/product-navbar.component.ts
-var ProductNavbarComponent = class _ProductNavbarComponent {
-  static {
-    this.\u0275fac = function ProductNavbarComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _ProductNavbarComponent)();
-    };
-  }
-  static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductNavbarComponent, selectors: [["app-product-navbar"]], decls: 343, vars: 0, consts: [["data-bs-theme", "dark", 1, "navbar", "navbar-expand-lg", "bg-dark", "border-bottom", "border-body"], [1, "container-fluid"], ["type", "button", "data-bs-toggle", "collapse", "data-bs-target", "#navbarSupportedContent", "aria-controls", "navbarSupportedContent", "aria-expanded", "false", "aria-label", "Toggle navigation", 1, "navbar-toggler"], [1, "navbar-toggler-icon"], ["id", "navbarSupportedContent", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "me-auto", "mb-2", "mb-lg-0"], [1, "nav-item"], ["href", "#", 1, "nav-link"], ["src", "../../../../assets/icons/add-48.png", "alt", "Add", 1, "icon-small"], ["src", "../../../../assets/icons/cancel-48.png", "alt", "Delete", 1, "icon-small"], ["src", "../../../../assets/icons/edit-48.png", "alt", "Edit", 1, "icon-small"], [1, "nav-item", "dropdown"], ["href", "#", "role", "button", "data-bs-toggle", "dropdown", "aria-expanded", "false", 1, "nav-link", "dropdown-toggle"], [1, "dropdown-menu"], ["href", "#", 1, "dropdown-item"], [1, "dropdown-menu", "sub-menu"], [1, "dropdown-divider"], ["routerLink", "/brand", 1, "dropdown-item"], ["routerLink", "/category", 1, "dropdown-item"], ["routerLink", "/supplierPriceList", 1, "nav-link"]], template: function ProductNavbarComponent_Template(rf, ctx) {
-      if (rf & 1) {
-        \u0275\u0275elementStart(0, "nav", 0)(1, "div", 1)(2, "button", 2);
-        \u0275\u0275element(3, "span", 3);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(4, "div", 4)(5, "ul", 5)(6, "li", 6)(7, "a", 7);
-        \u0275\u0275element(8, "img", 8);
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(9, "li", 6)(10, "a", 7);
-        \u0275\u0275element(11, "img", 9);
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(12, "li", 6)(13, "a", 7);
-        \u0275\u0275element(14, "img", 10);
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(15, "li", 11)(16, "a", 12);
-        \u0275\u0275text(17, "Modificaciones");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(18, "ul", 13)(19, "li")(20, "a", 14);
-        \u0275\u0275text(21, "Modificacion R\xE1pida de Art\xEDculos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(22, "li")(23, "a", 14);
-        \u0275\u0275text(24, "Modificacion Rapida de especificaciones");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(25, "li")(26, "a", 14);
-        \u0275\u0275text(27, "Modificacion de Paquete");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(28, "li")(29, "a", 14);
-        \u0275\u0275text(30, "Crear Paquetes Relacionados");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(31, "li")(32, "a", 14);
-        \u0275\u0275text(33, "Modificacion de la fabricacion propia");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(34, "li")(35, "a", 14);
-        \u0275\u0275text(36, "Cargar codigos de barra EAN");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(37, "li", 11)(38, "a", 12);
-        \u0275\u0275text(39, "Articulos complementarios");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(40, "ul", 15)(41, "li")(42, "a", 14);
-        \u0275\u0275text(43, "Por Articulo");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(44, "li")(45, "a", 14);
-        \u0275\u0275text(46, "Por Categoria");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(47, "li");
-        \u0275\u0275element(48, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(49, "li", 11)(50, "a", 12);
-        \u0275\u0275text(51, "Fotograf\xEDas ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(52, "ul", 15)(53, "li")(54, "a", 14);
-        \u0275\u0275text(55, "Cargar fotograf\xEDa");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(56, "li")(57, "a", 14);
-        \u0275\u0275text(58, "Cargar fotograf\xEDa por Marca");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(59, "li")(60, "a", 14);
-        \u0275\u0275text(61, "Cargar fotograf\xEDa desde Carpeta");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(62, "li")(63, "a", 14);
-        \u0275\u0275text(64, "ABM Fotograf\xEDas");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(65, "li");
-        \u0275\u0275element(66, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(67, "li")(68, "a", 14);
-        \u0275\u0275text(69, "Grabar im\xE1genes como archivos JPEG\xB4s");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(70, "li")(71, "a", 14);
-        \u0275\u0275text(72, "Personalizar tama\xF1os");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(73, "li", 11)(74, "a", 12);
-        \u0275\u0275text(75, "Actualizaciones Masivas ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(76, "ul", 15)(77, "li")(78, "a", 14);
-        \u0275\u0275text(79, "Asignar redondeo a articulos dolarizados");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(80, "li")(81, "a", 14);
-        \u0275\u0275text(82, "Cantidades minimas de veneta por mayor");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(83, "li")(84, "a", 14);
-        \u0275\u0275text(85, "Comisiones");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(86, "li")(87, "a", 14);
-        \u0275\u0275text(88, "Descuentos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(89, "li")(90, "a", 14);
-        \u0275\u0275text(91, "Internal Taxes");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(92, "li")(93, "a", 14);
-        \u0275\u0275text(94, "Porcentajes de markup por Categoria");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(95, "li")(96, "a", 14);
-        \u0275\u0275text(97, "Precios");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(98, "li")(99, "a", 14);
-        \u0275\u0275text(100, "Precios: Redondear");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(101, "li")(102, "a", 14);
-        \u0275\u0275text(103, "Promociones");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(104, "li")(105, "a", 14);
-        \u0275\u0275text(106, "Tabla de talles");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(107, "li")(108, "a", 14);
-        \u0275\u0275text(109, "Relacionar mis articulos con los del proveedor");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(110, "li")(111, "a", 14);
-        \u0275\u0275text(112, "Unificar articulos repetidos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(113, "li");
-        \u0275\u0275element(114, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(115, "li")(116, "a", 14);
-        \u0275\u0275text(117, "Editar vista de columnas de art\xEDculos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(118, "li");
-        \u0275\u0275element(119, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(120, "li")(121, "a", 14);
-        \u0275\u0275text(122, "Publicar mi lista de articulos de venta al comercio");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(123, "li", 11)(124, "a", 12);
-        \u0275\u0275text(125, "Varios");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(126, "ul", 13)(127, "li")(128, "a", 14);
-        \u0275\u0275text(129, "Pedido de articulo al proveedor");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(130, "li")(131, "a", 14);
-        \u0275\u0275text(132, "Enviar articulo al service");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(133, "li")(134, "a", 14);
-        \u0275\u0275text(135, "Recepcion de mercader\xEDa en consignacion");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(136, "li");
-        \u0275\u0275element(137, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(138, "li")(139, "a", 17);
-        \u0275\u0275text(140, "Marcas");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(141, "li")(142, "a", 18);
-        \u0275\u0275text(143, "Categorias");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(144, "li", 11)(145, "a", 12);
-        \u0275\u0275text(146, "Asignaciones");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(147, "ul", 15)(148, "li")(149, "a", 14);
-        \u0275\u0275text(150, "Proveedor por Marca");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(151, "li")(152, "a", 14);
-        \u0275\u0275text(153, "Categorias");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(154, "li")(155, "a", 14);
-        \u0275\u0275text(156, "Marcas");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(157, "li")(158, "a", 14);
-        \u0275\u0275text(159, "Importar Articulos desde Excel");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(160, "li")(161, "a", 14);
-        \u0275\u0275text(162, "Comision especial por este art\xEDculo");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(163, "li")(164, "a", 14);
-        \u0275\u0275text(165, "Buscar art\xEDculos por acopio");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(166, "li", 11)(167, "a", 12);
-        \u0275\u0275text(168, "Departamentos");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(169, "ul", 15)(170, "li")(171, "a", 14);
-        \u0275\u0275text(172, "ABM");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(173, "li")(174, "a", 14);
-        \u0275\u0275text(175, "Asignar Art\xEDculos");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(176, "li");
-        \u0275\u0275element(177, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(178, "li")(179, "a", 14);
-        \u0275\u0275text(180, "Listado de Precios");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(181, "li", 11)(182, "a", 12);
-        \u0275\u0275text(183, "Auditar Precios ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(184, "ul", 15)(185, "li")(186, "a", 14);
-        \u0275\u0275text(187, "Art\xEDculos con precio menor a");
-        \u0275\u0275elementEnd()()()()()();
-        \u0275\u0275elementStart(188, "li", 11)(189, "a", 12);
-        \u0275\u0275text(190, "Stock");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(191, "ul", 13)(192, "li")(193, "a", 14);
-        \u0275\u0275text(194, "Realizar movimiento de stock");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(195, "li")(196, "a", 14);
-        \u0275\u0275text(197, "Realizar movimiento de stock por grupo de art\xEDculos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(198, "li")(199, "a", 14);
-        \u0275\u0275text(200, "Realizar Movimiento de stock por fabricaci\xF3n");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(201, "li", 11)(202, "a", 12);
-        \u0275\u0275text(203, "Stock de vehiculo");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(204, "ul", 15)(205, "li")(206, "a", 14);
-        \u0275\u0275text(207, "Ver seleccionado");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(208, "li")(209, "a", 14);
-        \u0275\u0275text(210, "Buscar");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(211, "li")(212, "a", 14);
-        \u0275\u0275text(213, "Importaci\xF3n Masiva");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(214, "li")(215, "a", 14);
-        \u0275\u0275text(216, "Ver movimiento de stock");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(217, "li")(218, "a", 14);
-        \u0275\u0275text(219, "Ver movimiento de stock por grupo de art\xEDculos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(220, "li")(221, "a", 14);
-        \u0275\u0275text(222, "Ver stock de despacho a plaza");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(223, "li", 11)(224, "a", 12);
-        \u0275\u0275text(225, "Ver stock reservado");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(226, "ul", 15)(227, "li")(228, "a", 14);
-        \u0275\u0275text(229, "Articulo seleccionado");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(230, "li")(231, "a", 14);
-        \u0275\u0275text(232, "Todos los art\xEDculos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(233, "li");
-        \u0275\u0275element(234, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(235, "li")(236, "a", 14);
-        \u0275\u0275text(237, "Reservar manualmente desde CSV");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(238, "li")(239, "a", 14);
-        \u0275\u0275text(240, "Ver stock de numero de serie");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(241, "li")(242, "a", 14);
-        \u0275\u0275text(243, "Articulos vendidos a reponer");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(244, "li")(245, "a", 14);
-        \u0275\u0275text(246, "Historial de los precios de compra");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(247, "li");
-        \u0275\u0275element(248, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(249, "li")(250, "a", 14);
-        \u0275\u0275text(251, "Volver el stock a cero");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(252, "li")(253, "a", 14);
-        \u0275\u0275text(254, "Total de stock");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(255, "li");
-        \u0275\u0275element(256, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(257, "li")(258, "a", 14);
-        \u0275\u0275text(259, "Realizacion de inventario");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(260, "li")(261, "a", 14);
-        \u0275\u0275text(262, "Movilizar stock negativo");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(263, "li", 11)(264, "a", 12);
-        \u0275\u0275text(265, "Listados");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(266, "ul", 13)(267, "li")(268, "a", 14);
-        \u0275\u0275text(269, "Articulos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(270, "li")(271, "a", 14);
-        \u0275\u0275text(272, "Listado simple");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(273, "li")(274, "a", 14);
-        \u0275\u0275text(275, "Listado de insumos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(276, "li")(277, "a", 14);
-        \u0275\u0275text(278, "Listado de paquetes y sus componentes");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(279, "li")(280, "a", 14);
-        \u0275\u0275text(281, "Listado solo de precios");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(282, "li")(283, "a", 14);
-        \u0275\u0275text(284, "Listado de ubicaciones");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(285, "li")(286, "a", 14);
-        \u0275\u0275text(287, "Listado de vehiculos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(288, "li");
-        \u0275\u0275element(289, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(290, "li")(291, "a", 14);
-        \u0275\u0275text(292, "Informe de ventas");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(293, "li");
-        \u0275\u0275element(294, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(295, "li", 11)(296, "a", 12);
-        \u0275\u0275text(297, "Impresion de etiquetas");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(298, "ul", 15)(299, "li")(300, "a", 14);
-        \u0275\u0275text(301, "Codigo de barras");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(302, "li")(303, "a", 14);
-        \u0275\u0275text(304, "Impresora estandar");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(305, "li");
-        \u0275\u0275element(306, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(307, "li", 11)(308, "a", 12);
-        \u0275\u0275text(309, "Stock");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(310, "ul", 15)(311, "li")(312, "a", 14);
-        \u0275\u0275text(313, "Stock por sucursales");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(314, "li")(315, "a", 14);
-        \u0275\u0275text(316, "Stock por dep\xF3sitos");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(317, "li")(318, "a", 14);
-        \u0275\u0275text(319, "Despachos a plaza");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(320, "li");
-        \u0275\u0275element(321, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(322, "li")(323, "a", 14);
-        \u0275\u0275text(324, "Informe de productos unificado");
-        \u0275\u0275elementEnd()()()()()();
-        \u0275\u0275elementStart(325, "li", 6)(326, "a", 19);
-        \u0275\u0275text(327, "Lista Proveedor");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(328, "li", 11)(329, "a", 12);
-        \u0275\u0275text(330, "Ocultos");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(331, "ul", 13)(332, "li")(333, "a", 14);
-        \u0275\u0275text(334, "Ocultar este art\xEDculo");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(335, "li");
-        \u0275\u0275element(336, "hr", 16);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(337, "li")(338, "a", 14);
-        \u0275\u0275text(339, "Administraci\xF3n de ocultos");
-        \u0275\u0275elementEnd()()()();
-        \u0275\u0275elementStart(340, "li", 6)(341, "a", 7);
-        \u0275\u0275text(342, "Facturar");
-        \u0275\u0275elementEnd()()()()()();
-      }
-    }, dependencies: [RouterLink], styles: ["\n.icon-small[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n}\n.sidebar-nav[_ngcontent-%COMP%] {\n  padding: 9px 0;\n}\n.dropdown-menu[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%] {\n  left: 100%;\n  position: absolute;\n  top: 0;\n  visibility: hidden;\n  margin-top: -1px;\n}\n.dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]:hover   .sub-menu[_ngcontent-%COMP%] {\n  visibility: visible;\n}\n.dropdown[_ngcontent-%COMP%]:hover   .dropdown-menu[_ngcontent-%COMP%] {\n  display: block;\n}\n.nav-tabs[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%], \n.nav-pills[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%], \n.navbar[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%] {\n  margin-top: 0;\n}\n.navbar[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%]:before {\n  border-bottom: 7px solid transparent;\n  border-left: none;\n  border-right: 7px solid rgba(0, 0, 0, 0.2);\n  border-top: 7px solid transparent;\n  left: -7px;\n  top: 10px;\n}\n.navbar[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%]:after {\n  border-top: 6px solid transparent;\n  border-left: none;\n  border-right: 6px solid #fff;\n  border-bottom: 6px solid transparent;\n  left: 10px;\n  top: 11px;\n  left: -6px;\n}\na[_ngcontent-%COMP%]:hover {\n  cursor: pointer;\n}\n/*# sourceMappingURL=product-navbar.component.css.map */"] });
-  }
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductNavbarComponent, [{
-    type: Component,
-    args: [{ selector: "app-product-navbar", imports: [RouterLink], template: '<nav\n  class="navbar navbar-expand-lg bg-dark border-bottom border-body"\n  data-bs-theme="dark"\n>\n  <div class="container-fluid">\n    <button\n      class="navbar-toggler"\n      type="button"\n      data-bs-toggle="collapse"\n      data-bs-target="#navbarSupportedContent"\n      aria-controls="navbarSupportedContent"\n      aria-expanded="false"\n      aria-label="Toggle navigation"\n    >\n      <span class="navbar-toggler-icon"></span>\n    </button>\n    <div class="collapse navbar-collapse" id="navbarSupportedContent">\n      <ul class="navbar-nav me-auto mb-2 mb-lg-0">\n        <!-- Alta baja y modificacion -->\n        <li class="nav-item">\n          <a class="nav-link" href="#"\n            ><img\n              class="icon-small"\n              src="../../../../assets/icons/add-48.png"\n              alt="Add"\n            />\n          </a>\n        </li>\n        <li class="nav-item">\n          <a class="nav-link" href="#"\n            ><img\n              class="icon-small"\n              src="../../../../assets/icons/cancel-48.png"\n              alt="Delete"\n          /></a>\n        </li>\n        <li class="nav-item">\n          <a class="nav-link" href="#"\n            ><img\n              class="icon-small"\n              src="../../../../assets/icons/edit-48.png"\n              alt="Edit"\n          /></a>\n        </li>\n\n        <!-- Modificaciones -->\n        <li class="nav-item dropdown">\n          <a\n            class="nav-link dropdown-toggle"\n            href="#"\n            role="button"\n            data-bs-toggle="dropdown"\n            aria-expanded="false"\n            >Modificaciones</a\n          >\n\n          <ul class="dropdown-menu">\n            <li>\n              <a class="dropdown-item" href="#"\n                >Modificacion R\xE1pida de Art\xEDculos</a\n              >\n            </li>\n            <li>\n              <a class="dropdown-item" href="#"\n                >Modificacion Rapida de especificaciones</a\n              >\n            </li>\n            <li>\n              <a class="dropdown-item" href="#">Modificacion de Paquete</a>\n            </li>\n            <li>\n              <a class="dropdown-item" href="#">Crear Paquetes Relacionados</a>\n            </li>\n            <li>\n              <a class="dropdown-item" href="#"\n                >Modificacion de la fabricacion propia</a\n              >\n            </li>\n            <li>\n              <a class="dropdown-item" href="#">Cargar codigos de barra EAN</a>\n            </li>\n\n            <li class="nav-item dropdown">\n              <a\n                class="nav-link dropdown-toggle"\n                href="#"\n                role="button"\n                data-bs-toggle="dropdown"\n                aria-expanded="false"\n                >Articulos complementarios</a\n              >\n              <ul class="dropdown-menu sub-menu">\n                <li><a class="dropdown-item" href="#">Por Articulo</a></li>\n                <li><a class="dropdown-item" href="#">Por Categoria</a></li>\n              </ul>\n            </li>\n\n            <li>\n              <hr class="dropdown-divider" />\n            </li>\n\n            <li class="nav-item dropdown">\n              <a\n                class="nav-link dropdown-toggle"\n                href="#"\n                role="button"\n                data-bs-toggle="dropdown"\n                aria-expanded="false"\n                >Fotograf\xEDas\n              </a>\n              <ul class="dropdown-menu sub-menu">\n                <li><a class="dropdown-item" href="#">Cargar fotograf\xEDa</a></li>\n                <li>\n                  <a class="dropdown-item" href="#"\n                    >Cargar fotograf\xEDa por Marca</a\n                  >\n                </li>\n                <li>\n                  <a class="dropdown-item" href="#"\n                    >Cargar fotograf\xEDa desde Carpeta</a\n                  >\n                </li>\n                <li><a class="dropdown-item" href="#">ABM Fotograf\xEDas</a></li>\n\n                <li>\n                  <hr class="dropdown-divider" />\n                </li>\n\n                <li>\n                  <a class="dropdown-item" href="#"\n                    >Grabar im\xE1genes como archivos JPEG\xB4s</a\n                  >\n                </li>\n                <li>\n                  <a class="dropdown-item" href="#">Personalizar tama\xF1os</a>\n                </li>\n              </ul>\n            </li>\n\n            <li class="nav-item dropdown">\n              <a\n                class="nav-link dropdown-toggle"\n                href="#"\n                role="button"\n                data-bs-toggle="dropdown"\n                aria-expanded="false"\n                >Actualizaciones Masivas\n              </a>\n              <ul class="dropdown-menu sub-menu">\n                <li>\n                  <a class="dropdown-item" href="#"\n                    >Asignar redondeo a articulos dolarizados</a\n                  >\n                </li>\n                <li>\n                  <a class="dropdown-item" href="#"\n                    >Cantidades minimas de veneta por mayor</a\n                  >\n                </li>\n                <li><a class="dropdown-item" href="#">Comisiones</a></li>\n                <li><a class="dropdown-item" href="#">Descuentos</a></li>\n                <li>\n                  <a class="dropdown-item" href="#">Internal Taxes</a>\n                </li>\n                <li>\n                  <a class="dropdown-item" href="#"\n                    >Porcentajes de markup por Categoria</a\n                  >\n                </li>\n                <li><a class="dropdown-item" href="#">Precios</a></li>\n                <li>\n                  <a class="dropdown-item" href="#">Precios: Redondear</a>\n                </li>\n                <li><a class="dropdown-item" href="#">Promociones</a></li>\n                <li><a class="dropdown-item" href="#">Tabla de talles</a></li>\n              </ul>\n            </li>\n\n            <li>\n              <a class="dropdown-item" href="#"\n                >Relacionar mis articulos con los del proveedor</a\n              >\n            </li>\n            <li>\n              <a class="dropdown-item" href="#">Unificar articulos repetidos</a>\n            </li>\n\n            <li>\n              <hr class="dropdown-divider" />\n            </li>\n\n            <li>\n              <a class="dropdown-item" href="#"\n                >Editar vista de columnas de art\xEDculos</a\n              >\n            </li>\n\n            <li>\n              <hr class="dropdown-divider" />\n            </li>\n\n            <li>\n              <a class="dropdown-item" href="#"\n                >Publicar mi lista de articulos de venta al comercio</a\n              >\n            </li>\n          </ul>\n        </li>\n\n        <!-- Varios -->\n\n        <li class="nav-item dropdown">\n          <a\n            class="nav-link dropdown-toggle"\n            href="#"\n            role="button"\n            data-bs-toggle="dropdown"\n            aria-expanded="false"\n            >Varios</a\n          >\n\n          <ul class="dropdown-menu">\n            <li>\n              <a class="dropdown-item" href="#"\n                >Pedido de articulo al proveedor</a\n              >\n            </li>\n            <li>\n              <a class="dropdown-item" href="#">Enviar articulo al service</a>\n            </li>\n            <li>\n              <a class="dropdown-item" href="#"\n                >Recepcion de mercader\xEDa en consignacion</a\n              >\n            </li>\n\n            <li><hr class="dropdown-divider" /></li>\n\n            <li><a class="dropdown-item" routerLink="/brand">Marcas</a></li>\n\n            <li>\n              <a class="dropdown-item" routerLink="/category"\n                >Categorias</a\n              >\n            </li>\n\n            <li class="nav-item dropdown">\n              <a\n                class="nav-link dropdown-toggle"\n                href="#"\n                role="button"\n                data-bs-toggle="dropdown"\n                aria-expanded="false"\n                >Asignaciones</a\n              >\n              <ul class="dropdown-menu sub-menu">\n                <li>\n                  <a class="dropdown-item" href="#">Proveedor por Marca</a>\n                </li>\n                <li><a class="dropdown-item" href="#">Categorias</a></li>\n                <li><a class="dropdown-item" href="#">Marcas</a></li>\n              </ul>\n            </li>\n\n            <li>\n              <a class="dropdown-item" href="#"\n                >Importar Articulos desde Excel</a\n              >\n            </li>\n            <li>\n              <a class="dropdown-item" href="#"\n                >Comision especial por este art\xEDculo</a\n              >\n            </li>\n            <li>\n              <a class="dropdown-item" href="#">Buscar art\xEDculos por acopio</a>\n            </li>\n\n            <li class="nav-item dropdown">\n              <a\n                class="nav-link dropdown-toggle"\n                href="#"\n                role="button"\n                data-bs-toggle="dropdown"\n                aria-expanded="false"\n                >Departamentos</a\n              >\n\n              <ul class="dropdown-menu sub-menu">\n                <li><a class="dropdown-item" href="#">ABM</a></li>\n                <li><a class="dropdown-item" href="#">Asignar Art\xEDculos</a></li>\n              </ul>\n            </li>\n\n            <li><hr class="dropdown-divider" /></li>\n\n            <li><a class="dropdown-item" href="#">Listado de Precios</a></li>\n\n            <li class="nav-item dropdown">\n              <a\n                class="nav-link dropdown-toggle"\n                href="#"\n                role="button"\n                data-bs-toggle="dropdown"\n                aria-expanded="false"\n                >Auditar Precios\n              </a>\n              <ul class="dropdown-menu sub-menu">\n                <li>\n                  <a class="dropdown-item" href="#"\n                    >Art\xEDculos con precio menor a</a\n                  >\n                </li>\n              </ul>\n            </li>\n          </ul>\n        </li>\n\n        <!-- Stock -->\n\n        <li class="nav-item dropdown">\n          <a\n            class="nav-link dropdown-toggle"\n            href="#"\n            role="button"\n            data-bs-toggle="dropdown"\n            aria-expanded="false"\n            >Stock</a\n          >\n\n          <ul class="dropdown-menu">\n            <li>\n              <a class="dropdown-item" href="#">Realizar movimiento de stock</a>\n            </li>\n            <li>\n              <a class="dropdown-item" href="#"\n                >Realizar movimiento de stock por grupo de art\xEDculos</a\n              >\n            </li>\n            <li>\n              <a class="dropdown-item" href="#"\n                >Realizar Movimiento de stock por fabricaci\xF3n</a\n              >\n            </li>\n\n            <li class="nav-item dropdown">\n              <a\n                class="nav-link dropdown-toggle"\n                href="#"\n                role="button"\n                data-bs-toggle="dropdown"\n                aria-expanded="false"\n                >Stock de vehiculo</a\n              >\n\n              <ul class="dropdown-menu sub-menu">\n                <li><a class="dropdown-item" href="#">Ver seleccionado</a></li>\n                <li><a class="dropdown-item" href="#">Buscar</a></li>\n                <li>\n                  <a class="dropdown-item" href="#">Importaci\xF3n Masiva</a>\n                </li>\n              </ul>\n            </li>\n            <li>\n              <a class="dropdown-item" href="#">Ver movimiento de stock</a>\n            </li>\n            <li>\n              <a class="dropdown-item" href="#"\n                >Ver movimiento de stock por grupo de art\xEDculos</a\n              >\n            </li>\n            <li>\n              <a class="dropdown-item" href="#"\n                >Ver stock de despacho a plaza</a\n              >\n            </li>\n\n            <li class="nav-item dropdown">\n              <a\n                class="nav-link dropdown-toggle"\n                href="#"\n                role="button"\n                data-bs-toggle="dropdown"\n                aria-expanded="false"\n                >Ver stock reservado</a\n              >\n\n              <ul class="dropdown-menu sub-menu">\n                <li>\n                  <a class="dropdown-item" href="#">Articulo seleccionado</a>\n                </li>\n                <li>\n                  <a class="dropdown-item" href="#">Todos los art\xEDculos</a>\n                </li>\n                <li><hr class="dropdown-divider" /></li>\n                <li>\n                  <a class="dropdown-item" href="#"\n                    >Reservar manualmente desde CSV</a\n                  >\n                </li>\n              </ul>\n            </li>\n\n            <li>\n              <a class="dropdown-item" href="#">Ver stock de numero de serie</a>\n            </li>\n            <li>\n              <a class="dropdown-item" href="#">Articulos vendidos a reponer</a>\n            </li>\n            <li>\n              <a class="dropdown-item" href="#"\n                >Historial de los precios de compra</a\n              >\n            </li>\n\n            <li><hr class="dropdown-divider" /></li>\n\n            <li>\n              <a class="dropdown-item" href="#">Volver el stock a cero</a>\n            </li>\n            <li><a class="dropdown-item" href="#">Total de stock</a></li>\n            <li><hr class="dropdown-divider" /></li>\n\n            <li>\n              <a class="dropdown-item" href="#">Realizacion de inventario</a>\n            </li>\n\n            <li>\n              <a class="dropdown-item" href="#">Movilizar stock negativo</a>\n            </li>\n          </ul>\n        </li>\n\n        <!-- Listados -->\n\n        <li class="nav-item dropdown">\n          <a\n            class="nav-link dropdown-toggle"\n            href="#"\n            role="button"\n            data-bs-toggle="dropdown"\n            aria-expanded="false"\n            >Listados</a\n          >\n\n          <ul class="dropdown-menu">\n            <li><a class="dropdown-item" href="#">Articulos</a></li>\n            <li><a class="dropdown-item" href="#">Listado simple</a></li>\n            <li><a class="dropdown-item" href="#">Listado de insumos</a></li>\n            <li>\n              <a class="dropdown-item" href="#"\n                >Listado de paquetes y sus componentes</a\n              >\n            </li>\n            <li>\n              <a class="dropdown-item" href="#">Listado solo de precios</a>\n            </li>\n            <li>\n              <a class="dropdown-item" href="#">Listado de ubicaciones</a>\n            </li>\n            <li><a class="dropdown-item" href="#">Listado de vehiculos</a></li>\n\n            <li><hr class="dropdown-divider" /></li>\n\n            <li><a class="dropdown-item" href="#">Informe de ventas</a></li>\n\n            <li><hr class="dropdown-divider" /></li>\n\n            <li class="nav-item dropdown">\n              <a\n                class="nav-link dropdown-toggle"\n                href="#"\n                role="button"\n                data-bs-toggle="dropdown"\n                aria-expanded="false"\n                >Impresion de etiquetas</a\n              >\n\n              <ul class="dropdown-menu sub-menu">\n                <li><a class="dropdown-item" href="#">Codigo de barras</a></li>\n                <li>\n                  <a class="dropdown-item" href="#">Impresora estandar</a>\n                </li>\n              </ul>\n            </li>\n\n            <li><hr class="dropdown-divider" /></li>\n\n            <li class="nav-item dropdown">\n              <a\n                class="nav-link dropdown-toggle"\n                href="#"\n                role="button"\n                data-bs-toggle="dropdown"\n                aria-expanded="false"\n                >Stock</a\n              >\n\n              <ul class="dropdown-menu sub-menu">\n                <li>\n                  <a class="dropdown-item" href="#">Stock por sucursales</a>\n                </li>\n                <li>\n                  <a class="dropdown-item" href="#">Stock por dep\xF3sitos</a>\n                </li>\n                <li><a class="dropdown-item" href="#">Despachos a plaza</a></li>\n\n                <li><hr class="dropdown-divider" /></li>\n\n                <li>\n                  <a class="dropdown-item" href="#"\n                    >Informe de productos unificado</a\n                  >\n                </li>\n              </ul>\n            </li>\n          </ul>\n        </li>\n\n        <!-- Lista proveedor -->\n\n        <li class="nav-item">\n          <a class="nav-link" routerLink="/supplierPriceList"\n            >Lista Proveedor</a\n          >\n        </li>\n\n        <!-- Ocultos -->\n\n        <li class="nav-item dropdown">\n          <a\n            class="nav-link dropdown-toggle"\n            href="#"\n            role="button"\n            data-bs-toggle="dropdown"\n            aria-expanded="false"\n            >Ocultos</a\n          >\n\n          <ul class="dropdown-menu">\n            <li><a class="dropdown-item" href="#">Ocultar este art\xEDculo</a></li>\n            <li><hr class="dropdown-divider" /></li>\n            <li>\n              <a class="dropdown-item" href="#">Administraci\xF3n de ocultos</a>\n            </li>\n          </ul>\n        </li>\n\n        <!-- Facturar -->\n\n        <li class="nav-item">\n          <a class="nav-link" href="#">Facturar</a>\n        </li>\n      </ul>\n    </div>\n  </div>\n</nav>\n', styles: ["/* src/app/pages/product/product-navbar/product-navbar.component.css */\n.icon-small {\n  width: 24px;\n  height: 24px;\n}\n.sidebar-nav {\n  padding: 9px 0;\n}\n.dropdown-menu .sub-menu {\n  left: 100%;\n  position: absolute;\n  top: 0;\n  visibility: hidden;\n  margin-top: -1px;\n}\n.dropdown-menu li:hover .sub-menu {\n  visibility: visible;\n}\n.dropdown:hover .dropdown-menu {\n  display: block;\n}\n.nav-tabs .dropdown-menu,\n.nav-pills .dropdown-menu,\n.navbar .dropdown-menu {\n  margin-top: 0;\n}\n.navbar .sub-menu:before {\n  border-bottom: 7px solid transparent;\n  border-left: none;\n  border-right: 7px solid rgba(0, 0, 0, 0.2);\n  border-top: 7px solid transparent;\n  left: -7px;\n  top: 10px;\n}\n.navbar .sub-menu:after {\n  border-top: 6px solid transparent;\n  border-left: none;\n  border-right: 6px solid #fff;\n  border-bottom: 6px solid transparent;\n  left: 10px;\n  top: 11px;\n  left: -6px;\n}\na:hover {\n  cursor: pointer;\n}\n/*# sourceMappingURL=product-navbar.component.css.map */\n"] }]
-  }], null, null);
-})();
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductNavbarComponent, { className: "ProductNavbarComponent", filePath: "src/app/pages/product/product-navbar/product-navbar.component.ts", lineNumber: 11 });
-})();
-
-// src/app/pages/product/product-details/product-details.component.ts
-var ProductDetailsComponent = class _ProductDetailsComponent {
-  constructor() {
-    this.product = null;
-  }
-  /*
-    loading: boolean = true;
-    public product?: IProduct;
-  
-    private _route = inject(ActivatedRoute);
-    private _productService = inject(ProductService);
-    private _brandService = inject(BrandService);
-  */
-  ngOnInit() {
-  }
-  static {
-    this.\u0275fac = function ProductDetailsComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _ProductDetailsComponent)();
-    };
-  }
-  static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductDetailsComponent, selectors: [["app-product-detail"]], inputs: { product: "product" }, decls: 19, vars: 6, consts: [[1, "container"], [1, "row"], [1, "col-md-6"]], template: function ProductDetailsComponent_Template(rf, ctx) {
-      if (rf & 1) {
-        \u0275\u0275domElementStart(0, "div", 0)(1, "div", 1)(2, "div", 2)(3, "p");
-        \u0275\u0275text(4);
-        \u0275\u0275domElementEnd()();
-        \u0275\u0275domElementStart(5, "div", 2)(6, "p");
-        \u0275\u0275text(7);
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(8, "p");
-        \u0275\u0275text(9);
-        \u0275\u0275domElementEnd()()();
-        \u0275\u0275domElement(10, "hr");
-        \u0275\u0275domElementStart(11, "div", 1)(12, "div")(13, "p");
-        \u0275\u0275text(14);
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(15, "p");
-        \u0275\u0275text(16);
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(17, "p");
-        \u0275\u0275text(18);
-        \u0275\u0275domElementEnd()()()();
-      }
-      if (rf & 2) {
-        \u0275\u0275advance(4);
-        \u0275\u0275textInterpolate(ctx.product == null ? null : ctx.product.id);
-        \u0275\u0275advance(3);
-        \u0275\u0275textInterpolate1("Precio Oferta: ", ctx.product == null ? null : ctx.product.priceResponse == null ? null : ctx.product.priceResponse.sellingPrice);
-        \u0275\u0275advance(2);
-        \u0275\u0275textInterpolate1("Precio Lista: ", ctx.product == null ? null : ctx.product.priceResponse == null ? null : ctx.product.priceResponse.sellingPrice);
-        \u0275\u0275advance(5);
-        \u0275\u0275textInterpolate(ctx.product == null ? null : ctx.product.brandName);
-        \u0275\u0275advance(2);
-        \u0275\u0275textInterpolate(ctx.product == null ? null : ctx.product.model);
-        \u0275\u0275advance(2);
-        \u0275\u0275textInterpolate(ctx.product == null ? null : ctx.product.description);
-      }
-    }, encapsulation: 2 });
-  }
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductDetailsComponent, [{
-    type: Component,
-    args: [{ selector: "app-product-detail", imports: [], template: '<div class="container">\n  <div class="row">\n    <div class="col-md-6">\n      <p>{{ product?.id }}</p>\n    </div>\n    <div class="col-md-6">\n      <p>Precio Oferta: {{ product?.priceResponse?.sellingPrice }}</p>\n      <p>Precio Lista: {{ product?.priceResponse?.sellingPrice }}</p>\n    </div>\n  </div>\n\n  <hr />\n\n  <div class="row">\n    <div>\n      <p>{{ product?.brandName }}</p>\n      <p>{{ product?.model }}</p>\n      <p>{{ product?.description }}</p>\n    </div>\n  </div>\n</div>\n' }]
-  }], null, { product: [{
-    type: Input
-  }] });
-})();
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductDetailsComponent, { className: "ProductDetailsComponent", filePath: "src/app/pages/product/product-details/product-details.component.ts", lineNumber: 18 });
-})();
-
 // node_modules/@angular/forms/fesm2022/forms.mjs
 /**
  * @license Angular v21.2.9
@@ -19880,72 +19249,87 @@ var ReactiveFormsModule = class _ReactiveFormsModule {
   }], null, null);
 })();
 
-// src/app/services/supplier-price-list.service.ts
-var SupplierPriceListService = class _SupplierPriceListService {
+// src/app/services/product.service.ts
+var ProductService = class _ProductService {
   constructor() {
-    this.http = inject(HttpClient);
-    this.baseUrl = "http://localhost:8080/api/v1/price-items";
-    this.productsUrl = "http://localhost:8080/api/v1/products/import/supplier";
+    this._http = inject(HttpClient);
+    this._urlBase = "http://localhost:8080/api/v1/products";
   }
   // ============================
-  // IMPORT PRICE ITEMS
+  // GET ALL PRODUCTS (PAGINATED + FILTERS)
   // ============================
-  uploadFile(file, supplierId, updateExisting = false) {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("supplierId", supplierId);
-    formData.append("updateExisting", String(updateExisting));
-    return this.http.post(`${this.baseUrl}/import`, formData);
+  getProducts(params) {
+    let httpParams = new HttpParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== void 0 && value !== null && value !== "") {
+        httpParams = httpParams.set(key, value.toString());
+      }
+    });
+    return this._http.get(this._urlBase, {
+      params: httpParams
+    });
   }
   // ============================
-  // SEARCH / FILTER ITEMS
+  // GET PRODUCT BY ID
   // ============================
-  getAllByFilter(supplierId, brand, filter2) {
-    let params = new HttpParams();
-    if (supplierId) {
-      params = params.set("supplierId", supplierId);
-    }
-    if (brand) {
-      params = params.set("brand", brand);
-    }
-    if (filter2) {
-      params = params.set("filter", filter2);
-    }
-    return this.http.get(this.baseUrl, { params });
+  getProduct(id) {
+    return this._http.get(`${this._urlBase}/${id}`);
   }
   // ============================
-  // GET ITEM BY ID
+  // CREATE PRODUCT
   // ============================
-  getById(id) {
-    return this.http.get(`${this.baseUrl}/${id}`).pipe(catchError(() => throwError(() => new Error("Error getting price item"))));
+  createProduct(product) {
+    return this._http.post(this._urlBase, product);
   }
   // ============================
-  // GET BRANDS (OPTIONAL SUPPLIER)
+  // UPDATE PRODUCT
   // ============================
-  getBrands(supplierId) {
-    let params = new HttpParams();
-    if (supplierId) {
-      params = params.set("supplierId", supplierId);
-    }
-    return this.http.get(`${this.baseUrl}/brands`, { params });
+  updateProduct(id, product) {
+    return this._http.patch(`${this._urlBase}/${id}`, product);
   }
   // ============================
-  // IMPORT PRODUCTS FROM SUPPLIER
+  // SOFT DELETE PRODUCT
   // ============================
-  importProductsFromSupplier(productList) {
-    return this.http.post(this.productsUrl, productList);
+  deleteProduct(id) {
+    return this._http.delete(`${this._urlBase}/${id}`);
+  }
+  // ============================
+  // HARD DELETE PRODUCT
+  // ============================
+  forceDeleteProduct(id) {
+    return this._http.delete(`${this._urlBase}/${id}/force`);
+  }
+  // ============================
+  // RESTORE PRODUCT
+  // ============================
+  restoreProduct(id) {
+    return this._http.patch(`${this._urlBase}/${id}/restore`, {});
+  }
+  // ============================
+  // COUNT PRODUCTS
+  // ============================
+  countProducts(params) {
+    let httpParams = new HttpParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        httpParams = httpParams.set(key, value);
+      }
+    });
+    return this._http.get(`${this._urlBase}/count`, {
+      params: httpParams
+    });
   }
   static {
-    this.\u0275fac = function SupplierPriceListService_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _SupplierPriceListService)();
+    this.\u0275fac = function ProductService_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _ProductService)();
     };
   }
   static {
-    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _SupplierPriceListService, factory: _SupplierPriceListService.\u0275fac, providedIn: "root" });
+    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ProductService, factory: _ProductService.\u0275fac, providedIn: "root" });
   }
 };
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SupplierPriceListService, [{
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductService, [{
     type: Injectable,
     args: [{
       providedIn: "root"
@@ -19953,81 +19337,1299 @@ var SupplierPriceListService = class _SupplierPriceListService {
   }], null, null);
 })();
 
+// src/app/pages/product/product-navbar/product-navbar.component.ts
+var ProductNavbarComponent = class _ProductNavbarComponent {
+  constructor() {
+    this.newProduct = new EventEmitter();
+    this.editProduct = new EventEmitter();
+    this.deleteProduct = new EventEmitter();
+    this.openMenu = null;
+  }
+  toggleMenu(name) {
+    this.openMenu = this.openMenu === name ? null : name;
+  }
+  onDocumentClick(e) {
+    const target = e.target;
+    if (!target.closest(".pnav__dropdown")) {
+      this.openMenu = null;
+    }
+  }
+  static {
+    this.\u0275fac = function ProductNavbarComponent_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _ProductNavbarComponent)();
+    };
+  }
+  static {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductNavbarComponent, selectors: [["app-product-navbar"]], hostBindings: function ProductNavbarComponent_HostBindings(rf, ctx) {
+      if (rf & 1) {
+        \u0275\u0275listener("click", function ProductNavbarComponent_click_HostBindingHandler($event) {
+          return ctx.onDocumentClick($event);
+        }, \u0275\u0275resolveDocument);
+      }
+    }, outputs: { newProduct: "newProduct", editProduct: "editProduct", deleteProduct: "deleteProduct" }, decls: 520, vars: 12, consts: [[1, "pnav"], [1, "pnav__group"], ["title", "Nuevo producto", 1, "pnav__btn", "pnav__btn--primary", 3, "click"], [1, "material-icons"], [1, "pnav__btn-label"], ["title", "Editar producto", 1, "pnav__btn", 3, "click"], ["title", "Eliminar producto", 1, "pnav__btn", "pnav__btn--danger", 3, "click"], [1, "pnav__separator"], [1, "pnav__dropdown"], [1, "pnav__btn", 3, "click"], [1, "material-icons", "pnav__chevron"], [1, "pnav__menu"], [1, "pnav__menu-item"], [1, "pnav__menu-divider"], [1, "pnav__menu-heading"], ["routerLink", "/brand", 1, "pnav__menu-item"], ["routerLink", "/category", 1, "pnav__menu-item"], [1, "pnav__spacer"], ["routerLink", "/supplierPriceList", "title", "Lista proveedor", 1, "pnav__btn"], ["title", "Facturar", 1, "pnav__btn"], ["title", "Exportar a Excel", 1, "pnav__btn"], ["title", "Imprimir", 1, "pnav__btn"]], template: function ProductNavbarComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "button", 2);
+        \u0275\u0275listener("click", function ProductNavbarComponent_Template_button_click_2_listener() {
+          return ctx.newProduct.emit();
+        });
+        \u0275\u0275elementStart(3, "span", 3);
+        \u0275\u0275text(4, "add");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(5, "span", 4);
+        \u0275\u0275text(6, "Nuevo");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(7, "button", 5);
+        \u0275\u0275listener("click", function ProductNavbarComponent_Template_button_click_7_listener() {
+          return ctx.editProduct.emit();
+        });
+        \u0275\u0275elementStart(8, "span", 3);
+        \u0275\u0275text(9, "edit");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(10, "span", 4);
+        \u0275\u0275text(11, "Editar");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(12, "button", 6);
+        \u0275\u0275listener("click", function ProductNavbarComponent_Template_button_click_12_listener() {
+          return ctx.deleteProduct.emit();
+        });
+        \u0275\u0275elementStart(13, "span", 3);
+        \u0275\u0275text(14, "delete_outline");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(15, "span", 4);
+        \u0275\u0275text(16, "Eliminar");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275element(17, "div", 7);
+        \u0275\u0275elementStart(18, "div", 8)(19, "button", 9);
+        \u0275\u0275listener("click", function ProductNavbarComponent_Template_button_click_19_listener() {
+          return ctx.toggleMenu("modificaciones");
+        });
+        \u0275\u0275elementStart(20, "span", 3);
+        \u0275\u0275text(21, "tune");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(22, "span", 4);
+        \u0275\u0275text(23, "Modificaciones");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(24, "span", 10);
+        \u0275\u0275text(25, "expand_more");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(26, "div", 11)(27, "button", 12)(28, "span", 3);
+        \u0275\u0275text(29, "bolt");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(30, "Modificaci\xF3n r\xE1pida de art\xEDculos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(31, "button", 12)(32, "span", 3);
+        \u0275\u0275text(33, "tune");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(34, "Modificaci\xF3n r\xE1pida de especificaciones");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(35, "button", 12)(36, "span", 3);
+        \u0275\u0275text(37, "inventory");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(38, "Modificaci\xF3n de paquete");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(39, "button", 12)(40, "span", 3);
+        \u0275\u0275text(41, "library_add");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(42, "Crear paquetes relacionados");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(43, "button", 12)(44, "span", 3);
+        \u0275\u0275text(45, "precision_manufacturing");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(46, "Modificaci\xF3n de la fabricaci\xF3n propia");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(47, "button", 12)(48, "span", 3);
+        \u0275\u0275text(49, "qr_code_scanner");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(50, "Cargar c\xF3digos de barra EAN");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(51, "div", 13);
+        \u0275\u0275elementStart(52, "div", 14);
+        \u0275\u0275text(53, "Art\xEDculos complementarios");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(54, "button", 12)(55, "span", 3);
+        \u0275\u0275text(56, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(57, "Por art\xEDculo");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(58, "button", 12)(59, "span", 3);
+        \u0275\u0275text(60, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(61, "Por categor\xEDa");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(62, "div", 13);
+        \u0275\u0275elementStart(63, "div", 14);
+        \u0275\u0275text(64, "Fotograf\xEDas");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(65, "button", 12)(66, "span", 3);
+        \u0275\u0275text(67, "photo_camera");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(68, "Cargar fotograf\xEDa");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(69, "button", 12)(70, "span", 3);
+        \u0275\u0275text(71, "collections");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(72, "Cargar fotograf\xEDa por marca");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(73, "button", 12)(74, "span", 3);
+        \u0275\u0275text(75, "folder_open");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(76, "Cargar fotograf\xEDa desde carpeta");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(77, "button", 12)(78, "span", 3);
+        \u0275\u0275text(79, "perm_media");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(80, "ABM fotograf\xEDas");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(81, "button", 12)(82, "span", 3);
+        \u0275\u0275text(83, "image");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(84, "Grabar im\xE1genes como archivos JPEG");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(85, "button", 12)(86, "span", 3);
+        \u0275\u0275text(87, "photo_size_select_large");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(88, "Personalizar tama\xF1os");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(89, "div", 13);
+        \u0275\u0275elementStart(90, "div", 14);
+        \u0275\u0275text(91, "Actualizaciones masivas");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(92, "button", 12)(93, "span", 3);
+        \u0275\u0275text(94, "attach_money");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(95, "Asignar redondeo a art\xEDculos dolarizados");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(96, "button", 12)(97, "span", 3);
+        \u0275\u0275text(98, "shopping_bag");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(99, "Cantidades m\xEDnimas de venta por mayor");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(100, "button", 12)(101, "span", 3);
+        \u0275\u0275text(102, "percent");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(103, "Comisiones");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(104, "button", 12)(105, "span", 3);
+        \u0275\u0275text(106, "sell");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(107, "Descuentos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(108, "button", 12)(109, "span", 3);
+        \u0275\u0275text(110, "receipt");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(111, "Impuestos internos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(112, "button", 12)(113, "span", 3);
+        \u0275\u0275text(114, "bar_chart");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(115, "Porcentajes de markup por categor\xEDa");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(116, "button", 12)(117, "span", 3);
+        \u0275\u0275text(118, "price_change");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(119, "Precios");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(120, "button", 12)(121, "span", 3);
+        \u0275\u0275text(122, "format_list_numbered");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(123, "Precios: redondear");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(124, "button", 12)(125, "span", 3);
+        \u0275\u0275text(126, "local_offer");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(127, "Promociones");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(128, "button", 12)(129, "span", 3);
+        \u0275\u0275text(130, "straighten");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(131, "Tabla de talles");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(132, "div", 13);
+        \u0275\u0275elementStart(133, "button", 12)(134, "span", 3);
+        \u0275\u0275text(135, "trending_up");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(136, "Aumento por porcentaje o precio");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(137, "button", 12)(138, "span", 3);
+        \u0275\u0275text(139, "inventory_2");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(140, "Control de stock");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(141, "button", 12)(142, "span", 3);
+        \u0275\u0275text(143, "tag");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(144, "Nuevos n\xFAmeros de serie");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(145, "button", 12)(146, "span", 3);
+        \u0275\u0275text(147, "compress");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(148, "Combinar art\xEDculos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(149, "button", 12)(150, "span", 3);
+        \u0275\u0275text(151, "remove_circle");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(152, "Baja de art\xEDculos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(153, "button", 12)(154, "span", 3);
+        \u0275\u0275text(155, "link");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(156, "Relacionar mis art\xEDculos con los del proveedor");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(157, "button", 12)(158, "span", 3);
+        \u0275\u0275text(159, "merge_type");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(160, "Unificar art\xEDculos repetidos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(161, "div", 13);
+        \u0275\u0275elementStart(162, "button", 12)(163, "span", 3);
+        \u0275\u0275text(164, "view_column");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(165, "Editar vista de columnas de art\xEDculos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(166, "div", 13);
+        \u0275\u0275elementStart(167, "button", 12)(168, "span", 3);
+        \u0275\u0275text(169, "public");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(170, "Publicar mi lista de art\xEDculos de venta al comercio");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(171, "div", 8)(172, "button", 9);
+        \u0275\u0275listener("click", function ProductNavbarComponent_Template_button_click_172_listener() {
+          return ctx.toggleMenu("varios");
+        });
+        \u0275\u0275elementStart(173, "span", 3);
+        \u0275\u0275text(174, "apps");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(175, "span", 4);
+        \u0275\u0275text(176, "Varios");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(177, "span", 10);
+        \u0275\u0275text(178, "expand_more");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(179, "div", 11)(180, "div", 14);
+        \u0275\u0275text(181, "Precios y costos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(182, "button", 12)(183, "span", 3);
+        \u0275\u0275text(184, "currency_exchange");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(185, "Cambiar costos por moneda");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(186, "button", 12)(187, "span", 3);
+        \u0275\u0275text(188, "price_change");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(189, "Actualizar precios de venta");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(190, "button", 12)(191, "span", 3);
+        \u0275\u0275text(192, "discount");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(193, "Ajustar precios");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(194, "button", 12)(195, "span", 3);
+        \u0275\u0275text(196, "receipt_long");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(197, "Actualizar IVA");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(198, "div", 13);
+        \u0275\u0275elementStart(199, "div", 14);
+        \u0275\u0275text(200, "Datos del art\xEDculo");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(201, "button", 12)(202, "span", 3);
+        \u0275\u0275text(203, "qr_code");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(204, "Actualizar c\xF3digo");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(205, "button", 12)(206, "span", 3);
+        \u0275\u0275text(207, "label");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(208, "Actualizar marca");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(209, "button", 12)(210, "span", 3);
+        \u0275\u0275text(211, "category");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(212, "Actualizar rubro");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(213, "button", 12)(214, "span", 3);
+        \u0275\u0275text(215, "description");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(216, "Actualizar observaciones");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(217, "div", 13);
+        \u0275\u0275elementStart(218, "button", 12)(219, "span", 3);
+        \u0275\u0275text(220, "send");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(221, "Pedido de art\xEDculo al proveedor");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(222, "button", 12)(223, "span", 3);
+        \u0275\u0275text(224, "build");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(225, "Enviar art\xEDculo al service");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(226, "button", 12)(227, "span", 3);
+        \u0275\u0275text(228, "move_to_inbox");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(229, "Recepci\xF3n en consignaci\xF3n");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(230, "button", 12)(231, "span", 3);
+        \u0275\u0275text(232, "payments");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(233, "Comisi\xF3n especial por este art\xEDculo");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(234, "button", 12)(235, "span", 3);
+        \u0275\u0275text(236, "search");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(237, "Buscar art\xEDculos por acopio");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(238, "div", 13);
+        \u0275\u0275elementStart(239, "button", 15)(240, "span", 3);
+        \u0275\u0275text(241, "label");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(242, "Marcas");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(243, "button", 16)(244, "span", 3);
+        \u0275\u0275text(245, "category");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(246, "Categor\xEDas");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(247, "div", 13);
+        \u0275\u0275elementStart(248, "div", 14);
+        \u0275\u0275text(249, "Asignaciones");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(250, "button", 12)(251, "span", 3);
+        \u0275\u0275text(252, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(253, "Proveedor por marca");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(254, "button", 12)(255, "span", 3);
+        \u0275\u0275text(256, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(257, "Categor\xEDas");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(258, "button", 12)(259, "span", 3);
+        \u0275\u0275text(260, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(261, "Marcas");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(262, "div", 13);
+        \u0275\u0275elementStart(263, "div", 14);
+        \u0275\u0275text(264, "Departamentos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(265, "button", 12)(266, "span", 3);
+        \u0275\u0275text(267, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(268, "ABM");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(269, "button", 12)(270, "span", 3);
+        \u0275\u0275text(271, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(272, "Asignar art\xEDculos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(273, "div", 13);
+        \u0275\u0275elementStart(274, "button", 12)(275, "span", 3);
+        \u0275\u0275text(276, "upload_file");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(277, "Importar art\xEDculos desde Excel");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(278, "button", 12)(279, "span", 3);
+        \u0275\u0275text(280, "list_alt");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(281, "Listado de precios");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(282, "button", 12)(283, "span", 3);
+        \u0275\u0275text(284, "manage_search");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(285, "Auditar precios");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(286, "div", 8)(287, "button", 9);
+        \u0275\u0275listener("click", function ProductNavbarComponent_Template_button_click_287_listener() {
+          return ctx.toggleMenu("stock");
+        });
+        \u0275\u0275elementStart(288, "span", 3);
+        \u0275\u0275text(289, "warehouse");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(290, "span", 4);
+        \u0275\u0275text(291, "Stock");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(292, "span", 10);
+        \u0275\u0275text(293, "expand_more");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(294, "div", 11)(295, "button", 12)(296, "span", 3);
+        \u0275\u0275text(297, "swap_horiz");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(298, "Movimiento de stock");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(299, "button", 12)(300, "span", 3);
+        \u0275\u0275text(301, "group_work");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(302, "Movimiento por grupo de art\xEDculos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(303, "button", 12)(304, "span", 3);
+        \u0275\u0275text(305, "precision_manufacturing");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(306, "Movimiento por fabricaci\xF3n");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(307, "div", 13);
+        \u0275\u0275elementStart(308, "div", 14);
+        \u0275\u0275text(309, "Stock de veh\xEDculo");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(310, "button", 12)(311, "span", 3);
+        \u0275\u0275text(312, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(313, "Ver seleccionado");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(314, "button", 12)(315, "span", 3);
+        \u0275\u0275text(316, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(317, "Buscar");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(318, "button", 12)(319, "span", 3);
+        \u0275\u0275text(320, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(321, "Importaci\xF3n masiva");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(322, "div", 13);
+        \u0275\u0275elementStart(323, "button", 12)(324, "span", 3);
+        \u0275\u0275text(325, "assignment");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(326, "Inventario f\xEDsico");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(327, "button", 12)(328, "span", 3);
+        \u0275\u0275text(329, "bar_chart");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(330, "Reporte de stock");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(331, "button", 12)(332, "span", 3);
+        \u0275\u0275text(333, "history");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(334, "Ver movimiento de stock");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(335, "button", 12)(336, "span", 3);
+        \u0275\u0275text(337, "history_toggle_off");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(338, "Ver movimiento por grupo de art\xEDculos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(339, "button", 12)(340, "span", 3);
+        \u0275\u0275text(341, "local_shipping");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(342, "Ver stock de despacho a plaza");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(343, "div", 13);
+        \u0275\u0275elementStart(344, "div", 14);
+        \u0275\u0275text(345, "Stock reservado");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(346, "button", 12)(347, "span", 3);
+        \u0275\u0275text(348, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(349, "Art\xEDculo seleccionado");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(350, "button", 12)(351, "span", 3);
+        \u0275\u0275text(352, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(353, "Todos los art\xEDculos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(354, "button", 12)(355, "span", 3);
+        \u0275\u0275text(356, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(357, "Reservar manualmente desde CSV");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(358, "div", 13);
+        \u0275\u0275elementStart(359, "button", 12)(360, "span", 3);
+        \u0275\u0275text(361, "tag");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(362, "Ver stock de n\xFAmero de serie");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(363, "button", 12)(364, "span", 3);
+        \u0275\u0275text(365, "playlist_add_check");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(366, "Art\xEDculos vendidos a reponer");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(367, "button", 12)(368, "span", 3);
+        \u0275\u0275text(369, "timeline");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(370, "Historial de precios de compra");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(371, "div", 13);
+        \u0275\u0275elementStart(372, "button", 12)(373, "span", 3);
+        \u0275\u0275text(374, "restart_alt");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(375, "Volver el stock a cero");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(376, "button", 12)(377, "span", 3);
+        \u0275\u0275text(378, "calculate");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(379, "Total de stock");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(380, "button", 12)(381, "span", 3);
+        \u0275\u0275text(382, "fact_check");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(383, "Realizaci\xF3n de inventario");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(384, "button", 12)(385, "span", 3);
+        \u0275\u0275text(386, "warning");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(387, "Movilizar stock negativo");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(388, "div", 8)(389, "button", 9);
+        \u0275\u0275listener("click", function ProductNavbarComponent_Template_button_click_389_listener() {
+          return ctx.toggleMenu("listados");
+        });
+        \u0275\u0275elementStart(390, "span", 3);
+        \u0275\u0275text(391, "list_alt");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(392, "span", 4);
+        \u0275\u0275text(393, "Listados");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(394, "span", 10);
+        \u0275\u0275text(395, "expand_more");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(396, "div", 11)(397, "button", 12)(398, "span", 3);
+        \u0275\u0275text(399, "inventory_2");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(400, "Art\xEDculos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(401, "button", 12)(402, "span", 3);
+        \u0275\u0275text(403, "view_list");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(404, "Listado simple");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(405, "button", 12)(406, "span", 3);
+        \u0275\u0275text(407, "science");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(408, "Listado de insumos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(409, "button", 12)(410, "span", 3);
+        \u0275\u0275text(411, "inventory");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(412, "Listado de paquetes y sus componentes");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(413, "button", 12)(414, "span", 3);
+        \u0275\u0275text(415, "sell");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(416, "Listado solo de precios");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(417, "button", 12)(418, "span", 3);
+        \u0275\u0275text(419, "place");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(420, "Listado de ubicaciones");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(421, "button", 12)(422, "span", 3);
+        \u0275\u0275text(423, "directions_car");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(424, "Listado de veh\xEDculos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(425, "div", 13);
+        \u0275\u0275elementStart(426, "button", 12)(427, "span", 3);
+        \u0275\u0275text(428, "insights");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(429, "Informe de ventas");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(430, "div", 13);
+        \u0275\u0275elementStart(431, "div", 14);
+        \u0275\u0275text(432, "Impresi\xF3n de etiquetas");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(433, "button", 12)(434, "span", 3);
+        \u0275\u0275text(435, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(436, "C\xF3digo de barras");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(437, "button", 12)(438, "span", 3);
+        \u0275\u0275text(439, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(440, "Impresora est\xE1ndar");
+        \u0275\u0275elementEnd();
+        \u0275\u0275element(441, "div", 13);
+        \u0275\u0275elementStart(442, "div", 14);
+        \u0275\u0275text(443, "Stock");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(444, "button", 12)(445, "span", 3);
+        \u0275\u0275text(446, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(447, "Stock por sucursales");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(448, "button", 12)(449, "span", 3);
+        \u0275\u0275text(450, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(451, "Stock por dep\xF3sitos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(452, "button", 12)(453, "span", 3);
+        \u0275\u0275text(454, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(455, "Despachos a plaza");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(456, "button", 12)(457, "span", 3);
+        \u0275\u0275text(458, "subdirectory_arrow_right");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(459, "Informe de productos unificado");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(460, "div", 8)(461, "button", 9);
+        \u0275\u0275listener("click", function ProductNavbarComponent_Template_button_click_461_listener() {
+          return ctx.toggleMenu("articulos");
+        });
+        \u0275\u0275elementStart(462, "span", 3);
+        \u0275\u0275text(463, "point_of_sale");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(464, "span", 4);
+        \u0275\u0275text(465, "Art\xEDculos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(466, "span", 10);
+        \u0275\u0275text(467, "expand_more");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(468, "div", 11)(469, "button", 12)(470, "span", 3);
+        \u0275\u0275text(471, "lock_open");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(472, "Apertura de caja");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(473, "button", 12)(474, "span", 3);
+        \u0275\u0275text(475, "rule");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(476, "Arqueo de caja");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(477, "button", 12)(478, "span", 3);
+        \u0275\u0275text(479, "lock");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(480, "Cerrar caja");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275element(481, "div", 17);
+        \u0275\u0275elementStart(482, "div", 1)(483, "button", 18)(484, "span", 3);
+        \u0275\u0275text(485, "request_quote");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(486, "span", 4);
+        \u0275\u0275text(487, "Lista proveedor");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(488, "div", 8)(489, "button", 9);
+        \u0275\u0275listener("click", function ProductNavbarComponent_Template_button_click_489_listener() {
+          return ctx.toggleMenu("ocultos");
+        });
+        \u0275\u0275elementStart(490, "span", 3);
+        \u0275\u0275text(491, "visibility_off");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(492, "span", 4);
+        \u0275\u0275text(493, "Ocultos");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(494, "span", 10);
+        \u0275\u0275text(495, "expand_more");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(496, "div", 11)(497, "button", 12)(498, "span", 3);
+        \u0275\u0275text(499, "hide_source");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(500, "Ocultar este art\xEDculo");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(501, "button", 12)(502, "span", 3);
+        \u0275\u0275text(503, "settings");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(504, "Administraci\xF3n de ocultos");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(505, "div", 1)(506, "button", 19)(507, "span", 3);
+        \u0275\u0275text(508, "receipt_long");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(509, "span", 4);
+        \u0275\u0275text(510, "Facturar");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(511, "div", 1)(512, "button", 20)(513, "span", 3);
+        \u0275\u0275text(514, "download");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(515, "span", 4);
+        \u0275\u0275text(516, "Exportar");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(517, "button", 21)(518, "span", 3);
+        \u0275\u0275text(519, "print");
+        \u0275\u0275elementEnd()()()();
+      }
+      if (rf & 2) {
+        \u0275\u0275advance(18);
+        \u0275\u0275classProp("pnav__dropdown--open", ctx.openMenu === "modificaciones");
+        \u0275\u0275advance(153);
+        \u0275\u0275classProp("pnav__dropdown--open", ctx.openMenu === "varios");
+        \u0275\u0275advance(115);
+        \u0275\u0275classProp("pnav__dropdown--open", ctx.openMenu === "stock");
+        \u0275\u0275advance(102);
+        \u0275\u0275classProp("pnav__dropdown--open", ctx.openMenu === "listados");
+        \u0275\u0275advance(72);
+        \u0275\u0275classProp("pnav__dropdown--open", ctx.openMenu === "articulos");
+        \u0275\u0275advance(28);
+        \u0275\u0275classProp("pnav__dropdown--open", ctx.openMenu === "ocultos");
+      }
+    }, dependencies: [CommonModule, RouterLink], styles: ["\n.pnav[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: .125rem;\n  row-gap: .25rem;\n  padding: .25rem .75rem;\n  min-height: 44px;\n  background: white;\n  border-bottom: 1px solid #e2e8f0;\n  flex-shrink: 0;\n  overflow-x: visible;\n  overflow-y: visible;\n  position: relative;\n  z-index: 1000;\n  isolation: isolate;\n}\n.pnav[_ngcontent-%COMP%]::-webkit-scrollbar {\n  display: none;\n}\n.pnav__group[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .125rem;\n}\n.pnav__separator[_ngcontent-%COMP%] {\n  width: 1px;\n  height: 24px;\n  background: #e2e8f0;\n  margin: 0 .375rem;\n  flex-shrink: 0;\n}\n.pnav__spacer[_ngcontent-%COMP%] {\n  display: none;\n}\n.pnav__btn[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: .25rem;\n  padding: 0 .625rem;\n  height: 30px;\n  border: none;\n  border-radius: .375rem;\n  background: transparent;\n  cursor: pointer;\n  font-size: .8rem;\n  font-weight: 500;\n  color: #374151;\n  white-space: nowrap;\n  transition: background .13s, color .13s;\n  font-family: inherit;\n}\n.pnav__btn[_ngcontent-%COMP%]:hover {\n  background: #f1f5f9;\n  color: #0d9488;\n}\n.pnav__btn[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: 1rem;\n}\n.pnav__btn--primary[_ngcontent-%COMP%] {\n  color: #0d9488;\n}\n.pnav__btn--primary[_ngcontent-%COMP%]:hover {\n  background: #f0fdfa;\n}\n.pnav__btn--danger[_ngcontent-%COMP%] {\n  color: #6b7280;\n}\n.pnav__btn--danger[_ngcontent-%COMP%]:hover {\n  background: #fef2f2;\n  color: #dc2626;\n}\n.pnav__btn-label[_ngcontent-%COMP%] {\n  line-height: 1;\n}\n.pnav__chevron[_ngcontent-%COMP%] {\n  font-size: .875rem !important;\n  color: #9ca3af;\n  margin-left: -.125rem;\n}\n.pnav__dropdown[_ngcontent-%COMP%] {\n  position: relative;\n  z-index: 1;\n}\n.pnav__menu[_ngcontent-%COMP%] {\n  display: none;\n  position: absolute;\n  top: calc(100% + 6px);\n  left: 0;\n  min-width: 280px;\n  background: white;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n  box-shadow: 0 8px 24px rgba(0, 0, 0, .1);\n  padding: .375rem 0;\n  z-index: 2000;\n  max-height: 420px;\n  overflow-y: auto;\n}\n.pnav__dropdown--open[_ngcontent-%COMP%]   .pnav__menu[_ngcontent-%COMP%] {\n  display: block;\n}\n.pnav__dropdown--open[_ngcontent-%COMP%] {\n  z-index: 2;\n}\n.pnav__dropdown--open[_ngcontent-%COMP%]    > .pnav__btn[_ngcontent-%COMP%] {\n  background: #f1f5f9;\n  color: #0d9488;\n}\n.pnav__dropdown--open[_ngcontent-%COMP%]   .pnav__chevron[_ngcontent-%COMP%] {\n  transform: rotate(180deg);\n}\n.pnav__menu-heading[_ngcontent-%COMP%] {\n  margin: .375rem 0 .125rem;\n  padding: 0 .875rem;\n  font-size: .625rem;\n  font-weight: 700;\n  letter-spacing: .07em;\n  text-transform: uppercase;\n  color: #94a3b8;\n}\n.pnav__menu-item[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .625rem;\n  width: 100%;\n  padding: .4375rem .875rem;\n  background: none;\n  border: none;\n  font-size: .8125rem;\n  color: #374151;\n  text-align: left;\n  cursor: pointer;\n  font-family: inherit;\n  transition: background .12s, color .12s;\n}\n.pnav__menu-item[_ngcontent-%COMP%]:hover {\n  background: #f0fdfa;\n  color: #0d9488;\n}\n.pnav__menu-item[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: .9375rem;\n  color: #9ca3af;\n  flex-shrink: 0;\n}\n.pnav__menu-item[_ngcontent-%COMP%]:hover   .material-icons[_ngcontent-%COMP%] {\n  color: #0d9488;\n}\n.pnav__menu-divider[_ngcontent-%COMP%] {\n  height: 1px;\n  background: #f1f5f9;\n  margin: .375rem 0;\n}\n.icon-small[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n}\n.sidebar-nav[_ngcontent-%COMP%] {\n  padding: 9px 0;\n}\n.dropdown-menu[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%] {\n  left: 100%;\n  position: absolute;\n  top: 0;\n  visibility: hidden;\n  margin-top: -1px;\n}\n.dropdown-menu[_ngcontent-%COMP%]   li[_ngcontent-%COMP%]:hover   .sub-menu[_ngcontent-%COMP%] {\n  visibility: visible;\n}\n.dropdown[_ngcontent-%COMP%]:hover   .dropdown-menu[_ngcontent-%COMP%] {\n  display: block;\n}\n.nav-tabs[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%], \n.nav-pills[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%], \n.navbar[_ngcontent-%COMP%]   .dropdown-menu[_ngcontent-%COMP%] {\n  margin-top: 0;\n}\n.navbar[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%]:before {\n  border-bottom: 7px solid transparent;\n  border-left: none;\n  border-right: 7px solid rgba(0, 0, 0, 0.2);\n  border-top: 7px solid transparent;\n  left: -7px;\n  top: 10px;\n}\n.navbar[_ngcontent-%COMP%]   .sub-menu[_ngcontent-%COMP%]:after {\n  border-top: 6px solid transparent;\n  border-left: none;\n  border-right: 6px solid #fff;\n  border-bottom: 6px solid transparent;\n  left: 10px;\n  top: 11px;\n  left: -6px;\n}\na[_ngcontent-%COMP%]:hover {\n  cursor: pointer;\n}\n/*# sourceMappingURL=product-navbar.component.css.map */"] });
+  }
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductNavbarComponent, [{
+    type: Component,
+    args: [{ selector: "app-product-navbar", standalone: true, imports: [CommonModule, RouterLink], template: `<div class="pnav">
+  <div class="pnav__group">
+    <button class="pnav__btn pnav__btn--primary" (click)="newProduct.emit()" title="Nuevo producto">
+      <span class="material-icons">add</span>
+      <span class="pnav__btn-label">Nuevo</span>
+    </button>
+    <button class="pnav__btn" (click)="editProduct.emit()" title="Editar producto">
+      <span class="material-icons">edit</span>
+      <span class="pnav__btn-label">Editar</span>
+    </button>
+    <button class="pnav__btn pnav__btn--danger" (click)="deleteProduct.emit()" title="Eliminar producto">
+      <span class="material-icons">delete_outline</span>
+      <span class="pnav__btn-label">Eliminar</span>
+    </button>
+  </div>
+
+  <div class="pnav__separator"></div>
+
+  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'modificaciones'">
+    <button class="pnav__btn" (click)="toggleMenu('modificaciones')">
+      <span class="material-icons">tune</span>
+      <span class="pnav__btn-label">Modificaciones</span>
+      <span class="material-icons pnav__chevron">expand_more</span>
+    </button>
+    <div class="pnav__menu">
+      <button class="pnav__menu-item"><span class="material-icons">bolt</span>Modificaci\xF3n r\xE1pida de art\xEDculos</button>
+      <button class="pnav__menu-item"><span class="material-icons">tune</span>Modificaci\xF3n r\xE1pida de especificaciones</button>
+      <button class="pnav__menu-item"><span class="material-icons">inventory</span>Modificaci\xF3n de paquete</button>
+      <button class="pnav__menu-item"><span class="material-icons">library_add</span>Crear paquetes relacionados</button>
+      <button class="pnav__menu-item"><span class="material-icons">precision_manufacturing</span>Modificaci\xF3n de la fabricaci\xF3n propia</button>
+      <button class="pnav__menu-item"><span class="material-icons">qr_code_scanner</span>Cargar c\xF3digos de barra EAN</button>
+      <div class="pnav__menu-divider"></div>
+      <div class="pnav__menu-heading">Art\xEDculos complementarios</div>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Por art\xEDculo</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Por categor\xEDa</button>
+      <div class="pnav__menu-divider"></div>
+      <div class="pnav__menu-heading">Fotograf\xEDas</div>
+      <button class="pnav__menu-item"><span class="material-icons">photo_camera</span>Cargar fotograf\xEDa</button>
+      <button class="pnav__menu-item"><span class="material-icons">collections</span>Cargar fotograf\xEDa por marca</button>
+      <button class="pnav__menu-item"><span class="material-icons">folder_open</span>Cargar fotograf\xEDa desde carpeta</button>
+      <button class="pnav__menu-item"><span class="material-icons">perm_media</span>ABM fotograf\xEDas</button>
+      <button class="pnav__menu-item"><span class="material-icons">image</span>Grabar im\xE1genes como archivos JPEG</button>
+      <button class="pnav__menu-item"><span class="material-icons">photo_size_select_large</span>Personalizar tama\xF1os</button>
+      <div class="pnav__menu-divider"></div>
+      <div class="pnav__menu-heading">Actualizaciones masivas</div>
+      <button class="pnav__menu-item"><span class="material-icons">attach_money</span>Asignar redondeo a art\xEDculos dolarizados</button>
+      <button class="pnav__menu-item"><span class="material-icons">shopping_bag</span>Cantidades m\xEDnimas de venta por mayor</button>
+      <button class="pnav__menu-item"><span class="material-icons">percent</span>Comisiones</button>
+      <button class="pnav__menu-item"><span class="material-icons">sell</span>Descuentos</button>
+      <button class="pnav__menu-item"><span class="material-icons">receipt</span>Impuestos internos</button>
+      <button class="pnav__menu-item"><span class="material-icons">bar_chart</span>Porcentajes de markup por categor\xEDa</button>
+      <button class="pnav__menu-item"><span class="material-icons">price_change</span>Precios</button>
+      <button class="pnav__menu-item"><span class="material-icons">format_list_numbered</span>Precios: redondear</button>
+      <button class="pnav__menu-item"><span class="material-icons">local_offer</span>Promociones</button>
+      <button class="pnav__menu-item"><span class="material-icons">straighten</span>Tabla de talles</button>
+      <div class="pnav__menu-divider"></div>
+      <button class="pnav__menu-item"><span class="material-icons">trending_up</span>Aumento por porcentaje o precio</button>
+      <button class="pnav__menu-item"><span class="material-icons">inventory_2</span>Control de stock</button>
+      <button class="pnav__menu-item"><span class="material-icons">tag</span>Nuevos n\xFAmeros de serie</button>
+      <button class="pnav__menu-item"><span class="material-icons">compress</span>Combinar art\xEDculos</button>
+      <button class="pnav__menu-item"><span class="material-icons">remove_circle</span>Baja de art\xEDculos</button>
+      <button class="pnav__menu-item"><span class="material-icons">link</span>Relacionar mis art\xEDculos con los del proveedor</button>
+      <button class="pnav__menu-item"><span class="material-icons">merge_type</span>Unificar art\xEDculos repetidos</button>
+      <div class="pnav__menu-divider"></div>
+      <button class="pnav__menu-item"><span class="material-icons">view_column</span>Editar vista de columnas de art\xEDculos</button>
+      <div class="pnav__menu-divider"></div>
+      <button class="pnav__menu-item"><span class="material-icons">public</span>Publicar mi lista de art\xEDculos de venta al comercio</button>
+    </div>
+  </div>
+
+  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'varios'">
+    <button class="pnav__btn" (click)="toggleMenu('varios')">
+      <span class="material-icons">apps</span>
+      <span class="pnav__btn-label">Varios</span>
+      <span class="material-icons pnav__chevron">expand_more</span>
+    </button>
+    <div class="pnav__menu">
+      <div class="pnav__menu-heading">Precios y costos</div>
+      <button class="pnav__menu-item"><span class="material-icons">currency_exchange</span>Cambiar costos por moneda</button>
+      <button class="pnav__menu-item"><span class="material-icons">price_change</span>Actualizar precios de venta</button>
+      <button class="pnav__menu-item"><span class="material-icons">discount</span>Ajustar precios</button>
+      <button class="pnav__menu-item"><span class="material-icons">receipt_long</span>Actualizar IVA</button>
+      <div class="pnav__menu-divider"></div>
+      <div class="pnav__menu-heading">Datos del art\xEDculo</div>
+      <button class="pnav__menu-item"><span class="material-icons">qr_code</span>Actualizar c\xF3digo</button>
+      <button class="pnav__menu-item"><span class="material-icons">label</span>Actualizar marca</button>
+      <button class="pnav__menu-item"><span class="material-icons">category</span>Actualizar rubro</button>
+      <button class="pnav__menu-item"><span class="material-icons">description</span>Actualizar observaciones</button>
+      <div class="pnav__menu-divider"></div>
+      <button class="pnav__menu-item"><span class="material-icons">send</span>Pedido de art\xEDculo al proveedor</button>
+      <button class="pnav__menu-item"><span class="material-icons">build</span>Enviar art\xEDculo al service</button>
+      <button class="pnav__menu-item"><span class="material-icons">move_to_inbox</span>Recepci\xF3n en consignaci\xF3n</button>
+      <button class="pnav__menu-item"><span class="material-icons">payments</span>Comisi\xF3n especial por este art\xEDculo</button>
+      <button class="pnav__menu-item"><span class="material-icons">search</span>Buscar art\xEDculos por acopio</button>
+      <div class="pnav__menu-divider"></div>
+      <button class="pnav__menu-item" routerLink="/brand"><span class="material-icons">label</span>Marcas</button>
+      <button class="pnav__menu-item" routerLink="/category"><span class="material-icons">category</span>Categor\xEDas</button>
+      <div class="pnav__menu-divider"></div>
+      <div class="pnav__menu-heading">Asignaciones</div>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Proveedor por marca</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Categor\xEDas</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Marcas</button>
+      <div class="pnav__menu-divider"></div>
+      <div class="pnav__menu-heading">Departamentos</div>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>ABM</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Asignar art\xEDculos</button>
+      <div class="pnav__menu-divider"></div>
+      <button class="pnav__menu-item"><span class="material-icons">upload_file</span>Importar art\xEDculos desde Excel</button>
+      <button class="pnav__menu-item"><span class="material-icons">list_alt</span>Listado de precios</button>
+      <button class="pnav__menu-item"><span class="material-icons">manage_search</span>Auditar precios</button>
+    </div>
+  </div>
+
+  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'stock'">
+    <button class="pnav__btn" (click)="toggleMenu('stock')">
+      <span class="material-icons">warehouse</span>
+      <span class="pnav__btn-label">Stock</span>
+      <span class="material-icons pnav__chevron">expand_more</span>
+    </button>
+    <div class="pnav__menu">
+      <button class="pnav__menu-item"><span class="material-icons">swap_horiz</span>Movimiento de stock</button>
+      <button class="pnav__menu-item"><span class="material-icons">group_work</span>Movimiento por grupo de art\xEDculos</button>
+      <button class="pnav__menu-item"><span class="material-icons">precision_manufacturing</span>Movimiento por fabricaci\xF3n</button>
+      <div class="pnav__menu-divider"></div>
+      <div class="pnav__menu-heading">Stock de veh\xEDculo</div>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Ver seleccionado</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Buscar</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Importaci\xF3n masiva</button>
+      <div class="pnav__menu-divider"></div>
+      <button class="pnav__menu-item"><span class="material-icons">assignment</span>Inventario f\xEDsico</button>
+      <button class="pnav__menu-item"><span class="material-icons">bar_chart</span>Reporte de stock</button>
+      <button class="pnav__menu-item"><span class="material-icons">history</span>Ver movimiento de stock</button>
+      <button class="pnav__menu-item"><span class="material-icons">history_toggle_off</span>Ver movimiento por grupo de art\xEDculos</button>
+      <button class="pnav__menu-item"><span class="material-icons">local_shipping</span>Ver stock de despacho a plaza</button>
+      <div class="pnav__menu-divider"></div>
+      <div class="pnav__menu-heading">Stock reservado</div>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Art\xEDculo seleccionado</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Todos los art\xEDculos</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Reservar manualmente desde CSV</button>
+      <div class="pnav__menu-divider"></div>
+      <button class="pnav__menu-item"><span class="material-icons">tag</span>Ver stock de n\xFAmero de serie</button>
+      <button class="pnav__menu-item"><span class="material-icons">playlist_add_check</span>Art\xEDculos vendidos a reponer</button>
+      <button class="pnav__menu-item"><span class="material-icons">timeline</span>Historial de precios de compra</button>
+      <div class="pnav__menu-divider"></div>
+      <button class="pnav__menu-item"><span class="material-icons">restart_alt</span>Volver el stock a cero</button>
+      <button class="pnav__menu-item"><span class="material-icons">calculate</span>Total de stock</button>
+      <button class="pnav__menu-item"><span class="material-icons">fact_check</span>Realizaci\xF3n de inventario</button>
+      <button class="pnav__menu-item"><span class="material-icons">warning</span>Movilizar stock negativo</button>
+    </div>
+  </div>
+
+  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'listados'">
+    <button class="pnav__btn" (click)="toggleMenu('listados')">
+      <span class="material-icons">list_alt</span>
+      <span class="pnav__btn-label">Listados</span>
+      <span class="material-icons pnav__chevron">expand_more</span>
+    </button>
+    <div class="pnav__menu">
+      <button class="pnav__menu-item"><span class="material-icons">inventory_2</span>Art\xEDculos</button>
+      <button class="pnav__menu-item"><span class="material-icons">view_list</span>Listado simple</button>
+      <button class="pnav__menu-item"><span class="material-icons">science</span>Listado de insumos</button>
+      <button class="pnav__menu-item"><span class="material-icons">inventory</span>Listado de paquetes y sus componentes</button>
+      <button class="pnav__menu-item"><span class="material-icons">sell</span>Listado solo de precios</button>
+      <button class="pnav__menu-item"><span class="material-icons">place</span>Listado de ubicaciones</button>
+      <button class="pnav__menu-item"><span class="material-icons">directions_car</span>Listado de veh\xEDculos</button>
+      <div class="pnav__menu-divider"></div>
+      <button class="pnav__menu-item"><span class="material-icons">insights</span>Informe de ventas</button>
+      <div class="pnav__menu-divider"></div>
+      <div class="pnav__menu-heading">Impresi\xF3n de etiquetas</div>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>C\xF3digo de barras</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Impresora est\xE1ndar</button>
+      <div class="pnav__menu-divider"></div>
+      <div class="pnav__menu-heading">Stock</div>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Stock por sucursales</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Stock por dep\xF3sitos</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Despachos a plaza</button>
+      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Informe de productos unificado</button>
+    </div>
+  </div>
+
+  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'articulos'">
+    <button class="pnav__btn" (click)="toggleMenu('articulos')">
+      <span class="material-icons">point_of_sale</span>
+      <span class="pnav__btn-label">Art\xEDculos</span>
+      <span class="material-icons pnav__chevron">expand_more</span>
+    </button>
+    <div class="pnav__menu">
+      <button class="pnav__menu-item"><span class="material-icons">lock_open</span>Apertura de caja</button>
+      <button class="pnav__menu-item"><span class="material-icons">rule</span>Arqueo de caja</button>
+      <button class="pnav__menu-item"><span class="material-icons">lock</span>Cerrar caja</button>
+    </div>
+  </div>
+
+  <div class="pnav__spacer"></div>
+
+  <div class="pnav__group">
+    <button class="pnav__btn" routerLink="/supplierPriceList" title="Lista proveedor">
+      <span class="material-icons">request_quote</span>
+      <span class="pnav__btn-label">Lista proveedor</span>
+    </button>
+  </div>
+
+  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'ocultos'">
+    <button class="pnav__btn" (click)="toggleMenu('ocultos')">
+      <span class="material-icons">visibility_off</span>
+      <span class="pnav__btn-label">Ocultos</span>
+      <span class="material-icons pnav__chevron">expand_more</span>
+    </button>
+    <div class="pnav__menu">
+      <button class="pnav__menu-item"><span class="material-icons">hide_source</span>Ocultar este art\xEDculo</button>
+      <button class="pnav__menu-item"><span class="material-icons">settings</span>Administraci\xF3n de ocultos</button>
+    </div>
+  </div>
+
+  <div class="pnav__group">
+    <button class="pnav__btn" title="Facturar">
+      <span class="material-icons">receipt_long</span>
+      <span class="pnav__btn-label">Facturar</span>
+    </button>
+  </div>
+
+  <div class="pnav__group">
+    <button class="pnav__btn" title="Exportar a Excel">
+      <span class="material-icons">download</span>
+      <span class="pnav__btn-label">Exportar</span>
+    </button>
+    <button class="pnav__btn" title="Imprimir">
+      <span class="material-icons">print</span>
+    </button>
+  </div>
+</div>
+`, styles: ["/* src/app/pages/product/product-navbar/product-navbar.component.css */\n.pnav {\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: .125rem;\n  row-gap: .25rem;\n  padding: .25rem .75rem;\n  min-height: 44px;\n  background: white;\n  border-bottom: 1px solid #e2e8f0;\n  flex-shrink: 0;\n  overflow-x: visible;\n  overflow-y: visible;\n  position: relative;\n  z-index: 1000;\n  isolation: isolate;\n}\n.pnav::-webkit-scrollbar {\n  display: none;\n}\n.pnav__group {\n  display: flex;\n  align-items: center;\n  gap: .125rem;\n}\n.pnav__separator {\n  width: 1px;\n  height: 24px;\n  background: #e2e8f0;\n  margin: 0 .375rem;\n  flex-shrink: 0;\n}\n.pnav__spacer {\n  display: none;\n}\n.pnav__btn {\n  display: inline-flex;\n  align-items: center;\n  gap: .25rem;\n  padding: 0 .625rem;\n  height: 30px;\n  border: none;\n  border-radius: .375rem;\n  background: transparent;\n  cursor: pointer;\n  font-size: .8rem;\n  font-weight: 500;\n  color: #374151;\n  white-space: nowrap;\n  transition: background .13s, color .13s;\n  font-family: inherit;\n}\n.pnav__btn:hover {\n  background: #f1f5f9;\n  color: #0d9488;\n}\n.pnav__btn .material-icons {\n  font-size: 1rem;\n}\n.pnav__btn--primary {\n  color: #0d9488;\n}\n.pnav__btn--primary:hover {\n  background: #f0fdfa;\n}\n.pnav__btn--danger {\n  color: #6b7280;\n}\n.pnav__btn--danger:hover {\n  background: #fef2f2;\n  color: #dc2626;\n}\n.pnav__btn-label {\n  line-height: 1;\n}\n.pnav__chevron {\n  font-size: .875rem !important;\n  color: #9ca3af;\n  margin-left: -.125rem;\n}\n.pnav__dropdown {\n  position: relative;\n  z-index: 1;\n}\n.pnav__menu {\n  display: none;\n  position: absolute;\n  top: calc(100% + 6px);\n  left: 0;\n  min-width: 280px;\n  background: white;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n  box-shadow: 0 8px 24px rgba(0, 0, 0, .1);\n  padding: .375rem 0;\n  z-index: 2000;\n  max-height: 420px;\n  overflow-y: auto;\n}\n.pnav__dropdown--open .pnav__menu {\n  display: block;\n}\n.pnav__dropdown--open {\n  z-index: 2;\n}\n.pnav__dropdown--open > .pnav__btn {\n  background: #f1f5f9;\n  color: #0d9488;\n}\n.pnav__dropdown--open .pnav__chevron {\n  transform: rotate(180deg);\n}\n.pnav__menu-heading {\n  margin: .375rem 0 .125rem;\n  padding: 0 .875rem;\n  font-size: .625rem;\n  font-weight: 700;\n  letter-spacing: .07em;\n  text-transform: uppercase;\n  color: #94a3b8;\n}\n.pnav__menu-item {\n  display: flex;\n  align-items: center;\n  gap: .625rem;\n  width: 100%;\n  padding: .4375rem .875rem;\n  background: none;\n  border: none;\n  font-size: .8125rem;\n  color: #374151;\n  text-align: left;\n  cursor: pointer;\n  font-family: inherit;\n  transition: background .12s, color .12s;\n}\n.pnav__menu-item:hover {\n  background: #f0fdfa;\n  color: #0d9488;\n}\n.pnav__menu-item .material-icons {\n  font-size: .9375rem;\n  color: #9ca3af;\n  flex-shrink: 0;\n}\n.pnav__menu-item:hover .material-icons {\n  color: #0d9488;\n}\n.pnav__menu-divider {\n  height: 1px;\n  background: #f1f5f9;\n  margin: .375rem 0;\n}\n.icon-small {\n  width: 24px;\n  height: 24px;\n}\n.sidebar-nav {\n  padding: 9px 0;\n}\n.dropdown-menu .sub-menu {\n  left: 100%;\n  position: absolute;\n  top: 0;\n  visibility: hidden;\n  margin-top: -1px;\n}\n.dropdown-menu li:hover .sub-menu {\n  visibility: visible;\n}\n.dropdown:hover .dropdown-menu {\n  display: block;\n}\n.nav-tabs .dropdown-menu,\n.nav-pills .dropdown-menu,\n.navbar .dropdown-menu {\n  margin-top: 0;\n}\n.navbar .sub-menu:before {\n  border-bottom: 7px solid transparent;\n  border-left: none;\n  border-right: 7px solid rgba(0, 0, 0, 0.2);\n  border-top: 7px solid transparent;\n  left: -7px;\n  top: 10px;\n}\n.navbar .sub-menu:after {\n  border-top: 6px solid transparent;\n  border-left: none;\n  border-right: 6px solid #fff;\n  border-bottom: 6px solid transparent;\n  left: 10px;\n  top: 11px;\n  left: -6px;\n}\na:hover {\n  cursor: pointer;\n}\n/*# sourceMappingURL=product-navbar.component.css.map */\n"] }]
+  }], null, { newProduct: [{
+    type: Output
+  }], editProduct: [{
+    type: Output
+  }], deleteProduct: [{
+    type: Output
+  }], onDocumentClick: [{
+    type: HostListener,
+    args: ["document:click", ["$event"]]
+  }] });
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductNavbarComponent, { className: "ProductNavbarComponent", filePath: "src/app/pages/product/product-navbar/product-navbar.component.ts", lineNumber: 12 });
+})();
+
 // src/app/pages/product/product-list/product-list.component.ts
-var _forTrack02 = ($index, $item) => $item.id;
-function ProductListComponent_For_18_Template(rf, ctx) {
+function ProductListComponent_Conditional_3_Template(rf, ctx) {
   if (rf & 1) {
-    const _r1 = \u0275\u0275getCurrentView();
-    \u0275\u0275domElementStart(0, "tr", 4);
-    \u0275\u0275domListener("click", function ProductListComponent_For_18_Template_tr_click_0_listener() {
-      const product_r2 = \u0275\u0275restoreView(_r1).$implicit;
-      const ctx_r2 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r2.selectionMode === "click" ? ctx_r2.onProductInteract(product_r2) : null);
-    })("dblclick", function ProductListComponent_For_18_Template_tr_dblclick_0_listener() {
-      const product_r2 = \u0275\u0275restoreView(_r1).$implicit;
-      const ctx_r2 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r2.selectionMode === "dblclick" ? ctx_r2.onProductInteract(product_r2) : null);
-    });
-    \u0275\u0275domElementStart(1, "td");
-    \u0275\u0275text(2);
+    \u0275\u0275domElementStart(0, "th", 2);
+    \u0275\u0275text(1, "#Id");
     \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(3, "td");
-    \u0275\u0275text(4);
+  }
+}
+function ProductListComponent_Conditional_4_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "th", 3);
+    \u0275\u0275text(1, "C\xF3digo");
     \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(5, "td");
-    \u0275\u0275text(6);
+  }
+}
+function ProductListComponent_Conditional_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "th", 4);
+    \u0275\u0275text(1, "Marca");
     \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(7, "td");
-    \u0275\u0275text(8);
+  }
+}
+function ProductListComponent_Conditional_6_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "th", 5);
+    \u0275\u0275text(1, "Modelo");
     \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(9, "td", 5);
-    \u0275\u0275text(10);
+  }
+}
+function ProductListComponent_Conditional_7_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "th", 6);
+    \u0275\u0275text(1, "Descripci\xF3n");
     \u0275\u0275domElementEnd();
-    \u0275\u0275domElementStart(11, "td");
-    \u0275\u0275text(12);
+  }
+}
+function ProductListComponent_Conditional_8_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "th", 7);
+    \u0275\u0275text(1, "Categor\xEDa");
+    \u0275\u0275domElementEnd();
+  }
+}
+function ProductListComponent_Conditional_9_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "th", 8);
+    \u0275\u0275text(1, "IVA");
+    \u0275\u0275domElementEnd();
+  }
+}
+function ProductListComponent_Conditional_10_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "th", 9);
+    \u0275\u0275text(1, "Precio");
+    \u0275\u0275domElementEnd();
+  }
+}
+function ProductListComponent_Conditional_11_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "th", 10);
+    \u0275\u0275text(1, "Stock");
+    \u0275\u0275domElementEnd();
+  }
+}
+function ProductListComponent_Conditional_13_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "tr")(1, "td", 12);
+    \u0275\u0275text(2, "Realiz\xE1 una b\xFAsqueda para ver art\xEDculos");
     \u0275\u0275domElementEnd()();
   }
   if (rf & 2) {
-    const product_r2 = ctx.$implicit;
+    const ctx_r0 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275attribute("colspan", ctx_r0.visibleColumns.length);
+  }
+}
+function ProductListComponent_For_15_Conditional_1_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td", 14)(1, "span", 23);
+    \u0275\u0275text(2);
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext().$implicit;
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(product_r2.id);
+    \u0275\u0275textInterpolate(product_r3.id);
+  }
+}
+function ProductListComponent_For_15_Conditional_2_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td", 15)(1, "span", 24);
+    \u0275\u0275text(2);
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext().$implicit;
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(product_r2.code);
+    \u0275\u0275textInterpolate(product_r3.code);
+  }
+}
+function ProductListComponent_For_15_Conditional_3_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td", 16)(1, "span", 25);
+    \u0275\u0275text(2);
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext().$implicit;
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(product_r2.brandName);
+    \u0275\u0275textInterpolate(product_r3.brandName);
+  }
+}
+function ProductListComponent_For_15_Conditional_4_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td", 17)(1, "p", 26);
+    \u0275\u0275text(2);
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext().$implicit;
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(product_r2.model);
+    \u0275\u0275textInterpolate(product_r3.model);
+  }
+}
+function ProductListComponent_For_15_Conditional_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td", 18)(1, "p", 27);
+    \u0275\u0275text(2);
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext().$implicit;
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(product_r2.description);
+    \u0275\u0275textInterpolate(product_r3.description);
+  }
+}
+function ProductListComponent_For_15_Conditional_6_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td", 19)(1, "span", 28);
+    \u0275\u0275text(2);
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext().$implicit;
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(product_r2.categoryName);
+    \u0275\u0275textInterpolate(product_r3.categoryName);
+  }
+}
+function ProductListComponent_For_15_Conditional_7_Conditional_1_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "span", 29);
+    \u0275\u0275text(1);
+    \u0275\u0275pipe(2, "number");
+    \u0275\u0275domElementEnd();
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext(2).$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1("", \u0275\u0275pipeBind2(2, 1, product_r3.priceResponse.taxRate * 100, "1.0-0"), "%");
+  }
+}
+function ProductListComponent_For_15_Conditional_7_Conditional_2_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "span", 30);
+    \u0275\u0275text(1, "\u2014");
+    \u0275\u0275domElementEnd();
+  }
+}
+function ProductListComponent_For_15_Conditional_7_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td", 20);
+    \u0275\u0275conditionalCreate(1, ProductListComponent_For_15_Conditional_7_Conditional_1_Template, 3, 4, "span", 29)(2, ProductListComponent_For_15_Conditional_7_Conditional_2_Template, 2, 0, "span", 30);
+    \u0275\u0275domElementEnd();
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275conditional(product_r3.priceResponse ? 1 : 2);
+  }
+}
+function ProductListComponent_For_15_Conditional_8_Conditional_1_Conditional_3_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "span", 32);
+    \u0275\u0275text(1);
+    \u0275\u0275domElementEnd();
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext(3).$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1("-", product_r3.priceResponse.discount, "%");
+  }
+}
+function ProductListComponent_For_15_Conditional_8_Conditional_1_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "span", 31);
+    \u0275\u0275text(1);
+    \u0275\u0275pipe(2, "currency");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275conditionalCreate(3, ProductListComponent_For_15_Conditional_8_Conditional_1_Conditional_3_Template, 2, 1, "span", 32);
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext(2).$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind4(2, 2, product_r3.priceResponse.sellingPrice, "ARS", "symbol", "1.0-0"));
+    \u0275\u0275advance(2);
+    \u0275\u0275conditional(product_r3.priceResponse.discount > 0 ? 3 : -1);
+  }
+}
+function ProductListComponent_For_15_Conditional_8_Conditional_2_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "span", 30);
+    \u0275\u0275text(1, "\u2014");
+    \u0275\u0275domElementEnd();
+  }
+}
+function ProductListComponent_For_15_Conditional_8_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td", 21);
+    \u0275\u0275conditionalCreate(1, ProductListComponent_For_15_Conditional_8_Conditional_1_Template, 4, 7)(2, ProductListComponent_For_15_Conditional_8_Conditional_2_Template, 2, 0, "span", 30);
+    \u0275\u0275domElementEnd();
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275conditional(product_r3.priceResponse ? 1 : 2);
+  }
+}
+function ProductListComponent_For_15_Conditional_9_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "td", 22)(1, "span", 33);
+    \u0275\u0275text(2);
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const product_r3 = \u0275\u0275nextContext().$implicit;
+    const ctx_r0 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275classProp("plist__stock--ok", ctx_r0.stockStatus(product_r3.stockResponses) === "ok")("plist__stock--low", ctx_r0.stockStatus(product_r3.stockResponses) === "low")("plist__stock--out", ctx_r0.stockStatus(product_r3.stockResponses) === "out");
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r0.getTotalStock(product_r3.stockResponses));
+  }
+}
+function ProductListComponent_For_15_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r2 = \u0275\u0275getCurrentView();
+    \u0275\u0275domElementStart(0, "tr", 13);
+    \u0275\u0275domListener("click", function ProductListComponent_For_15_Template_tr_click_0_listener() {
+      const product_r3 = \u0275\u0275restoreView(_r2).$implicit;
+      const ctx_r0 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r0.selectionMode === "click" ? ctx_r0.onProductInteract(product_r3) : null);
+    })("dblclick", function ProductListComponent_For_15_Template_tr_dblclick_0_listener() {
+      const product_r3 = \u0275\u0275restoreView(_r2).$implicit;
+      const ctx_r0 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r0.selectionMode === "dblclick" ? ctx_r0.onProductInteract(product_r3) : null);
+    })("keydown.enter", function ProductListComponent_For_15_Template_tr_keydown_enter_0_listener() {
+      const product_r3 = \u0275\u0275restoreView(_r2).$implicit;
+      const ctx_r0 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r0.onProductInteract(product_r3));
+    });
+    \u0275\u0275conditionalCreate(1, ProductListComponent_For_15_Conditional_1_Template, 3, 1, "td", 14);
+    \u0275\u0275conditionalCreate(2, ProductListComponent_For_15_Conditional_2_Template, 3, 1, "td", 15);
+    \u0275\u0275conditionalCreate(3, ProductListComponent_For_15_Conditional_3_Template, 3, 1, "td", 16);
+    \u0275\u0275conditionalCreate(4, ProductListComponent_For_15_Conditional_4_Template, 3, 1, "td", 17);
+    \u0275\u0275conditionalCreate(5, ProductListComponent_For_15_Conditional_5_Template, 3, 1, "td", 18);
+    \u0275\u0275conditionalCreate(6, ProductListComponent_For_15_Conditional_6_Template, 3, 1, "td", 19);
+    \u0275\u0275conditionalCreate(7, ProductListComponent_For_15_Conditional_7_Template, 3, 1, "td", 20);
+    \u0275\u0275conditionalCreate(8, ProductListComponent_For_15_Conditional_8_Template, 3, 1, "td", 21);
+    \u0275\u0275conditionalCreate(9, ProductListComponent_For_15_Conditional_9_Template, 3, 7, "td", 22);
+    \u0275\u0275domElementEnd();
+  }
+  if (rf & 2) {
+    const product_r3 = ctx.$implicit;
+    const ctx_r0 = \u0275\u0275nextContext();
+    \u0275\u0275classProp("plist__row--selected", product_r3.id === ctx_r0.selectedProductId);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r0.isColumnVisible("id") ? 1 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r0.isColumnVisible("code") ? 2 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r0.isColumnVisible("brand") ? 3 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r0.isColumnVisible("model") ? 4 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r0.isColumnVisible("description") ? 5 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r0.isColumnVisible("category") ? 6 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r0.isColumnVisible("tax") ? 7 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r0.isColumnVisible("price") ? 8 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r0.isColumnVisible("stock") ? 9 : -1);
   }
 }
 var ProductListComponent = class _ProductListComponent {
   constructor() {
-    this.selectedProduct = null;
-    this.loading = false;
     this.productList = [];
+    this.selectedProductId = null;
     this.selectionMode = "click";
+    this.visibleColumns = [
+      "id",
+      "code",
+      "brand",
+      "model",
+      "description",
+      "category",
+      "tax",
+      "price",
+      "stock"
+    ];
     this.selectProduct = new EventEmitter();
   }
-  trackByProductId(index, product) {
-    return product.id;
+  trackByProductId(_, p) {
+    return p.id;
   }
   onProductInteract(product) {
     this.selectProduct.emit(product);
   }
-  getTotalStockQuantity(stocks) {
-    this.loading = true;
-    const totalQuantity = stocks.reduce((acc, stock) => acc + stock.quantity, 0);
-    this.loading = false;
-    return totalQuantity;
+  isColumnVisible(column) {
+    return this.visibleColumns.includes(column);
   }
-  onProductClick(product) {
-    this.selectProduct.emit(product);
+  getTotalStock(stocks) {
+    return stocks?.reduce((acc, s) => acc + s.quantity, 0) ?? 0;
   }
-  onProductDblClick(product) {
-    this.selectProduct.emit(product);
+  stockStatus(stocks) {
+    const qty = this.getTotalStock(stocks);
+    if (qty <= 0)
+      return "out";
+    const min = stocks?.[0]?.min ?? 0;
+    return qty <= min ? "low" : "ok";
   }
   static {
     this.\u0275fac = function ProductListComponent_Factory(__ngFactoryType__) {
@@ -20035,329 +20637,1424 @@ var ProductListComponent = class _ProductListComponent {
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductListComponent, selectors: [["app-product-list"]], inputs: { productList: "productList", selectionMode: "selectionMode" }, outputs: { selectProduct: "selectProduct" }, decls: 19, vars: 0, consts: [["id", "table-container", 1, "table-responsive"], [1, "table", "table-striped", "table-hover", "align-middle", "table-sm"], [1, "table-dark"], ["scope", "col"], [3, "click", "dblclick"], [1, "description-cell"]], template: function ProductListComponent_Template(rf, ctx) {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductListComponent, selectors: [["app-product-list"]], inputs: { productList: "productList", selectedProductId: "selectedProductId", selectionMode: "selectionMode", visibleColumns: "visibleColumns" }, outputs: { selectProduct: "selectProduct" }, decls: 16, vars: 10, consts: [[1, "plist"], [1, "plist__head"], [1, "plist__th", "plist__th--id"], [1, "plist__th", "plist__th--code"], [1, "plist__th", "plist__th--brand"], [1, "plist__th", "plist__th--model"], [1, "plist__th", "plist__th--desc"], [1, "plist__th", "plist__th--category"], [1, "plist__th", "plist__th--tax"], [1, "plist__th", "plist__th--price"], [1, "plist__th", "plist__th--stock"], ["tabindex", "0", 1, "plist__row", 3, "plist__row--selected"], [1, "plist__empty-row"], ["tabindex", "0", 1, "plist__row", 3, "click", "dblclick", "keydown.enter"], [1, "plist__td", "plist__td--id"], [1, "plist__td", "plist__td--code"], [1, "plist__td", "plist__td--brand"], [1, "plist__td", "plist__td--model"], [1, "plist__td", "plist__td--desc"], [1, "plist__td", "plist__td--category"], [1, "plist__td", "plist__td--tax"], [1, "plist__td", "plist__td--price"], [1, "plist__td", "plist__td--stock"], [1, "plist__id"], [1, "plist__code"], [1, "plist__brand"], [1, "plist__model"], [1, "plist__desc"], [1, "plist__category"], [1, "plist__tax"], [1, "plist__no-price"], [1, "plist__price"], [1, "plist__discount"], [1, "plist__stock"]], template: function ProductListComponent_Template(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275domElementStart(0, "div", 0)(1, "table", 1)(2, "thead", 2)(3, "tr")(4, "th", 3);
-        \u0275\u0275text(5, "#Id");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(6, "th", 3);
-        \u0275\u0275text(7, "Code");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(8, "th", 3);
-        \u0275\u0275text(9, "Brand");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(10, "th", 3);
-        \u0275\u0275text(11, "Model");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(12, "th", 3);
-        \u0275\u0275text(13, "Description");
-        \u0275\u0275domElementEnd();
-        \u0275\u0275domElementStart(14, "th", 3);
-        \u0275\u0275text(15, "Category");
-        \u0275\u0275domElementEnd()()();
-        \u0275\u0275domElementStart(16, "tbody");
-        \u0275\u0275repeaterCreate(17, ProductListComponent_For_18_Template, 13, 6, "tr", null, _forTrack02);
-        \u0275\u0275domElementEnd()()();
+        \u0275\u0275domElementStart(0, "table", 0)(1, "thead", 1)(2, "tr");
+        \u0275\u0275conditionalCreate(3, ProductListComponent_Conditional_3_Template, 2, 0, "th", 2);
+        \u0275\u0275conditionalCreate(4, ProductListComponent_Conditional_4_Template, 2, 0, "th", 3);
+        \u0275\u0275conditionalCreate(5, ProductListComponent_Conditional_5_Template, 2, 0, "th", 4);
+        \u0275\u0275conditionalCreate(6, ProductListComponent_Conditional_6_Template, 2, 0, "th", 5);
+        \u0275\u0275conditionalCreate(7, ProductListComponent_Conditional_7_Template, 2, 0, "th", 6);
+        \u0275\u0275conditionalCreate(8, ProductListComponent_Conditional_8_Template, 2, 0, "th", 7);
+        \u0275\u0275conditionalCreate(9, ProductListComponent_Conditional_9_Template, 2, 0, "th", 8);
+        \u0275\u0275conditionalCreate(10, ProductListComponent_Conditional_10_Template, 2, 0, "th", 9);
+        \u0275\u0275conditionalCreate(11, ProductListComponent_Conditional_11_Template, 2, 0, "th", 10);
+        \u0275\u0275domElementEnd()();
+        \u0275\u0275domElementStart(12, "tbody");
+        \u0275\u0275conditionalCreate(13, ProductListComponent_Conditional_13_Template, 3, 1, "tr");
+        \u0275\u0275repeaterCreate(14, ProductListComponent_For_15_Template, 10, 11, "tr", 11, ctx.trackByProductId, true);
+        \u0275\u0275domElementEnd()();
       }
       if (rf & 2) {
-        \u0275\u0275advance(17);
+        \u0275\u0275advance(3);
+        \u0275\u0275conditional(ctx.isColumnVisible("id") ? 3 : -1);
+        \u0275\u0275advance();
+        \u0275\u0275conditional(ctx.isColumnVisible("code") ? 4 : -1);
+        \u0275\u0275advance();
+        \u0275\u0275conditional(ctx.isColumnVisible("brand") ? 5 : -1);
+        \u0275\u0275advance();
+        \u0275\u0275conditional(ctx.isColumnVisible("model") ? 6 : -1);
+        \u0275\u0275advance();
+        \u0275\u0275conditional(ctx.isColumnVisible("description") ? 7 : -1);
+        \u0275\u0275advance();
+        \u0275\u0275conditional(ctx.isColumnVisible("category") ? 8 : -1);
+        \u0275\u0275advance();
+        \u0275\u0275conditional(ctx.isColumnVisible("tax") ? 9 : -1);
+        \u0275\u0275advance();
+        \u0275\u0275conditional(ctx.isColumnVisible("price") ? 10 : -1);
+        \u0275\u0275advance();
+        \u0275\u0275conditional(ctx.isColumnVisible("stock") ? 11 : -1);
+        \u0275\u0275advance(2);
+        \u0275\u0275conditional(ctx.productList.length === 0 ? 13 : -1);
+        \u0275\u0275advance();
         \u0275\u0275repeater(ctx.productList);
       }
-    }, dependencies: [CommonModule, ReactiveFormsModule], styles: ["\n.table-responsive[_ngcontent-%COMP%] {\n  max-width: 100%;\n  overflow-x: scroll;\n}\n#page-title[_ngcontent-%COMP%] {\n  margin: 30px;\n}\n#table-container[_ngcontent-%COMP%] {\n  height: 400px;\n  overflow-y: auto;\n}\n.table[_ngcontent-%COMP%]   thead[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 0;\n  z-index: 1;\n}\n.nowrap[_ngcontent-%COMP%] {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.description-cell[_ngcontent-%COMP%] {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  max-width: 300px;\n}\n/*# sourceMappingURL=product-list.component.css.map */"] });
+    }, dependencies: [CommonModule, DecimalPipe, CurrencyPipe], styles: ['\n.plist[_ngcontent-%COMP%] {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: .8125rem;\n  table-layout: auto;\n}\n.plist__head[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 0;\n  z-index: 10;\n  background: #f8fafc;\n}\n.plist__th[_ngcontent-%COMP%] {\n  padding: .5rem .75rem;\n  text-align: left;\n  font-size: .6875rem;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: .05em;\n  color: #64748b;\n  border-bottom: 2px solid #e2e8f0;\n  white-space: nowrap;\n}\n.plist__th--id[_ngcontent-%COMP%] {\n  width: 150px;\n}\n.plist__th--code[_ngcontent-%COMP%] {\n  width: 90px;\n}\n.plist__th--brand[_ngcontent-%COMP%] {\n  width: 100px;\n}\n.plist__th--model[_ngcontent-%COMP%] {\n  width: 130px;\n}\n.plist__th--desc[_ngcontent-%COMP%] {\n  min-width: 220px;\n}\n.plist__th--category[_ngcontent-%COMP%] {\n  width: 130px;\n}\n.plist__th--tax[_ngcontent-%COMP%] {\n  width: 70px;\n  text-align: right;\n}\n.plist__th--price[_ngcontent-%COMP%] {\n  width: 110px;\n  text-align: right;\n}\n.plist__th--stock[_ngcontent-%COMP%] {\n  width: 64px;\n  text-align: center;\n}\n.plist__row[_ngcontent-%COMP%] {\n  cursor: pointer;\n  transition: background .1s;\n  outline: none;\n}\n.plist__row[_ngcontent-%COMP%]:hover {\n  background: #f0fdfa;\n}\n.plist__row[_ngcontent-%COMP%]:focus-visible {\n  background: #f0fdfa;\n  outline: 2px solid #0d9488;\n  outline-offset: -2px;\n}\n.plist__row--selected[_ngcontent-%COMP%] {\n  background: #ccfbf1 !important;\n}\n.plist__row--selected[_ngcontent-%COMP%]   .plist__model[_ngcontent-%COMP%] {\n  color: #0d9488;\n}\n.plist__row[_ngcontent-%COMP%]:not(:last-child)   td[_ngcontent-%COMP%] {\n  border-bottom: 1px solid #f1f5f9;\n}\n.plist__td[_ngcontent-%COMP%] {\n  padding: .5rem .75rem;\n  vertical-align: middle;\n}\n.plist__td--price[_ngcontent-%COMP%] {\n  text-align: right;\n}\n.plist__td--stock[_ngcontent-%COMP%] {\n  text-align: center;\n}\n.plist__td--tax[_ngcontent-%COMP%] {\n  text-align: right;\n}\n.plist__id[_ngcontent-%COMP%] {\n  display: inline-block;\n  max-width: 145px;\n  font-family: "Roboto Mono", monospace;\n  font-size: .6875rem;\n  color: #64748b;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.plist__code[_ngcontent-%COMP%] {\n  font-family: "Roboto Mono", monospace;\n  font-size: .75rem;\n  color: #475569;\n  background: #f1f5f9;\n  padding: .125rem .375rem;\n  border-radius: .25rem;\n}\n.plist__brand[_ngcontent-%COMP%] {\n  font-size: .75rem;\n  font-weight: 600;\n  color: #0f172a;\n  text-transform: uppercase;\n  letter-spacing: .02em;\n}\n.plist__model[_ngcontent-%COMP%] {\n  margin: 0;\n  font-weight: 600;\n  color: #0f172a;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.plist__desc[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: .75rem;\n  color: #64748b;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  max-width: 360px;\n}\n.plist__category[_ngcontent-%COMP%] {\n  font-size: .75rem;\n  color: #334155;\n  white-space: nowrap;\n}\n.plist__tax[_ngcontent-%COMP%] {\n  font-size: .75rem;\n  font-weight: 600;\n  color: #334155;\n}\n.plist__price[_ngcontent-%COMP%] {\n  font-weight: 700;\n  font-size: .875rem;\n  color: #0f172a;\n  display: block;\n}\n.plist__discount[_ngcontent-%COMP%] {\n  font-size: .7rem;\n  font-weight: 600;\n  color: #16a34a;\n  background: #dcfce7;\n  padding: .0625rem .25rem;\n  border-radius: .25rem;\n  display: inline-block;\n  margin-top: .125rem;\n}\n.plist__no-price[_ngcontent-%COMP%] {\n  color: #94a3b8;\n  font-size: .75rem;\n}\n.plist__stock[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  min-width: 28px;\n  height: 20px;\n  padding: 0 .375rem;\n  border-radius: .875rem;\n  font-size: .6875rem;\n  font-weight: 700;\n  border: 1px solid transparent;\n}\n.plist__stock--ok[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #15803d;\n  border-color: #bbf7d0;\n}\n.plist__stock--low[_ngcontent-%COMP%] {\n  background: #fef9c3;\n  color: #a16207;\n  border-color: #fef08a;\n}\n.plist__stock--out[_ngcontent-%COMP%] {\n  background: #fee2e2;\n  color: #dc2626;\n  border-color: #fecaca;\n}\n.plist__empty-row[_ngcontent-%COMP%] {\n  padding: 2rem;\n  text-align: center;\n  color: #94a3b8;\n  font-size: .8125rem;\n}\n/*# sourceMappingURL=product-list.component.css.map */'] });
   }
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductListComponent, [{
     type: Component,
-    args: [{ selector: "app-product-list", imports: [CommonModule, ReactiveFormsModule], template: `<div class="table-responsive" id="table-container">
-  <table class="table table-striped table-hover align-middle table-sm">
-    <thead class="table-dark">
-      <tr>
-        <th scope="col">#Id</th>
-        <th scope="col">Code</th>
-        <th scope="col">Brand</th>
-        <th scope="col">Model</th>
-        <th scope="col">Description</th>
-        <th scope="col">Category</th>
-        <!-- TODO get data -->
-        <!--
-          <th scope="col">Tax Rate</th>
-          <th scope="col">Selling Price</th>
-          <th scope="col">Stock</th>
-          -->
-      </tr>
-    </thead>
-    <tbody>
-      @for (product of productList; track product.id ) {
-        <tr
-          (click)="selectionMode === 'click' ? onProductInteract(product) : null"
-        (dblclick)="
-          selectionMode === 'dblclick' ? onProductInteract(product) : null
-        "
-          >
-          <td>{{ product.id }}</td>
-          <td>{{ product.code }}</td>
-          <td>{{ product.brandName }}</td>
-          <td>{{ product.model }}</td>
-          <td class="description-cell">{{ product.description }}</td>
-          <td>{{ product.categoryName }}</td>
-          <!--
-            <td>{{ product.priceResponse.taxRate * 100 }}%</td>
-            <td>{{ product.priceResponse.sellingPrice | currency }}</td>
-            <td>{{ getTotalStockQuantity(product.stockResponses) }}</td>
-            -->
-        </tr>
+    args: [{ selector: "app-product-list", standalone: true, imports: [CommonModule, CurrencyPipe], template: `<table class="plist">
+  <thead class="plist__head">
+    <tr>
+      @if (isColumnVisible('id')) {
+        <th class="plist__th plist__th--id">#Id</th>
       }
-    </tbody>
-  </table>
-</div>
-`, styles: ["/* src/app/pages/product/product-list/product-list.component.css */\n.table-responsive {\n  max-width: 100%;\n  overflow-x: scroll;\n}\n#page-title {\n  margin: 30px;\n}\n#table-container {\n  height: 400px;\n  overflow-y: auto;\n}\n.table thead th {\n  position: sticky;\n  top: 0;\n  z-index: 1;\n}\n.nowrap {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.description-cell {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  max-width: 300px;\n}\n/*# sourceMappingURL=product-list.component.css.map */\n"] }]
+      @if (isColumnVisible('code')) {
+        <th class="plist__th plist__th--code">C\xF3digo</th>
+      }
+      @if (isColumnVisible('brand')) {
+        <th class="plist__th plist__th--brand">Marca</th>
+      }
+      @if (isColumnVisible('model')) {
+        <th class="plist__th plist__th--model">Modelo</th>
+      }
+      @if (isColumnVisible('description')) {
+        <th class="plist__th plist__th--desc">Descripci\xF3n</th>
+      }
+      @if (isColumnVisible('category')) {
+        <th class="plist__th plist__th--category">Categor\xEDa</th>
+      }
+      @if (isColumnVisible('tax')) {
+        <th class="plist__th plist__th--tax">IVA</th>
+      }
+      @if (isColumnVisible('price')) {
+        <th class="plist__th plist__th--price">Precio</th>
+      }
+      @if (isColumnVisible('stock')) {
+        <th class="plist__th plist__th--stock">Stock</th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @if (productList.length === 0) {
+      <tr>
+        <td [attr.colspan]="visibleColumns.length" class="plist__empty-row">Realiz\xE1 una b\xFAsqueda para ver art\xEDculos</td>
+      </tr>
+    }
+    @for (product of productList; track trackByProductId($index, product)) {
+      <tr
+        class="plist__row"
+        [class.plist__row--selected]="product.id === selectedProductId"
+        (click)="selectionMode === 'click' ? onProductInteract(product) : null"
+        (dblclick)="selectionMode === 'dblclick' ? onProductInteract(product) : null"
+        tabindex="0"
+        (keydown.enter)="onProductInteract(product)"
+      >
+        @if (isColumnVisible('id')) {
+          <td class="plist__td plist__td--id">
+            <span class="plist__id">{{ product.id }}</span>
+          </td>
+        }
+        @if (isColumnVisible('code')) {
+          <td class="plist__td plist__td--code">
+            <span class="plist__code">{{ product.code }}</span>
+          </td>
+        }
+        @if (isColumnVisible('brand')) {
+          <td class="plist__td plist__td--brand">
+            <span class="plist__brand">{{ product.brandName }}</span>
+          </td>
+        }
+        @if (isColumnVisible('model')) {
+          <td class="plist__td plist__td--model">
+            <p class="plist__model">{{ product.model }}</p>
+          </td>
+        }
+        @if (isColumnVisible('description')) {
+          <td class="plist__td plist__td--desc">
+            <p class="plist__desc">{{ product.description }}</p>
+          </td>
+        }
+        @if (isColumnVisible('category')) {
+          <td class="plist__td plist__td--category">
+            <span class="plist__category">{{ product.categoryName }}</span>
+          </td>
+        }
+        @if (isColumnVisible('tax')) {
+          <td class="plist__td plist__td--tax">
+            @if (product.priceResponse) {
+              <span class="plist__tax">{{ product.priceResponse.taxRate * 100 | number:'1.0-0' }}%</span>
+            } @else {
+              <span class="plist__no-price">\u2014</span>
+            }
+          </td>
+        }
+        @if (isColumnVisible('price')) {
+          <td class="plist__td plist__td--price">
+            @if (product.priceResponse) {
+              <span class="plist__price">{{ product.priceResponse.sellingPrice | currency:'ARS':'symbol':'1.0-0' }}</span>
+              @if (product.priceResponse.discount > 0) {
+                <span class="plist__discount">-{{ product.priceResponse.discount }}%</span>
+              }
+            } @else {
+              <span class="plist__no-price">\u2014</span>
+            }
+          </td>
+        }
+        @if (isColumnVisible('stock')) {
+          <td class="plist__td plist__td--stock">
+            <span
+              class="plist__stock"
+              [class.plist__stock--ok]="stockStatus(product.stockResponses) === 'ok'"
+              [class.plist__stock--low]="stockStatus(product.stockResponses) === 'low'"
+              [class.plist__stock--out]="stockStatus(product.stockResponses) === 'out'"
+            >{{ getTotalStock(product.stockResponses) }}</span>
+          </td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>
+`, styles: ['/* src/app/pages/product/product-list/product-list.component.css */\n.plist {\n  width: 100%;\n  border-collapse: collapse;\n  font-size: .8125rem;\n  table-layout: auto;\n}\n.plist__head {\n  position: sticky;\n  top: 0;\n  z-index: 10;\n  background: #f8fafc;\n}\n.plist__th {\n  padding: .5rem .75rem;\n  text-align: left;\n  font-size: .6875rem;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: .05em;\n  color: #64748b;\n  border-bottom: 2px solid #e2e8f0;\n  white-space: nowrap;\n}\n.plist__th--id {\n  width: 150px;\n}\n.plist__th--code {\n  width: 90px;\n}\n.plist__th--brand {\n  width: 100px;\n}\n.plist__th--model {\n  width: 130px;\n}\n.plist__th--desc {\n  min-width: 220px;\n}\n.plist__th--category {\n  width: 130px;\n}\n.plist__th--tax {\n  width: 70px;\n  text-align: right;\n}\n.plist__th--price {\n  width: 110px;\n  text-align: right;\n}\n.plist__th--stock {\n  width: 64px;\n  text-align: center;\n}\n.plist__row {\n  cursor: pointer;\n  transition: background .1s;\n  outline: none;\n}\n.plist__row:hover {\n  background: #f0fdfa;\n}\n.plist__row:focus-visible {\n  background: #f0fdfa;\n  outline: 2px solid #0d9488;\n  outline-offset: -2px;\n}\n.plist__row--selected {\n  background: #ccfbf1 !important;\n}\n.plist__row--selected .plist__model {\n  color: #0d9488;\n}\n.plist__row:not(:last-child) td {\n  border-bottom: 1px solid #f1f5f9;\n}\n.plist__td {\n  padding: .5rem .75rem;\n  vertical-align: middle;\n}\n.plist__td--price {\n  text-align: right;\n}\n.plist__td--stock {\n  text-align: center;\n}\n.plist__td--tax {\n  text-align: right;\n}\n.plist__id {\n  display: inline-block;\n  max-width: 145px;\n  font-family: "Roboto Mono", monospace;\n  font-size: .6875rem;\n  color: #64748b;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.plist__code {\n  font-family: "Roboto Mono", monospace;\n  font-size: .75rem;\n  color: #475569;\n  background: #f1f5f9;\n  padding: .125rem .375rem;\n  border-radius: .25rem;\n}\n.plist__brand {\n  font-size: .75rem;\n  font-weight: 600;\n  color: #0f172a;\n  text-transform: uppercase;\n  letter-spacing: .02em;\n}\n.plist__model {\n  margin: 0;\n  font-weight: 600;\n  color: #0f172a;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.plist__desc {\n  margin: 0;\n  font-size: .75rem;\n  color: #64748b;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  max-width: 360px;\n}\n.plist__category {\n  font-size: .75rem;\n  color: #334155;\n  white-space: nowrap;\n}\n.plist__tax {\n  font-size: .75rem;\n  font-weight: 600;\n  color: #334155;\n}\n.plist__price {\n  font-weight: 700;\n  font-size: .875rem;\n  color: #0f172a;\n  display: block;\n}\n.plist__discount {\n  font-size: .7rem;\n  font-weight: 600;\n  color: #16a34a;\n  background: #dcfce7;\n  padding: .0625rem .25rem;\n  border-radius: .25rem;\n  display: inline-block;\n  margin-top: .125rem;\n}\n.plist__no-price {\n  color: #94a3b8;\n  font-size: .75rem;\n}\n.plist__stock {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  min-width: 28px;\n  height: 20px;\n  padding: 0 .375rem;\n  border-radius: .875rem;\n  font-size: .6875rem;\n  font-weight: 700;\n  border: 1px solid transparent;\n}\n.plist__stock--ok {\n  background: #dcfce7;\n  color: #15803d;\n  border-color: #bbf7d0;\n}\n.plist__stock--low {\n  background: #fef9c3;\n  color: #a16207;\n  border-color: #fef08a;\n}\n.plist__stock--out {\n  background: #fee2e2;\n  color: #dc2626;\n  border-color: #fecaca;\n}\n.plist__empty-row {\n  padding: 2rem;\n  text-align: center;\n  color: #94a3b8;\n  font-size: .8125rem;\n}\n/*# sourceMappingURL=product-list.component.css.map */\n'] }]
   }], null, { productList: [{
     type: Input
+  }], selectedProductId: [{
+    type: Input
   }], selectionMode: [{
+    type: Input
+  }], visibleColumns: [{
     type: Input
   }], selectProduct: [{
     type: Output
   }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductListComponent, { className: "ProductListComponent", filePath: "src/app/pages/product/product-list/product-list.component.ts", lineNumber: 13 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductListComponent, { className: "ProductListComponent", filePath: "src/app/pages/product/product-list/product-list.component.ts", lineNumber: 24 });
 })();
 
-// src/app/pages/product/product-search/product-search.component.ts
-function ProductSearchComponent_Conditional_10_Template(rf, ctx) {
+// src/app/pages/product/product-details/product-details.component.ts
+var _forTrack02 = ($index, $item) => $item.branch;
+function ProductDetailsComponent_Conditional_0_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 7);
-    \u0275\u0275text(1, " Search term must be at least 3 characters long ");
-    \u0275\u0275elementEnd();
+    \u0275\u0275domElementStart(0, "div", 0)(1, "span", 2);
+    \u0275\u0275text(2, "inventory_2");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(3, "p", 3);
+    \u0275\u0275text(4, "Ning\xFAn art\xEDculo seleccionado");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(5, "p", 4);
+    \u0275\u0275text(6, "Hac\xE9 clic en un art\xEDculo de la lista para ver sus detalles");
+    \u0275\u0275domElementEnd()();
   }
 }
-var ProductSearchComponent = class _ProductSearchComponent {
+function ProductDetailsComponent_Conditional_1_Conditional_3_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElement(0, "img", 7);
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275domProperty("src", ctx_r1.product.imageId[0], \u0275\u0275sanitizeUrl);
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_4_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "span", 8);
+    \u0275\u0275text(1, "inventory_2");
+    \u0275\u0275domElementEnd();
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_21_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "span", 17)(1, "span", 15);
+    \u0275\u0275text(2, "visibility_off");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(3, " Oculto ");
+    \u0275\u0275domElementEnd();
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_29_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "span", 22)(1, "span", 15);
+    \u0275\u0275text(2, "sell");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(3);
+    \u0275\u0275domElementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate1(" ", ctx_r1.product.priceResponse.discount, "% dto. ");
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_73_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "dl", 31)(1, "dt");
+    \u0275\u0275text(2, "C\xF3digo");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(3, "dd")(4, "code", 34);
+    \u0275\u0275text(5);
+    \u0275\u0275domElementEnd()();
+    \u0275\u0275domElementStart(6, "dt");
+    \u0275\u0275text(7, "Marca");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(8, "dd");
+    \u0275\u0275text(9);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(10, "dt");
+    \u0275\u0275text(11, "Modelo");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(12, "dd");
+    \u0275\u0275text(13);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(14, "dt");
+    \u0275\u0275text(15, "Descripci\xF3n");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(16, "dd");
+    \u0275\u0275text(17);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(18, "dt");
+    \u0275\u0275text(19, "Categor\xEDa");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(20, "dd");
+    \u0275\u0275text(21);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(22, "dt");
+    \u0275\u0275text(23, "Vendidos");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(24, "dd");
+    \u0275\u0275text(25);
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate(ctx_r1.product.code);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.brandName);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.model);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.description);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.categoryName);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate1("", ctx_r1.product.invoiceQuantity, " unid.");
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_74_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "dl", 31)(1, "dt");
+    \u0275\u0275text(2, "Precio de costo");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(3, "dd", 35);
+    \u0275\u0275text(4);
+    \u0275\u0275pipe(5, "currency");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(6, "dt");
+    \u0275\u0275text(7, "Precio de venta (s/IVA)");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(8, "dd");
+    \u0275\u0275text(9);
+    \u0275\u0275pipe(10, "currency");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(11, "dt");
+    \u0275\u0275text(12, "IVA");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(13, "dd");
+    \u0275\u0275text(14);
+    \u0275\u0275pipe(15, "number");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(16, "dt");
+    \u0275\u0275text(17, "Precio de venta (c/IVA)");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(18, "dd", 36);
+    \u0275\u0275text(19);
+    \u0275\u0275pipe(20, "currency");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(21, "dt");
+    \u0275\u0275text(22, "Descuento");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(23, "dd");
+    \u0275\u0275text(24);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(25, "dt");
+    \u0275\u0275text(26, "Margen bruto");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(27, "dd");
+    \u0275\u0275text(28);
+    \u0275\u0275pipe(29, "number");
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind4(5, 12, ctx_r1.purchasePrice, "ARS", "symbol", "1.2-2"));
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind4(10, 17, ctx_r1.product.priceResponse.sellingPrice, "ARS", "symbol", "1.2-2"));
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate1("", \u0275\u0275pipeBind2(15, 22, ctx_r1.product.priceResponse.taxRate * 100, "1.0-0"), "%");
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind4(20, 25, ctx_r1.priceWithTax, "ARS", "symbol", "1.2-2"));
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate1("", ctx_r1.product.priceResponse.discount, "%");
+    \u0275\u0275advance(3);
+    \u0275\u0275classProp("pdetail__margin--good", ctx_r1.margin >= 20)("pdetail__margin--warn", ctx_r1.margin > 0 && ctx_r1.margin < 20)("pdetail__margin--bad", ctx_r1.margin <= 0);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", \u0275\u0275pipeBind2(29, 30, ctx_r1.margin, "1.1-1"), "% ");
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_75_Conditional_0_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "p", 37);
+    \u0275\u0275text(1, "No hay informaci\xF3n de stock disponible");
+    \u0275\u0275domElementEnd();
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_75_Conditional_1_For_2_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "div", 39)(1, "div", 42)(2, "span", 43);
+    \u0275\u0275text(3, "store");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(4, "div")(5, "p", 44);
+    \u0275\u0275text(6);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(7, "p", 45);
+    \u0275\u0275text(8);
+    \u0275\u0275domElementEnd()()();
+    \u0275\u0275domElementStart(9, "div", 46)(10, "span", 47);
+    \u0275\u0275text(11);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(12, "span", 48);
+    \u0275\u0275text(13, "unid.");
+    \u0275\u0275domElementEnd()()();
+  }
+  if (rf & 2) {
+    const branch_r3 = ctx.$implicit;
+    \u0275\u0275advance(6);
+    \u0275\u0275textInterpolate(branch_r3.branch);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate2("M\xEDn: ", branch_r3.min, " \xB7 M\xE1x: ", branch_r3.max);
+    \u0275\u0275advance(2);
+    \u0275\u0275classProp("pdetail__stock-qty--ok", branch_r3.qty > branch_r3.min)("pdetail__stock-qty--low", branch_r3.qty > 0 && branch_r3.qty <= branch_r3.min)("pdetail__stock-qty--out", branch_r3.qty <= 0);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(branch_r3.qty);
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_75_Conditional_1_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "div", 38);
+    \u0275\u0275repeaterCreate(1, ProductDetailsComponent_Conditional_1_Conditional_75_Conditional_1_For_2_Template, 14, 10, "div", 39, _forTrack02);
+    \u0275\u0275domElementStart(3, "div", 40)(4, "span");
+    \u0275\u0275text(5, "Total");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(6, "span", 41);
+    \u0275\u0275text(7);
+    \u0275\u0275domElementEnd()()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(3);
+    \u0275\u0275advance();
+    \u0275\u0275repeater(ctx_r1.stockBranches(ctx_r1.product.stockResponses));
+    \u0275\u0275advance(6);
+    \u0275\u0275textInterpolate1("", ctx_r1.totalStock, " unid.");
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_75_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275conditionalCreate(0, ProductDetailsComponent_Conditional_1_Conditional_75_Conditional_0_Template, 2, 0, "p", 37)(1, ProductDetailsComponent_Conditional_1_Conditional_75_Conditional_1_Template, 8, 1, "div", 38);
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275conditional(ctx_r1.product.stockResponses.length === 0 ? 0 : 1);
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_76_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "dl", 31)(1, "dt");
+    \u0275\u0275text(2, "ID Proveedor");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(3, "dd");
+    \u0275\u0275text(4);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(5, "dt");
+    \u0275\u0275text(6, "ID Art. Proveedor");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(7, "dd");
+    \u0275\u0275text(8);
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.supplierId || "\u2014");
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.supplierProductId || "\u2014");
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_77_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "dl", 31)(1, "dt");
+    \u0275\u0275text(2, "C\xF3digo interno");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(3, "dd")(4, "code", 34);
+    \u0275\u0275text(5);
+    \u0275\u0275domElementEnd()();
+    \u0275\u0275domElementStart(6, "dt");
+    \u0275\u0275text(7, "ID producto");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(8, "dd")(9, "code", 49);
+    \u0275\u0275text(10);
+    \u0275\u0275domElementEnd()()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate(ctx_r1.product.code);
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate(ctx_r1.product.id);
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_78_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "dl", 31)(1, "dt");
+    \u0275\u0275text(2, "Categor\xEDa");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(3, "dd");
+    \u0275\u0275text(4);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(5, "dt");
+    \u0275\u0275text(6, "Estado");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(7, "dd");
+    \u0275\u0275text(8);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(9, "dt");
+    \u0275\u0275text(10, "Cantidad facturada");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(11, "dd");
+    \u0275\u0275text(12);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(13, "dt");
+    \u0275\u0275text(14, "Im\xE1genes asociadas");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(15, "dd");
+    \u0275\u0275text(16);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(17, "dt");
+    \u0275\u0275text(18, "ID dimensi\xF3n");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(19, "dd");
+    \u0275\u0275text(20);
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.categoryName);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.hidden ? "Oculto" : "Visible");
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate1("", ctx_r1.product.invoiceQuantity, " unid.");
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.imageId.length);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.dimensionId || "\u2014");
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_79_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "dl", 31)(1, "dt");
+    \u0275\u0275text(2, "Precio de referencia");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(3, "dd");
+    \u0275\u0275text(4);
+    \u0275\u0275pipe(5, "currency");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(6, "dt");
+    \u0275\u0275text(7, "Recargo sugerido 1 cuota");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(8, "dd");
+    \u0275\u0275text(9);
+    \u0275\u0275pipe(10, "currency");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(11, "dt");
+    \u0275\u0275text(12, "Recargo sugerido 3 cuotas");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(13, "dd");
+    \u0275\u0275text(14);
+    \u0275\u0275pipe(15, "currency");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(16, "dt");
+    \u0275\u0275text(17, "Recargo sugerido 6 cuotas");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(18, "dd");
+    \u0275\u0275text(19);
+    \u0275\u0275pipe(20, "currency");
+    \u0275\u0275domElementEnd()();
+    \u0275\u0275domElementStart(21, "p", 37);
+    \u0275\u0275text(22, "Los porcentajes son de referencia hasta integrar configuraci\xF3n real de medios de pago.");
+    \u0275\u0275domElementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind4(5, 4, ctx_r1.priceWithTax, "ARS", "symbol", "1.2-2"));
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind4(10, 9, ctx_r1.priceWithTax * 1.05, "ARS", "symbol", "1.2-2"));
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind4(15, 14, ctx_r1.priceWithTax * 1.12, "ARS", "symbol", "1.2-2"));
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind4(20, 19, ctx_r1.priceWithTax * 1.2, "ARS", "symbol", "1.2-2"));
+  }
+}
+function ProductDetailsComponent_Conditional_1_Conditional_80_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275domElementStart(0, "dl", 31)(1, "dt");
+    \u0275\u0275text(2, "Modelo");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(3, "dd");
+    \u0275\u0275text(4);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(5, "dt");
+    \u0275\u0275text(6, "Descripci\xF3n t\xE9cnica");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(7, "dd");
+    \u0275\u0275text(8);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(9, "dt");
+    \u0275\u0275text(10, "ID dimensi\xF3n");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(11, "dd");
+    \u0275\u0275text(12);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(13, "dt");
+    \u0275\u0275text(14, "Stock m\xEDnimo de referencia");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(15, "dd");
+    \u0275\u0275text(16);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(17, "dt");
+    \u0275\u0275text(18, "Stock m\xE1ximo de referencia");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(19, "dd");
+    \u0275\u0275text(20);
+    \u0275\u0275domElementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.model);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.description || "Sin descripci\xF3n");
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.dimensionId || "No asignada");
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.stockResponses.length > 0 ? ctx_r1.product.stockResponses[0].min : 0);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.stockResponses.length > 0 ? ctx_r1.product.stockResponses[0].max : 0);
+  }
+}
+function ProductDetailsComponent_Conditional_1_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275domElementStart(0, "div", 1)(1, "div", 5)(2, "div", 6);
+    \u0275\u0275conditionalCreate(3, ProductDetailsComponent_Conditional_1_Conditional_3_Template, 1, 1, "img", 7)(4, ProductDetailsComponent_Conditional_1_Conditional_4_Template, 2, 0, "span", 8);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(5, "div", 9)(6, "p", 10);
+    \u0275\u0275text(7);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(8, "h2", 11);
+    \u0275\u0275text(9);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(10, "p", 12);
+    \u0275\u0275text(11);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(12, "div", 13)(13, "span", 14)(14, "span", 15);
+    \u0275\u0275text(15, "category");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(16);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(17, "span", 16)(18, "span", 15);
+    \u0275\u0275text(19);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(20);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275conditionalCreate(21, ProductDetailsComponent_Conditional_1_Conditional_21_Template, 4, 0, "span", 17);
+    \u0275\u0275domElementEnd()()();
+    \u0275\u0275domElementStart(22, "div", 18)(23, "div", 19)(24, "p", 20);
+    \u0275\u0275text(25, "Precio de venta c/IVA");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(26, "p", 21);
+    \u0275\u0275text(27);
+    \u0275\u0275pipe(28, "currency");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275conditionalCreate(29, ProductDetailsComponent_Conditional_1_Conditional_29_Template, 4, 1, "span", 22);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(30, "div", 23)(31, "div", 24)(32, "span", 25);
+    \u0275\u0275text(33, "Precio s/IVA");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(34, "span", 26);
+    \u0275\u0275text(35);
+    \u0275\u0275pipe(36, "currency");
+    \u0275\u0275domElementEnd()();
+    \u0275\u0275domElementStart(37, "div", 24)(38, "span", 25);
+    \u0275\u0275text(39, "IVA");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(40, "span", 26);
+    \u0275\u0275text(41);
+    \u0275\u0275pipe(42, "number");
+    \u0275\u0275domElementEnd()();
+    \u0275\u0275domElementStart(43, "div", 24)(44, "span", 25);
+    \u0275\u0275text(45, "Costo");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(46, "span", 26);
+    \u0275\u0275text(47);
+    \u0275\u0275pipe(48, "currency");
+    \u0275\u0275domElementEnd()();
+    \u0275\u0275domElementStart(49, "div", 24)(50, "span", 25);
+    \u0275\u0275text(51, "Margen");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(52, "span", 27);
+    \u0275\u0275text(53);
+    \u0275\u0275pipe(54, "number");
+    \u0275\u0275domElementEnd()()()();
+    \u0275\u0275domElementStart(55, "nav", 28)(56, "button", 29);
+    \u0275\u0275domListener("click", function ProductDetailsComponent_Conditional_1_Template_button_click_56_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.activeTab = "ficha");
+    });
+    \u0275\u0275text(57, "Ficha");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(58, "button", 29);
+    \u0275\u0275domListener("click", function ProductDetailsComponent_Conditional_1_Template_button_click_58_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.activeTab = "precios");
+    });
+    \u0275\u0275text(59, "Precios");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(60, "button", 29);
+    \u0275\u0275domListener("click", function ProductDetailsComponent_Conditional_1_Template_button_click_60_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.activeTab = "stock");
+    });
+    \u0275\u0275text(61, "Stock");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(62, "button", 29);
+    \u0275\u0275domListener("click", function ProductDetailsComponent_Conditional_1_Template_button_click_62_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.activeTab = "proveedor");
+    });
+    \u0275\u0275text(63, "Proveedor");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(64, "button", 29);
+    \u0275\u0275domListener("click", function ProductDetailsComponent_Conditional_1_Template_button_click_64_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.activeTab = "codigos");
+    });
+    \u0275\u0275text(65, "C\xF3digos");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(66, "button", 29);
+    \u0275\u0275domListener("click", function ProductDetailsComponent_Conditional_1_Template_button_click_66_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.activeTab = "varios");
+    });
+    \u0275\u0275text(67, "Varios");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(68, "button", 29);
+    \u0275\u0275domListener("click", function ProductDetailsComponent_Conditional_1_Template_button_click_68_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.activeTab = "tarjetas");
+    });
+    \u0275\u0275text(69, "Pago tarjetas");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(70, "button", 29);
+    \u0275\u0275domListener("click", function ProductDetailsComponent_Conditional_1_Template_button_click_70_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.activeTab = "especificaciones");
+    });
+    \u0275\u0275text(71, "Especificaciones");
+    \u0275\u0275domElementEnd()();
+    \u0275\u0275domElementStart(72, "div", 30);
+    \u0275\u0275conditionalCreate(73, ProductDetailsComponent_Conditional_1_Conditional_73_Template, 26, 6, "dl", 31);
+    \u0275\u0275conditionalCreate(74, ProductDetailsComponent_Conditional_1_Conditional_74_Template, 30, 33, "dl", 31);
+    \u0275\u0275conditionalCreate(75, ProductDetailsComponent_Conditional_1_Conditional_75_Template, 2, 1);
+    \u0275\u0275conditionalCreate(76, ProductDetailsComponent_Conditional_1_Conditional_76_Template, 9, 2, "dl", 31);
+    \u0275\u0275conditionalCreate(77, ProductDetailsComponent_Conditional_1_Conditional_77_Template, 11, 2, "dl", 31);
+    \u0275\u0275conditionalCreate(78, ProductDetailsComponent_Conditional_1_Conditional_78_Template, 21, 5, "dl", 31);
+    \u0275\u0275conditionalCreate(79, ProductDetailsComponent_Conditional_1_Conditional_79_Template, 23, 24);
+    \u0275\u0275conditionalCreate(80, ProductDetailsComponent_Conditional_1_Conditional_80_Template, 21, 5, "dl", 31);
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(81, "div", 32)(82, "button", 33)(83, "span", 15);
+    \u0275\u0275text(84, "edit");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(85, " Editar ");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(86, "button", 33)(87, "span", 15);
+    \u0275\u0275text(88, "swap_horiz");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(89, " Stock ");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275domElementStart(90, "button", 33)(91, "span", 15);
+    \u0275\u0275text(92, "add_shopping_cart");
+    \u0275\u0275domElementEnd();
+    \u0275\u0275text(93, " Vender ");
+    \u0275\u0275domElementEnd()()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(3);
+    \u0275\u0275conditional(ctx_r1.product.imageId.length > 0 ? 3 : 4);
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.product.brandName);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.product.model);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.product.description);
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate1(" ", ctx_r1.product.categoryName, " ");
+    \u0275\u0275advance();
+    \u0275\u0275classProp("pdetail__badge--stock-ok", ctx_r1.stockStatus === "ok")("pdetail__badge--stock-low", ctx_r1.stockStatus === "low")("pdetail__badge--stock-out", ctx_r1.stockStatus === "out");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate1(" ", ctx_r1.stockStatus === "ok" ? "check_circle" : ctx_r1.stockStatus === "low" ? "warning" : "remove_circle", " ");
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", ctx_r1.totalStock, " en stock ");
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r1.product.hidden ? 21 : -1);
+    \u0275\u0275advance(6);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind4(28, 44, ctx_r1.priceWithTax, "ARS", "symbol", "1.0-0"));
+    \u0275\u0275advance(2);
+    \u0275\u0275conditional(ctx_r1.product.priceResponse.discount > 0 ? 29 : -1);
+    \u0275\u0275advance(6);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind4(36, 49, ctx_r1.product.priceResponse.sellingPrice, "ARS", "symbol", "1.0-0"));
+    \u0275\u0275advance(6);
+    \u0275\u0275textInterpolate1("", \u0275\u0275pipeBind2(42, 54, ctx_r1.product.priceResponse.taxRate * 100, "1.0-0"), "%");
+    \u0275\u0275advance(6);
+    \u0275\u0275textInterpolate(\u0275\u0275pipeBind4(48, 57, ctx_r1.purchasePrice, "ARS", "symbol", "1.0-0"));
+    \u0275\u0275advance(6);
+    \u0275\u0275textInterpolate1("", \u0275\u0275pipeBind2(54, 62, ctx_r1.margin, "1.1-1"), "%");
+    \u0275\u0275advance(3);
+    \u0275\u0275classProp("pdetail__tab--active", ctx_r1.activeTab === "ficha");
+    \u0275\u0275advance(2);
+    \u0275\u0275classProp("pdetail__tab--active", ctx_r1.activeTab === "precios");
+    \u0275\u0275advance(2);
+    \u0275\u0275classProp("pdetail__tab--active", ctx_r1.activeTab === "stock");
+    \u0275\u0275advance(2);
+    \u0275\u0275classProp("pdetail__tab--active", ctx_r1.activeTab === "proveedor");
+    \u0275\u0275advance(2);
+    \u0275\u0275classProp("pdetail__tab--active", ctx_r1.activeTab === "codigos");
+    \u0275\u0275advance(2);
+    \u0275\u0275classProp("pdetail__tab--active", ctx_r1.activeTab === "varios");
+    \u0275\u0275advance(2);
+    \u0275\u0275classProp("pdetail__tab--active", ctx_r1.activeTab === "tarjetas");
+    \u0275\u0275advance(2);
+    \u0275\u0275classProp("pdetail__tab--active", ctx_r1.activeTab === "especificaciones");
+    \u0275\u0275advance(3);
+    \u0275\u0275conditional(ctx_r1.activeTab === "ficha" ? 73 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r1.activeTab === "precios" ? 74 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r1.activeTab === "stock" ? 75 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r1.activeTab === "proveedor" ? 76 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r1.activeTab === "codigos" ? 77 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r1.activeTab === "varios" ? 78 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r1.activeTab === "tarjetas" ? 79 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r1.activeTab === "especificaciones" ? 80 : -1);
+  }
+}
+var ProductDetailsComponent = class _ProductDetailsComponent {
   constructor() {
-    this.searchTerm = "";
-    this.isFormSubmitted = false;
-    this.search = new EventEmitter();
-    this.searchStock = new EventEmitter();
+    this.product = null;
+    this.activeTab = "ficha";
   }
-  onSearch() {
-    this.isFormSubmitted = true;
-    if (this.searchTerm.length >= 3) {
-      this.search.emit(this.searchTerm);
-    }
+  ngOnChanges() {
+    this.activeTab = "ficha";
   }
-  searchWithStock() {
-    this.searchStock.emit(this.searchTerm);
+  get totalStock() {
+    return this.product?.stockResponses?.reduce((a, s) => a + s.quantity, 0) ?? 0;
   }
-  onKeyUp(event) {
-    if (event.key === "Enter") {
-      this.onSearch();
-    }
+  get stockStatus() {
+    if (this.totalStock <= 0)
+      return "out";
+    const min = this.product?.stockResponses?.[0]?.min ?? 0;
+    return this.totalStock <= min ? "low" : "ok";
+  }
+  get priceWithTax() {
+    const p = this.product?.priceResponse;
+    if (!p)
+      return 0;
+    return p.sellingPrice * (1 + p.taxRate);
+  }
+  get purchasePrice() {
+    return this.product?.priceResponse?.purchasePrice ?? 0;
+  }
+  get margin() {
+    if (!this.purchasePrice || !this.product?.priceResponse?.sellingPrice)
+      return 0;
+    return (this.product.priceResponse.sellingPrice - this.purchasePrice) / this.purchasePrice * 100;
+  }
+  stockBranches(stocks) {
+    return (stocks ?? []).map((s, i) => ({
+      branch: s.branchId || `Sucursal ${i + 1}`,
+      qty: s.quantity,
+      min: s.min,
+      max: s.max
+    }));
   }
   static {
-    this.\u0275fac = function ProductSearchComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _ProductSearchComponent)();
+    this.\u0275fac = function ProductDetailsComponent_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _ProductDetailsComponent)();
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductSearchComponent, selectors: [["app-product-search"]], outputs: { search: "search", searchStock: "searchStock" }, decls: 11, vars: 2, consts: [["searchForm", "ngForm"], [1, "row", "mb-3", "text-center"], [3, "ngSubmit"], [1, "col-md-6", "form-group", "align-items-center"], ["type", "text", "id", "searchTerm", "placeholder", "Enter search term and press enter", "name", "searchTerm", 1, "form-control", 3, "ngModelChange", "keyup", "ngModel"], ["type", "submit", 1, "btn", "btn-outline-primary", "btn-sm"], ["type", "button", 1, "btn", "btn-outline-success", "btn-sm", 3, "click"], [1, "text-danger"]], template: function ProductSearchComponent_Template(rf, ctx) {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductDetailsComponent, selectors: [["app-product-detail"]], inputs: { product: "product" }, features: [\u0275\u0275NgOnChangesFeature], decls: 2, vars: 2, consts: [[1, "pdetail-empty"], [1, "pdetail"], [1, "material-icons", "pdetail-empty__icon"], [1, "pdetail-empty__title"], [1, "pdetail-empty__sub"], [1, "pdetail__header"], [1, "pdetail__avatar"], ["alt", "Imagen del producto", 1, "pdetail__img", 3, "src"], [1, "material-icons", "pdetail__avatar-icon"], [1, "pdetail__info"], [1, "pdetail__brand"], [1, "pdetail__model"], [1, "pdetail__desc"], [1, "pdetail__badges"], [1, "pdetail__badge", "pdetail__badge--category"], [1, "material-icons"], [1, "pdetail__badge"], [1, "pdetail__badge", "pdetail__badge--hidden"], [1, "pdetail__prices"], [1, "pdetail__price-main"], [1, "pdetail__price-label"], [1, "pdetail__price-value"], [1, "pdetail__price-discount"], [1, "pdetail__price-secondary"], [1, "pdetail__price-row"], [1, "pdetail__price-row-label"], [1, "pdetail__price-row-value"], [1, "pdetail__price-row-value", "pdetail__price-row-value--margin"], [1, "pdetail__tabs"], [1, "pdetail__tab", 3, "click"], [1, "pdetail__tab-content"], [1, "pdetail__dl"], [1, "pdetail__actions"], [1, "pdetail__action-btn"], [1, "pdetail__code-chip"], [1, "pdetail__price-highlight"], [1, "pdetail__price-highlight", "pdetail__price-highlight--main"], [1, "pdetail__tab-empty"], [1, "pdetail__stock-list"], [1, "pdetail__stock-row"], [1, "pdetail__stock-total"], [1, "pdetail__stock-total-qty"], [1, "pdetail__stock-info"], [1, "material-icons", "pdetail__stock-icon"], [1, "pdetail__stock-branch"], [1, "pdetail__stock-limits"], [1, "pdetail__stock-qty-wrap"], [1, "pdetail__stock-qty"], [1, "pdetail__stock-unit"], [1, "pdetail__code-chip", "pdetail__code-chip--sm"]], template: function ProductDetailsComponent_Template(rf, ctx) {
       if (rf & 1) {
-        const _r1 = \u0275\u0275getCurrentView();
-        \u0275\u0275elementStart(0, "div", 1)(1, "form", 2, 0);
-        \u0275\u0275listener("ngSubmit", function ProductSearchComponent_Template_form_ngSubmit_1_listener() {
-          return ctx.onSearch();
-        });
-        \u0275\u0275elementStart(3, "div", 3)(4, "input", 4);
-        \u0275\u0275twoWayListener("ngModelChange", function ProductSearchComponent_Template_input_ngModelChange_4_listener($event) {
-          \u0275\u0275restoreView(_r1);
-          \u0275\u0275twoWayBindingSet(ctx.searchTerm, $event) || (ctx.searchTerm = $event);
-          return \u0275\u0275resetView($event);
-        });
-        \u0275\u0275listener("keyup", function ProductSearchComponent_Template_input_keyup_4_listener($event) {
-          return ctx.onKeyUp($event);
-        });
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(5, "div", 3)(6, "button", 5);
-        \u0275\u0275text(7, " Search ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(8, "button", 6);
-        \u0275\u0275listener("click", function ProductSearchComponent_Template_button_click_8_listener() {
-          return ctx.searchWithStock();
-        });
-        \u0275\u0275text(9, " with Stock ");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275conditionalCreate(10, ProductSearchComponent_Conditional_10_Template, 2, 0, "div", 7);
-        \u0275\u0275elementEnd()();
+        \u0275\u0275conditionalCreate(0, ProductDetailsComponent_Conditional_0_Template, 7, 0, "div", 0);
+        \u0275\u0275conditionalCreate(1, ProductDetailsComponent_Conditional_1_Template, 94, 65, "div", 1);
       }
       if (rf & 2) {
-        \u0275\u0275advance(4);
-        \u0275\u0275twoWayProperty("ngModel", ctx.searchTerm);
-        \u0275\u0275advance(6);
-        \u0275\u0275conditional(ctx.isFormSubmitted && ctx.searchTerm.length < 3 ? 10 : -1);
+        \u0275\u0275conditional(!ctx.product ? 0 : -1);
+        \u0275\u0275advance();
+        \u0275\u0275conditional(ctx.product ? 1 : -1);
       }
-    }, dependencies: [FormsModule, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, NgModel, NgForm], encapsulation: 2 });
+    }, dependencies: [CommonModule, DecimalPipe, CurrencyPipe], styles: ['\n.pdetail-empty[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  height: 100%;\n  min-height: 300px;\n  padding: 2rem;\n  color: #94a3b8;\n  text-align: center;\n  gap: .5rem;\n}\n.pdetail-empty__icon[_ngcontent-%COMP%] {\n  font-size: 3rem !important;\n  color: #cbd5e1;\n}\n.pdetail-empty__title[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: .9375rem;\n  font-weight: 600;\n  color: #64748b;\n}\n.pdetail-empty__sub[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: .8125rem;\n}\n.pdetail[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n}\n.pdetail__header[_ngcontent-%COMP%] {\n  display: flex;\n  gap: .875rem;\n  padding: 1rem;\n  background: white;\n  border-bottom: 1px solid #e2e8f0;\n}\n.pdetail__avatar[_ngcontent-%COMP%] {\n  width: 64px;\n  height: 64px;\n  border-radius: .625rem;\n  background: #f0fdfa;\n  border: 1.5px solid #99f6e4;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  overflow: hidden;\n}\n.pdetail__img[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n.pdetail__avatar-icon[_ngcontent-%COMP%] {\n  font-size: 2rem !important;\n  color: #0d9488;\n}\n.pdetail__info[_ngcontent-%COMP%] {\n  flex: 1;\n  min-width: 0;\n}\n.pdetail__brand[_ngcontent-%COMP%] {\n  margin: 0 0 .125rem;\n  font-size: .6875rem;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: .07em;\n  color: #0d9488;\n}\n.pdetail__model[_ngcontent-%COMP%] {\n  margin: 0 0 .25rem;\n  font-size: 1.0625rem;\n  font-weight: 700;\n  color: #0f172a;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.pdetail__desc[_ngcontent-%COMP%] {\n  margin: 0 0 .5rem;\n  font-size: .78rem;\n  color: #64748b;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.pdetail__badges[_ngcontent-%COMP%] {\n  display: flex;\n  flex-wrap: wrap;\n  gap: .375rem;\n}\n.pdetail__badge[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: .2rem;\n  font-size: .6875rem;\n  font-weight: 600;\n  padding: .125rem .5rem;\n  border-radius: .875rem;\n}\n.pdetail__badge[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: .8rem !important;\n}\n.pdetail__badge--category[_ngcontent-%COMP%] {\n  background: #ede9fe;\n  color: #7c3aed;\n}\n.pdetail__badge--stock-ok[_ngcontent-%COMP%] {\n  background: #dcfce7;\n  color: #15803d;\n}\n.pdetail__badge--stock-low[_ngcontent-%COMP%] {\n  background: #fef9c3;\n  color: #a16207;\n}\n.pdetail__badge--stock-out[_ngcontent-%COMP%] {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.pdetail__badge--hidden[_ngcontent-%COMP%] {\n  background: #f1f5f9;\n  color: #64748b;\n}\n.pdetail__prices[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 1px;\n  background: #e2e8f0;\n  border-bottom: 1px solid #e2e8f0;\n  flex-shrink: 0;\n}\n.pdetail__price-main[_ngcontent-%COMP%] {\n  flex: 1;\n  padding: .875rem 1rem;\n  background: white;\n  display: flex;\n  flex-direction: column;\n  gap: .125rem;\n}\n.pdetail__price-secondary[_ngcontent-%COMP%] {\n  flex: 1;\n  padding: .625rem 1rem;\n  background: #f8fafc;\n  display: flex;\n  flex-direction: column;\n  gap: .125rem;\n  justify-content: center;\n}\n.pdetail__price-label[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: .6875rem;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: .05em;\n  color: #64748b;\n}\n.pdetail__price-value[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 1.625rem;\n  font-weight: 800;\n  color: #0f172a;\n  letter-spacing: -.02em;\n  line-height: 1.1;\n}\n.pdetail__price-discount[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: .2rem;\n  font-size: .7rem;\n  font-weight: 700;\n  color: #16a34a;\n  background: #dcfce7;\n  padding: .125rem .375rem;\n  border-radius: .25rem;\n  width: fit-content;\n  margin-top: .25rem;\n}\n.pdetail__price-discount[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: .8rem !important;\n}\n.pdetail__price-row[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  font-size: .78rem;\n}\n.pdetail__price-row-label[_ngcontent-%COMP%] {\n  color: #64748b;\n}\n.pdetail__price-row-value[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #0f172a;\n}\n.pdetail__price-row-value--margin[_ngcontent-%COMP%] {\n  color: #0d9488;\n}\n.pdetail__tabs[_ngcontent-%COMP%] {\n  display: flex;\n  border-bottom: 1px solid #e2e8f0;\n  background: white;\n  padding: 0 .5rem;\n  flex-shrink: 0;\n  overflow-x: auto;\n}\n.pdetail__tabs[_ngcontent-%COMP%]::-webkit-scrollbar {\n  display: none;\n}\n.pdetail__tab[_ngcontent-%COMP%] {\n  padding: .625rem .75rem;\n  background: none;\n  border: none;\n  border-bottom: 2px solid transparent;\n  font-size: .8rem;\n  font-weight: 500;\n  color: #64748b;\n  cursor: pointer;\n  white-space: nowrap;\n  transition: color .13s, border-color .13s;\n  font-family: inherit;\n  margin-bottom: -1px;\n}\n.pdetail__tab[_ngcontent-%COMP%]:hover {\n  color: #0d9488;\n}\n.pdetail__tab--active[_ngcontent-%COMP%] {\n  color: #0d9488;\n  border-bottom-color: #0d9488;\n  font-weight: 600;\n}\n.pdetail__tab-content[_ngcontent-%COMP%] {\n  flex: 1;\n  overflow-y: auto;\n  padding: 1rem;\n  background: white;\n}\n.pdetail__tab-empty[_ngcontent-%COMP%] {\n  text-align: center;\n  color: #94a3b8;\n  font-size: .8125rem;\n  padding: 2rem 0;\n  margin: 0;\n}\n.pdetail__dl[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: auto 1fr;\n  row-gap: .625rem;\n  column-gap: 1rem;\n  margin: 0;\n  font-size: .8125rem;\n  align-items: center;\n}\n.pdetail__dl[_ngcontent-%COMP%]   dt[_ngcontent-%COMP%] {\n  font-weight: 600;\n  color: #64748b;\n  font-size: .75rem;\n  text-transform: uppercase;\n  letter-spacing: .04em;\n  white-space: nowrap;\n}\n.pdetail__dl[_ngcontent-%COMP%]   dd[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #0f172a;\n  font-weight: 500;\n}\n.pdetail__code-chip[_ngcontent-%COMP%] {\n  font-family: "Roboto Mono", monospace;\n  background: #f1f5f9;\n  padding: .125rem .5rem;\n  border-radius: .25rem;\n  font-size: .78rem;\n  color: #475569;\n}\n.pdetail__code-chip--sm[_ngcontent-%COMP%] {\n  font-size: .6875rem;\n}\n.pdetail__price-highlight[_ngcontent-%COMP%] {\n  font-weight: 700;\n  color: #0f172a;\n}\n.pdetail__price-highlight--main[_ngcontent-%COMP%] {\n  font-size: 1.0625rem;\n  color: #0d9488;\n}\n.pdetail__margin--good[_ngcontent-%COMP%] {\n  color: #16a34a;\n  font-weight: 700;\n}\n.pdetail__margin--warn[_ngcontent-%COMP%] {\n  color: #d97706;\n  font-weight: 700;\n}\n.pdetail__margin--bad[_ngcontent-%COMP%] {\n  color: #dc2626;\n  font-weight: 700;\n}\n.pdetail__stock-list[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: .5rem;\n}\n.pdetail__stock-row[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: .625rem .75rem;\n  background: #f8fafc;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n}\n.pdetail__stock-info[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .5rem;\n}\n.pdetail__stock-icon[_ngcontent-%COMP%] {\n  font-size: 1.125rem !important;\n  color: #94a3b8;\n}\n.pdetail__stock-branch[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: .8125rem;\n  font-weight: 600;\n  color: #0f172a;\n}\n.pdetail__stock-limits[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: .7rem;\n  color: #94a3b8;\n}\n.pdetail__stock-qty-wrap[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: baseline;\n  gap: .25rem;\n}\n.pdetail__stock-qty[_ngcontent-%COMP%] {\n  font-size: 1.25rem;\n  font-weight: 800;\n  line-height: 1;\n}\n.pdetail__stock-qty--ok[_ngcontent-%COMP%] {\n  color: #16a34a;\n}\n.pdetail__stock-qty--low[_ngcontent-%COMP%] {\n  color: #d97706;\n}\n.pdetail__stock-qty--out[_ngcontent-%COMP%] {\n  color: #dc2626;\n}\n.pdetail__stock-unit[_ngcontent-%COMP%] {\n  font-size: .75rem;\n  color: #64748b;\n}\n.pdetail__stock-total[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  padding: .5rem .75rem;\n  border-top: 1px solid #e2e8f0;\n  margin-top: .25rem;\n  font-size: .8125rem;\n  color: #64748b;\n}\n.pdetail__stock-total-qty[_ngcontent-%COMP%] {\n  font-weight: 700;\n  color: #0f172a;\n}\n.pdetail__actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: .5rem;\n  padding: .75rem 1rem;\n  background: #f8fafc;\n  border-top: 1px solid #e2e8f0;\n  flex-shrink: 0;\n}\n.pdetail__action-btn[_ngcontent-%COMP%] {\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: .375rem;\n  padding: .5rem;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n  background: white;\n  font-size: .78rem;\n  font-weight: 600;\n  color: #374151;\n  cursor: pointer;\n  transition: all .13s;\n  font-family: inherit;\n}\n.pdetail__action-btn[_ngcontent-%COMP%]:hover {\n  background: #f0fdfa;\n  border-color: #0d9488;\n  color: #0d9488;\n}\n.pdetail__action-btn[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: .9375rem !important;\n}\n/*# sourceMappingURL=product-details.component.css.map */'] });
   }
 };
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductSearchComponent, [{
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductDetailsComponent, [{
     type: Component,
-    args: [{ selector: "app-product-search", imports: [FormsModule], template: '<div class="row mb-3 text-center">\n  <form #searchForm="ngForm" (ngSubmit)="onSearch()">\n    <div class="col-md-6 form-group align-items-center">\n      <input\n        type="text"\n        class="form-control"\n        id="searchTerm"\n        placeholder="Enter search term and press enter"\n        [(ngModel)]="searchTerm"\n        name="searchTerm"\n        (keyup)="onKeyUp($event)"\n      />\n    </div>\n    <div class="col-md-6 form-group align-items-center">\n      <button type="submit" class="btn btn-outline-primary btn-sm">\n        Search\n      </button>\n      <button\n        type="button"\n        class="btn btn-outline-success btn-sm"\n        (click)="searchWithStock()"\n      >\n        with Stock\n      </button>\n    </div>\n    @if(isFormSubmitted && searchTerm.length < 3){\n    <div class="text-danger">\n      Search term must be at least 3 characters long\n    </div>\n    }\n  </form>\n</div>\n' }]
-  }], null, { search: [{
-    type: Output
-  }], searchStock: [{
-    type: Output
+    args: [{ selector: "app-product-detail", standalone: true, imports: [CommonModule, CurrencyPipe], template: `<!-- Estado vac\xEDo -->
+@if (!product) {
+  <div class="pdetail-empty">
+    <span class="material-icons pdetail-empty__icon">inventory_2</span>
+    <p class="pdetail-empty__title">Ning\xFAn art\xEDculo seleccionado</p>
+    <p class="pdetail-empty__sub">Hac\xE9 clic en un art\xEDculo de la lista para ver sus detalles</p>
+  </div>
+}
+
+<!-- Detalle completo -->
+@if (product) {
+  <div class="pdetail">
+
+    <!-- \u2500\u2500 Header del producto \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+    <div class="pdetail__header">
+      <!-- Avatar / imagen -->
+      <div class="pdetail__avatar">
+        @if (product.imageId.length > 0) {
+          <img [src]="product.imageId[0]" alt="Imagen del producto" class="pdetail__img" />
+        } @else {
+          <span class="material-icons pdetail__avatar-icon">inventory_2</span>
+        }
+      </div>
+      <!-- Info principal -->
+      <div class="pdetail__info">
+        <p class="pdetail__brand">{{ product.brandName }}</p>
+        <h2 class="pdetail__model">{{ product.model }}</h2>
+        <p class="pdetail__desc">{{ product.description }}</p>
+        <div class="pdetail__badges">
+          <span class="pdetail__badge pdetail__badge--category">
+            <span class="material-icons">category</span>
+            {{ product.categoryName }}
+          </span>
+          <span
+            class="pdetail__badge"
+            [class.pdetail__badge--stock-ok]="stockStatus === 'ok'"
+            [class.pdetail__badge--stock-low]="stockStatus === 'low'"
+            [class.pdetail__badge--stock-out]="stockStatus === 'out'"
+          >
+            <span class="material-icons">
+              {{ stockStatus === 'ok' ? 'check_circle' : stockStatus === 'low' ? 'warning' : 'remove_circle' }}
+            </span>
+            {{ totalStock }} en stock
+          </span>
+          @if (product.hidden) {
+            <span class="pdetail__badge pdetail__badge--hidden">
+              <span class="material-icons">visibility_off</span> Oculto
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- \u2500\u2500 Precios destacados \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+    <div class="pdetail__prices">
+      <div class="pdetail__price-main">
+        <p class="pdetail__price-label">Precio de venta c/IVA</p>
+        <p class="pdetail__price-value">{{ priceWithTax | currency:'ARS':'symbol':'1.0-0' }}</p>
+        @if (product.priceResponse.discount > 0) {
+          <span class="pdetail__price-discount">
+            <span class="material-icons">sell</span>
+            {{ product.priceResponse.discount }}% dto.
+          </span>
+        }
+      </div>
+      <div class="pdetail__price-secondary">
+        <div class="pdetail__price-row">
+          <span class="pdetail__price-row-label">Precio s/IVA</span>
+          <span class="pdetail__price-row-value">{{ product.priceResponse.sellingPrice | currency:'ARS':'symbol':'1.0-0' }}</span>
+        </div>
+        <div class="pdetail__price-row">
+          <span class="pdetail__price-row-label">IVA</span>
+          <span class="pdetail__price-row-value">{{ product.priceResponse.taxRate * 100 | number:'1.0-0' }}%</span>
+        </div>
+        <div class="pdetail__price-row">
+          <span class="pdetail__price-row-label">Costo</span>
+          <span class="pdetail__price-row-value">{{ purchasePrice | currency:'ARS':'symbol':'1.0-0' }}</span>
+        </div>
+        <div class="pdetail__price-row">
+          <span class="pdetail__price-row-label">Margen</span>
+          <span class="pdetail__price-row-value pdetail__price-row-value--margin">{{ margin | number:'1.1-1' }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- \u2500\u2500 Tabs \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+    <nav class="pdetail__tabs">
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'ficha'"     (click)="activeTab = 'ficha'">Ficha</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'precios'"   (click)="activeTab = 'precios'">Precios</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'stock'"     (click)="activeTab = 'stock'">Stock</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'proveedor'" (click)="activeTab = 'proveedor'">Proveedor</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'codigos'"   (click)="activeTab = 'codigos'">C\xF3digos</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'varios'"   (click)="activeTab = 'varios'">Varios</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'tarjetas'" (click)="activeTab = 'tarjetas'">Pago tarjetas</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'especificaciones'" (click)="activeTab = 'especificaciones'">Especificaciones</button>
+    </nav>
+
+    <!-- \u2500\u2500 Contenido de tabs \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+    <div class="pdetail__tab-content">
+
+      @if (activeTab === 'ficha') {
+        <dl class="pdetail__dl">
+          <dt>C\xF3digo</dt>
+          <dd><code class="pdetail__code-chip">{{ product.code }}</code></dd>
+          <dt>Marca</dt>
+          <dd>{{ product.brandName }}</dd>
+          <dt>Modelo</dt>
+          <dd>{{ product.model }}</dd>
+          <dt>Descripci\xF3n</dt>
+          <dd>{{ product.description }}</dd>
+          <dt>Categor\xEDa</dt>
+          <dd>{{ product.categoryName }}</dd>
+          <dt>Vendidos</dt>
+          <dd>{{ product.invoiceQuantity }} unid.</dd>
+        </dl>
+      }
+
+      @if (activeTab === 'precios') {
+        <dl class="pdetail__dl">
+          <dt>Precio de costo</dt>
+          <dd class="pdetail__price-highlight">{{ purchasePrice | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>Precio de venta (s/IVA)</dt>
+          <dd>{{ product.priceResponse.sellingPrice | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>IVA</dt>
+          <dd>{{ product.priceResponse.taxRate * 100 | number:'1.0-0' }}%</dd>
+          <dt>Precio de venta (c/IVA)</dt>
+          <dd class="pdetail__price-highlight pdetail__price-highlight--main">{{ priceWithTax | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>Descuento</dt>
+          <dd>{{ product.priceResponse.discount }}%</dd>
+          <dt>Margen bruto</dt>
+          <dd [class.pdetail__margin--good]="margin >= 20" [class.pdetail__margin--warn]="margin > 0 && margin < 20" [class.pdetail__margin--bad]="margin <= 0">
+            {{ margin | number:'1.1-1' }}%
+          </dd>
+        </dl>
+      }
+
+      @if (activeTab === 'stock') {
+        @if (product.stockResponses.length === 0) {
+          <p class="pdetail__tab-empty">No hay informaci\xF3n de stock disponible</p>
+        } @else {
+          <div class="pdetail__stock-list">
+            @for (branch of stockBranches(product.stockResponses); track branch.branch) {
+              <div class="pdetail__stock-row">
+                <div class="pdetail__stock-info">
+                  <span class="material-icons pdetail__stock-icon">store</span>
+                  <div>
+                    <p class="pdetail__stock-branch">{{ branch.branch }}</p>
+                    <p class="pdetail__stock-limits">M\xEDn: {{ branch.min }} \xB7 M\xE1x: {{ branch.max }}</p>
+                  </div>
+                </div>
+                <div class="pdetail__stock-qty-wrap">
+                  <span
+                    class="pdetail__stock-qty"
+                    [class.pdetail__stock-qty--ok]="branch.qty > branch.min"
+                    [class.pdetail__stock-qty--low]="branch.qty > 0 && branch.qty <= branch.min"
+                    [class.pdetail__stock-qty--out]="branch.qty <= 0"
+                  >{{ branch.qty }}</span>
+                  <span class="pdetail__stock-unit">unid.</span>
+                </div>
+              </div>
+            }
+            <div class="pdetail__stock-total">
+              <span>Total</span>
+              <span class="pdetail__stock-total-qty">{{ totalStock }} unid.</span>
+            </div>
+          </div>
+        }
+      }
+
+      @if (activeTab === 'proveedor') {
+        <dl class="pdetail__dl">
+          <dt>ID Proveedor</dt>
+          <dd>{{ product.supplierId || '\u2014' }}</dd>
+          <dt>ID Art. Proveedor</dt>
+          <dd>{{ product.supplierProductId || '\u2014' }}</dd>
+        </dl>
+      }
+
+      @if (activeTab === 'codigos') {
+        <dl class="pdetail__dl">
+          <dt>C\xF3digo interno</dt>
+          <dd><code class="pdetail__code-chip">{{ product.code }}</code></dd>
+          <dt>ID producto</dt>
+          <dd><code class="pdetail__code-chip pdetail__code-chip--sm">{{ product.id }}</code></dd>
+        </dl>
+      }
+
+      @if (activeTab === 'varios') {
+        <dl class="pdetail__dl">
+          <dt>Categor\xEDa</dt>
+          <dd>{{ product.categoryName }}</dd>
+          <dt>Estado</dt>
+          <dd>{{ product.hidden ? 'Oculto' : 'Visible' }}</dd>
+          <dt>Cantidad facturada</dt>
+          <dd>{{ product.invoiceQuantity }} unid.</dd>
+          <dt>Im\xE1genes asociadas</dt>
+          <dd>{{ product.imageId.length }}</dd>
+          <dt>ID dimensi\xF3n</dt>
+          <dd>{{ product.dimensionId || '\u2014' }}</dd>
+        </dl>
+      }
+
+      @if (activeTab === 'tarjetas') {
+        <dl class="pdetail__dl">
+          <dt>Precio de referencia</dt>
+          <dd>{{ priceWithTax | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>Recargo sugerido 1 cuota</dt>
+          <dd>{{ (priceWithTax * 1.05) | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>Recargo sugerido 3 cuotas</dt>
+          <dd>{{ (priceWithTax * 1.12) | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>Recargo sugerido 6 cuotas</dt>
+          <dd>{{ (priceWithTax * 1.20) | currency:'ARS':'symbol':'1.2-2' }}</dd>
+        </dl>
+        <p class="pdetail__tab-empty">Los porcentajes son de referencia hasta integrar configuraci\xF3n real de medios de pago.</p>
+      }
+
+      @if (activeTab === 'especificaciones') {
+        <dl class="pdetail__dl">
+          <dt>Modelo</dt>
+          <dd>{{ product.model }}</dd>
+          <dt>Descripci\xF3n t\xE9cnica</dt>
+          <dd>{{ product.description || 'Sin descripci\xF3n' }}</dd>
+          <dt>ID dimensi\xF3n</dt>
+          <dd>{{ product.dimensionId || 'No asignada' }}</dd>
+          <dt>Stock m\xEDnimo de referencia</dt>
+          <dd>{{ product.stockResponses.length > 0 ? product.stockResponses[0].min : 0 }}</dd>
+          <dt>Stock m\xE1ximo de referencia</dt>
+          <dd>{{ product.stockResponses.length > 0 ? product.stockResponses[0].max : 0 }}</dd>
+        </dl>
+      }
+
+    </div>
+
+    <!-- \u2500\u2500 Acciones r\xE1pidas \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+    <div class="pdetail__actions">
+      <button class="pdetail__action-btn">
+        <span class="material-icons">edit</span> Editar
+      </button>
+      <button class="pdetail__action-btn">
+        <span class="material-icons">swap_horiz</span> Stock
+      </button>
+      <button class="pdetail__action-btn">
+        <span class="material-icons">add_shopping_cart</span> Vender
+      </button>
+    </div>
+
+  </div>
+}
+`, styles: ['/* src/app/pages/product/product-details/product-details.component.css */\n.pdetail-empty {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  height: 100%;\n  min-height: 300px;\n  padding: 2rem;\n  color: #94a3b8;\n  text-align: center;\n  gap: .5rem;\n}\n.pdetail-empty__icon {\n  font-size: 3rem !important;\n  color: #cbd5e1;\n}\n.pdetail-empty__title {\n  margin: 0;\n  font-size: .9375rem;\n  font-weight: 600;\n  color: #64748b;\n}\n.pdetail-empty__sub {\n  margin: 0;\n  font-size: .8125rem;\n}\n.pdetail {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n}\n.pdetail__header {\n  display: flex;\n  gap: .875rem;\n  padding: 1rem;\n  background: white;\n  border-bottom: 1px solid #e2e8f0;\n}\n.pdetail__avatar {\n  width: 64px;\n  height: 64px;\n  border-radius: .625rem;\n  background: #f0fdfa;\n  border: 1.5px solid #99f6e4;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  overflow: hidden;\n}\n.pdetail__img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n.pdetail__avatar-icon {\n  font-size: 2rem !important;\n  color: #0d9488;\n}\n.pdetail__info {\n  flex: 1;\n  min-width: 0;\n}\n.pdetail__brand {\n  margin: 0 0 .125rem;\n  font-size: .6875rem;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: .07em;\n  color: #0d9488;\n}\n.pdetail__model {\n  margin: 0 0 .25rem;\n  font-size: 1.0625rem;\n  font-weight: 700;\n  color: #0f172a;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.pdetail__desc {\n  margin: 0 0 .5rem;\n  font-size: .78rem;\n  color: #64748b;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.pdetail__badges {\n  display: flex;\n  flex-wrap: wrap;\n  gap: .375rem;\n}\n.pdetail__badge {\n  display: inline-flex;\n  align-items: center;\n  gap: .2rem;\n  font-size: .6875rem;\n  font-weight: 600;\n  padding: .125rem .5rem;\n  border-radius: .875rem;\n}\n.pdetail__badge .material-icons {\n  font-size: .8rem !important;\n}\n.pdetail__badge--category {\n  background: #ede9fe;\n  color: #7c3aed;\n}\n.pdetail__badge--stock-ok {\n  background: #dcfce7;\n  color: #15803d;\n}\n.pdetail__badge--stock-low {\n  background: #fef9c3;\n  color: #a16207;\n}\n.pdetail__badge--stock-out {\n  background: #fee2e2;\n  color: #dc2626;\n}\n.pdetail__badge--hidden {\n  background: #f1f5f9;\n  color: #64748b;\n}\n.pdetail__prices {\n  display: flex;\n  gap: 1px;\n  background: #e2e8f0;\n  border-bottom: 1px solid #e2e8f0;\n  flex-shrink: 0;\n}\n.pdetail__price-main {\n  flex: 1;\n  padding: .875rem 1rem;\n  background: white;\n  display: flex;\n  flex-direction: column;\n  gap: .125rem;\n}\n.pdetail__price-secondary {\n  flex: 1;\n  padding: .625rem 1rem;\n  background: #f8fafc;\n  display: flex;\n  flex-direction: column;\n  gap: .125rem;\n  justify-content: center;\n}\n.pdetail__price-label {\n  margin: 0;\n  font-size: .6875rem;\n  font-weight: 700;\n  text-transform: uppercase;\n  letter-spacing: .05em;\n  color: #64748b;\n}\n.pdetail__price-value {\n  margin: 0;\n  font-size: 1.625rem;\n  font-weight: 800;\n  color: #0f172a;\n  letter-spacing: -.02em;\n  line-height: 1.1;\n}\n.pdetail__price-discount {\n  display: inline-flex;\n  align-items: center;\n  gap: .2rem;\n  font-size: .7rem;\n  font-weight: 700;\n  color: #16a34a;\n  background: #dcfce7;\n  padding: .125rem .375rem;\n  border-radius: .25rem;\n  width: fit-content;\n  margin-top: .25rem;\n}\n.pdetail__price-discount .material-icons {\n  font-size: .8rem !important;\n}\n.pdetail__price-row {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  font-size: .78rem;\n}\n.pdetail__price-row-label {\n  color: #64748b;\n}\n.pdetail__price-row-value {\n  font-weight: 600;\n  color: #0f172a;\n}\n.pdetail__price-row-value--margin {\n  color: #0d9488;\n}\n.pdetail__tabs {\n  display: flex;\n  border-bottom: 1px solid #e2e8f0;\n  background: white;\n  padding: 0 .5rem;\n  flex-shrink: 0;\n  overflow-x: auto;\n}\n.pdetail__tabs::-webkit-scrollbar {\n  display: none;\n}\n.pdetail__tab {\n  padding: .625rem .75rem;\n  background: none;\n  border: none;\n  border-bottom: 2px solid transparent;\n  font-size: .8rem;\n  font-weight: 500;\n  color: #64748b;\n  cursor: pointer;\n  white-space: nowrap;\n  transition: color .13s, border-color .13s;\n  font-family: inherit;\n  margin-bottom: -1px;\n}\n.pdetail__tab:hover {\n  color: #0d9488;\n}\n.pdetail__tab--active {\n  color: #0d9488;\n  border-bottom-color: #0d9488;\n  font-weight: 600;\n}\n.pdetail__tab-content {\n  flex: 1;\n  overflow-y: auto;\n  padding: 1rem;\n  background: white;\n}\n.pdetail__tab-empty {\n  text-align: center;\n  color: #94a3b8;\n  font-size: .8125rem;\n  padding: 2rem 0;\n  margin: 0;\n}\n.pdetail__dl {\n  display: grid;\n  grid-template-columns: auto 1fr;\n  row-gap: .625rem;\n  column-gap: 1rem;\n  margin: 0;\n  font-size: .8125rem;\n  align-items: center;\n}\n.pdetail__dl dt {\n  font-weight: 600;\n  color: #64748b;\n  font-size: .75rem;\n  text-transform: uppercase;\n  letter-spacing: .04em;\n  white-space: nowrap;\n}\n.pdetail__dl dd {\n  margin: 0;\n  color: #0f172a;\n  font-weight: 500;\n}\n.pdetail__code-chip {\n  font-family: "Roboto Mono", monospace;\n  background: #f1f5f9;\n  padding: .125rem .5rem;\n  border-radius: .25rem;\n  font-size: .78rem;\n  color: #475569;\n}\n.pdetail__code-chip--sm {\n  font-size: .6875rem;\n}\n.pdetail__price-highlight {\n  font-weight: 700;\n  color: #0f172a;\n}\n.pdetail__price-highlight--main {\n  font-size: 1.0625rem;\n  color: #0d9488;\n}\n.pdetail__margin--good {\n  color: #16a34a;\n  font-weight: 700;\n}\n.pdetail__margin--warn {\n  color: #d97706;\n  font-weight: 700;\n}\n.pdetail__margin--bad {\n  color: #dc2626;\n  font-weight: 700;\n}\n.pdetail__stock-list {\n  display: flex;\n  flex-direction: column;\n  gap: .5rem;\n}\n.pdetail__stock-row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: .625rem .75rem;\n  background: #f8fafc;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n}\n.pdetail__stock-info {\n  display: flex;\n  align-items: center;\n  gap: .5rem;\n}\n.pdetail__stock-icon {\n  font-size: 1.125rem !important;\n  color: #94a3b8;\n}\n.pdetail__stock-branch {\n  margin: 0;\n  font-size: .8125rem;\n  font-weight: 600;\n  color: #0f172a;\n}\n.pdetail__stock-limits {\n  margin: 0;\n  font-size: .7rem;\n  color: #94a3b8;\n}\n.pdetail__stock-qty-wrap {\n  display: flex;\n  align-items: baseline;\n  gap: .25rem;\n}\n.pdetail__stock-qty {\n  font-size: 1.25rem;\n  font-weight: 800;\n  line-height: 1;\n}\n.pdetail__stock-qty--ok {\n  color: #16a34a;\n}\n.pdetail__stock-qty--low {\n  color: #d97706;\n}\n.pdetail__stock-qty--out {\n  color: #dc2626;\n}\n.pdetail__stock-unit {\n  font-size: .75rem;\n  color: #64748b;\n}\n.pdetail__stock-total {\n  display: flex;\n  justify-content: space-between;\n  padding: .5rem .75rem;\n  border-top: 1px solid #e2e8f0;\n  margin-top: .25rem;\n  font-size: .8125rem;\n  color: #64748b;\n}\n.pdetail__stock-total-qty {\n  font-weight: 700;\n  color: #0f172a;\n}\n.pdetail__actions {\n  display: flex;\n  gap: .5rem;\n  padding: .75rem 1rem;\n  background: #f8fafc;\n  border-top: 1px solid #e2e8f0;\n  flex-shrink: 0;\n}\n.pdetail__action-btn {\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: .375rem;\n  padding: .5rem;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n  background: white;\n  font-size: .78rem;\n  font-weight: 600;\n  color: #374151;\n  cursor: pointer;\n  transition: all .13s;\n  font-family: inherit;\n}\n.pdetail__action-btn:hover {\n  background: #f0fdfa;\n  border-color: #0d9488;\n  color: #0d9488;\n}\n.pdetail__action-btn .material-icons {\n  font-size: .9375rem !important;\n}\n/*# sourceMappingURL=product-details.component.css.map */\n'] }]
+  }], null, { product: [{
+    type: Input
   }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductSearchComponent, { className: "ProductSearchComponent", filePath: "src/app/pages/product/product-search/product-search.component.ts", lineNumber: 11 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductDetailsComponent, { className: "ProductDetailsComponent", filePath: "src/app/pages/product/product-details/product-details.component.ts", lineNumber: 13 });
 })();
 
 // src/app/pages/product/products/products.component.ts
-var _c0 = (a0) => ({ active: a0 });
-function ProductsComponent_Case_19_Template(rf, ctx) {
+var _forTrack03 = ($index, $item) => $item.key;
+function ProductsComponent_Conditional_8_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "app-product-detail", 3);
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "button", 23);
+    \u0275\u0275listener("click", function ProductsComponent_Conditional_8_Template_button_click_0_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.clearSearch());
+    });
+    \u0275\u0275elementStart(1, "span", 11);
+    \u0275\u0275text(2, "close");
+    \u0275\u0275elementEnd()();
+  }
+}
+function ProductsComponent_Conditional_15_For_8_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r4 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "label", 26)(1, "input", 29);
+    \u0275\u0275listener("change", function ProductsComponent_Conditional_15_For_8_Template_input_change_1_listener($event) {
+      const column_r5 = \u0275\u0275restoreView(_r4).$implicit;
+      const ctx_r1 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r1.onColumnVisibilityChange(column_r5.key, $event));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(2, "span");
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
-    const ctx_r0 = \u0275\u0275nextContext();
-    \u0275\u0275property("product", ctx_r0.selectedProduct);
+    const column_r5 = ctx.$implicit;
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance();
+    \u0275\u0275property("checked", ctx_r1.isColumnVisible(column_r5.key));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(column_r5.label);
   }
 }
-function ProductsComponent_Case_20_Template(rf, ctx) {
+function ProductsComponent_Conditional_15_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div")(1, "p");
-    \u0275\u0275text(2, "Ficha Tecnica");
+    const _r3 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 12)(1, "header", 24)(2, "strong");
+    \u0275\u0275text(3, "Columnas visibles");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "span");
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "div", 25);
+    \u0275\u0275repeaterCreate(7, ProductsComponent_Conditional_15_For_8_Template, 4, 2, "label", 26, _forTrack03);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(9, "footer", 27)(10, "button", 28);
+    \u0275\u0275listener("click", function ProductsComponent_Conditional_15_Template_button_click_10_listener($event) {
+      \u0275\u0275restoreView(_r3);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.showAllColumns($event));
+    });
+    \u0275\u0275text(11, "Mostrar todo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "button", 28);
+    \u0275\u0275listener("click", function ProductsComponent_Conditional_15_Template_button_click_12_listener($event) {
+      \u0275\u0275restoreView(_r3);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.resetColumns($event));
+    });
+    \u0275\u0275text(13, "Restablecer");
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(5);
+    \u0275\u0275textInterpolate2("", ctx_r1.visibleColumns.length, "/", ctx_r1.columnOptions.length);
+    \u0275\u0275advance(2);
+    \u0275\u0275repeater(ctx_r1.columnOptions);
+  }
+}
+function ProductsComponent_Conditional_21_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 15)(1, "span", 30);
+    \u0275\u0275text(2, "autorenew");
+    \u0275\u0275elementEnd();
+    \u0275\u0275text(3, " Buscando\u2026 ");
+    \u0275\u0275elementEnd();
+  }
+}
+function ProductsComponent_Conditional_22_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 16);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate2(" ", ctx_r1.productList.length, " resultado", ctx_r1.productList.length !== 1 ? "s" : "", " ");
+  }
+}
+function ProductsComponent_Conditional_23_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 17);
+    \u0275\u0275text(1, "Ingres\xE1 al menos 3 caracteres para buscar");
+    \u0275\u0275elementEnd();
+  }
+}
+function ProductsComponent_Conditional_25_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 19)(1, "span", 31);
+    \u0275\u0275text(2, "search_off");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "p", 32);
+    \u0275\u0275text(4, "Sin resultados");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "p", 33);
+    \u0275\u0275text(6, "Intent\xE1 con otros t\xE9rminos de b\xFAsqueda");
     \u0275\u0275elementEnd()();
   }
 }
-function ProductsComponent_Case_21_Template(rf, ctx) {
+function ProductsComponent_Conditional_26_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div")(1, "p");
-    \u0275\u0275text(2, "Proveedor");
-    \u0275\u0275elementEnd()();
-  }
-}
-function ProductsComponent_Case_22_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "div")(1, "p");
-    \u0275\u0275text(2, "Codigos");
-    \u0275\u0275elementEnd()();
-  }
-}
-function ProductsComponent_Case_23_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "div")(1, "p");
-    \u0275\u0275text(2, "varios");
-    \u0275\u0275elementEnd()();
-  }
-}
-function ProductsComponent_Case_24_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "div")(1, "p");
-    \u0275\u0275text(2, "Stock");
-    \u0275\u0275elementEnd()();
-  }
-}
-function ProductsComponent_Case_25_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "div")(1, "p");
-    \u0275\u0275text(2, "tarjetas");
-    \u0275\u0275elementEnd()();
-  }
-}
-function ProductsComponent_Case_26_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "div")(1, "p");
-    \u0275\u0275text(2, "especificaciones");
-    \u0275\u0275elementEnd()();
-  }
-}
-function ProductsComponent_Conditional_30_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 6)(1, "h4");
-    \u0275\u0275text(2, "No elements found in this search");
-    \u0275\u0275elementEnd()();
-  }
-}
-function ProductsComponent_Conditional_31_Template(rf, ctx) {
-  if (rf & 1) {
-    const _r2 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "app-product-list", 8);
-    \u0275\u0275listener("selectProduct", function ProductsComponent_Conditional_31_Template_app_product_list_selectProduct_0_listener($event) {
-      \u0275\u0275restoreView(_r2);
-      const ctx_r0 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r0.selectProduct($event));
+    const _r6 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "app-product-list", 34);
+    \u0275\u0275listener("selectProduct", function ProductsComponent_Conditional_26_Template_app_product_list_selectProduct_0_listener($event) {
+      \u0275\u0275restoreView(_r6);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.selectProduct($event));
     });
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const ctx_r0 = \u0275\u0275nextContext();
-    \u0275\u0275property("productList", ctx_r0.productList);
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275property("productList", ctx_r1.productList)("selectedProductId", (ctx_r1.selectedProduct == null ? null : ctx_r1.selectedProduct.id) ?? null)("visibleColumns", ctx_r1.visibleColumns);
   }
 }
 var ProductsComponent = class _ProductsComponent {
   constructor() {
     this._productService = inject(ProductService);
-    this._brandService = inject(BrandService);
-    this._supplierPriceListService = inject(SupplierPriceListService);
     this._router = inject(Router);
     this.productList = [];
-    this.brandName = "";
+    this.selectedProduct = null;
     this.searchTerm = "";
     this.isFormSubmitted = false;
-    this.selectedComponent = "product";
-    this.selectedProduct = null;
-    this.totalQuantity = 0;
     this.loading = false;
+    this.filterStock = false;
+    this.columnPickerOpen = false;
+    this.columnOptions = [
+      { key: "id", label: "#Id" },
+      { key: "code", label: "C\xF3digo" },
+      { key: "brand", label: "Marca" },
+      { key: "model", label: "Modelo" },
+      { key: "description", label: "Descripci\xF3n" },
+      { key: "category", label: "Categor\xEDa" },
+      { key: "tax", label: "IVA" },
+      { key: "price", label: "Precio" },
+      { key: "stock", label: "Stock" }
+    ];
+    this.visibleColumns = this.loadVisibleColumns();
   }
-  handleSearch(searchTerm) {
+  static {
+    this.COLUMNS_STORAGE_KEY = "products.visible-columns";
+  }
+  // ── Búsqueda ──────────────────────────────────────────
+  handleSearch(term) {
     this.isFormSubmitted = true;
-    if (searchTerm.length >= 3) {
-      this.searchProducts(searchTerm);
+    if (term.trim().length >= 3) {
+      this.runSearch(term.trim());
     } else {
       this.productList = [];
     }
   }
-  handleSearchWithStock(searchTerm) {
-    this.isFormSubmitted = true;
-    if (searchTerm.length >= 3) {
-      this.searchProductsWithStock(searchTerm);
-    } else {
+  onSearchInput() {
+    if (this.searchTerm.length === 0) {
       this.productList = [];
+      this.isFormSubmitted = false;
     }
   }
-  getBrandName(brandId) {
-    return this._brandService.getBrand(brandId).pipe(map((brand) => brand.name));
+  clearSearch() {
+    this.searchTerm = "";
+    this.productList = [];
+    this.isFormSubmitted = false;
+    this.selectedProduct = null;
   }
-  loadProducts(params) {
+  toggleStockFilter() {
+    this.filterStock = !this.filterStock;
+    if (this.searchTerm.trim().length >= 3) {
+      this.runSearch(this.searchTerm.trim());
+    }
+  }
+  toggleColumnPicker(event) {
+    event.stopPropagation();
+    this.columnPickerOpen = !this.columnPickerOpen;
+  }
+  closeColumnPicker() {
+    this.columnPickerOpen = false;
+  }
+  isColumnVisible(column) {
+    return this.visibleColumns.includes(column);
+  }
+  onColumnVisibilityChange(column, event) {
+    const target = event.target;
+    const checked = target.checked;
+    if (checked) {
+      if (!this.visibleColumns.includes(column)) {
+        this.visibleColumns = [...this.visibleColumns, column];
+      }
+      this.persistVisibleColumns();
+      return;
+    }
+    if (this.visibleColumns.length <= 1) {
+      target.checked = true;
+      return;
+    }
+    this.visibleColumns = this.visibleColumns.filter((c) => c !== column);
+    this.persistVisibleColumns();
+  }
+  showAllColumns(event) {
+    event.stopPropagation();
+    this.visibleColumns = this.columnOptions.map((c) => c.key);
+    this.persistVisibleColumns();
+  }
+  resetColumns(event) {
+    event.stopPropagation();
+    this.visibleColumns = this.columnOptions.map((c) => c.key);
+    this.persistVisibleColumns();
+  }
+  runSearch(term) {
+    this.loading = true;
     this.subscription?.unsubscribe();
-    this.subscription = this._productService.getProducts(__spreadProps(__spreadValues({}, params), { page: 0, size: 20 })).subscribe({
-      next: (page) => this.productList = page.content,
-      error: (err) => console.error(err)
+    this.subscription = this._productService.getProducts({ search: term, inStock: this.filterStock || void 0, page: 0, size: 50 }).subscribe({
+      next: (page) => {
+        this.productList = page.content;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.loading = false;
+      }
     });
   }
-  searchProducts(term) {
-    this.loadProducts({ search: term });
+  loadVisibleColumns() {
+    const allColumns = this.columnOptions.map((c) => c.key);
+    try {
+      const raw = localStorage.getItem(_ProductsComponent.COLUMNS_STORAGE_KEY);
+      if (!raw)
+        return allColumns;
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed))
+        return allColumns;
+      const valid = parsed.filter((value) => allColumns.includes(value));
+      return valid.length > 0 ? valid : allColumns;
+    } catch (e) {
+      return allColumns;
+    }
   }
-  searchProductsWithStock(term) {
-    this.loadProducts({ search: term, inStock: true });
+  persistVisibleColumns() {
+    localStorage.setItem(_ProductsComponent.COLUMNS_STORAGE_KEY, JSON.stringify(this.visibleColumns));
   }
+  // ── Selección ─────────────────────────────────────────
   selectProduct(product) {
     this.selectedProduct = product;
   }
-  navegate(id) {
-    this._router.navigate(["/products", id]);
+  // ── Acciones toolbar ──────────────────────────────────
+  navigateNew() {
+    this._router.navigate(["/products/new"]);
   }
-  getTotalStockQuantity(stocks) {
-    this.loading = true;
-    const totalQuantity = stocks.reduce((acc, stock) => acc + stock.quantity, 0);
-    this.loading = false;
-    return totalQuantity;
+  navigateEdit() {
+    if (this.selectedProduct) {
+      this._router.navigate(["/products", this.selectedProduct.id, "edit"]);
+    }
   }
-  isPriceUpToDate(supplierProductId, purchasePrice) {
-    return this._supplierPriceListService.getById(supplierProductId).pipe(map((supplierProduct) => supplierProduct.price === purchasePrice), catchError((err) => {
-      console.error("Error fetching supplier product", err);
-      return of(false);
-    }));
+  confirmDelete() {
+    if (!this.selectedProduct)
+      return;
+    console.warn("Delete product:", this.selectedProduct.id);
+  }
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
+  }
+  onDocumentClick() {
+    if (this.columnPickerOpen) {
+      this.closeColumnPicker();
+    }
   }
   static {
     this.\u0275fac = function ProductsComponent_Factory(__ngFactoryType__) {
@@ -20365,256 +22062,248 @@ var ProductsComponent = class _ProductsComponent {
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductsComponent, selectors: [["app-products"]], decls: 32, vars: 26, consts: [["role", "group", "aria-label", "Basic outlined example", 1, "btn-group", "btn-group-sm"], ["type", "button", 1, "btn", "btn-outline-secondary", 3, "click", "ngClass"], ["id", "tag-container", 1, "container"], [3, "product"], [1, "container"], [3, "search", "searchStock"], [1, "card", "bg-light"], ["selectionMode", "click", 3, "productList"], ["selectionMode", "click", 3, "selectProduct", "productList"]], template: function ProductsComponent_Template(rf, ctx) {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductsComponent, selectors: [["app-products"]], hostBindings: function ProductsComponent_HostBindings(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275element(0, "app-product-navbar");
-        \u0275\u0275elementStart(1, "div", 0)(2, "button", 1);
-        \u0275\u0275listener("click", function ProductsComponent_Template_button_click_2_listener() {
-          return ctx.selectedComponent = "product";
+        \u0275\u0275listener("click", function ProductsComponent_click_HostBindingHandler() {
+          return ctx.onDocumentClick();
+        }, \u0275\u0275resolveDocument);
+      }
+    }, decls: 29, vars: 10, consts: [[3, "newProduct", "editProduct", "deleteProduct"], [1, "products-workspace"], [1, "products-panel", "products-panel--list"], [1, "products-searchbar"], [1, "products-searchbar__input-wrap"], [1, "material-icons", "products-searchbar__icon"], ["type", "text", "placeholder", "Buscar por c\xF3digo, marca, modelo o descripci\xF3n\u2026", 1, "products-searchbar__input", 3, "ngModelChange", "keyup.enter", "input", "ngModel"], ["title", "Limpiar", 1, "products-searchbar__clear"], [1, "products-searchbar__actions"], [1, "products-columns", 3, "click"], ["type", "button", "title", "Elegir columnas visibles", 1, "products-columns__btn", 3, "click"], [1, "material-icons"], [1, "products-columns__panel"], ["title", "Mostrar solo art\xEDculos con stock", 1, "products-searchbar__btn", 3, "click"], [1, "products-list-meta"], [1, "products-list-meta__loading"], [1, "products-list-meta__count"], [1, "products-list-meta__hint"], [1, "products-list-wrap"], [1, "products-empty"], ["selectionMode", "click", 3, "productList", "selectedProductId", "visibleColumns"], [1, "products-panel", "products-panel--detail"], [3, "product"], ["title", "Limpiar", 1, "products-searchbar__clear", 3, "click"], [1, "products-columns__header"], [1, "products-columns__list"], [1, "products-columns__item"], [1, "products-columns__actions"], ["type", "button", 3, "click"], ["type", "checkbox", 3, "change", "checked"], [1, "material-icons", "products-list-meta__spin"], [1, "material-icons", "products-empty__icon"], [1, "products-empty__title"], [1, "products-empty__sub"], ["selectionMode", "click", 3, "selectProduct", "productList", "selectedProductId", "visibleColumns"]], template: function ProductsComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        \u0275\u0275elementStart(0, "app-product-navbar", 0);
+        \u0275\u0275listener("newProduct", function ProductsComponent_Template_app_product_navbar_newProduct_0_listener() {
+          return ctx.navigateNew();
+        })("editProduct", function ProductsComponent_Template_app_product_navbar_editProduct_0_listener() {
+          return ctx.navigateEdit();
+        })("deleteProduct", function ProductsComponent_Template_app_product_navbar_deleteProduct_0_listener() {
+          return ctx.confirmDelete();
         });
-        \u0275\u0275text(3, " Product ");
         \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(4, "button", 1);
-        \u0275\u0275listener("click", function ProductsComponent_Template_button_click_4_listener() {
-          return ctx.selectedComponent = "fichaTecnica";
+        \u0275\u0275elementStart(1, "div", 1)(2, "section", 2)(3, "div", 3)(4, "div", 4)(5, "span", 5);
+        \u0275\u0275text(6, "search");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(7, "input", 6);
+        \u0275\u0275twoWayListener("ngModelChange", function ProductsComponent_Template_input_ngModelChange_7_listener($event) {
+          \u0275\u0275twoWayBindingSet(ctx.searchTerm, $event) || (ctx.searchTerm = $event);
+          return $event;
         });
-        \u0275\u0275text(5, " Ficha Tecnica ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(6, "button", 1);
-        \u0275\u0275listener("click", function ProductsComponent_Template_button_click_6_listener() {
-          return ctx.selectedComponent = "proveedor";
+        \u0275\u0275listener("keyup.enter", function ProductsComponent_Template_input_keyup_enter_7_listener() {
+          return ctx.handleSearch(ctx.searchTerm);
+        })("input", function ProductsComponent_Template_input_input_7_listener() {
+          return ctx.onSearchInput();
         });
-        \u0275\u0275text(7, " Proveedor ");
         \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(8, "button", 1);
-        \u0275\u0275listener("click", function ProductsComponent_Template_button_click_8_listener() {
-          return ctx.selectedComponent = "codigos";
+        \u0275\u0275conditionalCreate(8, ProductsComponent_Conditional_8_Template, 3, 0, "button", 7);
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(9, "div", 8)(10, "div", 9);
+        \u0275\u0275listener("click", function ProductsComponent_Template_div_click_10_listener($event) {
+          return $event.stopPropagation();
         });
-        \u0275\u0275text(9, " Codigos ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(10, "button", 1);
-        \u0275\u0275listener("click", function ProductsComponent_Template_button_click_10_listener() {
-          return ctx.selectedComponent = "varios";
+        \u0275\u0275elementStart(11, "button", 10);
+        \u0275\u0275listener("click", function ProductsComponent_Template_button_click_11_listener($event) {
+          return ctx.toggleColumnPicker($event);
         });
-        \u0275\u0275text(11, " Varios ");
+        \u0275\u0275elementStart(12, "span", 11);
+        \u0275\u0275text(13, "view_column");
         \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(12, "button", 1);
-        \u0275\u0275listener("click", function ProductsComponent_Template_button_click_12_listener() {
-          return ctx.selectedComponent = "stock";
-        });
-        \u0275\u0275text(13, " Stock ");
+        \u0275\u0275text(14, " Columnas ");
         \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(14, "button", 1);
-        \u0275\u0275listener("click", function ProductsComponent_Template_button_click_14_listener() {
-          return ctx.selectedComponent = "tarjetas";
-        });
-        \u0275\u0275text(15, " Pago Tarjetas ");
+        \u0275\u0275conditionalCreate(15, ProductsComponent_Conditional_15_Template, 14, 2, "div", 12);
         \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(16, "button", 1);
+        \u0275\u0275elementStart(16, "button", 13);
         \u0275\u0275listener("click", function ProductsComponent_Template_button_click_16_listener() {
-          return ctx.selectedComponent = "especificaciones";
+          return ctx.toggleStockFilter();
         });
-        \u0275\u0275text(17, " Especificaciones ");
+        \u0275\u0275elementStart(17, "span", 11);
+        \u0275\u0275text(18, "inventory_2");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(19, " Con stock ");
+        \u0275\u0275elementEnd()()();
+        \u0275\u0275elementStart(20, "div", 14);
+        \u0275\u0275conditionalCreate(21, ProductsComponent_Conditional_21_Template, 4, 0, "span", 15)(22, ProductsComponent_Conditional_22_Template, 2, 2, "span", 16)(23, ProductsComponent_Conditional_23_Template, 2, 0, "span", 17);
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(24, "div", 18);
+        \u0275\u0275conditionalCreate(25, ProductsComponent_Conditional_25_Template, 7, 0, "div", 19)(26, ProductsComponent_Conditional_26_Template, 1, 3, "app-product-list", 20);
         \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(18, "div", 2);
-        \u0275\u0275conditionalCreate(19, ProductsComponent_Case_19_Template, 1, 1, "app-product-detail", 3)(20, ProductsComponent_Case_20_Template, 3, 0, "div")(21, ProductsComponent_Case_21_Template, 3, 0, "div")(22, ProductsComponent_Case_22_Template, 3, 0, "div")(23, ProductsComponent_Case_23_Template, 3, 0, "div")(24, ProductsComponent_Case_24_Template, 3, 0, "div")(25, ProductsComponent_Case_25_Template, 3, 0, "div")(26, ProductsComponent_Case_26_Template, 3, 0, "div");
-        \u0275\u0275elementEnd();
-        \u0275\u0275element(27, "hr");
-        \u0275\u0275elementStart(28, "div", 4)(29, "app-product-search", 5);
-        \u0275\u0275listener("search", function ProductsComponent_Template_app_product_search_search_29_listener($event) {
-          return ctx.handleSearch($event);
-        })("searchStock", function ProductsComponent_Template_app_product_search_searchStock_29_listener($event) {
-          return ctx.handleSearchWithStock($event);
-        });
-        \u0275\u0275elementEnd();
-        \u0275\u0275conditionalCreate(30, ProductsComponent_Conditional_30_Template, 3, 0, "div", 6)(31, ProductsComponent_Conditional_31_Template, 1, 1, "app-product-list", 7);
-        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(27, "section", 21);
+        \u0275\u0275element(28, "app-product-detail", 22);
+        \u0275\u0275elementEnd()();
       }
       if (rf & 2) {
-        let tmp_8_0;
-        \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(10, _c0, ctx.selectedComponent === "product"));
-        \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(12, _c0, ctx.selectedComponent === "fichaTecnica"));
-        \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(14, _c0, ctx.selectedComponent === "proveedor"));
-        \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(16, _c0, ctx.selectedComponent === "codigos"));
-        \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(18, _c0, ctx.selectedComponent === "varios"));
-        \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(20, _c0, ctx.selectedComponent === "stock"));
-        \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(22, _c0, ctx.selectedComponent === "tarjetas"));
-        \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(24, _c0, ctx.selectedComponent === "especificaciones"));
+        \u0275\u0275advance(7);
+        \u0275\u0275twoWayProperty("ngModel", ctx.searchTerm);
+        \u0275\u0275advance();
+        \u0275\u0275conditional(ctx.searchTerm.length > 0 ? 8 : -1);
         \u0275\u0275advance(3);
-        \u0275\u0275conditional((tmp_8_0 = ctx.selectedComponent) === "product" ? 19 : tmp_8_0 === "fichaTecnica" ? 20 : tmp_8_0 === "proveedor" ? 21 : tmp_8_0 === "codigos" ? 22 : tmp_8_0 === "varios" ? 23 : tmp_8_0 === "stock" ? 24 : tmp_8_0 === "tarjetas" ? 25 : tmp_8_0 === "especificaciones" ? 26 : -1);
-        \u0275\u0275advance(11);
-        \u0275\u0275conditional(ctx.productList.length == 0 && ctx.isFormSubmitted ? 30 : 31);
+        \u0275\u0275classProp("products-columns__btn--active", ctx.columnPickerOpen);
+        \u0275\u0275advance(4);
+        \u0275\u0275conditional(ctx.columnPickerOpen ? 15 : -1);
+        \u0275\u0275advance();
+        \u0275\u0275classProp("products-searchbar__btn--active", ctx.filterStock);
+        \u0275\u0275advance(5);
+        \u0275\u0275conditional(ctx.loading ? 21 : ctx.isFormSubmitted ? 22 : 23);
+        \u0275\u0275advance(4);
+        \u0275\u0275conditional(ctx.productList.length === 0 && ctx.isFormSubmitted && !ctx.loading ? 25 : 26);
+        \u0275\u0275advance(3);
+        \u0275\u0275property("product", ctx.selectedProduct);
       }
     }, dependencies: [
       CommonModule,
-      NgClass,
+      FormsModule,
+      DefaultValueAccessor,
+      NgControlStatus,
+      NgModel,
       ProductNavbarComponent,
       ProductListComponent,
-      ProductSearchComponent,
-      ProductDetailsComponent,
-      FormsModule
-    ], styles: ["\nh1[_ngcontent-%COMP%] {\n  text-align: center;\n}\n#id[_ngcontent-%COMP%] {\n  white-space: nowrap;\n  font-size: small;\n}\n#tag-container[_ngcontent-%COMP%] {\n  height: 233px;\n  overflow: auto;\n}\n.btn-group[_ngcontent-%COMP%] {\n  display: flex;\n  flex-wrap: wrap;\n  max-width: 80%;\n  margin: 0 auto;\n  justify-content: space-between;\n}\n.btn-group[_ngcontent-%COMP%]    > button[_ngcontent-%COMP%] {\n  flex: 1;\n}\n/*# sourceMappingURL=products.component.css.map */"] });
+      ProductDetailsComponent
+    ], styles: ["\n[_nghost-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n  position: relative;\n  z-index: 2;\n  overflow: visible;\n}\n.products-workspace[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr 400px;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n  z-index: 1;\n}\n.products-panel[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  min-height: 0;\n  overflow: hidden;\n}\n.products-panel--list[_ngcontent-%COMP%] {\n  border-right: 1px solid #e2e8f0;\n}\n.products-panel--detail[_ngcontent-%COMP%] {\n  background: #f8fafc;\n  overflow-y: auto;\n}\n.products-searchbar[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: .5rem;\n  padding: .625rem .75rem;\n  background: white;\n  border-bottom: 1px solid #e2e8f0;\n  flex-shrink: 0;\n}\n.products-searchbar__input-wrap[_ngcontent-%COMP%] {\n  flex: 1 1 320px;\n  min-width: 220px;\n  display: flex;\n  align-items: center;\n  gap: .375rem;\n  background: #f1f5f9;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n  padding: 0 .625rem;\n  transition: border-color .15s, box-shadow .15s;\n}\n.products-searchbar__input-wrap[_ngcontent-%COMP%]:focus-within {\n  border-color: #0d9488;\n  box-shadow: 0 0 0 3px rgba(13, 148, 136, .12);\n  background: white;\n}\n.products-searchbar__icon[_ngcontent-%COMP%] {\n  font-size: 1.1rem;\n  color: #94a3b8;\n  flex-shrink: 0;\n}\n.products-searchbar__input[_ngcontent-%COMP%] {\n  flex: 1;\n  height: 34px;\n  border: none;\n  background: transparent;\n  outline: none;\n  font-size: .8375rem;\n  color: #0f172a;\n  font-family: inherit;\n}\n.products-searchbar__input[_ngcontent-%COMP%]::placeholder {\n  color: #94a3b8;\n}\n.products-searchbar__clear[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  background: none;\n  border: none;\n  cursor: pointer;\n  color: #94a3b8;\n  padding: 0;\n  transition: color .13s;\n}\n.products-searchbar__clear[_ngcontent-%COMP%]:hover {\n  color: #475569;\n}\n.products-searchbar__clear[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: .9375rem;\n}\n.products-searchbar__btn[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .25rem;\n  padding: 0 .75rem;\n  height: 34px;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n  background: white;\n  font-size: .78rem;\n  font-weight: 500;\n  color: #64748b;\n  cursor: pointer;\n  white-space: nowrap;\n  transition: all .13s;\n  font-family: inherit;\n}\n.products-searchbar__btn[_ngcontent-%COMP%]:hover {\n  background: #f0fdfa;\n  border-color: #0d9488;\n  color: #0d9488;\n}\n.products-searchbar__btn--active[_ngcontent-%COMP%] {\n  background: #f0fdfa;\n  border-color: #0d9488;\n  color: #0d9488;\n}\n.products-searchbar__btn[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: .9375rem;\n}\n.products-searchbar__actions[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .5rem;\n  margin-left: auto;\n  flex: 0 0 auto;\n}\n.products-columns[_ngcontent-%COMP%] {\n  position: relative;\n  flex-shrink: 0;\n}\n.products-columns__btn[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .25rem;\n  padding: 0 .75rem;\n  height: 34px;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n  background: white;\n  font-size: .78rem;\n  font-weight: 500;\n  color: #64748b;\n  cursor: pointer;\n  white-space: nowrap;\n  transition: all .13s;\n  font-family: inherit;\n}\n.products-columns__btn[_ngcontent-%COMP%]:hover, \n.products-columns__btn--active[_ngcontent-%COMP%] {\n  background: #f0fdfa;\n  border-color: #0d9488;\n  color: #0d9488;\n}\n.products-columns__btn[_ngcontent-%COMP%]   .material-icons[_ngcontent-%COMP%] {\n  font-size: .9375rem;\n}\n.products-columns__panel[_ngcontent-%COMP%] {\n  position: absolute;\n  top: calc(100% + .375rem);\n  right: 0;\n  width: 230px;\n  background: #fff;\n  border: 1px solid #e2e8f0;\n  border-radius: .625rem;\n  box-shadow: 0 14px 28px rgba(15, 23, 42, .12);\n  z-index: 1200;\n  overflow: hidden;\n}\n@media (max-width: 920px) {\n  .products-searchbar__actions[_ngcontent-%COMP%] {\n    margin-left: 0;\n    width: 100%;\n    justify-content: flex-start;\n  }\n}\n.products-columns__header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: .625rem .75rem;\n  background: #f8fafc;\n  border-bottom: 1px solid #e2e8f0;\n  font-size: .75rem;\n  color: #475569;\n}\n.products-columns__list[_ngcontent-%COMP%] {\n  max-height: 260px;\n  overflow-y: auto;\n  padding: .375rem;\n}\n.products-columns__item[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .5rem;\n  padding: .375rem .5rem;\n  border-radius: .375rem;\n  font-size: .78rem;\n  color: #334155;\n  cursor: pointer;\n}\n.products-columns__item[_ngcontent-%COMP%]:hover {\n  background: #f8fafc;\n}\n.products-columns__item[_ngcontent-%COMP%]   input[_ngcontent-%COMP%] {\n  margin: 0;\n  accent-color: #0d9488;\n}\n.products-columns__actions[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: .375rem;\n  padding: .5rem;\n  border-top: 1px solid #e2e8f0;\n}\n.products-columns__actions[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  flex: 1;\n  border: 1px solid #e2e8f0;\n  border-radius: .375rem;\n  background: #fff;\n  font-size: .72rem;\n  color: #475569;\n  height: 28px;\n  cursor: pointer;\n}\n.products-columns__actions[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:hover {\n  border-color: #0d9488;\n  color: #0d9488;\n  background: #f0fdfa;\n}\n.products-list-meta[_ngcontent-%COMP%] {\n  padding: .375rem .75rem;\n  background: #f8fafc;\n  border-bottom: 1px solid #f1f5f9;\n  flex-shrink: 0;\n  min-height: 28px;\n  display: flex;\n  align-items: center;\n}\n.products-list-meta__count[_ngcontent-%COMP%] {\n  font-size: .75rem;\n  font-weight: 600;\n  color: #0d9488;\n}\n.products-list-meta__hint[_ngcontent-%COMP%] {\n  font-size: .75rem;\n  color: #94a3b8;\n}\n.products-list-meta__loading[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: .25rem;\n  font-size: .75rem;\n  color: #64748b;\n}\n@keyframes _ngcontent-%COMP%_spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n.products-list-meta__spin[_ngcontent-%COMP%] {\n  font-size: .875rem !important;\n  animation: _ngcontent-%COMP%_spin .8s linear infinite;\n}\n.products-list-wrap[_ngcontent-%COMP%] {\n  flex: 1;\n  overflow-y: auto;\n  overflow-x: auto;\n}\n.products-empty[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  padding: 3rem 1.5rem;\n  color: #94a3b8;\n  gap: .5rem;\n}\n.products-empty__icon[_ngcontent-%COMP%] {\n  font-size: 2.5rem !important;\n}\n.products-empty__title[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: .9375rem;\n  font-weight: 600;\n  color: #64748b;\n}\n.products-empty__sub[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: .8125rem;\n}\n@media (max-width: 1024px) {\n  .products-workspace[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n    grid-template-rows: 1fr 1fr;\n  }\n  .products-panel--list[_ngcontent-%COMP%] {\n    border-right: none;\n    border-bottom: 1px solid #e2e8f0;\n  }\n}\nh1[_ngcontent-%COMP%] {\n  text-align: center;\n}\n#id[_ngcontent-%COMP%] {\n  white-space: nowrap;\n  font-size: small;\n}\n#tag-container[_ngcontent-%COMP%] {\n  height: 233px;\n  overflow: auto;\n}\n.btn-group[_ngcontent-%COMP%] {\n  display: flex;\n  flex-wrap: wrap;\n  max-width: 80%;\n  margin: 0 auto;\n  justify-content: space-between;\n}\n.btn-group[_ngcontent-%COMP%]    > button[_ngcontent-%COMP%] {\n  flex: 1;\n}\n/*# sourceMappingURL=products.component.css.map */"] });
   }
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductsComponent, [{
     type: Component,
-    args: [{ selector: "app-products", imports: [
+    args: [{ selector: "app-products", standalone: true, imports: [
       CommonModule,
+      FormsModule,
       ProductNavbarComponent,
       ProductListComponent,
-      ProductSearchComponent,
-      ProductDetailsComponent,
-      FormsModule
-    ], template: `<app-product-navbar></app-product-navbar>
+      ProductDetailsComponent
+    ], template: `<!-- \u2500\u2500 Toolbar \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+<app-product-navbar
+  (newProduct)="navigateNew()"
+  (editProduct)="navigateEdit()"
+  (deleteProduct)="confirmDelete()">
+</app-product-navbar>
 
-<div
-  class="btn-group btn-group-sm"
-  role="group"
-  aria-label="Basic outlined example"
-  >
-  <button
-    type="button"
-    class="btn btn-outline-secondary"
-    [ngClass]="{ active: selectedComponent === 'product' }"
-    (click)="selectedComponent = 'product'"
-    >
-    Product
-  </button>
-  <button
-    type="button"
-    class="btn btn-outline-secondary"
-    [ngClass]="{ active: selectedComponent === 'fichaTecnica' }"
-    (click)="selectedComponent = 'fichaTecnica'"
-    >
-    Ficha Tecnica
-  </button>
-  <button
-    type="button"
-    class="btn btn-outline-secondary"
-    [ngClass]="{ active: selectedComponent === 'proveedor' }"
-    (click)="selectedComponent = 'proveedor'"
-    >
-    Proveedor
-  </button>
-  <button
-    type="button"
-    class="btn btn-outline-secondary"
-    [ngClass]="{ active: selectedComponent === 'codigos' }"
-    (click)="selectedComponent = 'codigos'"
-    >
-    Codigos
-  </button>
-  <button
-    type="button"
-    class="btn btn-outline-secondary"
-    [ngClass]="{ active: selectedComponent === 'varios' }"
-    (click)="selectedComponent = 'varios'"
-    >
-    Varios
-  </button>
-  <button
-    type="button"
-    class="btn btn-outline-secondary"
-    [ngClass]="{ active: selectedComponent === 'stock' }"
-    (click)="selectedComponent = 'stock'"
-    >
-    Stock
-  </button>
-  <button
-    type="button"
-    class="btn btn-outline-secondary"
-    [ngClass]="{ active: selectedComponent === 'tarjetas' }"
-    (click)="selectedComponent = 'tarjetas'"
-    >
-    Pago Tarjetas
-  </button>
-  <button
-    type="button"
-    class="btn btn-outline-secondary"
-    [ngClass]="{ active: selectedComponent === 'especificaciones' }"
-    (click)="selectedComponent = 'especificaciones'"
-    >
-    Especificaciones
-  </button>
-</div>
+<!-- \u2500\u2500 Workspace \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+<div class="products-workspace">
 
-<div class="container" id="tag-container">
-  @switch (selectedComponent) {
-    @case ('product') {
-      <app-product-detail
-        [product]="selectedProduct"
-      ></app-product-detail>
-    }
-    @case ('fichaTecnica') {
-      <div>
-        <p>Ficha Tecnica</p>
+  <!-- Panel izquierdo: b\xFAsqueda + lista \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+  <section class="products-panel products-panel--list">
+
+    <!-- Barra de b\xFAsqueda -->
+    <div class="products-searchbar">
+      <div class="products-searchbar__input-wrap">
+        <span class="material-icons products-searchbar__icon">search</span>
+        <input
+          class="products-searchbar__input"
+          type="text"
+          placeholder="Buscar por c\xF3digo, marca, modelo o descripci\xF3n\u2026"
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="handleSearch(searchTerm)"
+          (input)="onSearchInput()"
+        />
+        @if (searchTerm.length > 0) {
+          <button class="products-searchbar__clear" (click)="clearSearch()" title="Limpiar">
+            <span class="material-icons">close</span>
+          </button>
+        }
       </div>
-    }
-    @case ('proveedor') {
-      <div>
-        <p>Proveedor</p>
+
+      <div class="products-searchbar__actions">
+        <div class="products-columns" (click)="$event.stopPropagation()">
+          <button
+            class="products-columns__btn"
+            [class.products-columns__btn--active]="columnPickerOpen"
+            (click)="toggleColumnPicker($event)"
+            type="button"
+            title="Elegir columnas visibles"
+          >
+            <span class="material-icons">view_column</span>
+            Columnas
+          </button>
+
+          @if (columnPickerOpen) {
+            <div class="products-columns__panel">
+              <header class="products-columns__header">
+                <strong>Columnas visibles</strong>
+                <span>{{ visibleColumns.length }}/{{ columnOptions.length }}</span>
+              </header>
+
+              <div class="products-columns__list">
+                @for (column of columnOptions; track column.key) {
+                  <label class="products-columns__item">
+                    <input
+                      type="checkbox"
+                      [checked]="isColumnVisible(column.key)"
+                      (change)="onColumnVisibilityChange(column.key, $event)"
+                    />
+                    <span>{{ column.label }}</span>
+                  </label>
+                }
+              </div>
+
+              <footer class="products-columns__actions">
+                <button type="button" (click)="showAllColumns($event)">Mostrar todo</button>
+                <button type="button" (click)="resetColumns($event)">Restablecer</button>
+              </footer>
+            </div>
+          }
+        </div>
+
+        <button
+          class="products-searchbar__btn"
+          [class.products-searchbar__btn--active]="filterStock"
+          (click)="toggleStockFilter()"
+          title="Mostrar solo art\xEDculos con stock"
+        >
+          <span class="material-icons">inventory_2</span>
+          Con stock
+        </button>
       </div>
-    }
-    @case ('codigos') {
-      <div>
-        <p>Codigos</p>
-      </div>
-    }
-    @case ('varios') {
-      <div>
-        <p>varios</p>
-      </div>
-    }
-    @case ('stock') {
-      <div>
-        <p>Stock</p>
-      </div>
-    }
-    @case ('tarjetas') {
-      <div>
-        <p>tarjetas</p>
-      </div>
-    }
-    @case ('especificaciones') {
-      <div>
-        <p>especificaciones</p>
-      </div>
-    }
-  }
-</div>
-<hr />
-<div class="container">
-  <app-product-search
-    (search)="handleSearch($event)"
-    (searchStock)="handleSearchWithStock($event)"
-  ></app-product-search>
-  @if(productList.length == 0 && isFormSubmitted){
-    <div class="card bg-light">
-      <h4>No elements found in this search</h4>
     </div>
-    }@else{
-    <app-product-list
-      [productList]="productList"
-      selectionMode="click"
-      (selectProduct)="selectProduct($event)"
-      >
-    </app-product-list>
-  }
+
+    <!-- Conteo -->
+    <div class="products-list-meta">
+      @if (loading) {
+        <span class="products-list-meta__loading">
+          <span class="material-icons products-list-meta__spin">autorenew</span>
+          Buscando\u2026
+        </span>
+      } @else if (isFormSubmitted) {
+        <span class="products-list-meta__count">
+          {{ productList.length }} resultado{{ productList.length !== 1 ? 's' : '' }}
+        </span>
+      } @else {
+        <span class="products-list-meta__hint">Ingres\xE1 al menos 3 caracteres para buscar</span>
+      }
+    </div>
+
+    <!-- Lista -->
+    <div class="products-list-wrap">
+      @if (productList.length === 0 && isFormSubmitted && !loading) {
+        <div class="products-empty">
+          <span class="material-icons products-empty__icon">search_off</span>
+          <p class="products-empty__title">Sin resultados</p>
+          <p class="products-empty__sub">Intent\xE1 con otros t\xE9rminos de b\xFAsqueda</p>
+        </div>
+      } @else {
+        <app-product-list
+          [productList]="productList"
+          [selectedProductId]="selectedProduct?.id ?? null"
+          [visibleColumns]="visibleColumns"
+          selectionMode="click"
+          (selectProduct)="selectProduct($event)">
+        </app-product-list>
+      }
+    </div>
+
+  </section>
+
+  <!-- Panel derecho: detalle \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+  <section class="products-panel products-panel--detail">
+    <app-product-detail [product]="selectedProduct"></app-product-detail>
+  </section>
+
 </div>
-`, styles: ["/* src/app/pages/product/products/products.component.css */\nh1 {\n  text-align: center;\n}\n#id {\n  white-space: nowrap;\n  font-size: small;\n}\n#tag-container {\n  height: 233px;\n  overflow: auto;\n}\n.btn-group {\n  display: flex;\n  flex-wrap: wrap;\n  max-width: 80%;\n  margin: 0 auto;\n  justify-content: space-between;\n}\n.btn-group > button {\n  flex: 1;\n}\n/*# sourceMappingURL=products.component.css.map */\n"] }]
-  }], null, null);
+`, styles: ["/* src/app/pages/product/products/products.component.css */\n:host {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n  position: relative;\n  z-index: 2;\n  overflow: visible;\n}\n.products-workspace {\n  display: grid;\n  grid-template-columns: 1fr 400px;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n  z-index: 1;\n}\n.products-panel {\n  display: flex;\n  flex-direction: column;\n  min-height: 0;\n  overflow: hidden;\n}\n.products-panel--list {\n  border-right: 1px solid #e2e8f0;\n}\n.products-panel--detail {\n  background: #f8fafc;\n  overflow-y: auto;\n}\n.products-searchbar {\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: .5rem;\n  padding: .625rem .75rem;\n  background: white;\n  border-bottom: 1px solid #e2e8f0;\n  flex-shrink: 0;\n}\n.products-searchbar__input-wrap {\n  flex: 1 1 320px;\n  min-width: 220px;\n  display: flex;\n  align-items: center;\n  gap: .375rem;\n  background: #f1f5f9;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n  padding: 0 .625rem;\n  transition: border-color .15s, box-shadow .15s;\n}\n.products-searchbar__input-wrap:focus-within {\n  border-color: #0d9488;\n  box-shadow: 0 0 0 3px rgba(13, 148, 136, .12);\n  background: white;\n}\n.products-searchbar__icon {\n  font-size: 1.1rem;\n  color: #94a3b8;\n  flex-shrink: 0;\n}\n.products-searchbar__input {\n  flex: 1;\n  height: 34px;\n  border: none;\n  background: transparent;\n  outline: none;\n  font-size: .8375rem;\n  color: #0f172a;\n  font-family: inherit;\n}\n.products-searchbar__input::placeholder {\n  color: #94a3b8;\n}\n.products-searchbar__clear {\n  display: flex;\n  align-items: center;\n  background: none;\n  border: none;\n  cursor: pointer;\n  color: #94a3b8;\n  padding: 0;\n  transition: color .13s;\n}\n.products-searchbar__clear:hover {\n  color: #475569;\n}\n.products-searchbar__clear .material-icons {\n  font-size: .9375rem;\n}\n.products-searchbar__btn {\n  display: flex;\n  align-items: center;\n  gap: .25rem;\n  padding: 0 .75rem;\n  height: 34px;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n  background: white;\n  font-size: .78rem;\n  font-weight: 500;\n  color: #64748b;\n  cursor: pointer;\n  white-space: nowrap;\n  transition: all .13s;\n  font-family: inherit;\n}\n.products-searchbar__btn:hover {\n  background: #f0fdfa;\n  border-color: #0d9488;\n  color: #0d9488;\n}\n.products-searchbar__btn--active {\n  background: #f0fdfa;\n  border-color: #0d9488;\n  color: #0d9488;\n}\n.products-searchbar__btn .material-icons {\n  font-size: .9375rem;\n}\n.products-searchbar__actions {\n  display: flex;\n  align-items: center;\n  gap: .5rem;\n  margin-left: auto;\n  flex: 0 0 auto;\n}\n.products-columns {\n  position: relative;\n  flex-shrink: 0;\n}\n.products-columns__btn {\n  display: flex;\n  align-items: center;\n  gap: .25rem;\n  padding: 0 .75rem;\n  height: 34px;\n  border: 1px solid #e2e8f0;\n  border-radius: .5rem;\n  background: white;\n  font-size: .78rem;\n  font-weight: 500;\n  color: #64748b;\n  cursor: pointer;\n  white-space: nowrap;\n  transition: all .13s;\n  font-family: inherit;\n}\n.products-columns__btn:hover,\n.products-columns__btn--active {\n  background: #f0fdfa;\n  border-color: #0d9488;\n  color: #0d9488;\n}\n.products-columns__btn .material-icons {\n  font-size: .9375rem;\n}\n.products-columns__panel {\n  position: absolute;\n  top: calc(100% + .375rem);\n  right: 0;\n  width: 230px;\n  background: #fff;\n  border: 1px solid #e2e8f0;\n  border-radius: .625rem;\n  box-shadow: 0 14px 28px rgba(15, 23, 42, .12);\n  z-index: 1200;\n  overflow: hidden;\n}\n@media (max-width: 920px) {\n  .products-searchbar__actions {\n    margin-left: 0;\n    width: 100%;\n    justify-content: flex-start;\n  }\n}\n.products-columns__header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: .625rem .75rem;\n  background: #f8fafc;\n  border-bottom: 1px solid #e2e8f0;\n  font-size: .75rem;\n  color: #475569;\n}\n.products-columns__list {\n  max-height: 260px;\n  overflow-y: auto;\n  padding: .375rem;\n}\n.products-columns__item {\n  display: flex;\n  align-items: center;\n  gap: .5rem;\n  padding: .375rem .5rem;\n  border-radius: .375rem;\n  font-size: .78rem;\n  color: #334155;\n  cursor: pointer;\n}\n.products-columns__item:hover {\n  background: #f8fafc;\n}\n.products-columns__item input {\n  margin: 0;\n  accent-color: #0d9488;\n}\n.products-columns__actions {\n  display: flex;\n  justify-content: space-between;\n  gap: .375rem;\n  padding: .5rem;\n  border-top: 1px solid #e2e8f0;\n}\n.products-columns__actions button {\n  flex: 1;\n  border: 1px solid #e2e8f0;\n  border-radius: .375rem;\n  background: #fff;\n  font-size: .72rem;\n  color: #475569;\n  height: 28px;\n  cursor: pointer;\n}\n.products-columns__actions button:hover {\n  border-color: #0d9488;\n  color: #0d9488;\n  background: #f0fdfa;\n}\n.products-list-meta {\n  padding: .375rem .75rem;\n  background: #f8fafc;\n  border-bottom: 1px solid #f1f5f9;\n  flex-shrink: 0;\n  min-height: 28px;\n  display: flex;\n  align-items: center;\n}\n.products-list-meta__count {\n  font-size: .75rem;\n  font-weight: 600;\n  color: #0d9488;\n}\n.products-list-meta__hint {\n  font-size: .75rem;\n  color: #94a3b8;\n}\n.products-list-meta__loading {\n  display: flex;\n  align-items: center;\n  gap: .25rem;\n  font-size: .75rem;\n  color: #64748b;\n}\n@keyframes spin {\n  to {\n    transform: rotate(360deg);\n  }\n}\n.products-list-meta__spin {\n  font-size: .875rem !important;\n  animation: spin .8s linear infinite;\n}\n.products-list-wrap {\n  flex: 1;\n  overflow-y: auto;\n  overflow-x: auto;\n}\n.products-empty {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  padding: 3rem 1.5rem;\n  color: #94a3b8;\n  gap: .5rem;\n}\n.products-empty__icon {\n  font-size: 2.5rem !important;\n}\n.products-empty__title {\n  margin: 0;\n  font-size: .9375rem;\n  font-weight: 600;\n  color: #64748b;\n}\n.products-empty__sub {\n  margin: 0;\n  font-size: .8125rem;\n}\n@media (max-width: 1024px) {\n  .products-workspace {\n    grid-template-columns: 1fr;\n    grid-template-rows: 1fr 1fr;\n  }\n  .products-panel--list {\n    border-right: none;\n    border-bottom: 1px solid #e2e8f0;\n  }\n}\nh1 {\n  text-align: center;\n}\n#id {\n  white-space: nowrap;\n  font-size: small;\n}\n#tag-container {\n  height: 233px;\n  overflow: auto;\n}\n.btn-group {\n  display: flex;\n  flex-wrap: wrap;\n  max-width: 80%;\n  margin: 0 auto;\n  justify-content: space-between;\n}\n.btn-group > button {\n  flex: 1;\n}\n/*# sourceMappingURL=products.component.css.map */\n"] }]
+  }], null, { onDocumentClick: [{
+    type: HostListener,
+    args: ["document:click"]
+  }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductsComponent, { className: "ProductsComponent", filePath: "src/app/pages/product/products/products.component.ts", lineNumber: 30 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductsComponent, { className: "ProductsComponent", filePath: "src/app/pages/product/products/products.component.ts", lineNumber: 42 });
 })();
 
 // src/app/pages/product/product-edit/product-edit.component.ts
@@ -20720,6 +22409,116 @@ var ProductEditComponent = class _ProductEditComponent {
 })();
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductEditComponent, { className: "ProductEditComponent", filePath: "src/app/pages/product/product-edit/product-edit.component.ts", lineNumber: 10 });
+})();
+
+// src/app/services/brand.service.ts
+var BrandService = class _BrandService {
+  constructor() {
+    this.http = inject(HttpClient);
+    this.urlBase = "http://localhost:8080/api/v1/brands";
+  }
+  // ============================
+  // CREATE BRAND (multipart)
+  // ============================
+  createBrand(name, logo) {
+    const formData = new FormData();
+    formData.append("name", name);
+    if (logo) {
+      formData.append("logo", logo, logo.name);
+    }
+    return this.http.post(this.urlBase, formData);
+  }
+  // ============================
+  // GET ALL BRANDS (paginated)
+  // ============================
+  getBrands(params) {
+    let httpParams = new HttpParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== void 0 && value !== null) {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
+    }
+    return this.http.get(this.urlBase, {
+      params: httpParams
+    });
+  }
+  // ============================
+  // GET BRAND BY ID
+  // ============================
+  getBrand(id) {
+    return this.http.get(`${this.urlBase}/${id}`);
+  }
+  // ============================
+  // UPDATE BRAND (multipart PATCH)
+  // ============================
+  updateBrand(id, name, logo) {
+    const formData = new FormData();
+    if (name) {
+      formData.append("name", name);
+    }
+    if (logo) {
+      formData.append("logo", logo, logo.name);
+    }
+    return this.http.patch(`${this.urlBase}/${id}`, formData);
+  }
+  // ============================
+  // SOFT DELETE BRAND
+  // ============================
+  deleteBrand(id) {
+    return this.http.delete(`${this.urlBase}/${id}`);
+  }
+  // ============================
+  // FORCE DELETE BRAND
+  // ============================
+  forceDeleteBrand(id) {
+    return this.http.delete(`${this.urlBase}/${id}/force`);
+  }
+  // ============================
+  // DELETE BRAND LOGO
+  // ============================
+  deleteBrandLogo(id) {
+    return this.http.patch(`${this.urlBase}/${id}/logo`, null);
+  }
+  // ============================
+  // RESTORE BRAND
+  // ============================
+  restoreBrand(id) {
+    return this.http.patch(`${this.urlBase}/${id}/restore`, null);
+  }
+  // ============================
+  // COUNT BRANDS
+  // ============================
+  getBrandCount() {
+    return this.http.get(`${this.urlBase}/count`);
+  }
+  // ============================
+  // MERGE BRANDS
+  // ============================
+  mergeBrands(sourceBrandId, targetBrandId) {
+    return this.http.put(`${this.urlBase}/${sourceBrandId}/merge`, null, {
+      params: {
+        targetBrandId
+      }
+    });
+  }
+  static {
+    this.\u0275fac = function BrandService_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _BrandService)();
+    };
+  }
+  static {
+    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _BrandService, factory: _BrandService.\u0275fac, providedIn: "root" });
+  }
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(BrandService, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], null, null);
 })();
 
 // node_modules/@angular/cdk/fesm2022/_platform-chunk.mjs
@@ -21179,7 +22978,7 @@ var BidiModule = class _BidiModule {
 })();
 
 // node_modules/@angular/cdk/fesm2022/scrolling.mjs
-var _c02 = ["contentWrapper"];
+var _c0 = ["contentWrapper"];
 var _c1 = ["*"];
 var VIRTUAL_SCROLL_STRATEGY = new InjectionToken("VIRTUAL_SCROLL_STRATEGY");
 var FixedSizeVirtualScrollStrategy = class {
@@ -21972,7 +23771,7 @@ var CdkVirtualScrollViewport = class _CdkVirtualScrollViewport extends CdkVirtua
     selectors: [["cdk-virtual-scroll-viewport"]],
     viewQuery: function CdkVirtualScrollViewport_Query(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275viewQuery(_c02, 7);
+        \u0275\u0275viewQuery(_c0, 7);
       }
       if (rf & 2) {
         let _t;
@@ -28905,7 +30704,7 @@ var CategoryService = class _CategoryService {
 })();
 
 // src/app/pages/category/category-edit/category-edit.component.ts
-var _c03 = (a0) => ({ "is-invalid": a0 });
+var _c02 = (a0) => ({ "is-invalid": a0 });
 function CategoryEditComponent_div_6_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 12);
@@ -29017,7 +30816,7 @@ var CategoryEditComponent = class _CategoryEditComponent {
         \u0275\u0275advance();
         \u0275\u0275property("formGroup", ctx.categoryForm);
         \u0275\u0275advance(4);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(4, _c03, ctx.hasErrors("categoryName", "required")));
+        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(4, _c02, ctx.hasErrors("categoryName", "required")));
         \u0275\u0275advance();
         \u0275\u0275property("ngIf", ctx.hasErrors("categoryName", "required"));
         \u0275\u0275advance(12);
@@ -29140,7 +30939,7 @@ var ModalDialogService = class _ModalDialogService {
 })();
 
 // src/app/pages/brand/brand-edit/brand-edit.component.ts
-var _c04 = (a0) => ({ "is-invalid": a0 });
+var _c03 = (a0) => ({ "is-invalid": a0 });
 function BrandEditComponent_div_6_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 12);
@@ -29249,7 +31048,7 @@ var BrandEditComponent = class _BrandEditComponent {
         \u0275\u0275advance();
         \u0275\u0275property("formGroup", ctx.brandForm);
         \u0275\u0275advance(4);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(4, _c04, ctx.hasErrors("brandName", "required")));
+        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(4, _c03, ctx.hasErrors("brandName", "required")));
         \u0275\u0275advance();
         \u0275\u0275property("ngIf", ctx.hasErrors("brandName", "required"));
         \u0275\u0275advance(5);
@@ -29668,7 +31467,7 @@ var BrandDetailsComponent = class _BrandDetailsComponent {
 })();
 
 // src/app/pages/brand/brand-create/brand-create.component.ts
-var _c05 = (a0) => ({ "is-invalid": a0 });
+var _c04 = (a0) => ({ "is-invalid": a0 });
 function BrandCreateComponent_Conditional_2_Conditional_5_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span", 9);
@@ -29717,7 +31516,7 @@ function BrandCreateComponent_Conditional_2_Template(rf, ctx) {
     const ctx_r1 = \u0275\u0275nextContext();
     \u0275\u0275property("formGroup", ctx_r1.brandForm);
     \u0275\u0275advance(4);
-    \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(4, _c05, ctx_r1.hasErrors("brandName", "required")));
+    \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(4, _c04, ctx_r1.hasErrors("brandName", "required")));
     \u0275\u0275advance();
     \u0275\u0275conditional(ctx_r1.hasErrors("brandName", "required") ? 5 : -1);
     \u0275\u0275advance(5);
@@ -29876,7 +31675,7 @@ var BrandCreateComponent = class _BrandCreateComponent {
 })();
 
 // src/app/pages/brand/brand/brand.component.ts
-var _forTrack03 = ($index, $item) => $item.id;
+var _forTrack04 = ($index, $item) => $item.id;
 function BrandComponent_Conditional_21_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
@@ -30076,7 +31875,7 @@ var BrandComponent = class _BrandComponent {
         \u0275\u0275conditionalCreate(26, BrandComponent_Conditional_26_Template, 2, 1, "span");
         \u0275\u0275elementEnd()()();
         \u0275\u0275elementStart(27, "tbody");
-        \u0275\u0275repeaterCreate(28, BrandComponent_For_29_Template, 7, 3, "tr", 15, _forTrack03);
+        \u0275\u0275repeaterCreate(28, BrandComponent_For_29_Template, 7, 3, "tr", 15, _forTrack04);
         \u0275\u0275elementEnd()()();
         \u0275\u0275conditionalCreate(30, BrandComponent_Conditional_30_Template, 3, 0, "div", 16);
         \u0275\u0275conditionalCreate(31, BrandComponent_Conditional_31_Template, 3, 1, "div", 16);
@@ -30966,8 +32765,8 @@ var SupplierDetailsComponent = class _SupplierDetailsComponent {
 })();
 
 // src/app/pages/supplier/supplier/supplier.component.ts
-var _c06 = (a0) => ({ active: a0 });
-var _forTrack04 = ($index, $item) => $item.id;
+var _c05 = (a0) => ({ active: a0 });
+var _forTrack05 = ($index, $item) => $item.id;
 function SupplierComponent_button_2_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
@@ -30983,7 +32782,7 @@ function SupplierComponent_button_2_Template(rf, ctx) {
   if (rf & 2) {
     const tab_r2 = ctx.$implicit;
     const ctx_r2 = \u0275\u0275nextContext();
-    \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(2, _c06, ctx_r2.selectedComponent === tab_r2));
+    \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(2, _c05, ctx_r2.selectedComponent === tab_r2));
     \u0275\u0275advance();
     \u0275\u0275textInterpolate1(" ", tab_r2, " ");
   }
@@ -31177,7 +32976,7 @@ var SupplierComponent = class _SupplierComponent {
         \u0275\u0275text(31, "Tax Id");
         \u0275\u0275elementEnd()()();
         \u0275\u0275elementStart(32, "tbody");
-        \u0275\u0275repeaterCreate(33, SupplierComponent_For_34_Template, 9, 4, "tr", 15, _forTrack04);
+        \u0275\u0275repeaterCreate(33, SupplierComponent_For_34_Template, 9, 4, "tr", 15, _forTrack05);
         \u0275\u0275elementEnd()()();
       }
       if (rf & 2) {
@@ -31988,7 +33787,7 @@ var MatRippleLoader = class _MatRippleLoader {
 })();
 
 // node_modules/@angular/material/fesm2022/_icon-button-chunk.mjs
-var _c07 = ["mat-icon-button", ""];
+var _c06 = ["mat-icon-button", ""];
 var _c12 = ["*"];
 var MAT_BUTTON_CONFIG = new InjectionToken("MAT_BUTTON_CONFIG");
 function transformTabIndex(value) {
@@ -32188,7 +33987,7 @@ var MatIconButton = class _MatIconButton extends MatButtonBase {
     hostAttrs: [1, "mdc-icon-button", "mat-mdc-icon-button"],
     exportAs: ["matButton", "matAnchor"],
     features: [\u0275\u0275InheritDefinitionFeature],
-    attrs: _c07,
+    attrs: _c06,
     ngContentSelectors: _c12,
     decls: 4,
     vars: 0,
@@ -32259,7 +34058,7 @@ var MatRippleModule = class _MatRippleModule {
 })();
 
 // node_modules/@angular/material/fesm2022/button.mjs
-var _c08 = ["matButton", ""];
+var _c07 = ["matButton", ""];
 var _c13 = [[["", 8, "material-icons", 3, "iconPositionEnd", ""], ["mat-icon", 3, "iconPositionEnd", ""], ["", "matButtonIcon", "", 3, "iconPositionEnd", ""]], "*", [["", "iconPositionEnd", "", 8, "material-icons"], ["mat-icon", "iconPositionEnd", ""], ["", "matButtonIcon", "", "iconPositionEnd", ""]]];
 var _c2 = [".material-icons:not([iconPositionEnd]), mat-icon:not([iconPositionEnd]), [matButtonIcon]:not([iconPositionEnd])", "*", ".material-icons[iconPositionEnd], mat-icon[iconPositionEnd], [matButtonIcon][iconPositionEnd]"];
 var _c3 = ["mat-fab", ""];
@@ -32309,7 +34108,7 @@ var MatButton = class _MatButton extends MatButtonBase {
     },
     exportAs: ["matButton", "matAnchor"],
     features: [\u0275\u0275InheritDefinitionFeature],
-    attrs: _c08,
+    attrs: _c07,
     ngContentSelectors: _c2,
     decls: 7,
     vars: 4,
@@ -32604,7 +34403,7 @@ var MatButtonModule = class _MatButtonModule {
 })();
 
 // node_modules/@angular/material/fesm2022/_tooltip-chunk.mjs
-var _c09 = ["tooltip"];
+var _c08 = ["tooltip"];
 var SCROLL_THROTTLE_MS = 20;
 function getMatTooltipInvalidPositionError(position) {
   return Error(`Tooltip position "${position}" is invalid.`);
@@ -33363,7 +35162,7 @@ var TooltipComponent = class _TooltipComponent {
     selectors: [["mat-tooltip-component"]],
     viewQuery: function TooltipComponent_Query(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275viewQuery(_c09, 7);
+        \u0275\u0275viewQuery(_c08, 7);
       }
       if (rf & 2) {
         let _t;
@@ -33519,7 +35318,7 @@ var SharedResizeObserver = class _SharedResizeObserver {
 })();
 
 // node_modules/@angular/material/fesm2022/_form-field-chunk.mjs
-var _c010 = ["notch"];
+var _c09 = ["notch"];
 var _c14 = ["matFormFieldNotchedOutline", ""];
 var _c22 = ["*"];
 var _c32 = ["iconPrefixContainer"];
@@ -34046,7 +35845,7 @@ var MatFormFieldNotchedOutline = class _MatFormFieldNotchedOutline {
     selectors: [["div", "matFormFieldNotchedOutline", ""]],
     viewQuery: function MatFormFieldNotchedOutline_Query(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275viewQuery(_c010, 5);
+        \u0275\u0275viewQuery(_c09, 5);
       }
       if (rf & 2) {
         let _t;
@@ -34897,8 +36696,8 @@ var _ErrorStateTracker = class {
 };
 
 // node_modules/@angular/material/fesm2022/datepicker.mjs
-var _c011 = ["mat-calendar-body", ""];
-function _forTrack05($index, $item) {
+var _c010 = ["mat-calendar-body", ""];
+function _forTrack06($index, $item) {
   return this._trackRow($item);
 }
 var _forTrack1 = ($index, $item) => $item.id;
@@ -35521,14 +37320,14 @@ var MatCalendarBody = class _MatCalendarBody {
     },
     exportAs: ["matCalendarBody"],
     features: [\u0275\u0275NgOnChangesFeature],
-    attrs: _c011,
+    attrs: _c010,
     decls: 11,
     vars: 11,
     consts: [["aria-hidden", "true"], ["role", "row"], [1, "mat-calendar-body-hidden-label", 3, "id"], [1, "mat-calendar-body-label"], [1, "mat-calendar-body-label", 3, "paddingTop", "paddingBottom"], ["role", "gridcell", 1, "mat-calendar-body-cell-container", 3, "width", "paddingTop", "paddingBottom"], ["role", "gridcell", 1, "mat-calendar-body-cell-container"], ["type", "button", 1, "mat-calendar-body-cell", 3, "click", "focus", "tabindex"], [1, "mat-calendar-body-cell-content", "mat-focus-indicator"], ["aria-hidden", "true", 1, "mat-calendar-body-cell-preview"]],
     template: function MatCalendarBody_Template(rf, ctx) {
       if (rf & 1) {
         \u0275\u0275conditionalCreate(0, MatCalendarBody_Conditional_0_Template, 3, 6, "tr", 0);
-        \u0275\u0275repeaterCreate(1, MatCalendarBody_For_2_Template, 4, 1, "tr", 1, _forTrack05, true);
+        \u0275\u0275repeaterCreate(1, MatCalendarBody_For_2_Template, 4, 1, "tr", 1, _forTrack06, true);
         \u0275\u0275domElementStart(3, "span", 2);
         \u0275\u0275text(4);
         \u0275\u0275domElementEnd();
@@ -41619,7 +43418,7 @@ var BranchService = class _BranchService {
 })();
 
 // src/app/pages/supplier/supplier-invoice/supplier-invoice.component.ts
-var _c012 = (a0) => ({ active: a0 });
+var _c011 = (a0) => ({ active: a0 });
 function SupplierInvoiceComponent_option_6_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "option", 12);
@@ -41864,11 +43663,11 @@ var SupplierInvoiceComponent = class _SupplierInvoiceComponent {
         \u0275\u0275advance(6);
         \u0275\u0275property("ngForOf", ctx.suppliers);
         \u0275\u0275advance(5);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(8, _c012, ctx.selectedComponent === "header"));
+        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(8, _c011, ctx.selectedComponent === "header"));
         \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(10, _c012, ctx.selectedComponent === "items"));
+        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(10, _c011, ctx.selectedComponent === "items"));
         \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(12, _c012, ctx.selectedComponent === "pagos"));
+        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(12, _c011, ctx.selectedComponent === "pagos"));
         \u0275\u0275advance(2);
         \u0275\u0275property("ngSwitch", ctx.selectedComponent);
         \u0275\u0275advance();
@@ -42398,6 +44197,79 @@ var StatementOfAccountComponent = class _StatementOfAccountComponent {
 })();
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(StatementOfAccountComponent, { className: "StatementOfAccountComponent", filePath: "src/app/pages/supplier/statement-of-account/statement-of-account.component.ts", lineNumber: 20 });
+})();
+
+// src/app/services/supplier-price-list.service.ts
+var SupplierPriceListService = class _SupplierPriceListService {
+  constructor() {
+    this.http = inject(HttpClient);
+    this.baseUrl = "http://localhost:8080/api/v1/price-items";
+    this.productsUrl = "http://localhost:8080/api/v1/products/import/supplier";
+  }
+  // ============================
+  // IMPORT PRICE ITEMS
+  // ============================
+  uploadFile(file, supplierId, updateExisting = false) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("supplierId", supplierId);
+    formData.append("updateExisting", String(updateExisting));
+    return this.http.post(`${this.baseUrl}/import`, formData);
+  }
+  // ============================
+  // SEARCH / FILTER ITEMS
+  // ============================
+  getAllByFilter(supplierId, brand, filter2) {
+    let params = new HttpParams();
+    if (supplierId) {
+      params = params.set("supplierId", supplierId);
+    }
+    if (brand) {
+      params = params.set("brand", brand);
+    }
+    if (filter2) {
+      params = params.set("filter", filter2);
+    }
+    return this.http.get(this.baseUrl, { params });
+  }
+  // ============================
+  // GET ITEM BY ID
+  // ============================
+  getById(id) {
+    return this.http.get(`${this.baseUrl}/${id}`).pipe(catchError(() => throwError(() => new Error("Error getting price item"))));
+  }
+  // ============================
+  // GET BRANDS (OPTIONAL SUPPLIER)
+  // ============================
+  getBrands(supplierId) {
+    let params = new HttpParams();
+    if (supplierId) {
+      params = params.set("supplierId", supplierId);
+    }
+    return this.http.get(`${this.baseUrl}/brands`, { params });
+  }
+  // ============================
+  // IMPORT PRODUCTS FROM SUPPLIER
+  // ============================
+  importProductsFromSupplier(productList) {
+    return this.http.post(this.productsUrl, productList);
+  }
+  static {
+    this.\u0275fac = function SupplierPriceListService_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _SupplierPriceListService)();
+    };
+  }
+  static {
+    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _SupplierPriceListService, factory: _SupplierPriceListService.\u0275fac, providedIn: "root" });
+  }
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SupplierPriceListService, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], null, null);
 })();
 
 // src/app/pages/supplier-price-list/supplier-price-list.component.ts
@@ -43119,6 +44991,93 @@ var DashboardComponent = class _DashboardComponent {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(DashboardComponent, { className: "DashboardComponent", filePath: "src/app/pages/dashboard/dashboard.component.ts", lineNumber: 11 });
 })();
 
+// src/app/pages/product/product-search/product-search.component.ts
+function ProductSearchComponent_Conditional_10_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 7);
+    \u0275\u0275text(1, " Search term must be at least 3 characters long ");
+    \u0275\u0275elementEnd();
+  }
+}
+var ProductSearchComponent = class _ProductSearchComponent {
+  constructor() {
+    this.searchTerm = "";
+    this.isFormSubmitted = false;
+    this.search = new EventEmitter();
+    this.searchStock = new EventEmitter();
+  }
+  onSearch() {
+    this.isFormSubmitted = true;
+    if (this.searchTerm.length >= 3) {
+      this.search.emit(this.searchTerm);
+    }
+  }
+  searchWithStock() {
+    this.searchStock.emit(this.searchTerm);
+  }
+  onKeyUp(event) {
+    if (event.key === "Enter") {
+      this.onSearch();
+    }
+  }
+  static {
+    this.\u0275fac = function ProductSearchComponent_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _ProductSearchComponent)();
+    };
+  }
+  static {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ProductSearchComponent, selectors: [["app-product-search"]], outputs: { search: "search", searchStock: "searchStock" }, decls: 11, vars: 2, consts: [["searchForm", "ngForm"], [1, "row", "mb-3", "text-center"], [3, "ngSubmit"], [1, "col-md-6", "form-group", "align-items-center"], ["type", "text", "id", "searchTerm", "placeholder", "Enter search term and press enter", "name", "searchTerm", 1, "form-control", 3, "ngModelChange", "keyup", "ngModel"], ["type", "submit", 1, "btn", "btn-outline-primary", "btn-sm"], ["type", "button", 1, "btn", "btn-outline-success", "btn-sm", 3, "click"], [1, "text-danger"]], template: function ProductSearchComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        const _r1 = \u0275\u0275getCurrentView();
+        \u0275\u0275elementStart(0, "div", 1)(1, "form", 2, 0);
+        \u0275\u0275listener("ngSubmit", function ProductSearchComponent_Template_form_ngSubmit_1_listener() {
+          return ctx.onSearch();
+        });
+        \u0275\u0275elementStart(3, "div", 3)(4, "input", 4);
+        \u0275\u0275twoWayListener("ngModelChange", function ProductSearchComponent_Template_input_ngModelChange_4_listener($event) {
+          \u0275\u0275restoreView(_r1);
+          \u0275\u0275twoWayBindingSet(ctx.searchTerm, $event) || (ctx.searchTerm = $event);
+          return \u0275\u0275resetView($event);
+        });
+        \u0275\u0275listener("keyup", function ProductSearchComponent_Template_input_keyup_4_listener($event) {
+          return ctx.onKeyUp($event);
+        });
+        \u0275\u0275elementEnd()();
+        \u0275\u0275elementStart(5, "div", 3)(6, "button", 5);
+        \u0275\u0275text(7, " Search ");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(8, "button", 6);
+        \u0275\u0275listener("click", function ProductSearchComponent_Template_button_click_8_listener() {
+          return ctx.searchWithStock();
+        });
+        \u0275\u0275text(9, " with Stock ");
+        \u0275\u0275elementEnd()();
+        \u0275\u0275conditionalCreate(10, ProductSearchComponent_Conditional_10_Template, 2, 0, "div", 7);
+        \u0275\u0275elementEnd()();
+      }
+      if (rf & 2) {
+        \u0275\u0275advance(4);
+        \u0275\u0275twoWayProperty("ngModel", ctx.searchTerm);
+        \u0275\u0275advance(6);
+        \u0275\u0275conditional(ctx.isFormSubmitted && ctx.searchTerm.length < 3 ? 10 : -1);
+      }
+    }, dependencies: [FormsModule, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, NgModel, NgForm], encapsulation: 2 });
+  }
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ProductSearchComponent, [{
+    type: Component,
+    args: [{ selector: "app-product-search", imports: [FormsModule], template: '<div class="row mb-3 text-center">\n  <form #searchForm="ngForm" (ngSubmit)="onSearch()">\n    <div class="col-md-6 form-group align-items-center">\n      <input\n        type="text"\n        class="form-control"\n        id="searchTerm"\n        placeholder="Enter search term and press enter"\n        [(ngModel)]="searchTerm"\n        name="searchTerm"\n        (keyup)="onKeyUp($event)"\n      />\n    </div>\n    <div class="col-md-6 form-group align-items-center">\n      <button type="submit" class="btn btn-outline-primary btn-sm">\n        Search\n      </button>\n      <button\n        type="button"\n        class="btn btn-outline-success btn-sm"\n        (click)="searchWithStock()"\n      >\n        with Stock\n      </button>\n    </div>\n    @if(isFormSubmitted && searchTerm.length < 3){\n    <div class="text-danger">\n      Search term must be at least 3 characters long\n    </div>\n    }\n  </form>\n</div>\n' }]
+  }], null, { search: [{
+    type: Output
+  }], searchStock: [{
+    type: Output
+  }] });
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ProductSearchComponent, { className: "ProductSearchComponent", filePath: "src/app/pages/product/product-search/product-search.component.ts", lineNumber: 11 });
+})();
+
 // src/app/services/customer-invoice.service.ts
 var CustomerInvoiceService = class _CustomerInvoiceService {
   constructor() {
@@ -43150,7 +45109,7 @@ var CustomerInvoiceService = class _CustomerInvoiceService {
 })();
 
 // src/app/pages/customer/customer-invoice/customer-invoice.component.ts
-var _c013 = (a0) => ({ active: a0 });
+var _c012 = (a0) => ({ active: a0 });
 function CustomerInvoiceComponent_Conditional_12_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 11)(1, "h4");
@@ -43904,11 +45863,11 @@ var CustomerInvoiceComponent = class _CustomerInvoiceComponent {
         \u0275\u0275advance(12);
         \u0275\u0275conditional(ctx.productList.length == 0 && ctx.isFormSubmitted ? 12 : 13);
         \u0275\u0275advance(13);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(6, _c013, ctx.selectedComponent === "header"));
+        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(6, _c012, ctx.selectedComponent === "header"));
         \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(8, _c013, ctx.selectedComponent === "items"));
+        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(8, _c012, ctx.selectedComponent === "items"));
         \u0275\u0275advance(2);
-        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(10, _c013, ctx.selectedComponent === "pagos"));
+        \u0275\u0275property("ngClass", \u0275\u0275pureFunction1(10, _c012, ctx.selectedComponent === "pagos"));
         \u0275\u0275advance(3);
         \u0275\u0275conditional((tmp_5_0 = ctx.selectedComponent) === "header" ? 32 : tmp_5_0 === "items" ? 33 : -1);
       }
@@ -44697,7 +46656,7 @@ var AsyncAnimationRendererFactory = class _AsyncAnimationRendererFactory {
     this._engine?.flush();
   }
   loadImpl() {
-    const loadFn = () => this.moduleImpl ?? import("./chunk-SNRWXTEE.js").then((m) => m);
+    const loadFn = () => this.moduleImpl ?? import("./chunk-3ZEGNQ6B.js").then((m) => m);
     let moduleImplPromise;
     if (this.loadingSchedulerFn) {
       moduleImplPromise = this.loadingSchedulerFn(loadFn);
@@ -44894,8 +46853,8 @@ var appConfig = {
 };
 
 // src/app/layout/sidebar/sidebar.component.ts
-var _c014 = (a0) => ({ exact: a0 });
-var _forTrack06 = ($index, $item) => $item.title;
+var _c013 = (a0) => ({ exact: a0 });
+var _forTrack07 = ($index, $item) => $item.title;
 var _forTrack12 = ($index, $item) => $item.label;
 function SidebarComponent_Conditional_5_Template(rf, ctx) {
   if (rf & 1) {
@@ -44939,7 +46898,7 @@ function SidebarComponent_For_8_For_3_Template(rf, ctx) {
   if (rf & 2) {
     const item_r2 = ctx.$implicit;
     const ctx_r2 = \u0275\u0275nextContext(2);
-    \u0275\u0275property("routerLink", item_r2.route)("routerLinkActiveOptions", \u0275\u0275pureFunction1(5, _c014, item_r2.route === "/"))("title", ctx_r2.collapsed ? item_r2.label : "");
+    \u0275\u0275property("routerLink", item_r2.route)("routerLinkActiveOptions", \u0275\u0275pureFunction1(5, _c013, item_r2.route === "/"))("title", ctx_r2.collapsed ? item_r2.label : "");
     \u0275\u0275advance(2);
     \u0275\u0275textInterpolate(item_r2.icon);
     \u0275\u0275advance();
@@ -45085,7 +47044,7 @@ var SidebarComponent = class _SidebarComponent {
         \u0275\u0275conditionalCreate(5, SidebarComponent_Conditional_5_Template, 2, 0, "span", 4);
         \u0275\u0275elementEnd()();
         \u0275\u0275elementStart(6, "nav", 5);
-        \u0275\u0275repeaterCreate(7, SidebarComponent_For_8_Template, 4, 1, "div", 6, _forTrack06);
+        \u0275\u0275repeaterCreate(7, SidebarComponent_For_8_Template, 4, 1, "div", 6, _forTrack07);
         \u0275\u0275elementEnd();
         \u0275\u0275elementStart(9, "div", 7);
         \u0275\u0275conditionalCreate(10, SidebarComponent_Conditional_10_Template, 2, 0, "p", 8);

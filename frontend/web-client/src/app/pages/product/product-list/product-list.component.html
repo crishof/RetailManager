@@ -1,42 +1,112 @@
-<div class="table-responsive" id="table-container">
-  <table class="table table-striped table-hover align-middle table-sm">
-    <thead class="table-dark">
-      <tr>
-        <th scope="col">#Id</th>
-        <th scope="col">Code</th>
-        <th scope="col">Brand</th>
-        <th scope="col">Model</th>
-        <th scope="col">Description</th>
-        <th scope="col">Category</th>
-        <!-- TODO get data -->
-        <!--
-          <th scope="col">Tax Rate</th>
-          <th scope="col">Selling Price</th>
-          <th scope="col">Stock</th>
-          -->
-      </tr>
-    </thead>
-    <tbody>
-      @for (product of productList; track product.id ) {
-        <tr
-          (click)="selectionMode === 'click' ? onProductInteract(product) : null"
-        (dblclick)="
-          selectionMode === 'dblclick' ? onProductInteract(product) : null
-        "
-          >
-          <td>{{ product.id }}</td>
-          <td>{{ product.code }}</td>
-          <td>{{ product.brandName }}</td>
-          <td>{{ product.model }}</td>
-          <td class="description-cell">{{ product.description }}</td>
-          <td>{{ product.categoryName }}</td>
-          <!--
-            <td>{{ product.priceResponse.taxRate * 100 }}%</td>
-            <td>{{ product.priceResponse.sellingPrice | currency }}</td>
-            <td>{{ getTotalStockQuantity(product.stockResponses) }}</td>
-            -->
-        </tr>
+<table class="plist">
+  <thead class="plist__head">
+    <tr>
+      @if (isColumnVisible('id')) {
+        <th class="plist__th plist__th--id">#Id</th>
       }
-    </tbody>
-  </table>
-</div>
+      @if (isColumnVisible('code')) {
+        <th class="plist__th plist__th--code">Código</th>
+      }
+      @if (isColumnVisible('brand')) {
+        <th class="plist__th plist__th--brand">Marca</th>
+      }
+      @if (isColumnVisible('model')) {
+        <th class="plist__th plist__th--model">Modelo</th>
+      }
+      @if (isColumnVisible('description')) {
+        <th class="plist__th plist__th--desc">Descripción</th>
+      }
+      @if (isColumnVisible('category')) {
+        <th class="plist__th plist__th--category">Categoría</th>
+      }
+      @if (isColumnVisible('tax')) {
+        <th class="plist__th plist__th--tax">IVA</th>
+      }
+      @if (isColumnVisible('price')) {
+        <th class="plist__th plist__th--price">Precio</th>
+      }
+      @if (isColumnVisible('stock')) {
+        <th class="plist__th plist__th--stock">Stock</th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @if (productList.length === 0) {
+      <tr>
+        <td [attr.colspan]="visibleColumns.length" class="plist__empty-row">Realizá una búsqueda para ver artículos</td>
+      </tr>
+    }
+    @for (product of productList; track trackByProductId($index, product)) {
+      <tr
+        class="plist__row"
+        [class.plist__row--selected]="product.id === selectedProductId"
+        (click)="selectionMode === 'click' ? onProductInteract(product) : null"
+        (dblclick)="selectionMode === 'dblclick' ? onProductInteract(product) : null"
+        tabindex="0"
+        (keydown.enter)="onProductInteract(product)"
+      >
+        @if (isColumnVisible('id')) {
+          <td class="plist__td plist__td--id">
+            <span class="plist__id">{{ product.id }}</span>
+          </td>
+        }
+        @if (isColumnVisible('code')) {
+          <td class="plist__td plist__td--code">
+            <span class="plist__code">{{ product.code }}</span>
+          </td>
+        }
+        @if (isColumnVisible('brand')) {
+          <td class="plist__td plist__td--brand">
+            <span class="plist__brand">{{ product.brandName }}</span>
+          </td>
+        }
+        @if (isColumnVisible('model')) {
+          <td class="plist__td plist__td--model">
+            <p class="plist__model">{{ product.model }}</p>
+          </td>
+        }
+        @if (isColumnVisible('description')) {
+          <td class="plist__td plist__td--desc">
+            <p class="plist__desc">{{ product.description }}</p>
+          </td>
+        }
+        @if (isColumnVisible('category')) {
+          <td class="plist__td plist__td--category">
+            <span class="plist__category">{{ product.categoryName }}</span>
+          </td>
+        }
+        @if (isColumnVisible('tax')) {
+          <td class="plist__td plist__td--tax">
+            @if (product.priceResponse) {
+              <span class="plist__tax">{{ product.priceResponse.taxRate * 100 | number:'1.0-0' }}%</span>
+            } @else {
+              <span class="plist__no-price">—</span>
+            }
+          </td>
+        }
+        @if (isColumnVisible('price')) {
+          <td class="plist__td plist__td--price">
+            @if (product.priceResponse) {
+              <span class="plist__price">{{ product.priceResponse.sellingPrice | currency:'ARS':'symbol':'1.0-0' }}</span>
+              @if (product.priceResponse.discount > 0) {
+                <span class="plist__discount">-{{ product.priceResponse.discount }}%</span>
+              }
+            } @else {
+              <span class="plist__no-price">—</span>
+            }
+          </td>
+        }
+        @if (isColumnVisible('stock')) {
+          <td class="plist__td plist__td--stock">
+            <span
+              class="plist__stock"
+              [class.plist__stock--ok]="stockStatus(product.stockResponses) === 'ok'"
+              [class.plist__stock--low]="stockStatus(product.stockResponses) === 'low'"
+              [class.plist__stock--out]="stockStatus(product.stockResponses) === 'out'"
+            >{{ getTotalStock(product.stockResponses) }}</span>
+          </td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>

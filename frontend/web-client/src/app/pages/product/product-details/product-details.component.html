@@ -1,21 +1,248 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <p>{{ product?.id }}</p>
-    </div>
-    <div class="col-md-6">
-      <p>Precio Oferta: {{ product?.priceResponse?.sellingPrice }}</p>
-      <p>Precio Lista: {{ product?.priceResponse?.sellingPrice }}</p>
-    </div>
+<!-- Estado vacío -->
+@if (!product) {
+  <div class="pdetail-empty">
+    <span class="material-icons pdetail-empty__icon">inventory_2</span>
+    <p class="pdetail-empty__title">Ningún artículo seleccionado</p>
+    <p class="pdetail-empty__sub">Hacé clic en un artículo de la lista para ver sus detalles</p>
   </div>
+}
 
-  <hr />
+<!-- Detalle completo -->
+@if (product) {
+  <div class="pdetail">
 
-  <div class="row">
-    <div>
-      <p>{{ product?.brandName }}</p>
-      <p>{{ product?.model }}</p>
-      <p>{{ product?.description }}</p>
+    <!-- ── Header del producto ──────────────────────── -->
+    <div class="pdetail__header">
+      <!-- Avatar / imagen -->
+      <div class="pdetail__avatar">
+        @if (product.imageId.length > 0) {
+          <img [src]="product.imageId[0]" alt="Imagen del producto" class="pdetail__img" />
+        } @else {
+          <span class="material-icons pdetail__avatar-icon">inventory_2</span>
+        }
+      </div>
+      <!-- Info principal -->
+      <div class="pdetail__info">
+        <p class="pdetail__brand">{{ product.brandName }}</p>
+        <h2 class="pdetail__model">{{ product.model }}</h2>
+        <p class="pdetail__desc">{{ product.description }}</p>
+        <div class="pdetail__badges">
+          <span class="pdetail__badge pdetail__badge--category">
+            <span class="material-icons">category</span>
+            {{ product.categoryName }}
+          </span>
+          <span
+            class="pdetail__badge"
+            [class.pdetail__badge--stock-ok]="stockStatus === 'ok'"
+            [class.pdetail__badge--stock-low]="stockStatus === 'low'"
+            [class.pdetail__badge--stock-out]="stockStatus === 'out'"
+          >
+            <span class="material-icons">
+              {{ stockStatus === 'ok' ? 'check_circle' : stockStatus === 'low' ? 'warning' : 'remove_circle' }}
+            </span>
+            {{ totalStock }} en stock
+          </span>
+          @if (product.hidden) {
+            <span class="pdetail__badge pdetail__badge--hidden">
+              <span class="material-icons">visibility_off</span> Oculto
+            </span>
+          }
+        </div>
+      </div>
     </div>
+
+    <!-- ── Precios destacados ───────────────────────── -->
+    <div class="pdetail__prices">
+      <div class="pdetail__price-main">
+        <p class="pdetail__price-label">Precio de venta c/IVA</p>
+        <p class="pdetail__price-value">{{ priceWithTax | currency:'ARS':'symbol':'1.0-0' }}</p>
+        @if (product.priceResponse.discount > 0) {
+          <span class="pdetail__price-discount">
+            <span class="material-icons">sell</span>
+            {{ product.priceResponse.discount }}% dto.
+          </span>
+        }
+      </div>
+      <div class="pdetail__price-secondary">
+        <div class="pdetail__price-row">
+          <span class="pdetail__price-row-label">Precio s/IVA</span>
+          <span class="pdetail__price-row-value">{{ product.priceResponse.sellingPrice | currency:'ARS':'symbol':'1.0-0' }}</span>
+        </div>
+        <div class="pdetail__price-row">
+          <span class="pdetail__price-row-label">IVA</span>
+          <span class="pdetail__price-row-value">{{ product.priceResponse.taxRate * 100 | number:'1.0-0' }}%</span>
+        </div>
+        <div class="pdetail__price-row">
+          <span class="pdetail__price-row-label">Costo</span>
+          <span class="pdetail__price-row-value">{{ purchasePrice | currency:'ARS':'symbol':'1.0-0' }}</span>
+        </div>
+        <div class="pdetail__price-row">
+          <span class="pdetail__price-row-label">Margen</span>
+          <span class="pdetail__price-row-value pdetail__price-row-value--margin">{{ margin | number:'1.1-1' }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Tabs ────────────────────────────────────── -->
+    <nav class="pdetail__tabs">
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'ficha'"     (click)="activeTab = 'ficha'">Ficha</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'precios'"   (click)="activeTab = 'precios'">Precios</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'stock'"     (click)="activeTab = 'stock'">Stock</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'proveedor'" (click)="activeTab = 'proveedor'">Proveedor</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'codigos'"   (click)="activeTab = 'codigos'">Códigos</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'varios'"   (click)="activeTab = 'varios'">Varios</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'tarjetas'" (click)="activeTab = 'tarjetas'">Pago tarjetas</button>
+      <button class="pdetail__tab" [class.pdetail__tab--active]="activeTab === 'especificaciones'" (click)="activeTab = 'especificaciones'">Especificaciones</button>
+    </nav>
+
+    <!-- ── Contenido de tabs ───────────────────────── -->
+    <div class="pdetail__tab-content">
+
+      @if (activeTab === 'ficha') {
+        <dl class="pdetail__dl">
+          <dt>Código</dt>
+          <dd><code class="pdetail__code-chip">{{ product.code }}</code></dd>
+          <dt>Marca</dt>
+          <dd>{{ product.brandName }}</dd>
+          <dt>Modelo</dt>
+          <dd>{{ product.model }}</dd>
+          <dt>Descripción</dt>
+          <dd>{{ product.description }}</dd>
+          <dt>Categoría</dt>
+          <dd>{{ product.categoryName }}</dd>
+          <dt>Vendidos</dt>
+          <dd>{{ product.invoiceQuantity }} unid.</dd>
+        </dl>
+      }
+
+      @if (activeTab === 'precios') {
+        <dl class="pdetail__dl">
+          <dt>Precio de costo</dt>
+          <dd class="pdetail__price-highlight">{{ purchasePrice | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>Precio de venta (s/IVA)</dt>
+          <dd>{{ product.priceResponse.sellingPrice | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>IVA</dt>
+          <dd>{{ product.priceResponse.taxRate * 100 | number:'1.0-0' }}%</dd>
+          <dt>Precio de venta (c/IVA)</dt>
+          <dd class="pdetail__price-highlight pdetail__price-highlight--main">{{ priceWithTax | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>Descuento</dt>
+          <dd>{{ product.priceResponse.discount }}%</dd>
+          <dt>Margen bruto</dt>
+          <dd [class.pdetail__margin--good]="margin >= 20" [class.pdetail__margin--warn]="margin > 0 && margin < 20" [class.pdetail__margin--bad]="margin <= 0">
+            {{ margin | number:'1.1-1' }}%
+          </dd>
+        </dl>
+      }
+
+      @if (activeTab === 'stock') {
+        @if (product.stockResponses.length === 0) {
+          <p class="pdetail__tab-empty">No hay información de stock disponible</p>
+        } @else {
+          <div class="pdetail__stock-list">
+            @for (branch of stockBranches(product.stockResponses); track branch.branch) {
+              <div class="pdetail__stock-row">
+                <div class="pdetail__stock-info">
+                  <span class="material-icons pdetail__stock-icon">store</span>
+                  <div>
+                    <p class="pdetail__stock-branch">{{ branch.branch }}</p>
+                    <p class="pdetail__stock-limits">Mín: {{ branch.min }} · Máx: {{ branch.max }}</p>
+                  </div>
+                </div>
+                <div class="pdetail__stock-qty-wrap">
+                  <span
+                    class="pdetail__stock-qty"
+                    [class.pdetail__stock-qty--ok]="branch.qty > branch.min"
+                    [class.pdetail__stock-qty--low]="branch.qty > 0 && branch.qty <= branch.min"
+                    [class.pdetail__stock-qty--out]="branch.qty <= 0"
+                  >{{ branch.qty }}</span>
+                  <span class="pdetail__stock-unit">unid.</span>
+                </div>
+              </div>
+            }
+            <div class="pdetail__stock-total">
+              <span>Total</span>
+              <span class="pdetail__stock-total-qty">{{ totalStock }} unid.</span>
+            </div>
+          </div>
+        }
+      }
+
+      @if (activeTab === 'proveedor') {
+        <dl class="pdetail__dl">
+          <dt>ID Proveedor</dt>
+          <dd>{{ product.supplierId || '—' }}</dd>
+          <dt>ID Art. Proveedor</dt>
+          <dd>{{ product.supplierProductId || '—' }}</dd>
+        </dl>
+      }
+
+      @if (activeTab === 'codigos') {
+        <dl class="pdetail__dl">
+          <dt>Código interno</dt>
+          <dd><code class="pdetail__code-chip">{{ product.code }}</code></dd>
+          <dt>ID producto</dt>
+          <dd><code class="pdetail__code-chip pdetail__code-chip--sm">{{ product.id }}</code></dd>
+        </dl>
+      }
+
+      @if (activeTab === 'varios') {
+        <dl class="pdetail__dl">
+          <dt>Categoría</dt>
+          <dd>{{ product.categoryName }}</dd>
+          <dt>Estado</dt>
+          <dd>{{ product.hidden ? 'Oculto' : 'Visible' }}</dd>
+          <dt>Cantidad facturada</dt>
+          <dd>{{ product.invoiceQuantity }} unid.</dd>
+          <dt>Imágenes asociadas</dt>
+          <dd>{{ product.imageId.length }}</dd>
+          <dt>ID dimensión</dt>
+          <dd>{{ product.dimensionId || '—' }}</dd>
+        </dl>
+      }
+
+      @if (activeTab === 'tarjetas') {
+        <dl class="pdetail__dl">
+          <dt>Precio de referencia</dt>
+          <dd>{{ priceWithTax | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>Recargo sugerido 1 cuota</dt>
+          <dd>{{ (priceWithTax * 1.05) | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>Recargo sugerido 3 cuotas</dt>
+          <dd>{{ (priceWithTax * 1.12) | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dt>Recargo sugerido 6 cuotas</dt>
+          <dd>{{ (priceWithTax * 1.20) | currency:'ARS':'symbol':'1.2-2' }}</dd>
+        </dl>
+        <p class="pdetail__tab-empty">Los porcentajes son de referencia hasta integrar configuración real de medios de pago.</p>
+      }
+
+      @if (activeTab === 'especificaciones') {
+        <dl class="pdetail__dl">
+          <dt>Modelo</dt>
+          <dd>{{ product.model }}</dd>
+          <dt>Descripción técnica</dt>
+          <dd>{{ product.description || 'Sin descripción' }}</dd>
+          <dt>ID dimensión</dt>
+          <dd>{{ product.dimensionId || 'No asignada' }}</dd>
+          <dt>Stock mínimo de referencia</dt>
+          <dd>{{ product.stockResponses.length > 0 ? product.stockResponses[0].min : 0 }}</dd>
+          <dt>Stock máximo de referencia</dt>
+          <dd>{{ product.stockResponses.length > 0 ? product.stockResponses[0].max : 0 }}</dd>
+        </dl>
+      }
+
+    </div>
+
+    <!-- ── Acciones rápidas ─────────────────────────── -->
+    <div class="pdetail__actions">
+      <button class="pdetail__action-btn">
+        <span class="material-icons">edit</span> Editar
+      </button>
+      <button class="pdetail__action-btn">
+        <span class="material-icons">swap_horiz</span> Stock
+      </button>
+      <button class="pdetail__action-btn">
+        <span class="material-icons">add_shopping_cart</span> Vender
+      </button>
+    </div>
+
   </div>
-</div>
+}

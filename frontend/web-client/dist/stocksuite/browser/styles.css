@@ -542,6 +542,9 @@ video {
 .collapse {
   visibility: collapse;
 }
+.static {
+  position: static;
+}
 .m-3 {
   margin: 0.75rem;
 }

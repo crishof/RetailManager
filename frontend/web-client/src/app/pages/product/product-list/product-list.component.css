@@ -1,32 +1,173 @@
-.table-responsive {
-  max-width: 100%;
-  overflow-x: scroll;
-}
-#page-title {
-  margin: 30px;
-}
-
-#table-container {
-  height: 400px;
-  overflow-y: auto;
+/* ─── Table ──────────────────────────────────────────── */
+.plist {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .8125rem;
+  table-layout: auto;
 }
 
-.table thead th {
+/* ─── Header ─────────────────────────────────────────── */
+.plist__head {
   position: sticky;
   top: 0;
-  z-index: 1;
-  /*background-color: white; /* Asegúrate de que los encabezados sean visibles */
+  z-index: 10;
+  background: #f8fafc;
 }
 
-.nowrap {
-  white-space: nowrap; /* Evita que el contenido se divida en varias líneas */
-  overflow: hidden; /* Oculta el contenido excedente */
-  text-overflow: ellipsis; /* Agrega puntos suspensivos (...) si el contenido se desborda */
+.plist__th {
+  padding: .5rem .75rem;
+  text-align: left;
+  font-size: .6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: #64748b;
+  border-bottom: 2px solid #e2e8f0;
+  white-space: nowrap;
 }
 
-.description-cell {
-  white-space: nowrap; /* Evita que el contenido se divida en varias líneas */
-  overflow: hidden; /* Oculta el contenido excedente */
-  text-overflow: ellipsis; /* Agrega puntos suspensivos (...) si el contenido se desborda */
-  max-width: 300px; /* Establece el tamaño máximo para la celda */
+.plist__th--id    { width: 150px; }
+.plist__th--code  { width: 90px; }
+.plist__th--brand { width: 100px; }
+.plist__th--model { width: 130px; }
+.plist__th--desc  { min-width: 220px; }
+.plist__th--category { width: 130px; }
+.plist__th--tax { width: 70px; text-align: right; }
+.plist__th--price { width: 110px; text-align: right; }
+.plist__th--stock { width: 64px; text-align: center; }
+
+/* ─── Rows ───────────────────────────────────────────── */
+.plist__row {
+  cursor: pointer;
+  transition: background .1s;
+  outline: none;
+}
+
+.plist__row:hover { background: #f0fdfa; }
+.plist__row:focus-visible { background: #f0fdfa; outline: 2px solid #0d9488; outline-offset: -2px; }
+
+.plist__row--selected {
+  background: #ccfbf1 !important;
+}
+.plist__row--selected .plist__model { color: #0d9488; }
+
+.plist__row:not(:last-child) td { border-bottom: 1px solid #f1f5f9; }
+
+/* ─── Cells ──────────────────────────────────────────── */
+.plist__td {
+  padding: .5rem .75rem;
+  vertical-align: middle;
+}
+
+.plist__td--price { text-align: right; }
+.plist__td--stock { text-align: center; }
+.plist__td--tax { text-align: right; }
+
+.plist__id {
+  display: inline-block;
+  max-width: 145px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: .6875rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Code ───────────────────────────────────────────── */
+.plist__code {
+  font-family: 'Roboto Mono', monospace;
+  font-size: .75rem;
+  color: #475569;
+  background: #f1f5f9;
+  padding: .125rem .375rem;
+  border-radius: .25rem;
+}
+
+/* ─── Brand ──────────────────────────────────────────── */
+.plist__brand {
+  font-size: .75rem;
+  font-weight: 600;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+
+/* ─── Model / Description ────────────────────────────── */
+.plist__model {
+  margin: 0;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plist__desc {
+  margin: 0;
+  font-size: .75rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 360px;
+}
+
+.plist__category {
+  font-size: .75rem;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.plist__tax {
+  font-size: .75rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* ─── Price ──────────────────────────────────────────── */
+.plist__price {
+  font-weight: 700;
+  font-size: .875rem;
+  color: #0f172a;
+  display: block;
+}
+
+.plist__discount {
+  font-size: .7rem;
+  font-weight: 600;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: .0625rem .25rem;
+  border-radius: .25rem;
+  display: inline-block;
+  margin-top: .125rem;
+}
+
+.plist__no-price { color: #94a3b8; font-size: .75rem; }
+
+/* ─── Stock badge ────────────────────────────────────── */
+.plist__stock {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 20px;
+  padding: 0 .375rem;
+  border-radius: .875rem;
+  font-size: .6875rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.plist__stock--ok  { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+.plist__stock--low { background: #fef9c3; color: #a16207; border-color: #fef08a; }
+.plist__stock--out { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+
+/* ─── Empty ──────────────────────────────────────────── */
+.plist__empty-row {
+  padding: 2rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: .8125rem;
 }

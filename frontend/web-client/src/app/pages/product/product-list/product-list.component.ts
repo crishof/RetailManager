@@ -1,43 +1,61 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, input } from '@angular/core';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IProduct } from '../../../model/product.model';
 import { IStock } from '../../../model/stock.model';
-import { ReactiveFormsModule } from '@angular/forms';
+
+type ProductColumnKey =
+  | 'id'
+  | 'code'
+  | 'brand'
+  | 'model'
+  | 'description'
+  | 'category'
+  | 'tax'
+  | 'price'
+  | 'stock';
 
 @Component({
-    selector: 'app-product-list',
-    imports: [CommonModule, ReactiveFormsModule],
-    templateUrl: './product-list.component.html',
-    styleUrl: './product-list.component.css'
+  selector: 'app-product-list',
+  standalone: true,
+  imports: [CommonModule, CurrencyPipe],
+  templateUrl: './product-list.component.html',
+  styleUrl: './product-list.component.css',
 })
 export class ProductListComponent {
-  selectedProduct: IProduct | null = null;
-  loading: boolean = false;
   @Input() productList: IProduct[] = [];
+  @Input() selectedProductId: string | null = null;
   @Input() selectionMode: 'click' | 'dblclick' = 'click';
+  @Input() visibleColumns: ProductColumnKey[] = [
+    'id',
+    'code',
+    'brand',
+    'model',
+    'description',
+    'category',
+    'tax',
+    'price',
+    'stock',
+  ];
   @Output() selectProduct = new EventEmitter<IProduct>();
 
-  trackByProductId(index: number, product: IProduct): string {
-  return product.id;
-}
+  trackByProductId(_: number, p: IProduct): string { return p.id; }
+
   onProductInteract(product: IProduct): void {
     this.selectProduct.emit(product);
   }
 
-  getTotalStockQuantity(stocks: IStock[]): number {
-    this.loading = true;
-    const totalQuantity = stocks.reduce(
-      (acc, stock) => acc + stock.quantity,
-      0
-    );
-    this.loading = false;
-    return totalQuantity;
+  isColumnVisible(column: ProductColumnKey): boolean {
+    return this.visibleColumns.includes(column);
   }
 
-  onProductClick(product: IProduct): void {
-    this.selectProduct.emit(product);
+  getTotalStock(stocks: IStock[]): number {
+    return stocks?.reduce((acc, s) => acc + s.quantity, 0) ?? 0;
   }
-  onProductDblClick(product: IProduct): void {
-    this.selectProduct.emit(product);
+
+  stockStatus(stocks: IStock[]): 'ok' | 'low' | 'out' {
+    const qty = this.getTotalStock(stocks);
+    if (qty <= 0) return 'out';
+    const min = stocks?.[0]?.min ?? 0;
+    return qty <= min ? 'low' : 'ok';
   }
 }
