@@ -8,5 +8,7 @@ CREATE DATABASE supplier_db;
 CREATE DATABASE inventory_db;
 CREATE DATABASE sales_db;
 CREATE DATABASE price_list_db;
-
+CREATE DATABASE exchange_db;
+CREATE DATABASE location_db;
+CREATE DATABASE branch_db;
 

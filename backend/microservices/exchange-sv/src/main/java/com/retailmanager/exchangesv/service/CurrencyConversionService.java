@@ -21,7 +21,7 @@ public class CurrencyConversionService {
 
     public CurrencyConversionService(
             WebClient.Builder builder,
-            @Value("${FREE_CURRENCY_APIKEY}") String apiKey
+            @Value("${FREE_CURRENCY_APIKEY:}") String apiKey
     ) {
         this.webClient = builder
                 .baseUrl("https://api.freecurrencyapi.com/v1")

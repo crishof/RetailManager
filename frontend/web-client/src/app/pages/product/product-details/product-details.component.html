@@ -15,8 +15,8 @@
     <div class="pdetail__header">
       <!-- Avatar / imagen -->
       <div class="pdetail__avatar">
-        @if (product.imageId.length > 0) {
-          <img [src]="product.imageId[0]" alt="Imagen del producto" class="pdetail__img" />
+        @if (imageUrls.length > 0) {
+          <img [src]="imageUrls[0]" alt="Producto" class="pdetail__img" />
         } @else {
           <span class="material-icons pdetail__avatar-icon">inventory_2</span>
         }
@@ -56,21 +56,21 @@
       <div class="pdetail__price-main">
         <p class="pdetail__price-label">Precio de venta c/IVA</p>
         <p class="pdetail__price-value">{{ priceWithTax | currency:'ARS':'symbol':'1.0-0' }}</p>
-        @if (product.priceResponse.discount > 0) {
+        @if (discount > 0) {
           <span class="pdetail__price-discount">
             <span class="material-icons">sell</span>
-            {{ product.priceResponse.discount }}% dto.
+            {{ discount }}% dto.
           </span>
         }
       </div>
       <div class="pdetail__price-secondary">
         <div class="pdetail__price-row">
           <span class="pdetail__price-row-label">Precio s/IVA</span>
-          <span class="pdetail__price-row-value">{{ product.priceResponse.sellingPrice | currency:'ARS':'symbol':'1.0-0' }}</span>
+          <span class="pdetail__price-row-value">{{ sellingPrice | currency:'ARS':'symbol':'1.0-0' }}</span>
         </div>
         <div class="pdetail__price-row">
           <span class="pdetail__price-row-label">IVA</span>
-          <span class="pdetail__price-row-value">{{ product.priceResponse.taxRate * 100 | number:'1.0-0' }}%</span>
+          <span class="pdetail__price-row-value">{{ taxRate * 100 | number:'1.0-0' }}%</span>
         </div>
         <div class="pdetail__price-row">
           <span class="pdetail__price-row-label">Costo</span>
@@ -120,13 +120,13 @@
           <dt>Precio de costo</dt>
           <dd class="pdetail__price-highlight">{{ purchasePrice | currency:'ARS':'symbol':'1.2-2' }}</dd>
           <dt>Precio de venta (s/IVA)</dt>
-          <dd>{{ product.priceResponse.sellingPrice | currency:'ARS':'symbol':'1.2-2' }}</dd>
+          <dd>{{ sellingPrice | currency:'ARS':'symbol':'1.2-2' }}</dd>
           <dt>IVA</dt>
-          <dd>{{ product.priceResponse.taxRate * 100 | number:'1.0-0' }}%</dd>
+          <dd>{{ taxRate * 100 | number:'1.0-0' }}%</dd>
           <dt>Precio de venta (c/IVA)</dt>
           <dd class="pdetail__price-highlight pdetail__price-highlight--main">{{ priceWithTax | currency:'ARS':'symbol':'1.2-2' }}</dd>
           <dt>Descuento</dt>
-          <dd>{{ product.priceResponse.discount }}%</dd>
+          <dd>{{ discount }}%</dd>
           <dt>Margen bruto</dt>
           <dd [class.pdetail__margin--good]="margin >= 20" [class.pdetail__margin--warn]="margin > 0 && margin < 20" [class.pdetail__margin--bad]="margin <= 0">
             {{ margin | number:'1.1-1' }}%
@@ -135,11 +135,11 @@
       }
 
       @if (activeTab === 'stock') {
-        @if (product.stockResponses.length === 0) {
+        @if (stocks.length === 0) {
           <p class="pdetail__tab-empty">No hay información de stock disponible</p>
         } @else {
           <div class="pdetail__stock-list">
-            @for (branch of stockBranches(product.stockResponses); track branch.branch) {
+            @for (branch of stockBranches(stocks); track branch.branch) {
               <div class="pdetail__stock-row">
                 <div class="pdetail__stock-info">
                   <span class="material-icons pdetail__stock-icon">store</span>
@@ -194,7 +194,7 @@
           <dt>Cantidad facturada</dt>
           <dd>{{ product.invoiceQuantity }} unid.</dd>
           <dt>Imágenes asociadas</dt>
-          <dd>{{ product.imageId.length }}</dd>
+          <dd>{{ imageUrls.length }}</dd>
           <dt>ID dimensión</dt>
           <dd>{{ product.dimensionId || '—' }}</dd>
         </dl>
@@ -223,9 +223,9 @@
           <dt>ID dimensión</dt>
           <dd>{{ product.dimensionId || 'No asignada' }}</dd>
           <dt>Stock mínimo de referencia</dt>
-          <dd>{{ product.stockResponses.length > 0 ? product.stockResponses[0].min : 0 }}</dd>
+          <dd>{{ stocks.length > 0 ? stocks[0].min : 0 }}</dd>
           <dt>Stock máximo de referencia</dt>
-          <dd>{{ product.stockResponses.length > 0 ? product.stockResponses[0].max : 0 }}</dd>
+          <dd>{{ stocks.length > 0 ? stocks[0].max : 0 }}</dd>
         </dl>
       }
 

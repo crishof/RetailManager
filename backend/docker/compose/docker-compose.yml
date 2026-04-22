@@ -1,248 +1,469 @@
 services:
 
   # =========================================================
-  # INFRASTRUCTURE
+  # INFRASTRUCTURE LAYER
   # =========================================================
 
   postgres:
-    image: postgres:17
+    image: postgres:17-alpine
     container_name: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5544:5432"
+      - "${POSTGRES_DB_PORT}:${POSTGRES_CONTAINER_PORT}"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ../postgres/init:/docker-entrypoint-initdb.d/
+      - ../postgres/init:/docker-entrypoint-initdb.d/:ro
     networks:
-      - erp-net
+      - retailmanager-net
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3.13-management-alpine
     container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
+      - "${RABBITMQ_MGMT_PORT}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
     networks:
-      - erp-net
+      - retailmanager-net
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+
   # =========================================================
   # API GATEWAY (SINGLE ENTRY POINT)
   # =========================================================
 
   gateway-sv:
-    build: ../../microservices/gateway-sv
+    build:
+      context: ../../microservices/gateway-sv
+      dockerfile: Dockerfile
     container_name: gateway-sv
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
     ports:
-      - "8080:8080"
+      - "${GATEWAY_PORT}:${GATEWAY_CONTAINER_PORT}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
-      - erp-net
+      - retailmanager-net
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:${GATEWAY_CONTAINER_PORT}/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # =========================================================
+  # MICROSERVICES (13 SERVICES)
+  # =========================================================
+
+  brand-sv:
+    build:
+      context: ../../microservices/brand-sv
+      dockerfile: Dockerfile
+    container_name: brand-sv
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      BRAND_DB: ${BRAND_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - retailmanager-net
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
-  # =========================================================
-  # CORE MICROSERVICES (INTERNAL ONLY)
-  # =========================================================
-
-  brand-sv:
-    build: ../../microservices/brand-sv
-    container_name: brand-sv
-    env_file:
-      - .env
-      - ../../microservices/brand-sv/.env
+  category-sv:
+    build:
+      context: ../../microservices/category-sv
+      dockerfile: Dockerfile
+    container_name: category-sv
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      CATEGORY_DB: ${CATEGORY_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
     depends_on:
       postgres:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
     networks:
-      - erp-net
+      - retailmanager-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
-  category-sv:
-    build: ../../microservices/category-sv
-    container_name: category-sv
-    env_file:
-      - .env
-      - ../../microservices/category-sv/.env
+  customer-sv:
+    build:
+      context: ../../microservices/customer-sv
+      dockerfile: Dockerfile
+    container_name: customer-sv
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      CUSTOMER_DB: ${CUSTOMER_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
     depends_on:
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
-      - erp-net
+      - retailmanager-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+
+  product-sv:
+    build:
+      context: ../../microservices/product-sv
+      dockerfile: Dockerfile
+    container_name: product-sv
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      PRODUCT_DB: ${PRODUCT_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - retailmanager-net
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   supplier-sv:
-    build: ../../microservices/supplier-sv
+    build:
+      context: ../../microservices/supplier-sv
+      dockerfile: Dockerfile
     container_name: supplier-sv
-    env_file:
-      - .env
-      - ../../microservices/supplier-sv/.env
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      SUPPLIER_DB: ${SUPPLIER_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
     depends_on:
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
-      - erp-net
+      - retailmanager-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+
+  inventory-sv:
+    build:
+      context: ../../microservices/inventory-sv
+      dockerfile: Dockerfile
+    container_name: inventory-sv
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      INVENTORY_DB: ${INVENTORY_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - retailmanager-net
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  pricing-sv:
+    build:
+      context: ../../microservices/pricing-sv
+      dockerfile: Dockerfile
+    container_name: pricing-sv
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      PRICING_DB: ${PRICING_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - retailmanager-net
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   image-sv:
     build:
       context: ../../microservices/image-sv
+      dockerfile: Dockerfile
     container_name: image-sv
-    env_file:
-      - .env
-      - ../../microservices/image-sv/.env
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - erp-net
-    healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  price-item-sv:
-    build:
-      context: ../../microservices/supplier-price-list-sv
-    container_name: price-items-sv
-    env_file:
-      - .env
-      - ../../microservices/supplier-price-list-sv/.env
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - erp-net
-    healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  product-sv:
-    build: ../../microservices/product-sv
-    container_name: product-sv
-    env_file:
-      - .env
-      - ../../microservices/product-sv/.env
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      IMAGE_DB: ${IMAGE_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
     depends_on:
       postgres:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
     networks:
-      - erp-net
+      - retailmanager-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
-  pricing-sv:
-    build: ../../microservices/pricing-sv
-    container_name: pricing-sv
-    env_file:
-      - .env
-      - ../../microservices/pricing-sv/.env
+  supplier-price-list-sv:
+    build:
+      context: ../../microservices/supplier-price-list-sv
+      dockerfile: Dockerfile
+    container_name: supplier-price-list-sv
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      SUPPLIER_PRICE_LIST_DB: ${SUPPLIER_PRICE_LIST_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
     depends_on:
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
-      - erp-net
+      - retailmanager-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
-  customer-sv:
-    build: ../../microservices/customer-sv
-    container_name: customer-sv
-    env_file:
-      - .env
-      - ../../microservices/customer-sv/.env
+  customer-order-sv:
+    build:
+      context: ../../microservices/customer-order-sv
+      dockerfile: Dockerfile
+    container_name: customer-order-sv
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      CUSTOMER_ORDER_DB: ${CUSTOMER_ORDER_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
     depends_on:
       postgres:
         condition: service_healthy
-    networks:
-      - erp-net
-    healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
-
-  inventory-sv:
-    build: ../../microservices/inventory-sv
-    container_name: inventory-sv
-    env_file:
-      - .env
-      - ../../microservices/inventory-sv/.env
-    depends_on:
-      postgres:
+      rabbitmq:
         condition: service_healthy
     networks:
-      - erp-net
+      - retailmanager-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
-
-  orders-sv:
-    build: ../../microservices/customer-order-sv
-    container_name: sales-sv
-    env_file:
-      - .env
-      - ../../microservices/customer-order-sv/.env
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - erp-net
-    healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   exchange-sv:
-    build: ../../microservices/exchange-sv
+    build:
+      context: ../../microservices/exchange-sv
+      dockerfile: Dockerfile
     container_name: exchange-sv
-    env_file:
-      - .env
-      - ../../microservices/exchange-sv/.env
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      EXCHANGE_DB: ${EXCHANGE_DB}
+      FREE_CURRENCY_APIKEY: ${FREE_CURRENCY_APIKEY}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
-      - erp-net
+      - retailmanager-net
     healthcheck:
-      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1" ]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  location-sv:
+    build:
+      context: ../../microservices/location-sv
+      dockerfile: Dockerfile
+    container_name: location-sv
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      LOCATION_DB: ${LOCATION_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - retailmanager-net
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  branch-sv:
+    build:
+      context: ../../microservices/branch-sv
+      dockerfile: Dockerfile
+    container_name: branch-sv
+    environment:
+      SPRING_ACTIVE_PROFILE: ${SPRING_ACTIVE_PROFILE}
+      LOG_LEVEL_SPRING: ${LOG_LEVEL_SPRING}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_NETWORK_HOST: ${POSTGRES_NETWORK_HOST}
+      POSTGRES_CONTAINER_PORT: ${POSTGRES_CONTAINER_PORT}
+      BRANCH_DB: ${BRANCH_DB}
+      RABBITMQ_NETWORK_HOST: ${RABBITMQ_NETWORK_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - retailmanager-net
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
 # =========================================================
 # NETWORKS & VOLUMES
 # =========================================================
 
 networks:
-  erp-net:
+  retailmanager-net:
     driver: bridge
 
 volumes:
   postgres_data:
-  pgadmin_data:
-  sonar_data:
-  sonar_logs:
-  sonar_extensions:
+    driver: local
+  rabbitmq_data:
+    driver: local

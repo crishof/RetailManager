@@ -8,7 +8,12 @@
 <!-- ── Workspace ───────────────────────────────────────── -->
 <div class="products-workspace">
 
-  <!-- Panel izquierdo: búsqueda + lista ──────────────────── -->
+  <!-- Panel superior: detalle ────────────────────────────── -->
+  <section class="products-panel products-panel--detail">
+    <app-product-detail [product]="selectedProduct"></app-product-detail>
+  </section>
+
+  <!-- Panel inferior: búsqueda + lista ───────────────────── -->
   <section class="products-panel products-panel--list">
 
     <!-- Barra de búsqueda -->
@@ -118,11 +123,6 @@
       }
     </div>
 
-  </section>
-
-  <!-- Panel derecho: detalle ─────────────────────────────── -->
-  <section class="products-panel products-panel--detail">
-    <app-product-detail [product]="selectedProduct"></app-product-detail>
   </section>
 
 </div>

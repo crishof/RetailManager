@@ -30,9 +30,10 @@
         <url/>
     </scm>
     <properties>
-        <java.version>25</java.version>
-        <testcontainers.version>1.19.7</testcontainers.version>
+        <java.version>21</java.version>
+        <testcontainers.version>1.20.4</testcontainers.version>
         <lombok.version>1.18.42</lombok.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
         <sonar.projectKey>image-sv</sonar.projectKey>
         <sonar.projectName>Image Service</sonar.projectName>
         <sonar.coverage.jacoco.xmlReportPaths>
@@ -118,6 +119,19 @@
             <artifactId>resilience4j-spring-boot3</artifactId>
         </dependency>
 
+        <!-- MapStruct -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+
+        <!-- RabbitMQ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
         <!-- ========================= -->
         <!-- TEST -->
         <!-- ========================= -->
@@ -156,13 +170,17 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

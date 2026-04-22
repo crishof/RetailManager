@@ -9,11 +9,12 @@
 }
 
 .products-workspace {
-  display: grid;
-  grid-template-columns: 1fr 400px;
+  display: flex;
+  flex-direction: column;
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
   z-index: 1;
 }
@@ -27,12 +28,18 @@
 }
 
 .products-panel--list {
-  border-right: 1px solid #e2e8f0;
+  width: 100%;
+  min-height: 0;
+  flex: 1;
 }
 
 .products-panel--detail {
+  width: 100%;
+  min-height: 340px;
+  max-height: 48vh;
   background: #f8fafc;
   overflow-y: auto;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 /* ─── Searchbar ──────────────────────────────────────── */
