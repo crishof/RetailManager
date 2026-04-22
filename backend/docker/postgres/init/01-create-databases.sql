@@ -1,14 +1,8 @@
-CREATE DATABASE pricing_db;
-CREATE DATABASE brand_db;
-CREATE DATABASE image_db;
-CREATE DATABASE category_db;
-CREATE DATABASE customer_db;
-CREATE DATABASE product_db;
-CREATE DATABASE supplier_db;
-CREATE DATABASE inventory_db;
-CREATE DATABASE sales_db;
-CREATE DATABASE price_list_db;
-CREATE DATABASE exchange_db;
-CREATE DATABASE location_db;
-CREATE DATABASE branch_db;
+-- =========================================================
+-- RetailManager — Database initialization
+-- Agregar una línea por servicio al incorporarlo al proyecto
+-- =========================================================
+
+-- CREATE DATABASE <nombre>_db;
+
 
