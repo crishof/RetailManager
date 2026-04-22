@@ -1,1 +1,27 @@
-<p>home works!</p>
+<!-- Hero Banner -->
+<div class="home-hero">
+	<div class="home-hero__inner">
+		<span class="material-icons home-hero__icon">storefront</span>
+		<h1 class="home-hero__title">Bienvenido a <span>RetailManager</span></h1>
+		<p class="home-hero__subtitle">
+			Sistema integral de gestión comercial. Administrá productos, ventas,
+			proveedores y más desde un solo lugar.
+		</p>
+	</div>
+</div>
+
+<!-- Quick access cards -->
+<section class="home-quick">
+	<h2 class="home-quick__title">Accesos rápidos</h2>
+	<div class="home-quick__grid">
+		@for (link of quickLinks; track link.route) {
+			<a [routerLink]="link.route" class="home-card">
+				<div class="home-card__icon-wrap {{ link.color }}">
+					<span class="material-icons home-card__icon">{{ link.icon }}</span>
+				</div>
+				<span class="home-card__label">{{ link.label }}</span>
+				<span class="material-icons home-card__arrow">arrow_forward</span>
+			</a>
+		}
+	</div>
+</section>

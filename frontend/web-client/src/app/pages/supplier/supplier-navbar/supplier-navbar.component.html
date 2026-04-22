@@ -1,230 +1,94 @@
-<nav
-  class="navbar navbar-expand-lg bg-dark border-bottom border-body"
-  data-bs-theme="dark"
->
-  <div class="container-fluid">
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
+<div class="snav">
+  <div class="snav__group">
+    <button class="snav__btn snav__btn--primary" type="button" title="Nuevo proveedor" (click)="onNewSupplierClick($event)">
+      <span class="material-icons">add</span>
+      <span>Nuevo</span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <!-- Alta baja y modificacion -->
-        <li class="nav-item">
-          <a class="nav-link" href="#"
-            ><img
-              class="icon-small"
-              src="../../../../assets/icons/add-48.png"
-              alt="Add"
-            />
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"
-            ><img
-              class="icon-small"
-              src="../../../../assets/icons/cancel-48.png"
-              alt="Delete"
-          /></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"
-            ><img
-              class="icon-small"
-              src="../../../../assets/icons/edit-48.png"
-              alt="Edit"
-          /></a>
-        </li>
+    <button class="snav__btn" type="button" title="Editar proveedor" [disabled]="!selectedSupplier" (click)="onEditSupplierClick($event)">
+      <span class="material-icons">edit</span>
+      <span>Editar</span>
+    </button>
+    <button class="snav__btn snav__btn--danger" type="button" title="Eliminar proveedor">
+      <span class="material-icons">delete_outline</span>
+      <span>Eliminar</span>
+    </button>
+  </div>
 
-        <!-- Listados -->
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            >Listados</a
-          >
+  <div class="snav__sep"></div>
 
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="#">Listado de proveedores</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#"
-                >Listado de servicios tecnicos</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">Listado de profesores</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">Listado de Consignatarios</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">Listado de extranjeros</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#"
-                >Listado de Distribucion propia</a
-              >
-            </li>
-          </ul>
-        </li>
-
-        <!-- Informes -->
-
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            >Informes</a
-          >
-
-          <ul class="dropdown-menu">
-            <li>
-              @if(selectedSupplier){
-              <a
-                class="dropdown-item"
-                (click)="toStatementAccount(selectedSupplier.id)"
-                >Statement of Account</a
-              >
-              }@else{
-              <a class="dropdown-item">Statement of Account</a>
-              }
-            </li>
-            <li>
-              <a class="dropdown-item" href="#"
-                >Cheques entregados al proveedor</a
-              >
-            </li>
-
-            <li><hr class="dropdown-divider" /></li>
-
-            <li>
-              <a class="dropdown-item" href="#"
-                >Saldo de todos los proveedores</a
-              >
-            </li>
-
-            <li>
-              <a class="dropdown-item" href="#"
-                >Estado de deuda a los proveedores</a
-              >
-            </li>
-
-            <li>
-              <a class="dropdown-item" href="#">Factura, Remitos NC y ND</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#"
-                >Pagos realizados a los proveedores</a
-              >
-            </li>
-
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                >Pagos Pendientes</a
-              >
-              <ul class="dropdown-menu sub-menu">
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Listado de pagos pendientes</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#"
-                    >Calendario de pagos pendientes</a
-                  >
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a class="dropdown-item" href="#">Facturas a cancelar</a>
-            </li>
-          </ul>
-        </li>
-
-        <!-- Stock -->
-
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            >Acciones</a
-          >
-
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="#">Pedidos al proveedor</a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/supplierInvoice"
-                >Ingreso de comprobantes</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#"
-                >Ingreso automático de facturas</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">Ingreso de remito</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">Relacionar proveedores</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#">Unificar proveedores</a>
-            </li>
-
-            <li>
-              <a class="dropdown-item" href="#"
-                >Actualizar proveedores por grupo de artículos</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#"
-                >Importar proveedores desde excel</a
-              >
-            </li>
-          </ul>
-        </li>
-
-        <!-- Viajantes -->
-
-        <li class="nav-item">
-          <a class="nav-link" href="#">Viajantes</a>
-        </li>
-
-        <!-- Modificacion rápida del dolar -->
-
-        <li class="nav-item">
-          <a class="nav-link" href="#"
-            >Modificacion rápida del dolar de los proveedores</a
-          >
-        </li>
-      </ul>
+  <div class="snav__dropdown" [class.snav__dropdown--open]="openMenu === 'listados'">
+    <button class="snav__btn" type="button" (click)="toggleMenu('listados')">
+      <span class="material-icons">list_alt</span>
+      <span>Listados</span>
+      <span class="material-icons snav__chev">expand_more</span>
+    </button>
+    <div class="snav__menu">
+      <button class="snav__menu-item" type="button">Listado de proveedores</button>
+      <button class="snav__menu-item" type="button">Listado de servicios técnicos</button>
+      <button class="snav__menu-item" type="button">Listado de profesores</button>
+      <button class="snav__menu-item" type="button">Listado de consignatarios</button>
+      <button class="snav__menu-item" type="button">Listado de extranjeros</button>
+      <button class="snav__menu-item" type="button">Listado de distribución propia</button>
     </div>
   </div>
-</nav>
+
+  <div class="snav__dropdown" [class.snav__dropdown--open]="openMenu === 'informes'">
+    <button class="snav__btn" type="button" (click)="toggleMenu('informes')">
+      <span class="material-icons">assessment</span>
+      <span>Informes</span>
+      <span class="material-icons snav__chev">expand_more</span>
+    </button>
+    <div class="snav__menu">
+      @if (selectedSupplier) {
+        <button class="snav__menu-item" type="button" (click)="toStatementAccount(selectedSupplier.id)">
+          Statement of Account
+        </button>
+      } @else {
+        <button class="snav__menu-item" type="button" disabled>
+          Statement of Account (seleccioná proveedor)
+        </button>
+      }
+      <button class="snav__menu-item" type="button">Cheques entregados al proveedor</button>
+      <div class="snav__menu-divider"></div>
+      <button class="snav__menu-item" type="button">Saldo de todos los proveedores</button>
+      <button class="snav__menu-item" type="button">Estado de deuda a los proveedores</button>
+      <button class="snav__menu-item" type="button">Factura, remitos NC y ND</button>
+      <button class="snav__menu-item" type="button">Pagos realizados a los proveedores</button>
+      <div class="snav__menu-divider"></div>
+      <div class="snav__menu-heading">Pagos pendientes</div>
+      <button class="snav__menu-item" type="button">Listado de pagos pendientes</button>
+      <button class="snav__menu-item" type="button">Calendario de pagos pendientes</button>
+      <button class="snav__menu-item" type="button">Facturas a cancelar</button>
+    </div>
+  </div>
+
+  <div class="snav__dropdown" [class.snav__dropdown--open]="openMenu === 'acciones'">
+    <button class="snav__btn" type="button" (click)="toggleMenu('acciones')">
+      <span class="material-icons">build</span>
+      <span>Acciones</span>
+      <span class="material-icons snav__chev">expand_more</span>
+    </button>
+    <div class="snav__menu">
+      <button class="snav__menu-item" type="button">Pedidos al proveedor</button>
+      <a class="snav__menu-item snav__menu-item--link" routerLink="/supplierInvoice">Ingreso de comprobantes</a>
+      <button class="snav__menu-item" type="button">Ingreso automático de facturas</button>
+      <button class="snav__menu-item" type="button">Ingreso de remito</button>
+      <button class="snav__menu-item" type="button">Relacionar proveedores</button>
+      <button class="snav__menu-item" type="button">Unificar proveedores</button>
+      <button class="snav__menu-item" type="button">Actualizar proveedores por grupo de artículos</button>
+      <button class="snav__menu-item" type="button">Importar proveedores desde excel</button>
+    </div>
+  </div>
+
+  <div class="snav__spacer"></div>
+
+  <button class="snav__btn" type="button" title="Viajantes">
+    <span class="material-icons">badge</span>
+    <span>Viajantes</span>
+  </button>
+
+  <button class="snav__btn" type="button" title="Modificación rápida del dolar">
+    <span class="material-icons">currency_exchange</span>
+    <span>Dólar rápido</span>
+  </button>
+</div>

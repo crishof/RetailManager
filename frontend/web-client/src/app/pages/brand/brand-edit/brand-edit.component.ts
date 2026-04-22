@@ -4,112 +4,82 @@ import {
   Output,
   EventEmitter,
   OnInit,
-  input,
-} from '@angular/core';
-import { CommonModule, NgClass } from '@angular/common';
-import { IBrand } from '../../../model/brand.model';
-import { inject } from '@angular/core';
+  inject,
+} from "@angular/core";
+import { CommonModule, NgClass } from "@angular/common";
+import { IBrand } from "../../../model/brand.model";
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { BrandService } from '../../../services/brand.service';
-import { Subject } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+} from "@angular/forms";
+import { BrandService } from "../../../services/brand.service";
 
 @Component({
-    selector: 'app-brand-edit',
-    imports: [CommonModule, ReactiveFormsModule, NgClass],
-    templateUrl: './brand-edit.component.html',
-    styleUrl: './brand-edit.component.css'
+  selector: "app-brand-edit",
+  imports: [CommonModule, ReactiveFormsModule, NgClass],
+  templateUrl: "./brand-edit.component.html",
+  styleUrl: "./brand-edit.component.css",
 })
 export class BrandEditComponent implements OnInit {
-  @Input() brand: IBrand | undefined;
-  @Output() onSave = new EventEmitter<IBrand>();
-  @Output() onCancel = new EventEmitter<void>();
-  @Output() onSuccessMessage = new EventEmitter<String>();
+  @Input() brand: IBrand | null = null;
+  @Output() _save = new EventEmitter<IBrand>();
+  @Output() _cancel = new EventEmitter<void>();
 
   brandForm!: FormGroup;
-  brandId: string;
   file: File | null = null;
 
-  _brandService = inject(BrandService);
-  route = inject(ActivatedRoute);
-  _router = inject(Router);
-  formBuilder = inject(FormBuilder);
+  private readonly brandService = inject(BrandService);
+  private readonly formBuilder = inject(FormBuilder);
 
-  errorMessage: string = '';
-
-  private brandUpdatedSubject = new Subject<IBrand>();
-
-  constructor() {
-    this.brandForm = this.formBuilder.group({
-      brandName: ['', Validators.required],
-      image: [null],
-    });
-    this.brandId = '';
-  }
+  errorMessage = "";
 
   ngOnInit(): void {
-    if (this.brand) {
-      this.brandId = this.brand?.id;
-    }
+    this.brandForm = this.formBuilder.group({
+      brandName: [this.brand?.name ?? "", Validators.required],
+    });
   }
 
   updateBrand(event: Event) {
     event.preventDefault();
 
-    console.log('updateBrand, id: ' + this.brandForm.get('brandId'));
-
-    const brandName = this.brandForm.get('brandName')?.value;
-
-    const currentBrandName = this.brand ? this.brand.name : '';
+    const brandName = this.brandForm.get("brandName")?.value;
 
     if (!brandName && !this.file) {
-      this.errorMessage = 'No changes made. Please upddate at least one field';
-      console.error(this.errorMessage);
+      this.errorMessage = "No changes made";
       return;
     }
 
-    const formData = new FormData();
-
-    if (brandName) {
-      formData.append('brandName', brandName);
-    } else {
-      formData.append('brandName', currentBrandName);
+    if (!this.brand) {
+      this.errorMessage = "Brand is not loaded";
+      return;
     }
-
-    if (this.file) {
-      formData.append('file', this.file, this.file.name);
-    }
-
-    this._brandService.updateBrand(this.brandId, formData).subscribe(
-      (response) => {
-        this.onSave.emit(response);
-        this.onSuccessMessage.emit('Brand updated successfully');
-      },
-      (error) => {
-        console.error('Error updating Brand', error);
-      }
-    );
+    this.brandService
+      .updateBrand(this.brand.id, brandName, this.file ?? undefined)
+      .subscribe({
+        next: (updatedBrand) => {
+          this._save.emit(updatedBrand);
+        },
+        error: (error) => {
+          this.errorMessage = "Error updating brand";
+          console.error(error);
+        },
+      });
   }
 
   onFileSelected(event: any) {
-    if (event.target.files && event.target.files.length > 0) {
+    if (event.target.files?.length) {
       this.file = event.target.files[0];
     }
   }
 
-  hasErrors(field: string, typeError: string): boolean {
-    const formControl = this.brandForm.get(field);
-    return formControl
-      ? formControl.hasError(typeError) && formControl.touched
-      : false;
+  cancelar(): void {
+    this._cancel.emit();
   }
 
-  cancelar(): void {
-    this.onCancel.emit();
+  hasErrors(field: string, error: string): boolean {
+    const control = this.brandForm.get(field);
+    return !!(control && control.touched && control.hasError(error));
   }
 }

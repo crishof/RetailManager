@@ -1,26 +1,21 @@
-import { CommonModule, NgClass } from '@angular/common';
-import { Component, inject, Input, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SupplierDetailsComponent } from '../supplier-details/supplier-details.component';
-import { SupplierNavbarComponent } from '../supplier-navbar/supplier-navbar.component';
-import { ITransaction } from '../../../model/transaction.model';
-import { TransactionService } from '../../../services/transaction.service';
-import { ISupplier } from '../../../model/supplier.model';
-import { ActivatedRoute } from '@angular/router';
-import { ModalDialogService } from '../../../services/modal-dialog.service';
+import { CommonModule } from "@angular/common";
+import { Component, inject, Input, OnInit } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ITransaction } from "../../../model/transaction.model";
+import { TransactionService } from "../../../services/transaction.service";
+import { ISupplier } from "../../../model/supplier.model";
+import { ActivatedRoute } from "@angular/router";
+import { ModalDialogService } from "../../../services/modal-dialog.service";
 
 @Component({
-    selector: 'app-statement-of-account',
-    imports: [
-        CommonModule,
-        SupplierNavbarComponent,
-        SupplierDetailsComponent,
-        FormsModule,
-        ReactiveFormsModule,
-        NgClass,
-    ],
-    templateUrl: './statement-of-account.component.html',
-    styleUrl: './statement-of-account.component.css'
+  selector: "app-statement-of-account",
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
+  templateUrl: "./statement-of-account.component.html",
+  styleUrl: "./statement-of-account.component.css",
 })
 export class StatementOfAccountComponent implements OnInit {
   readonly route = inject(ActivatedRoute);
@@ -41,7 +36,7 @@ export class StatementOfAccountComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      this.supplierId = params.get('id');
+      this.supplierId = params.get("id");
 
       if (this.supplierId) {
         this._transactionService
@@ -63,7 +58,7 @@ export class StatementOfAccountComponent implements OnInit {
     let balance = 0;
     const balanceList = this.transactionList.map((transaction) => {
       balance +=
-        transaction.type === 'invoice'
+        transaction.type === "invoice"
           ? transaction.amount
           : -transaction.amount;
       return balance;
@@ -90,7 +85,7 @@ export class StatementOfAccountComponent implements OnInit {
     this.transactionList.forEach((transaction) => {
       // Cálculo del balance acumulado
       balance +=
-        transaction.type === 'invoice'
+        transaction.type === "invoice"
           ? transaction.amount
           : -transaction.amount;
 

@@ -44,6 +44,7 @@ public final class ProductSpecifications {
                 String like = "%" + search.toLowerCase() + "%";
                 predicates.add(
                         cb.or(
+                                cb.like(cb.lower(root.get("brandName")), like),
                                 cb.like(cb.lower(root.get("model")), like),
                                 cb.like(cb.lower(root.get("description")), like)
                         )

@@ -6,40 +6,54 @@
     novalidate
     (submit)="updateBrand($event)"
   >
+    <!-- BRAND NAME -->
     <div class="mb-3">
-      <label for="brandNameInput" class="form-label">Brand Name:</label>
+      <label for="brandNameInput" class="form-label">Brand Name</label>
+
       <input
         type="text"
         class="form-control"
         id="brandNameInput"
-        placeholder="Type new brand name here"
         formControlName="brandName"
-        [ngClass]="{
-          'is-invalid': hasErrors('brandName', 'required')
-        }"
+        placeholder="Type new brand name here"
+        [ngClass]="{ 'is-invalid': hasErrors('brandName', 'required') }"
       />
 
-      @if (hasErrors('brandName','required')) {
-      <span class="text-danger">Brand name cannot be empty</span>
-      }
+      <div *ngIf="hasErrors('brandName', 'required')" class="invalid-feedback">
+        Brand name cannot be empty
+      </div>
     </div>
 
+    <!-- LOGO -->
     <div class="mb-3">
-      <label for="formFile" class="form-label">Image: </label>
+      <label for="formFile" class="form-label">Logo (optional)</label>
       <input
         class="form-control"
         type="file"
         id="formFile"
+        accept="image/*"
         (change)="onFileSelected($event)"
       />
     </div>
 
-    @if(errorMessage){
-    <div class="card bg-danger text-light">
-      <h5>{{ errorMessage }}</h5>
+    <!-- ERROR MESSAGE -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
     </div>
-    }
 
-    <button type="submit" class="btn btn-outline-primary btn-sm">Update</button>
+    <!-- ACTIONS -->
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-outline-primary btn-sm">
+        Update
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm"
+        (click)="cancelar()"
+      >
+        Cancel
+      </button>
+    </div>
   </form>
 </div>

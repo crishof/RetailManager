@@ -1,50 +1,63 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-
-
-import { ProductService } from '../../../services/product.service';
+import { Component, Input, OnChanges } from '@angular/core';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { IProduct } from '../../../model/product.model';
-import { IBrand } from '../../../model/brand.model';
-import { BrandService } from '../../../services/brand.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { IStock } from '../../../model/stock.model';
 
 @Component({
-    selector: 'app-product-detail',
-    imports: [],
-    templateUrl: './product-details.component.html',
-    styleUrl: './product-details.component.css'
+  selector: 'app-product-detail',
+  standalone: true,
+  imports: [CommonModule, CurrencyPipe],
+  templateUrl: './product-details.component.html',
+  styleUrl: './product-details.component.css',
 })
-export class ProductDetailsComponent implements OnInit {
+export class ProductDetailsComponent implements OnChanges {
   @Input() product: IProduct | null = null;
 
-  /*
-  loading: boolean = true;
-  public product?: IProduct;
+  activeTab:
+    | 'ficha'
+    | 'precios'
+    | 'stock'
+    | 'proveedor'
+    | 'codigos'
+    | 'varios'
+    | 'tarjetas'
+    | 'especificaciones' = 'ficha';
 
-  private _route = inject(ActivatedRoute);
-  private _productService = inject(ProductService);
-  private _brandService = inject(BrandService);
-*/
-  ngOnInit(): void {
-    /*
-    this._route.params.subscribe((params) => {
-      this._productService
-        .getProduct(params['id'])
-        .subscribe((data: IProduct) => {
-          this.product = data;
-          this.loading = false;
-        });
-    });
-    */
+  ngOnChanges(): void {
+    this.activeTab = 'ficha';
   }
 
-  /*
-  getBrandName(brandId: string): Observable<string> {
-    return this._brandService.getBrand(brandId).pipe(
-      map((brand: IBrand) => brand.name)
-    );
-    
+  get totalStock(): number {
+    return this.product?.stockResponses?.reduce((a, s) => a + s.quantity, 0) ?? 0;
   }
-  */
+
+  get stockStatus(): 'ok' | 'low' | 'out' {
+    if (this.totalStock <= 0) return 'out';
+    const min = this.product?.stockResponses?.[0]?.min ?? 0;
+    return this.totalStock <= min ? 'low' : 'ok';
+  }
+
+  get priceWithTax(): number {
+    const p = this.product?.priceResponse;
+    if (!p) return 0;
+    return p.sellingPrice * (1 + p.taxRate);
+  }
+
+  get purchasePrice(): number {
+    return this.product?.priceResponse?.purchasePrice ?? 0;
+  }
+
+  get margin(): number {
+    if (!this.purchasePrice || !this.product?.priceResponse?.sellingPrice) return 0;
+    return ((this.product.priceResponse.sellingPrice - this.purchasePrice) / this.purchasePrice) * 100;
+  }
+
+  stockBranches(stocks: IStock[]): { branch: string; qty: number; min: number; max: number }[] {
+    return (stocks ?? []).map((s, i) => ({
+      branch: s.branchId || `Sucursal ${i + 1}`,
+      qty: s.quantity,
+      min: s.min,
+      max: s.max,
+    }));
+  }
 }

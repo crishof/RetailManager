@@ -1,161 +1,266 @@
-
-import {
-  Component,
-  Input,
-  EventEmitter,
-  OnInit,
-  Output,
-  inject,
-} from '@angular/core';
-import { IBrand } from '../../../model/brand.model';
-import { BrandService } from '../../../services/brand.service';
-import { Router } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DefaultImageDirective } from '../../../utils/default-image.directive';
-import { BrandDetailsComponent } from '../brand-details/brand-details.component';
-import { BrandCreateComponent } from '../brand-create/brand-create.component';
+import { CommonModule } from "@angular/common";
+import { Component, Input, OnInit, inject } from "@angular/core";
+import { IBrand } from "../../../model/brand.model";
+import { BrandService } from "../../../services/brand.service";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
+import { ProductService } from "../../../services/product.service";
+import { ModalDialogService } from "../../../services/modal-dialog.service";
 
 @Component({
-    selector: 'app-brand',
-    imports: [
+  selector: "app-brand",
+  standalone: true,
+  imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    DefaultImageDirective,
-    BrandDetailsComponent,
-    BrandCreateComponent
-],
-    templateUrl: './brand.component.html',
-    styleUrl: './brand.component.css'
+  ],
+  templateUrl: "./brand.component.html",
+  styleUrl: "./brand.component.css",
 })
 export class BrandComponent implements OnInit {
-  private readonly _brandService = inject(BrandService);
+  private readonly brandService = inject(BrandService);
+  private readonly productService = inject(ProductService);
+  private readonly fb = inject(FormBuilder);
+  private readonly confirmDialogService = inject(ModalDialogService);
+
+  @Input() selectionMode: "click" | "dblclick" = "click";
+
   brandList: IBrand[] = [];
   filteredBrandList: IBrand[] = [];
-  searchTerm: string = '';
-  sortedColumn: keyof IBrand | undefined;
-  isAscendingOrder: boolean = true;
-  @Input() selectionMode: 'click' | 'dblclick' = 'click';
+
+  searchTerm = "";
+
+  sortedColumn?: keyof IBrand;
+  isAscendingOrder = true;
+
   selectedBrand: IBrand | null = null;
-  private readonly _router = inject(Router);
-  totalElements: number = 0;
-  /*
-  
-  @Output() selectedBrand = new EventEmitter<IBrand>();
-  private _sanitizer = inject(DomSanitizer);
-*/
+  selectedBrandProducts = 0;
+
+  totalElements = 0;
+  loading = false;
+  detailLoading = false;
+  createModalOpen = false;
+  editModalOpen = false;
+  createLogoFile: File | null = null;
+  editLogoFile: File | null = null;
+  savingCreate = false;
+  savingEdit = false;
+  successMessage = "";
+  errorMessage = "";
+
+  readonly createForm = this.fb.group({
+    brandName: ["", Validators.required],
+  });
+
+  readonly editForm = this.fb.group({
+    brandName: ["", Validators.required],
+  });
+
   ngOnInit(): void {
     this.loadBrands();
   }
 
-  loadBrands() {
-  this._brandService.getBrands().subscribe({
-    next: (page) => {
-      this.brandList = page.content;
-      this.totalElements = page.totalElements;
-    },
-    error: (err) => console.error(err)
-  });
-}
+  loadBrands(selectedBrandId?: string): void {
+    this.loading = true;
+    this.errorMessage = "";
 
-  searchBrand() {
-    this.filterBrands(this.searchTerm);
-  }
+    this.brandService.getBrands({ page: 0, size: 50 }).subscribe({
+      next: (page) => {
+        this.brandList = page.content;
+        this.filteredBrandList = [...page.content];
+        this.totalElements = page.totalElements;
+        this.loading = false;
 
-  filterBrands(searchTerm: string) {
-    if (!searchTerm) {
-      this.filteredBrandList = this.brandList.slice();
-    } else {
-      const lowerCaseSearchTerm = searchTerm.toLowerCase();
-      this.filteredBrandList = this.brandList.filter(
-        (brand) =>
-          brand.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-          brand.id.toString().includes(lowerCaseSearchTerm)
-      );
-    }
-  }
-
-  sortColumn(column: keyof IBrand) {
-    if (this.sortedColumn === column) {
-      this.isAscendingOrder = !this.isAscendingOrder;
-    } else {
-      this.sortedColumn = column;
-      this.isAscendingOrder = true;
-    }
-
-    if (this.sortedColumn) {
-      this.filteredBrandList.sort((a, b) => {
-        const orderFactor = this.isAscendingOrder ? 1 : -1;
-
-        const aValue = a[this.sortedColumn!] as string | number | undefined;
-        const bValue = b[this.sortedColumn!] as string | number | undefined;
-
-        if (aValue !== undefined && bValue !== undefined) {
-          if (aValue < bValue) {
-            return -1 * orderFactor;
-          } else if (aValue > bValue) {
-            return 1 * orderFactor;
-          } else {
-            return 0;
-          }
+        if (!this.brandList.length) {
+          this.selectedBrand = null;
+          this.selectedBrandProducts = 0;
+          return;
         }
 
-        return 0;
-      });
+        const preferred = selectedBrandId
+          ? this.brandList.find((b) => b.id === selectedBrandId)
+          : null;
+
+        this.onBrandSelect(preferred ?? this.brandList[0]);
+      },
+      error: (err) => {
+        console.error("Error loading brands", err);
+        this.errorMessage = "No se pudieron cargar las marcas.";
+        this.loading = false;
+      },
+    });
+  }
+
+  searchBrand(): void {
+    const term = this.searchTerm.trim().toLowerCase();
+
+    if (!term) {
+      this.filteredBrandList = [...this.brandList];
+      return;
     }
-  }
-  onBrandInteract(brand: IBrand) {
-    this.selectedBrand = brand;
-    this.createBrand = false;
-  }
 
-  createBrand: boolean = false;
-  toNewBrand(): void {
-    this.createBrand = true;
-    this.selectedBrand = null;
-  }
-
-  /*
-  
-  toNewBrand(): void {
-    this._router.navigate(['/brand/create']);
-  }
-  
-  
-
-
-  toBrandDetails(id: string): void {
-    this._router.navigate(['/brand', id]);
-  }
-
-
-  getImageUrl(image: any): any {
-    const base64Image = image.content;
-    return this._sanitizer.bypassSecurityTrustResourceUrl(
-      'data:image/jpeg;base64,' + base64Image
+    this.filteredBrandList = this.brandList.filter(
+      (brand) =>
+        brand.name.toLowerCase().includes(term) ||
+        brand.id.toString().includes(term),
     );
-  }
 
-  arrayBufferToBase64(buffer: ArrayBuffer): string {
-    if (typeof window !== 'undefined') {
-      let binary = '';
-      const bytes = new Uint8Array(buffer);
-      for (let i = 0; i < bytes.byteLength; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      return window.btoa(binary);
+    if (this.filteredBrandList.length && !this.selectedBrand) {
+      this.onBrandSelect(this.filteredBrandList[0]);
     }
-    return '';
   }
 
-  
+  sortColumn(column: keyof IBrand): void {
+    this.isAscendingOrder =
+      this.sortedColumn === column ? !this.isAscendingOrder : true;
+    this.sortedColumn = column;
 
-  handleKeyup(event: KeyboardEvent) {
-    const searchTerm = (event.target as HTMLInputElement)?.value;
-    this.filterBrands(searchTerm);
+    const factor = this.isAscendingOrder ? 1 : -1;
+
+    this.filteredBrandList.sort((a, b) => {
+      const aValue = a[column];
+      const bValue = b[column];
+
+      if (aValue == null || bValue == null) return 0;
+      return aValue > bValue ? factor : -factor;
+    });
   }
 
-  
+  onBrandSelect(brand: IBrand): void {
+    this.selectedBrand = brand;
+    this.detailLoading = true;
+    this.successMessage = "";
 
-*/
+    this.productService.countProducts({ brandId: brand.id.toString() }).subscribe({
+      next: (count) => {
+        this.selectedBrandProducts = count;
+        this.detailLoading = false;
+      },
+      error: () => {
+        this.selectedBrandProducts = 0;
+        this.detailLoading = false;
+      },
+    });
+  }
+
+  openCreateModal(): void {
+    this.createForm.reset({ brandName: "" });
+    this.createLogoFile = null;
+    this.createModalOpen = true;
+    this.successMessage = "";
+    this.errorMessage = "";
+  }
+
+  closeCreateModal(): void {
+    this.createModalOpen = false;
+  }
+
+  openEditModal(): void {
+    if (!this.selectedBrand) return;
+    this.editForm.reset({ brandName: this.selectedBrand.name });
+    this.editLogoFile = null;
+    this.editModalOpen = true;
+    this.successMessage = "";
+    this.errorMessage = "";
+  }
+
+  closeEditModal(): void {
+    this.editModalOpen = false;
+  }
+
+  onCreateLogoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.createLogoFile = input.files?.[0] ?? null;
+  }
+
+  onEditLogoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.editLogoFile = input.files?.[0] ?? null;
+  }
+
+  submitCreate(): void {
+    this.errorMessage = "";
+    this.successMessage = "";
+
+    if (this.createForm.invalid) {
+      this.createForm.markAllAsTouched();
+      return;
+    }
+
+    const name = this.createForm.controls.brandName.value?.trim() ?? "";
+    this.savingCreate = true;
+
+    this.brandService.createBrand(name, this.createLogoFile ?? undefined).subscribe({
+      next: (brand) => {
+        this.savingCreate = false;
+        this.closeCreateModal();
+        this.successMessage = "Marca creada correctamente.";
+        this.loadBrands(brand.id.toString());
+      },
+      error: () => {
+        this.savingCreate = false;
+        this.errorMessage = "No se pudo crear la marca.";
+      },
+    });
+  }
+
+  submitEdit(): void {
+    if (!this.selectedBrand) return;
+
+    this.errorMessage = "";
+    this.successMessage = "";
+
+    if (this.editForm.invalid) {
+      this.editForm.markAllAsTouched();
+      return;
+    }
+
+    const name = this.editForm.controls.brandName.value?.trim() ?? "";
+    this.savingEdit = true;
+
+    this.brandService
+      .updateBrand(this.selectedBrand.id, name, this.editLogoFile ?? undefined)
+      .subscribe({
+        next: (brand) => {
+          this.savingEdit = false;
+          this.closeEditModal();
+          this.successMessage = "Marca actualizada correctamente.";
+          this.loadBrands(brand.id.toString());
+        },
+        error: () => {
+          this.savingEdit = false;
+          this.errorMessage = "No se pudo actualizar la marca.";
+        },
+      });
+  }
+
+  confirmDeleteBrand(): void {
+    if (!this.selectedBrand) return;
+
+    this.confirmDialogService.openConfirmDialog().subscribe((confirmed) => {
+      if (!confirmed || !this.selectedBrand) return;
+
+      this.brandService.deleteBrand(this.selectedBrand.id.toString()).subscribe({
+        next: () => {
+          this.successMessage = "Marca eliminada correctamente.";
+          this.errorMessage = "";
+          this.loadBrands();
+        },
+        error: () => {
+          this.errorMessage = "No se pudo eliminar la marca.";
+        },
+      });
+    });
+  }
+
+  hasError(formType: "create" | "edit", field: "brandName", error: string): boolean {
+    const form = formType === "create" ? this.createForm : this.editForm;
+    const control = form.get(field);
+    return !!(control && control.touched && control.hasError(error));
+  }
+
+  logoUrl(brand: IBrand): string {
+    return brand.logoUrl || "assets/images/no-image-100.png";
+  }
 }

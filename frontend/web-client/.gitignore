@@ -1,0 +1,18 @@
+# Angular build output
+dist/
+.angular/
+
+# Dependencies
+node_modules/
+
+# Env/secretos
+.env
+*.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

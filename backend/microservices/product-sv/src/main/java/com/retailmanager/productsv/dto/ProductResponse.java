@@ -17,6 +17,7 @@ public class ProductResponse {
     private UUID id;
     private String code;
     private UUID brandId;
+    private String brandName;
     private String model;
     private String description;
     private UUID categoryId;

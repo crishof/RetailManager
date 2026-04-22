@@ -11,60 +11,64 @@ import { IBrand } from '../../../model/brand.model';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-brand-create',
-    imports: [CommonModule, ReactiveFormsModule, NgClass],
-    templateUrl: './brand-create.component.html',
-    styleUrl: './brand-create.component.css'
+  selector: 'app-brand-create',
+  imports: [CommonModule, ReactiveFormsModule, NgClass],
+  templateUrl: './brand-create.component.html',
+  styleUrl: './brand-create.component.css'
 })
 export class BrandCreateComponent {
-  @Output() onCancel = new EventEmitter();
+  @Output() onCancel = new EventEmitter<void>();
 
   brandForm!: FormGroup;
-  _brandService = inject(BrandService);
-  _router = inject(Router);
-  successMessage: string = '';
-  errorMessage: string = '';
+  private brandService = inject(BrandService);
+  private router = inject(Router);
+
+  successMessage = '';
+  errorMessage = '';
+  file: File | null = null;
 
   constructor(private formBuilder: FormBuilder) {
-    this.brandForm = formBuilder.group({
-      brandName: ['', [Validators.required]],
+    this.brandForm = this.formBuilder.group({
+      brandName: ['', Validators.required],
     });
   }
 
   enviar(event: Event) {
     event.preventDefault();
 
-    const brand: IBrand = {
-      id: '',
-      name: this.brandForm.get('brandName')?.value || '',
-    };
+    const name = this.brandForm.get('brandName')?.value;
 
-    this._brandService.createBrand(brand).subscribe(
-      (response) => {
-        (this.successMessage = 'Brand created successfully'), response;
+    if (!name) {
+      this.errorMessage = 'Brand name is required';
+      return;
+    }
+
+    this.brandService.createBrand(name, this.file ?? undefined).subscribe({
+      next: () => {
+        this.successMessage = 'Brand created successfully';
         this.errorMessage = '';
+        this.onCancel.emit();
       },
-      (error) => {
-        this.errorMessage = 'Error creating Brand: ' + error.message;
-        this.successMessage = '';
+      error: (error) => {
+        this.errorMessage = 'Error creating brand';
+        console.error(error);
       }
-    );
+    });
   }
 
-  /*
-  toList(): void {
-    this._router.navigate(['/brand']);
+  onFileSelected(event: any) {
+    if (event.target.files?.length) {
+      this.file = event.target.files[0];
+    }
   }
-    */
+
   toList(): void {
     this.onCancel.emit();
-    this._router.navigate(['/brand']);
+    this.router.navigate(['/brand']);
   }
 
   hasErrors(field: string, typeError: string) {
-    return (
-      this.brandForm.get(field)?.hasError(typeError) &&
-      this.brandForm.get(field)?.touched
-    );
+    const control = this.brandForm.get(field);
+    return control?.hasError(typeError) && control.touched;
   }
 }

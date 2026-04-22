@@ -33,6 +33,9 @@ public class Product {
     @Column(nullable = false)
     private UUID brandId;
 
+    @Column(nullable = false)
+    String brandName;
+
     @Column(nullable = false, length = 150)
     private String model;
 

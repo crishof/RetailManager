@@ -1,0 +1,63 @@
+<section class="sform">
+  <header class="sform__header">
+    <div>
+      <h1>{{ isEditMode ? 'Editar proveedor' : 'Nuevo proveedor' }}</h1>
+      <p>Completá los datos fiscales básicos del proveedor.</p>
+    </div>
+    @if (modalMode) {
+      <button class="sform__close" type="button" (click)="cancel()" aria-label="Cerrar modal">
+        <span class="material-icons">close</span>
+      </button>
+    }
+  </header>
+
+  <article class="sform__card">
+    @if (loading) {
+      <p class="sform__loading">Cargando datos del proveedor...</p>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()" class="sform__grid">
+        <label class="sform__field">
+          <span>Nombre comercial</span>
+          <input type="text" formControlName="name" placeholder="Ej: Acme Repuestos" />
+          @if (hasError('name', 'required')) {
+            <small>El nombre es obligatorio.</small>
+          }
+        </label>
+
+        <label class="sform__field">
+          <span>Razón social</span>
+          <input type="text" formControlName="legalName" placeholder="Ej: Acme Repuestos S.A." />
+          @if (hasError('legalName', 'required')) {
+            <small>La razón social es obligatoria.</small>
+          }
+        </label>
+
+        <label class="sform__field">
+          <span>CUIT</span>
+          <input type="text" formControlName="taxId" placeholder="Ej: 30-12345678-9" (input)="onTaxIdInput($event)" />
+          @if (hasError('taxId', 'required')) {
+            <small>El CUIT es obligatorio.</small>
+          }
+          @if (hasError('taxId', 'pattern')) {
+            <small>Formato requerido: xx-xxxxxxxx-x.</small>
+          }
+        </label>
+
+        @if (errorMessage) {
+          <div class="sform__alert sform__alert--error">{{ errorMessage }}</div>
+        }
+
+        @if (successMessage) {
+          <div class="sform__alert sform__alert--success">{{ successMessage }}</div>
+        }
+
+        <footer class="sform__actions">
+          <button class="sform__btn sform__btn--ghost" type="button" (click)="cancel()">Cancelar</button>
+          <button class="sform__btn sform__btn--primary" type="submit" [disabled]="saving">
+            {{ saving ? 'Guardando...' : (isEditMode ? 'Guardar cambios' : 'Crear proveedor') }}
+          </button>
+        </footer>
+      </form>
+    }
+  </article>
+</section>

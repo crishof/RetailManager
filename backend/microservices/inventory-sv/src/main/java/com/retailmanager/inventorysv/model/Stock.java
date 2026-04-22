@@ -7,7 +7,12 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tbl_stocks", uniqueConstraints = @UniqueConstraint(columnNames = {"product_id", "branch_id", "location_id"}), indexes = {@Index(name = "idx_stock_product", columnList = "product_id"), @Index(name = "idx_stock_branch", columnList = "branch_id"), @Index(name = "idx_stock_location", columnList = "location_id")})
+@Table(name = "tbl_stocks", uniqueConstraints = @UniqueConstraint(
+        columnNames = {"product_id", "branch_id", "location_id"}),
+        indexes = {
+        @Index(name = "idx_stock_product", columnList = "product_id"),
+        @Index(name = "idx_stock_branch", columnList = "branch_id"),
+        @Index(name = "idx_stock_location", columnList = "location_id")})
 @Getter
 @Setter
 @NoArgsConstructor

@@ -1,17 +1,18 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
+import { SidebarComponent } from './layout/sidebar/sidebar.component';
+import { TopbarComponent } from './layout/topbar/topbar.component';
 
 @Component({
-    selector: 'app-root',
-    imports: [CommonModule, RouterOutlet, RouterLink],
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.css'
+  selector: "app-root",
+  imports: [RouterOutlet, SidebarComponent, TopbarComponent],
+  templateUrl: "./app.component.html",
+  styleUrl: "./app.component.css",
 })
 export class AppComponent {
-  menuOption: string = '';
+  sidebarCollapsed = false;
 
-  onOption(menuOption: string) {
-    this.menuOption = menuOption;
+  toggleSidebar() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 }

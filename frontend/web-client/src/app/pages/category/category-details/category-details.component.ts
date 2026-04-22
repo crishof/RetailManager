@@ -1,64 +1,66 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { ICategory } from '../../../model/category.model';
-import { Subject } from 'rxjs';
-import { CategoryService } from '../../../services/category.service';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-
-import { ModalDialogService } from '../../../services/modal-dialog.service';
-import { DomSanitizer } from '@angular/platform-browser';
-import { CategoryEditComponent } from '../category-edit/category-edit.component';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  inject,
+} from "@angular/core";
+import { ICategory } from "../../../model/category.model";
+import { CategoryService } from "../../../services/category.service";
+import { Router } from "@angular/router";
+import { FormsModule } from "@angular/forms";
+import { DomSanitizer } from "@angular/platform-browser";
+import { CategoryEditComponent } from "../category-edit/category-edit.component";
+import { ModalDialogService } from "../../../services/modal-dialog.service";
+import { CommonModule } from "@angular/common";
 
 @Component({
-    selector: 'app-category-details',
-    imports: [FormsModule, CategoryEditComponent],
-    templateUrl: './category-details.component.html',
-    styleUrl: './category-details.component.css'
+  selector: "app-category-details",
+  imports: [FormsModule, CommonModule, CategoryEditComponent],
+  templateUrl: "./category-details.component.html",
+  styleUrl: "./category-details.component.css",
 })
-export class CategoryDetailsComponent implements OnChanges {
-  loading: boolean = true;
-  public category?: ICategory;
-  editingMode: boolean = false;
-  successMessage: string = '';
-  errorMessage: string = '';
+export class CategoryDetailsComponent implements OnChanges, OnInit {
+  loading = true;
+  editingMode = false;
+  successMessage = "";
+  errorMessage = "";
 
-  @Input() selectedCategory: { [key: string]: any } | null = null;
+  @Input() selectedCategory: ICategory | null = null;
 
-  private brandUpdatedSubject: Subject<ICategory> = new Subject<ICategory>();
+  private readonly _categoryService = inject(CategoryService);
+  private readonly _router = inject(Router);
+  private readonly _sanitizer = inject(DomSanitizer);
+  private readonly _confirmDialogService = inject(ModalDialogService);
 
-  constructor(
-    private _categoryService: CategoryService,
-    private _confirmDialogService: ModalDialogService,
-    private _sanitizer: DomSanitizer,
-    private _router: Router
-  ) {}
+  category: ICategory | null = null;
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedCategory'] && this.selectedCategory) {
+    if (changes["selectedCategory"] && this.selectedCategory) {
       this.loadCategoryData();
     }
+  }
+
+  ngOnInit(): void {
+    this._categoryService.categoryUpdated$.subscribe(() => {
+      this.loadCategoryData();
+    });
   }
 
   loadCategoryData(): void {
-    if (this.selectedCategory && this.selectedCategory['id']) {
+    if (this.selectedCategory?.id) {
       this.loading = true;
       this._categoryService
-        .getCategory(this.selectedCategory['id'])
-        .subscribe((data: ICategory) => {
-          this.category = data;
-          this.loading = false;
+        .getCategoryById(this.selectedCategory.id)
+        .subscribe({
+          next: (data) => {
+            this.category = data;
+            this.loading = false;
+          },
+          error: () => (this.loading = false),
         });
     }
-  }
-
-  ngOnInit() {
-    this.subscribeToCategoryUpdatedEvent();
-  }
-
-  private subscribeToCategoryUpdatedEvent(): void {
-    this._categoryService.getCategoryUpdatedObservable().subscribe(() => {
-      this.loadCategoryData();
-    });
   }
 
   startEditing(): void {
@@ -70,19 +72,20 @@ export class CategoryDetailsComponent implements OnChanges {
   }
 
   goToList(): void {
-    this._router.navigate(['/category']);
+    this._router.navigate(["/category"]);
   }
 
   getImageUrl(image: any): any {
-    const base64Image = image.content;
+    if (!image?.content) return "";
     return this._sanitizer.bypassSecurityTrustResourceUrl(
-      'data:image/jpeg;base64,' + base64Image
+      "data:image/jpeg;base64," + image.content,
     );
   }
 
-  saveChanges(updatedBrand: ICategory): void {
+  saveChanges(updatedCategory: ICategory): void {
     this.editingMode = false;
-    this.brandUpdatedSubject.next(updatedBrand);
+    this.successMessage = "Category updated successfully";
+    this.category = updatedCategory;
   }
 
   confirmDelete(id: string): void {
@@ -94,15 +97,16 @@ export class CategoryDetailsComponent implements OnChanges {
   }
 
   deleteCategory(id: string): void {
-    this._categoryService.deleteCategory(id).subscribe(
-      (response: any) => {
-        this.successMessage = response;
-        this.errorMessage = '';
+    this._categoryService.deleteCategory(id).subscribe({
+      next: () => {
+        this.successMessage = "Category deleted successfully";
+        this.errorMessage = "";
+        this.category = null;
       },
-      (error) => {
-        this.errorMessage = error.error;
-        this.successMessage = '';
-      }
-    );
+      error: (err) => {
+        this.errorMessage = err.error || "Failed to delete category";
+        this.successMessage = "";
+      },
+    });
   }
 }

@@ -158,7 +158,6 @@ public class BrandController {
     @PutMapping("/{id}/merge")
     public ResponseEntity<BrandMergeResponse> mergeBrandInto(@PathVariable @NotNull UUID id,
                                                              @RequestParam @NotNull UUID targetBrandId) {
-
         //TODO test with products created
         return ResponseEntity.ok(brandService.mergeBrandInto(id, targetBrandId));
     }

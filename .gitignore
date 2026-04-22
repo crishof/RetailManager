@@ -1,8 +1,67 @@
 
-backend/assets/
+# ============================================================
+# SISTEMA OPERATIVO
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
 
+# ============================================================
+# IDEs / EDITORES
+# ============================================================
 .idea/
+**/.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.vscode/
+*.swp
+*~
 
-frontend/web-client/.angular
+# ============================================================
+# BACKEND - JAVA / MAVEN
+# ============================================================
+target/
+build/
+.gradle/
+*.class
+*.jar
+!**/wrapper/**/*.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+jacoco.exec
 
-frontend/web-client/node_modules
+# ============================================================
+# BACKEND - RECURSOS GENERADOS / SECRETOS
+# ============================================================
+backend/assets/
+backend/docker/env/*.env
+.env
+*.env
+secrets/
+*.key
+*.pem
+
+# ============================================================
+# FRONTEND - ANGULAR
+# ============================================================
+frontend/web-client/node_modules/
+frontend/web-client/.angular/
+frontend/web-client/dist/
+
+# ============================================================
+# LOGS / TEMPORALES
+# ============================================================
+logs/
+*.log
+tmp/
+*.tmp
+*.pid
+

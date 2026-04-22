@@ -1,0 +1,45 @@
+<aside class="sidebar" [class.sidebar--collapsed]="collapsed" aria-label="Menú de navegación principal">
+
+  <!-- Logo / Brand -->
+  <div class="sidebar__header">
+    <div class="sidebar__logo">
+      <span class="material-icons sidebar__logo-icon">storefront</span>
+      @if (!collapsed) {
+        <span class="sidebar__logo-text">RetailManager</span>
+      }
+    </div>
+  </div>
+
+  <!-- Nav content -->
+  <nav class="sidebar__nav">
+    @for (section of sections; track section.title) {
+      <div class="sidebar__section">
+        @if (!collapsed) {
+          <p class="sidebar__section-label">{{ section.title }}</p>
+        }
+        @for (item of section.items; track item.label) {
+          <a
+            class="sidebar__item"
+            [routerLink]="item.route"
+            routerLinkActive="sidebar__item--active"
+            [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+            [title]="collapsed ? item.label : ''"
+          >
+            <span class="material-icons sidebar__item-icon">{{ item.icon }}</span>
+            @if (!collapsed) {
+              <span class="sidebar__item-label">{{ item.label }}</span>
+            }
+          </a>
+        }
+      </div>
+    }
+  </nav>
+
+  <!-- Footer -->
+  <div class="sidebar__footer">
+    @if (!collapsed) {
+      <p class="sidebar__footer-text">v1.0.0 &bull; RetailManager</p>
+    }
+  </div>
+
+</aside>
