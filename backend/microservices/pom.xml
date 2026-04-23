@@ -29,7 +29,25 @@
          Módulos — agregar al incorporar cada servicio
     ========================================================= -->
     <modules>
-         <module>gateway-sv</module>
+        <module>gateway-sv</module>
+        <module>tenant-sv</module>
+        <module>branch-sv</module>
+        <module>location-sv</module>
+        <module>brand-sv</module>
+        <module>category-sv</module>
+        <module>product-sv</module>
+        <module>image-sv</module>
+        <module>pricing-sv</module>
+        <module>supplier-sv</module>
+        <module>supplier-catalog-sv</module>
+        <module>purchase-sv</module>
+        <module>customer-sv</module>
+        <module>sales-sv</module>
+        <module>inventory-sv</module>
+        <module>cash-sv</module>
+        <module>exchange-sv</module>
+        <module>identity-sv</module>
+        <module>reporting-sv</module>
     </modules>
 
     <!-- =========================================================
