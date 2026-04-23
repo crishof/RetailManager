@@ -150,6 +150,47 @@ spring:
           uri: http://exchange-sv:8080
           predicates:
             - Path=/api/v1/exchange/**
+
+        - id: branches
+          uri: http://branch-sv:8080
+          predicates:
+            - Path=/api/v1/branches/**
+
+        - id: locations
+          uri: http://location-sv:8080
+          predicates:
+            - Path=/api/v1/locations/**
+
+        - id: tenants
+          uri: http://tenant-sv:8080
+          predicates:
+            - Path=/api/v1/tenants/**
+
+        - id: supplier-catalog
+          uri: http://supplier-catalog-sv:8080
+          predicates:
+            - Path=/api/v1/supplier-catalog/**
+
+        - id: purchases
+          uri: http://purchase-sv:8080
+          predicates:
+            - Path=/api/v1/purchases/**
+
+        - id: cash
+          uri: http://cash-sv:8080
+          predicates:
+            - Path=/api/v1/cash/**
+
+        - id: identity
+          uri: http://identity-sv:8080
+          predicates:
+            - Path=/api/v1/identity/**
+
+        - id: reporting
+          uri: http://reporting-sv:8080
+          predicates:
+            - Path=/api/v1/reporting/**
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -174,3 +215,19 @@ springdoc:
         url: /api/v1/sales/v3/api-docs
       - name: Exchange
         url: /api/v1/exchange/v3/api-docs
+      - name: Branches
+        url: /api/v1/branches/v3/api-docs
+      - name: Locations
+        url: /api/v1/locations/v3/api-docs
+      - name: Tenants
+        url: /api/v1/tenants/v3/api-docs
+      - name: Supplier Catalog
+        url: /api/v1/supplier-catalog/v3/api-docs
+      - name: Purchases
+        url: /api/v1/purchases/v3/api-docs
+      - name: Cash
+        url: /api/v1/cash/v3/api-docs
+      - name: Identity
+        url: /api/v1/identity/v3/api-docs
+      - name: Reporting
+        url: /api/v1/reporting/v3/api-docs

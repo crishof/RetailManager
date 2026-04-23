@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_NETWORK_HOST}:${POSTGRES_CONTAINER_PORT}/tenant_db
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+  rabbitmq:
+    host: ${RABBITMQ_NETWORK_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_DEFAULT_USER}
+    password: ${RABBITMQ_DEFAULT_PASS}
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+
+logging:
+  level:
+    root: WARN
+    org.springframework: WARN
+    com.retailmanager: INFO
+
+management:
+  endpoint:
+    health:
+      show-details: when_authorized
