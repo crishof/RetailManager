@@ -1,14 +1,14 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5544/tenant_db
-    username: retailmanager
-    password: RetailMgr2024!
+    url: jdbc:postgresql://${POSTGRES_NETWORK_HOST:localhost}:${POSTGRES_CONTAINER_PORT:5544}/tenant_db
+    username: ${POSTGRES_USER:retailmanager}
+    password: ${POSTGRES_PASSWORD:RetailMgr2024!}
 
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+    host: ${RABBITMQ_NETWORK_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_DEFAULT_USER:guest}
+    password: ${RABBITMQ_DEFAULT_PASS:guest}
   jpa:
     show-sql: true
     hibernate:

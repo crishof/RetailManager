@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5544/supplier_catalog_db
-    username: retailmanager
-    password: RetailMgr2024!
+    url: jdbc:postgresql://${POSTGRES_NETWORK_HOST:localhost}:${POSTGRES_CONTAINER_PORT:5544}/supplier_catalog_db
+    username: ${POSTGRES_USER:retailmanager}
+    password: ${POSTGRES_PASSWORD:RetailMgr2024!}
 
   jpa:
     show-sql: true
