@@ -1,20 +1,34 @@
-# Stage 1: build
-FROM maven:3.9.11-eclipse-temurin-25-noble AS build
+# =========================================================
+# Stage 1: Build
+# (contexto de build: microservices/ - incluye parent pom.xml)
+# =========================================================
+FROM eclipse-temurin:25-jdk-noble AS build
 WORKDIR /app
 
-# Copiar pom y código
-COPY pom.xml .
-COPY src ./src
+# Copiar el wrapper Maven y el parent POM
+COPY brand-sv/.mvn/ .mvn/
+COPY brand-sv/mvnw mvnw
+COPY pom.xml pom.xml
 
-# Build
-RUN mvn clean package -DskipTests
+# Instalar el parent POM en el repositorio local de Maven
+RUN chmod +x mvnw && ./mvnw -N install -q
 
-# Stage 2: runtime
-FROM eclipse-temurin:25-jdk-alpine
+# Cachear dependencias del servicio (capa separada del src)
+COPY brand-sv/pom.xml brand-sv/pom.xml
+RUN ./mvnw -f brand-sv/pom.xml dependency:go-offline -q
+
+# Compilar el servicio
+COPY brand-sv/src brand-sv/src
+RUN ./mvnw -f brand-sv/pom.xml package -DskipTests -q
+
+# =========================================================
+# Stage 2: Runtime (imagen JRE - mas liviana)
+# =========================================================
+FROM eclipse-temurin:25-jre-noble
 WORKDIR /app
 
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/brand-sv/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

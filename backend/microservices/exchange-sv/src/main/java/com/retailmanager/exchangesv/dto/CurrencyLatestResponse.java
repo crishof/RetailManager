@@ -1,11 +1,11 @@
 package com.retailmanager.exchangesv.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
-@Data
-public class CurrencyLatestResponse {
-    private Map<String, BigDecimal> data;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record CurrencyLatestResponse(Map<String, BigDecimal> data) {
 }
+

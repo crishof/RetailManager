@@ -1,16 +1,13 @@
+ __  .___  ___.      ___       _______  _______           _______.____    ____
+|  | |   \/   |     /   \     /  _____||   ____|         /       |\   \  /   /
+|  | |  \  /  |    /  ^  \   |  |  __  |  |__    ______ |   (----`  \   \/   /
+|  | |  |\/|  |   /  /_\  \  |  | |_ | |   __|  |______| \   \      \      /
+|  | |  |  |  |  /  _____  \ |  |__| | |  |____      .----)   |      \    /
+|__| |__|  |__| /__/     \__\ \______| |_______|     |_______/        \__/
 
-     _______.     ___       __       _______     _______.          _______.____    ____
-    /       |    /   \     |  |     |   ____|   /       |         /       |\   \  /   /
-   |   (----`   /  ^  \    |  |     |  |__     |   (----` ______ |   (----` \   \/   /
-    \   \      /  /_\  \   |  |     |   __|     \   \    |______| \   \      \      /
-.----)   |    /  _____  \  |  `----.|  |____.----)   |        .----)   |      \    /
-|_______/    /__/     \__\ |_______||_______|_______/         |_______/        \__/
-
-
-Microservice: Sales Service
+Microservice: Customer Order Service
 Version: 1.0.0
 Author: Cristian H.
-Description: This microservice handles product-related operations.
-© 2025 Cristian Hoffmann. All rights reserved.
+Description: This microservice handles customer orders.
+© 2026 Cristian Hoffmann. All rights reserved.
 ===============================================
-
