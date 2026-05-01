@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable, catchError, throwError } from "rxjs";
 import { ISupplierProduct } from "../model/supplierProduct";
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: "root",
@@ -9,9 +10,9 @@ import { ISupplierProduct } from "../model/supplierProduct";
 export class SupplierPriceListService {
   private readonly http = inject(HttpClient);
 
-  private readonly baseUrl = "http://localhost:8080/api/v1/price-items";
+  private readonly baseUrl = `${environment.gatewayUrl}/api/v1/price-items`;
   private readonly productsUrl =
-    "http://localhost:8080/api/v1/products/import/supplier";
+    `${environment.gatewayUrl}/api/v1/products/import/supplier`;
 
   // ============================
   // IMPORT PRICE ITEMS
