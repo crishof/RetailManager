@@ -151,6 +151,52 @@
         </div>
       </div>
 
+      @if (selectionImportSummary) {
+        <div class="spl-import-summary spl-import-summary--inline">
+          <div class="spl-import-summary__header">
+            <h3 class="spl-import-summary__title">
+              <span class="material-icons">{{ selectionImportSummary.failed > 0 && selectionImportSummary.imported === 0 ? 'error_outline' : 'check_circle' }}</span>
+              Resultado de la importación
+            </h3>
+            <button type="button" class="spl-btn spl-btn--ghost spl-btn--xs" (click)="clearSelectionImportSummary()">
+              <span class="material-icons">close</span>
+            </button>
+          </div>
+          <ul class="spl-import-summary__list">
+            <li>
+              <span class="spl-import-summary__label">Enviados</span>
+              <strong>{{ selectionImportSummary.total }}</strong>
+            </li>
+            <li>
+              <span class="spl-import-summary__label">Importados</span>
+              <strong class="spl-import-summary__value--ok">{{ selectionImportSummary.imported }}</strong>
+            </li>
+            <li>
+              <span class="spl-import-summary__label">Ya existían</span>
+              <strong class="spl-import-summary__value--muted">{{ selectionImportSummary.skipped }}</strong>
+            </li>
+            @if (selectionImportSummary.failed > 0) {
+              <li>
+                <span class="spl-import-summary__label">Con error</span>
+                <strong class="spl-import-summary__value--warn">{{ selectionImportSummary.failed }}</strong>
+              </li>
+            }
+            @if (selectionImportSummary.errorDetails.length > 0) {
+              <li class="spl-import-summary__errors">
+                <details>
+                  <summary>Ver detalle de errores ({{ selectionImportSummary.errorDetails.length }})</summary>
+                  <ul class="spl-import-summary__error-list">
+                    @for (err of selectionImportSummary.errorDetails; track err.code) {
+                      <li><strong>{{ err.code }}</strong> — {{ err.reason }}</li>
+                    }
+                  </ul>
+                </details>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
       <div class="spl-table-wrap">
         <table class="spl-table">
           <thead>
@@ -330,7 +376,7 @@
 
   <article class="spl-card spl-card--upload">
     <div class="spl-card__head">
-      <h2>Importar Excel a SupplierProduct</h2>
+      <h2>Importar lista de precios en Excel</h2>
       @if (excelImportSummary) {
         <button type="button" class="spl-btn spl-btn--ghost" (click)="clearExcelImportSummary()">
           <span class="material-icons">close</span>
@@ -356,16 +402,12 @@
           </li>
           <li>
             <span class="spl-import-summary__label">Ya existían</span>
-            <strong class="spl-import-summary__value--muted">{{ excelImportSummary.existing }}</strong>
+            <strong class="spl-import-summary__value--muted">{{ excelImportSummary.skipped }}</strong>
           </li>
-          <li>
-            <span class="spl-import-summary__label">Con actualización de precio</span>
-            <strong class="spl-import-summary__value--accent">{{ excelImportSummary.priceUpdated }}</strong>
-          </li>
-          @if (excelImportSummary.errors > 0) {
+          @if (excelImportSummary.failed > 0) {
             <li>
               <span class="spl-import-summary__label">Con errores / ignorados</span>
-              <strong class="spl-import-summary__value--warn">{{ excelImportSummary.errors }}</strong>
+              <strong class="spl-import-summary__value--warn">{{ excelImportSummary.failed }}</strong>
             </li>
           }
         </ul>
@@ -376,15 +418,21 @@
       <form class="spl-upload" [formGroup]="fileForm">
         <div class="spl-upload__layout">
           <div class="spl-upload__main">
-            <label class="spl-field">
-              <span>Proveedor</span>
-              <select formControlName="supplierId">
-                <option value="">Seleccionar proveedor</option>
-                @for (supplier of suppliers; track supplier.id) {
-                  <option [value]="supplier.id">{{ supplier.name }}</option>
-                }
-              </select>
-            </label>
+            <div class="spl-upload__supplier-row">
+              <label class="spl-field">
+                <span>Proveedor</span>
+                <select formControlName="supplierId" [attr.disabled]="fileForm.get('multipleSuppliers')?.value ? true : null">
+                  <option value="">Seleccionar proveedor</option>
+                  @for (supplier of suppliers; track supplier.id) {
+                    <option [value]="supplier.id">{{ supplier.name }}</option>
+                  }
+                </select>
+              </label>
+              <label class="spl-check spl-upload__multi-check">
+                <input type="checkbox" formControlName="multipleSuppliers" />
+                <span>El archivo contiene artículos de varios proveedores</span>
+              </label>
+            </div>
 
             <label class="spl-upload__dropzone" for="supplierPriceFile">
               <input
@@ -411,11 +459,6 @@
             </label>
 
             <label class="spl-check">
-              <input type="checkbox" formControlName="createBrandIfNotExists" />
-              <span>Crear marca si no existe</span>
-            </label>
-
-            <label class="spl-check">
               <input type="checkbox" formControlName="dividePriceByUnitsPerBox" />
               <span>Dividir precio por unidades por caja</span>
             </label>
@@ -430,10 +473,7 @@
               <span>Truncar campos de texto demasiado largos</span>
             </label>
 
-            <label class="spl-check">
-              <input type="checkbox" formControlName="multipleSuppliers" />
-              <span>El archivo contiene artículos de varios proveedores</span>
-            </label>
+
           </div>
         </div>
 

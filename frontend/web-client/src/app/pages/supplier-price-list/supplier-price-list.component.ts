@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, inject } from "@angular/core";
-import { SupplierPriceListService } from "../../services/supplier-price-list.service";
+import { SupplierPriceListService, ImportResult } from "../../services/supplier-price-list.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import {
   FormBuilder,
@@ -31,9 +31,9 @@ type SortDirection = "asc" | "desc";
 export interface ImportSummary {
   total: number;
   imported: number;
-  existing: number;
-  priceUpdated: number;
-  errors: number;
+  skipped: number;
+  failed: number;
+  errorDetails: { code: string; reason: string }[];
 }
 
 export interface ColumnMapping {
@@ -96,6 +96,9 @@ export class SupplierPriceListComponent implements OnInit {
   // ── Resumen de importación Excel ───────────────────────────────────────────
   excelImportSummary: ImportSummary | null = null;
 
+  // ── Resumen de importación por selección ─────────────────────────────────
+  selectionImportSummary: ImportSummary | null = null;
+
   // ── Mapeo dinámico de columnas Excel ──────────────────────────────────────
   showColumnMapping = false;
   detectedColumns: ColumnMapping[] = [];
@@ -148,7 +151,6 @@ export class SupplierPriceListComponent implements OnInit {
   fileForm: FormGroup = this.fb.group({
     supplierId: ["", Validators.required],
     updateExistingProducts: [false],
-    createBrandIfNotExists: [false],
     dividePriceByUnitsPerBox: [false],
     copyToRelatedProducts: [false],
     truncateLongFields: [false],
@@ -264,29 +266,47 @@ export class SupplierPriceListComponent implements OnInit {
   // ============================================================
   importSelectedProducts(): void {
     this.clearFeedback();
+    this.selectionImportSummary = null;
     if (!this.selectedProducts.length) {
       this.warningMessage = "Seleccioná al menos un producto para importar.";
       return;
     }
 
     this.loadingImportSelection = true;
+    const count = this.selectedProducts.length;
 
     this.priceListService
       .importProductsFromSupplier(this.selectedProducts)
       .subscribe({
-        next: (response) => {
-          this.successMessage =
-            response.message ?? "Productos importados correctamente.";
-
+        next: (response: ImportResult) => {
+          this.selectionImportSummary = {
+            total: response.total,
+            imported: response.imported,
+            skipped: response.skipped,
+            failed: response.failed,
+            errorDetails: (response.errors ?? []).map(e => ({ code: e.code, reason: e.reason })),
+          };
           this.selectedProducts = [];
           this.loadingImportSelection = false;
           this.searchProducts();
         },
-        error: () => {
-          this.errorMessage = "No se pudieron importar los productos seleccionados.";
+        error: (err) => {
+          this.selectionImportSummary = {
+            total: count,
+            imported: 0,
+            skipped: 0,
+            failed: count,
+            errorDetails: [],
+          };
+          this.errorMessage =
+            err?.error?.message ?? "No se pudieron importar los productos seleccionados.";
           this.loadingImportSelection = false;
         },
       });
+  }
+
+  clearSelectionImportSummary(): void {
+    this.selectionImportSummary = null;
   }
 
   clearExcelImportSummary(): void {
@@ -365,9 +385,9 @@ export class SupplierPriceListComponent implements OnInit {
           this.excelImportSummary = {
             total: response.total ?? 0,
             imported: response.imported ?? 0,
-            existing: response.existing ?? 0,
-            priceUpdated: response.priceUpdated ?? 0,
-            errors: response.errors ?? 0,
+            skipped: response.skipped ?? 0,
+            failed: response.failed ?? 0,
+            errorDetails: (response.errors ?? []).map((e: any) => ({ code: e.code, reason: e.reason })),
           };
 
           this.selectedFile = null;

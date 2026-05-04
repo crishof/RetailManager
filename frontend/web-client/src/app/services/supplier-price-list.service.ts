@@ -4,6 +4,20 @@ import { Observable, catchError, throwError } from "rxjs";
 import { ISupplierProduct } from "../model/supplierProduct";
 import { environment } from '../../environments/environment';
 
+export interface ImportItemError {
+  supplierProductId: string;
+  code: string;
+  reason: string;
+}
+
+export interface ImportResult {
+  total: number;
+  imported: number;
+  skipped: number;
+  failed: number;
+  errors: ImportItemError[];
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -83,7 +97,7 @@ export class SupplierPriceListService {
   // ============================
   // IMPORT PRODUCTS FROM SUPPLIER
   // ============================
-  importProductsFromSupplier(productList: ISupplierProduct[]): Observable<any> {
-    return this.http.post<any>(this.productsUrl, productList);
+  importProductsFromSupplier(productList: ISupplierProduct[]): Observable<ImportResult> {
+    return this.http.post<ImportResult>(this.productsUrl, productList);
   }
 }
