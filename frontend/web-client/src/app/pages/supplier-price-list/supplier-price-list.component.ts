@@ -13,6 +13,8 @@ import { ISupplierProduct } from "../../model/supplierProduct";
 import { SupplierService } from "../../services/supplier.service";
 import { ISupplier } from "../../model/supplier.model";
 
+// ─── Tipos ────────────────────────────────────────────────────────────────────
+
 type SortColumn =
   | "brand"
   | "code"
@@ -23,6 +25,28 @@ type SortColumn =
   | "lastUpdate";
 
 type SortDirection = "asc" | "desc";
+
+// ─── Interfaces auxiliares ─────────────────────────────────────────────────────
+
+export interface ImportSummary {
+  total: number;
+  imported: number;
+  existing: number;
+  priceUpdated: number;
+  errors: number;
+}
+
+export interface ColumnMapping {
+  excelHeader: string;
+  mappedAttribute: string;
+}
+
+export interface AttributeOption {
+  value: string;
+  label: string;
+}
+
+// ─── Componente ───────────────────────────────────────────────────────────────
 
 @Component({
   selector: "app-supplier-price-list",
@@ -36,117 +60,120 @@ export class SupplierPriceListComponent implements OnInit {
   private readonly supplierService = inject(SupplierService);
   private readonly fb = inject(FormBuilder);
 
+  // ── Lista de productos y selección ─────────────────────────────────────────
   productList: ISupplierProduct[] = [];
   selectedProduct: ISupplierProduct | null = null;
   selectedProducts: ISupplierProduct[] = [];
 
+  // ── Filtros ────────────────────────────────────────────────────────────────
   suppliers: ISupplier[] = [];
   brands: string[] = [];
-
   selectedSupplierId = "";
   selectedBrand = "";
   searchTerm = "";
 
+  // ── Archivo Excel ──────────────────────────────────────────────────────────
   selectedFile: File | null = null;
   selectedFileName = "";
+
+  // ── Estados de carga ───────────────────────────────────────────────────────
   loadingSearch = false;
   loadingImportSelection = false;
   loadingUpload = false;
+
+  // ── Ordenamiento y paginación ──────────────────────────────────────────────
   sortColumn: SortColumn = "brand";
   sortDirection: SortDirection = "asc";
   pageIndex = 0;
   pageSize = 20;
   readonly pageSizeOptions = [10, 20, 50, 100];
 
+  // ── Feedback ───────────────────────────────────────────────────────────────
   errorMessage = "";
   successMessage = "";
   warningMessage = "";
 
+  // ── Resumen de importación Excel ───────────────────────────────────────────
+  excelImportSummary: ImportSummary | null = null;
+
+  // ── Mapeo dinámico de columnas Excel ──────────────────────────────────────
+  showColumnMapping = false;
+  detectedColumns: ColumnMapping[] = [];
+
+  /** Atributos del sistema disponibles para mapear desde columnas Excel */
+  readonly supplierProductAttributes: AttributeOption[] = [
+    { value: "code", label: "Código propio" },
+    { value: "supplierCode", label: "Código del proveedor" },
+    { value: "barcode", label: "Código de barras" },
+    { value: "brand", label: "Marca" },
+    { value: "model", label: "Modelo" },
+    { value: "description", label: "Descripción" },
+    { value: "supplierId", label: "ID Proveedor" },
+    { value: "taxRate", label: "IVA" },
+    { value: "internalTax", label: "Impuesto interno" },
+    { value: "discountPercentage", label: "Porcentaje descuento" },
+    { value: "lastUpdate", label: "Fecha costo" },
+    { value: "longDescription", label: "Descripción larga" },
+    { value: "currency", label: "Moneda" },
+    { value: "category", label: "ID Rubro" },
+    { value: "color", label: "Color" },
+    { value: "size", label: "Talle" },
+    { value: "fobPrice", label: "Precio FOB" },
+    { value: "price", label: "Precio proveedor" },
+    { value: "wholesalePrice", label: "Precio mayorista" },
+    { value: "tradePrice", label: "Precio comercio" },
+    { value: "suggestedPrice", label: "Precio lista" },
+    { value: "offerPrice", label: "Precio oferta" },
+    { value: "altPrice1", label: "Precio alternativo 1" },
+    { value: "altPrice2", label: "Precio alternativo 2" },
+    { value: "altPrice3", label: "Precio alternativo 3" },
+    { value: "altPrice4", label: "Precio alternativo 4" },
+    { value: "altPrice5", label: "Precio alternativo 5" },
+    { value: "altPrice6", label: "Precio alternativo 6" },
+    { value: "altPrice7", label: "Precio alternativo 7" },
+    { value: "altPrice8", label: "Precio alternativo 8" },
+    { value: "altPrice9", label: "Precio alternativo 9" },
+    { value: "unitsPerBox", label: "Unidades por caja" },
+    { value: "minWholesale", label: "Venta mínima por mayor" },
+    { value: "minPurchase", label: "Compra mínima por mayor" },
+    { value: "vehicle", label: "Vehículo" },
+    { value: "height", label: "Alto" },
+    { value: "width", label: "Ancho" },
+    { value: "depth", label: "Profundidad" },
+    { value: "weight", label: "Peso" },
+    { value: "stockAvailable", label: "Stock disponible" },
+  ];
+
+  // ── Formulario de carga ────────────────────────────────────────────────────
   fileForm: FormGroup = this.fb.group({
     supplierId: ["", Validators.required],
     updateExistingProducts: [false],
+    createBrandIfNotExists: [false],
+    dividePriceByUnitsPerBox: [false],
+    copyToRelatedProducts: [false],
+    truncateLongFields: [false],
+    multipleSuppliers: [false],
   });
 
-  // ============================
+  // ============================================================
   // INIT
-  // ============================
+  // ============================================================
   ngOnInit(): void {
     this.loadSuppliers();
     this.loadBrands();
     this.searchProducts();
   }
 
-  // ============================
-  // FILE UPLOAD
-  // ============================
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files?.length) {
-      const file = input.files[0];
-      const lowerName = file.name.toLowerCase();
-      const isExcel = lowerName.endsWith(".xlsx") || lowerName.endsWith(".xls");
-
-      if (!isExcel) {
-        this.selectedFile = null;
-        this.selectedFileName = "";
-        this.warningMessage = "El archivo debe ser Excel (.xlsx o .xls).";
-        this.successMessage = "";
-        this.errorMessage = "";
-        return;
-      }
-
-      this.selectedFile = file;
-      this.selectedFileName = file.name;
-      this.warningMessage = "";
-    }
-  }
-
-  uploadFile(event: Event): void {
-    event.preventDefault();
-    this.clearFeedback();
-
-    if (!this.fileForm.valid || !this.selectedFile) {
-      this.warningMessage = "Proveedor y archivo Excel son obligatorios.";
-      return;
-    }
-
-    const { supplierId, updateExistingProducts } = this.fileForm.value;
-    this.loadingUpload = true;
-
-    this.priceListService
-      .uploadFile(this.selectedFile, supplierId, updateExistingProducts)
-      .subscribe({
-        next: (response) => {
-          this.successMessage =
-            response.message ?? "Lista de precios importada correctamente.";
-          this.selectedFile = null;
-          this.selectedFileName = "";
-          this.fileForm.patchValue({ updateExistingProducts: false });
-          this.loadingUpload = false;
-          this.searchProducts();
-        },
-        error: (error: HttpErrorResponse) => {
-          this.errorMessage =
-            error.error?.message || "No se pudo importar el archivo.";
-          this.loadingUpload = false;
-        },
-      });
-  }
-
-  // ============================
-  // SEARCH & FILTER
-  // ============================
+  // ============================================================
+  // FILTROS / BÚSQUEDA
+  // ============================================================
   searchProducts(): void {
     this.clearFeedback();
     this.loadingSearch = true;
     this.selectedProducts = [];
 
     this.priceListService
-      .getAllByFilter(
-        this.selectedSupplierId,
-        this.selectedBrand,
-        this.searchTerm,
-      )
+      .getAllByFilter(this.selectedSupplierId, this.selectedBrand, this.searchTerm)
       .subscribe({
         next: (data) => {
           this.productList = data;
@@ -188,12 +215,16 @@ export class SupplierPriceListComponent implements OnInit {
     this.selectedProduct = product;
   }
 
-  // ============================
-  // SELECTION
-  // ============================
+  handleRowClick(product: ISupplierProduct): void {
+    this.selectProduct(product);
+    this.toggleSelection(null, product);
+  }
+
+  // ============================================================
+  // SELECCIÓN DE FILAS
+  // ============================================================
   toggleSelection(event: Event | null, product: ISupplierProduct): void {
     event?.stopPropagation();
-
     const index = this.selectedProducts.indexOf(product);
     index >= 0
       ? this.selectedProducts.splice(index, 1)
@@ -228,6 +259,195 @@ export class SupplierPriceListComponent implements OnInit {
     );
   }
 
+  // ============================================================
+  // ACCIONES DE IMPORTACIÓN
+  // ============================================================
+  importSelectedProducts(): void {
+    this.clearFeedback();
+    if (!this.selectedProducts.length) {
+      this.warningMessage = "Seleccioná al menos un producto para importar.";
+      return;
+    }
+
+    this.loadingImportSelection = true;
+
+    this.priceListService
+      .importProductsFromSupplier(this.selectedProducts)
+      .subscribe({
+        next: (response) => {
+          this.successMessage =
+            response.message ?? "Productos importados correctamente.";
+
+          this.selectedProducts = [];
+          this.loadingImportSelection = false;
+          this.searchProducts();
+        },
+        error: () => {
+          this.errorMessage = "No se pudieron importar los productos seleccionados.";
+          this.loadingImportSelection = false;
+        },
+      });
+  }
+
+  clearExcelImportSummary(): void {
+    this.excelImportSummary = null;
+  }
+
+  // ============================================================
+  // ACCIONES (Nuevas — solo UI/stub)
+  // ============================================================
+
+  /** (Nuevo) Abre vista de comparación de precios. Pendiente de implementar. */
+  openComparePrices(): void {
+    this.warningMessage = "Comparar precios: funcionalidad próximamente disponible.";
+  }
+
+  /** (Nuevo) Abre flujo de facturación. Pendiente de implementar. */
+  openInvoice(): void {
+    this.warningMessage = "Facturar: funcionalidad próximamente disponible.";
+  }
+
+  /** Relacionar artículos seleccionados con productos del sistema. */
+  relateProducts(): void {
+    this.warningMessage = "Relacionar artículos: funcionalidad próximamente disponible.";
+  }
+
+  /** Relacionar un artículo individual. */
+  relateProduct(_product: ISupplierProduct): void {
+    this.warningMessage = "Relacionar artículo: funcionalidad próximamente disponible.";
+  }
+
+  // ============================================================
+  // CARGA DE ARCHIVO EXCEL
+  // ============================================================
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      const file = input.files[0];
+      const lowerName = file.name.toLowerCase();
+      const isExcel = lowerName.endsWith(".xlsx") || lowerName.endsWith(".xls");
+
+      if (!isExcel) {
+        this.selectedFile = null;
+        this.selectedFileName = "";
+        this.warningMessage = "El archivo debe ser Excel (.xlsx o .xls).";
+        this.successMessage = "";
+        this.errorMessage = "";
+        return;
+      }
+
+      this.selectedFile = file;
+      this.selectedFileName = file.name;
+      this.warningMessage = "";
+      this.showColumnMapping = false;
+      this.detectedColumns = [];
+    }
+  }
+
+  private uploadSelectedExcelFile(): void {
+    this.clearFeedback();
+
+    if (!this.fileForm.valid || !this.selectedFile) {
+      this.warningMessage = "Proveedor y archivo Excel son obligatorios.";
+      return;
+    }
+
+    const { supplierId, updateExistingProducts } = this.fileForm.value;
+    this.loadingUpload = true;
+
+    this.priceListService
+      .uploadFile(this.selectedFile, supplierId, updateExistingProducts)
+      .subscribe({
+        next: (response) => {
+          this.successMessage =
+            response.message ?? "Lista de precios importada correctamente.";
+
+          this.excelImportSummary = {
+            total: response.total ?? 0,
+            imported: response.imported ?? 0,
+            existing: response.existing ?? 0,
+            priceUpdated: response.priceUpdated ?? 0,
+            errors: response.errors ?? 0,
+          };
+
+          this.selectedFile = null;
+          this.selectedFileName = "";
+          this.showColumnMapping = false;
+          this.detectedColumns = [];
+          this.fileForm.patchValue({ updateExistingProducts: false });
+          this.loadingUpload = false;
+          this.searchProducts();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorMessage =
+            error.error?.message || "No se pudo importar el archivo.";
+          this.loadingUpload = false;
+        },
+      });
+  }
+
+  // ============================================================
+  // MAPEO DINÁMICO DE COLUMNAS
+  // ============================================================
+
+  processExcelFile(): void {
+    this.clearFeedback();
+
+    if (!this.fileForm.valid || !this.selectedFile) {
+      this.warningMessage = "Proveedor y archivo Excel son obligatorios.";
+      return;
+    }
+
+    this.previewColumnMapping();
+  }
+
+  /** Muestra el panel de mapeo (stub: genera columnas de ejemplo basadas en atributos). */
+  previewColumnMapping(): void {
+    // En una implementación real se llamaría al backend para parsear el Excel
+    // y obtener los encabezados detectados automáticamente.
+    // Por ahora se simulan columnas basadas en los atributos del sistema.
+    if (!this.detectedColumns.length) {
+      this.detectedColumns = this.supplierProductAttributes.map((attr) => ({
+        excelHeader: attr.label.toUpperCase(),
+        mappedAttribute: attr.value,
+      }));
+    }
+    this.showColumnMapping = true;
+  }
+
+  updateColumnMapping(excelHeader: string, attribute: string): void {
+    const col = this.detectedColumns.find((c) => c.excelHeader === excelHeader);
+    if (col) {
+      col.mappedAttribute = attribute;
+    }
+  }
+
+  cancelColumnMapping(): void {
+    this.showColumnMapping = false;
+  }
+
+  /** Confirma el mapeo y ejecuta la importación real. */
+  confirmAndUpload(): void {
+    this.uploadSelectedExcelFile();
+  }
+
+  // ============================================================
+  // PROVEEDORES
+  // ============================================================
+  loadSuppliers(): void {
+    this.supplierService.getSuppliers().subscribe({
+      next: (suppliers) => (this.suppliers = suppliers),
+      error: () => (this.errorMessage = "No se pudieron cargar los proveedores."),
+    });
+  }
+
+  supplierNameById(id: string): string {
+    return this.suppliers.find((s) => s.id === id)?.name ?? "Proveedor no identificado";
+  }
+
+  // ============================================================
+  // ORDENAMIENTO Y PAGINACIÓN
+  // ============================================================
   get sortedProducts(): ISupplierProduct[] {
     const sorted = [...this.productList];
     sorted.sort((a, b) => this.compareProducts(a, b));
@@ -257,7 +477,6 @@ export class SupplierPriceListComponent implements OnInit {
       this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
       return;
     }
-
     this.sortColumn = column;
     this.sortDirection = "asc";
   }
@@ -282,54 +501,13 @@ export class SupplierPriceListComponent implements OnInit {
     this.pageIndex += 1;
   }
 
-  // ============================
-  // IMPORT PRODUCTS
-  // ============================
-  importSelectedProducts(): void {
-    this.clearFeedback();
-    if (!this.selectedProducts.length) {
-      this.warningMessage = "Seleccioná al menos un producto para importar.";
-      return;
-    }
-
-    this.loadingImportSelection = true;
-
-    this.priceListService
-      .importProductsFromSupplier(this.selectedProducts)
-      .subscribe({
-        next: (response) => {
-          this.successMessage =
-            response.message ?? "Productos importados correctamente.";
-          this.selectedProducts = [];
-          this.loadingImportSelection = false;
-        },
-        error: () => {
-          this.errorMessage = "No se pudieron importar los productos seleccionados.";
-          this.loadingImportSelection = false;
-        },
-      });
-  }
-
-  // ============================
-  // SUPPLIERS
-  // ============================
-  loadSuppliers(): void {
-    this.supplierService.getSuppliers().subscribe({
-      next: (suppliers) => {
-        this.suppliers = suppliers;
-      },
-      error: () => (this.errorMessage = "No se pudieron cargar los proveedores."),
-    });
-  }
-
   trackByProductId(_: number, product: ISupplierProduct): string {
     return product.id;
   }
 
-  supplierNameById(id: string): string {
-    return this.suppliers.find((s) => s.id === id)?.name ?? "Proveedor no identificado";
-  }
-
+  // ============================================================
+  // HELPERS PRIVADOS
+  // ============================================================
   private clearFeedback(): void {
     this.errorMessage = "";
     this.warningMessage = "";
@@ -338,10 +516,8 @@ export class SupplierPriceListComponent implements OnInit {
 
   private compareProducts(a: ISupplierProduct, b: ISupplierProduct): number {
     const direction = this.sortDirection === "asc" ? 1 : -1;
-
     const aValue = this.extractSortValue(a, this.sortColumn);
     const bValue = this.extractSortValue(b, this.sortColumn);
-
     if (aValue < bValue) return -1 * direction;
     if (aValue > bValue) return 1 * direction;
     return 0;
@@ -349,22 +525,14 @@ export class SupplierPriceListComponent implements OnInit {
 
   private extractSortValue(product: ISupplierProduct, column: SortColumn): number | string {
     switch (column) {
-      case "brand":
-        return product.brand?.toLowerCase() ?? "";
-      case "code":
-        return product.code?.toLowerCase() ?? "";
-      case "model":
-        return product.model?.toLowerCase() ?? "";
-      case "category":
-        return product.category?.toLowerCase() ?? "";
-      case "price":
-        return product.price ?? 0;
-      case "suggestedPrice":
-        return product.suggestedPrice ?? 0;
-      case "lastUpdate":
-        return new Date(product.lastUpdate).getTime() || 0;
-      default:
-        return "";
+      case "brand":        return product.brand?.toLowerCase() ?? "";
+      case "code":         return product.code?.toLowerCase() ?? "";
+      case "model":        return product.model?.toLowerCase() ?? "";
+      case "category":     return product.category?.toLowerCase() ?? "";
+      case "price":        return product.price ?? 0;
+      case "suggestedPrice": return product.suggestedPrice ?? 0;
+      case "lastUpdate":   return new Date(product.lastUpdate).getTime() || 0;
+      default:             return "";
     }
   }
 }
