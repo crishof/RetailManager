@@ -15,7 +15,7 @@ export class SupplierInvoiceService {
     return this._http.get<ISupplierInvoice[]>(`${this._urlBase}/getAll`);
   }
 
-  saveInvoice(formData: FormData): Observable<any> {
-    return this._http.post(`${this._urlBase}/save`, formData);
+  saveInvoice(payload: ISupplierInvoice): Observable<any> {
+    return this._http.post(`${this._urlBase}/save`, payload);
   }
 }

@@ -1,61 +1,662 @@
-<form [formGroup]="invoiceForm" (ngSubmit)="saveInvoice()" class="mb-3">
-  <!-- PROVEEDOR -->
-  <div class="row mb-3">
-    <div class="col-md-6">
-      <select class="form-control form-control-sm" formControlName="supplierId">
-        <option value="">Select supplier</option>
-        <option *ngFor="let supplier of suppliers" [value]="supplier.id">
-          {{ supplier.name }}
-        </option>
-      </select>
-    </div>
+<div class="min-h-screen bg-gray-50">
 
-    <div class="col-md-3">
-      <button type="submit" class="btn btn-outline-primary btn-sm">
-        Save Invoice
-      </button>
+  <!-- ── BARRA SUPERIOR FIJA ───────────────────────────────────── -->
+  <div class="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
+    <div class="max-w-screen-xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div>
+        <h1 class="text-lg font-semibold text-gray-800">Nueva Factura de Compra</h1>
+        <p class="text-xs text-gray-400">Registre los datos del comprobante y los ítems recibidos</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-gray-500 hidden md:inline">
+          {{ lineItemsArray.length }} ítem(s)
+          &nbsp;·&nbsp;
+          <span class="font-semibold text-indigo-700">Total: {{ total | currency:'ARS':'symbol':'1.2-2' }}</span>
+        </span>
+        <button
+          type="button"
+          (click)="saveInvoice()"
+          [disabled]="isFormSubmitted && invoiceForm.invalid"
+          class="px-5 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Guardar factura
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- TABS -->
-  <div class="btn-group btn-group-sm mb-3">
-    <button
-      type="button"
-      class="btn btn-outline-secondary"
-      [ngClass]="{ active: selectedComponent === 'header' }"
-      (click)="selectedComponent = 'header'"
-    >
-      Header
-    </button>
-    <button
-      type="button"
-      class="btn btn-outline-secondary"
-      [ngClass]="{ active: selectedComponent === 'items' }"
-      (click)="selectedComponent = 'items'"
-    >
-      Items
-    </button>
-    <button
-      type="button"
-      class="btn btn-outline-secondary"
-      [ngClass]="{ active: selectedComponent === 'pagos' }"
-      (click)="selectedComponent = 'pagos'"
-    >
-      Pagos
-    </button>
-  </div>
+  <form [formGroup]="invoiceForm" (ngSubmit)="saveInvoice()" class="max-w-screen-xl mx-auto px-4 md:px-6 py-6 space-y-6">
 
-  <!-- SWITCH -->
-  <ng-container [ngSwitch]="selectedComponent">
-    <div *ngSwitchCase="'items'">
-      <app-invoice-items
-        [invoiceItems]="invoiceItems"
-        (invoiceItemsChange)="onInvoiceItemChange($event)"
-      ></app-invoice-items>
-    </div>
+    <!-- ── SECCIÓN 1: DATOS GENERALES ────────────────────────────── -->
+    <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-3.5 bg-gray-50 border-b border-gray-200 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+        </svg>
+        <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Datos Generales</h2>
+      </div>
 
-    <div *ngSwitchCase="'pagos'">
-      <p>Pagos</p>
-    </div>
-  </ng-container>
-</form>
+      <div class="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-4">
+
+          <!-- ─ Proveedor (2 cols) ──────────────────────────────────────── -->
+          <div class="sm:col-span-2">
+            <label for="supplierId" class="block text-xs font-medium text-gray-600 mb-1">
+              Proveedor <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="supplierId"
+              formControlName="supplierId"
+              class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+              [class.border-red-400]="invoiceForm.get('supplierId')?.invalid && (invoiceForm.get('supplierId')?.touched || isFormSubmitted)"
+              [class.border-gray-300]="!(invoiceForm.get('supplierId')?.invalid && (invoiceForm.get('supplierId')?.touched || isFormSubmitted))"
+            >
+              <option value="">Seleccionar proveedor...</option>
+              @for (s of suppliers; track s.id) {
+                <option [value]="s.id">{{ s.name }}</option>
+              }
+            </select>
+            @if (invoiceForm.get('supplierId')?.invalid && (invoiceForm.get('supplierId')?.touched || isFormSubmitted)) {
+              <p class="text-xs text-red-500 mt-1">El proveedor es obligatorio.</p>
+            }
+          </div>
+
+          <!-- ─ Comprobante: tipo + prefijo + número (2 cols) ───────────── -->
+          <div class="sm:col-span-2">
+            <p class="text-xs font-medium text-gray-600 mb-1">
+              Comprobante <span class="text-red-500">*</span>
+            </p>
+            <div class="flex items-end gap-1.5">
+              <!-- Tipo -->
+              <div class="flex flex-col gap-0.5">
+                <label for="invoiceType" class="text-[10px] text-gray-400 font-medium leading-none">Tipo</label>
+                <select
+                  id="invoiceType"
+                  formControlName="invoiceType"
+                  class="border border-gray-300 rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition w-28"
+                >
+                  @for (t of invoiceTypes; track t) {
+                    <option [value]="t">Factura {{ t }}</option>
+                  }
+                </select>
+              </div>
+              <span class="text-gray-300 font-light text-lg pb-1.5 select-none">–</span>
+              <!-- Prefijo -->
+              <div class="flex flex-col gap-0.5">
+                <label for="invoicePrefix" class="text-[10px] text-gray-400 font-medium leading-none">Pref.</label>
+                <input
+                  id="invoicePrefix"
+                  type="number"
+                  formControlName="invoicePrefix"
+                  min="1"
+                  max="9999"
+                  class="w-16 text-center border border-gray-300 rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                  placeholder="0001"
+                />
+              </div>
+              <span class="text-gray-300 font-light text-lg pb-1.5 select-none">–</span>
+              <!-- Número -->
+              <div class="flex flex-col gap-0.5 flex-1">
+                <label for="invoiceNumber" class="text-[10px] text-gray-400 font-medium leading-none">Número</label>
+                <input
+                  id="invoiceNumber"
+                  type="number"
+                  formControlName="invoiceNumber"
+                  min="1"
+                  class="w-full text-center border rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                  [class.border-red-400]="invoiceForm.get('invoiceNumber')?.invalid && (invoiceForm.get('invoiceNumber')?.touched || isFormSubmitted)"
+                  [class.border-gray-300]="!(invoiceForm.get('invoiceNumber')?.invalid && (invoiceForm.get('invoiceNumber')?.touched || isFormSubmitted))"
+                  placeholder="00000001"
+                />
+              </div>
+            </div>
+            @if (invoiceForm.get('invoiceNumber')?.invalid && (invoiceForm.get('invoiceNumber')?.touched || isFormSubmitted)) {
+              <p class="text-xs text-red-500 mt-1">El número es obligatorio.</p>
+            }
+          </div>
+
+          <!-- ─ Fechas apiladas (1 col) ──────────────────────────────────── -->
+          <div class="space-y-3">
+            <!-- Emisión -->
+            <div>
+              <label for="invoiceDate" class="block text-xs font-medium text-gray-600 mb-1">
+                Emisión <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="invoiceDate"
+                type="date"
+                formControlName="invoiceDate"
+                class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                [class.border-red-400]="invoiceForm.get('invoiceDate')?.invalid && (invoiceForm.get('invoiceDate')?.touched || isFormSubmitted)"
+                [class.border-gray-300]="!(invoiceForm.get('invoiceDate')?.invalid && (invoiceForm.get('invoiceDate')?.touched || isFormSubmitted))"
+              />
+            </div>
+            <!-- Recepción -->
+            <div>
+              <label for="receptionDate" class="block text-xs font-medium text-gray-600 mb-1">Recepción</label>
+              <input
+                id="receptionDate"
+                type="date"
+                formControlName="receptionDate"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+              />
+            </div>
+            <!-- Ingreso -->
+            <div>
+              <label for="savedDate" class="block text-xs font-medium text-gray-600 mb-1">Ingreso sistema</label>
+              <input
+                id="savedDate"
+                type="date"
+                formControlName="savedDate"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+              />
+            </div>
+          </div>
+
+          <!-- ─ Sucursal + Depósito apilados (1 col) ────────────────────── -->
+          <div class="space-y-3">
+            <!-- Sucursal -->
+            <div>
+              <label for="branchId" class="block text-xs font-medium text-gray-600 mb-1">
+                Sucursal <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="branchId"
+                formControlName="branchId"
+                class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                [class.border-red-400]="invoiceForm.get('branchId')?.invalid && (invoiceForm.get('branchId')?.touched || isFormSubmitted)"
+                [class.border-gray-300]="!(invoiceForm.get('branchId')?.invalid && (invoiceForm.get('branchId')?.touched || isFormSubmitted))"
+              >
+                <option value="">Seleccionar sucursal...</option>
+                @for (b of branches; track b.id) {
+                  <option [value]="b.id">{{ b.name }}</option>
+                }
+              </select>
+            </div>
+            <!-- Depósito -->
+            <div>
+              <label for="locationId" class="block text-xs font-medium text-gray-600 mb-1">
+                Depósito / Ubicación <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="locationId"
+                formControlName="locationId"
+                class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                [class.border-red-400]="invoiceForm.get('locationId')?.invalid && (invoiceForm.get('locationId')?.touched || isFormSubmitted)"
+                [class.border-gray-300]="!(invoiceForm.get('locationId')?.invalid && (invoiceForm.get('locationId')?.touched || isFormSubmitted))"
+              >
+                <option value="">Seleccionar ubicación...</option>
+                @for (loc of locations; track loc.id) {
+                  <option [value]="loc.id">{{ loc.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <!-- ─ Observaciones + Remitos (2 cols) ──────────────────────────── -->
+          <div class="sm:col-span-2 space-y-3">
+            <!-- Observaciones -->
+            <div>
+              <label for="observations" class="block text-xs font-medium text-gray-600 mb-1">Observaciones</label>
+              <textarea
+                id="observations"
+                formControlName="observations"
+                rows="2"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition resize-none"
+                placeholder="Notas adicionales..."
+              ></textarea>
+            </div>
+            <!-- Remitos -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <p class="text-xs font-medium text-gray-600">Remitos asociados</p>
+                <button
+                  type="button"
+                  (click)="addRemito()"
+                  class="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-medium transition"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                  </svg>
+                  Agregar remito
+                </button>
+              </div>
+              <div class="flex flex-wrap gap-2" formArrayName="packingListNumbers">
+                @if (remitosArray.length === 0) {
+                  <span class="text-xs text-gray-400 italic py-1">Sin remitos cargados</span>
+                }
+                @for (ctrl of remitosArray.controls; track ctrl; let ri = $index) {
+                  <div class="flex items-center gap-1">
+                    <span class="text-xs text-gray-400 font-medium select-none">#{{ ri + 1 }}</span>
+                    <input
+                      [formControlName]="ri"
+                      type="text"
+                      class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition w-32"
+                      placeholder="Nro. remito"
+                    />
+                    <button
+                      type="button"
+                      (click)="removeRemito(ri)"
+                      class="text-gray-400 hover:text-red-500 transition"
+                      title="Quitar remito"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                      </svg>
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+      </div>
+    </section>
+
+    <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-3.5 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
+          </svg>
+          <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+            Ítems de Factura
+            @if (lineItemsArray.length > 0) {
+              <span class="ml-2 px-1.5 py-0.5 bg-indigo-100 text-indigo-700 text-xs rounded-full font-medium">{{ lineItemsArray.length }}</span>
+            }
+          </h2>
+        </div>
+        <button
+          type="button"
+          (click)="addOtherConcept()"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 bg-white text-sm text-gray-700 rounded-lg hover:bg-amber-50 hover:border-amber-300 hover:text-amber-700 transition"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+          </svg>
+          Otros conceptos
+        </button>
+      </div>
+
+      <div class="p-6">
+
+        <!-- Buscador de productos -->
+        <div class="relative mb-6">
+          <label for="productSearch" class="block text-xs font-medium text-gray-600 mb-1">Agregar producto</label>
+          <div class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              id="productSearch"
+              type="text"
+              [value]="productSearchQuery"
+              (input)="onSearchInput($any($event.target).value)"
+              (blur)="hideDropdown()"
+              autocomplete="off"
+              class="w-full border border-gray-300 rounded-lg pl-9 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+              placeholder="Buscar por marca, modelo o descripción (mín. 2 caracteres)..."
+            />
+          </div>
+
+          <!-- Dropdown de resultados -->
+          @if (showProductDropdown && productList.length > 0) {
+            <div class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-64 overflow-y-auto">
+              @for (product of productList; track product.id) {
+                <button
+                  type="button"
+                  (mousedown)="addProduct(product)"
+                  class="w-full text-left px-4 py-2.5 hover:bg-indigo-50 transition-colors border-b border-gray-100 last:border-0 flex items-center justify-between gap-4"
+                >
+                  <div>
+                    <span class="text-sm font-semibold text-gray-800">{{ product.brandName }}</span>
+                    <span class="text-sm text-gray-600 ml-1">{{ product.model }}</span>
+                    <span class="block text-xs text-gray-400 truncate max-w-xs">{{ product.description }}</span>
+                  </div>
+                  <span class="text-xs font-semibold text-indigo-600 whitespace-nowrap shrink-0">
+                    {{ product.priceResponse.purchasePrice | currency:'ARS':'symbol':'1.2-2' }}
+                  </span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Estado vacío -->
+        @if (lineItemsArray.length === 0) {
+          <div class="text-center py-12 text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto mb-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <p class="text-sm font-medium">Sin ítems cargados</p>
+            <p class="text-xs mt-1">Busque un producto arriba o use <strong>Otros conceptos</strong>.</p>
+          </div>
+        } @else {
+
+          <!-- Tabla de ítems -->
+          <div class="overflow-x-auto rounded-lg border border-gray-200">
+            <table class="w-full text-xs">
+              <thead>
+                <tr class="bg-gray-50 text-gray-500 uppercase text-left select-none">
+                  <th class="px-3 py-2.5 font-semibold w-8 text-center">#</th>
+                  <th class="px-3 py-2.5 font-semibold min-w-[180px]">Producto / Concepto</th>
+                  <th class="px-3 py-2.5 font-semibold text-right w-28">Precio</th>
+                  <th class="px-3 py-2.5 font-semibold text-center w-24">IVA</th>
+                  <th class="px-3 py-2.5 font-semibold text-right w-24">Imp. Int. %</th>
+                  <th class="px-3 py-2.5 font-semibold text-right w-20">Cajas</th>
+                  <th class="px-3 py-2.5 font-semibold text-right w-20">U/Caja</th>
+                  <th class="px-3 py-2.5 font-semibold text-right w-16">Cant.</th>
+                  <th class="px-3 py-2.5 font-semibold text-right w-20">Desc. %</th>
+                  <th class="px-3 py-2.5 font-semibold text-right w-32">Subtotal</th>
+                  <th class="px-2 py-2.5 w-8"></th>
+                </tr>
+              </thead>
+
+              <tbody formArrayName="lineItems">
+                @for (ctrl of lineItemsArray.controls; track ctrl; let i = $index) {
+                  <tr
+                    [formGroupName]="i"
+                    class="border-t border-gray-100 transition-colors"
+                    [class.bg-white]="ctrl.value.type === 'product'"
+                    [class.hover:bg-gray-50]="ctrl.value.type === 'product'"
+                    [class.bg-amber-50]="ctrl.value.type === 'concept'"
+                    [class.hover:bg-amber-100]="ctrl.value.type === 'concept'"
+                  >
+                    <!-- Índice -->
+                    <td class="px-3 py-2.5 text-center text-gray-400 font-medium">{{ i + 1 }}</td>
+
+                    <!-- Descripción -->
+                    <td class="px-3 py-2.5">
+                      @if (ctrl.value.type === 'product') {
+                        <div class="font-semibold text-gray-800 leading-tight">
+                          {{ ctrl.value.brandName }}
+                          <span class="font-normal text-gray-500 ml-1">{{ ctrl.value.model }}</span>
+                        </div>
+                        <div class="text-gray-400 truncate max-w-[200px] mt-0.5">{{ ctrl.value.description }}</div>
+                      } @else {
+                        <div class="flex items-center gap-1.5">
+                          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 shrink-0">
+                            concepto
+                          </span>
+                          <input
+                            formControlName="description"
+                            type="text"
+                            class="border border-amber-200 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-amber-400 focus:border-amber-400 w-44 bg-white"
+                            placeholder="Descripción del concepto"
+                          />
+                        </div>
+                      }
+                    </td>
+
+                    <!-- Precio -->
+                    <td class="px-2 py-2">
+                      <input
+                        formControlName="price"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        class="w-full text-right border border-gray-200 rounded px-2 py-1.5 text-xs focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-gray-50 hover:bg-white transition"
+                      />
+                    </td>
+
+                    <!-- IVA -->
+                    <td class="px-2 py-2">
+                      <select
+                        formControlName="taxRate"
+                        class="w-full text-center border border-gray-200 rounded px-1 py-1.5 text-xs focus:ring-1 focus:ring-indigo-400 bg-gray-50 hover:bg-white transition"
+                      >
+                        @for (opt of vatOptions; track opt.value) {
+                          <option [value]="opt.value">{{ opt.label }}</option>
+                        }
+                      </select>
+                    </td>
+
+                    <!-- Impuesto interno -->
+                    <td class="px-2 py-2">
+                      <input
+                        formControlName="internalTaxRate"
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="0.01"
+                        class="w-full text-right border border-gray-200 rounded px-2 py-1.5 text-xs focus:ring-1 focus:ring-indigo-400 bg-gray-50 hover:bg-white transition"
+                      />
+                    </td>
+
+                    <!-- Cajas -->
+                    <td class="px-2 py-2">
+                      <input
+                        formControlName="boxes"
+                        type="number"
+                        min="1"
+                        step="1"
+                        class="w-full text-right border border-gray-200 rounded px-2 py-1.5 text-xs focus:ring-1 focus:ring-indigo-400 bg-gray-50 hover:bg-white transition"
+                      />
+                    </td>
+
+                    <!-- Unidades por caja -->
+                    <td class="px-2 py-2">
+                      <input
+                        formControlName="unitsPerBox"
+                        type="number"
+                        min="1"
+                        step="1"
+                        class="w-full text-right border border-gray-200 rounded px-2 py-1.5 text-xs focus:ring-1 focus:ring-indigo-400 bg-gray-50 hover:bg-white transition"
+                      />
+                    </td>
+
+                    <!-- Cantidad (calculada) -->
+                    <td class="px-3 py-2.5 text-right font-semibold text-gray-700 tabular-nums">
+                      {{ lineQuantity(ctrl.value) }}
+                    </td>
+
+                    <!-- Descuento % -->
+                    <td class="px-2 py-2">
+                      <input
+                        formControlName="discountRate"
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="0.01"
+                        class="w-full text-right border border-gray-200 rounded px-2 py-1.5 text-xs focus:ring-1 focus:ring-indigo-400 bg-gray-50 hover:bg-white transition"
+                      />
+                    </td>
+
+                    <!-- Subtotal fila -->
+                    <td class="px-3 py-2.5 text-right font-semibold text-gray-800 tabular-nums">
+                      {{ lineSubtotal(ctrl.value) | currency:'ARS':'symbol':'1.2-2' }}
+                    </td>
+
+                    <!-- Eliminar -->
+                    <td class="px-2 py-2 text-center">
+                      <button
+                        type="button"
+                        (click)="removeLineItem(i)"
+                        class="text-gray-300 hover:text-red-500 transition"
+                        title="Eliminar ítem"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+
+              <!-- Pie de tabla: total de unidades -->
+              <tfoot>
+                <tr class="border-t-2 border-gray-200 bg-gray-50">
+                  <td colspan="7" class="px-3 py-2 text-right text-xs text-gray-500 font-medium uppercase tracking-wide">
+                    Total unidades
+                  </td>
+                  <td class="px-3 py-2 text-right font-bold text-gray-700 tabular-nums">
+                    {{ totalUnits }}
+                  </td>
+                  <td colspan="3" class="px-3 py-2"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        }
+
+      </div>
+    </section>
+
+    <!-- ── SECCIÓN 3: TOTALES ─────────────────────────────────────── -->
+    <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-3.5 bg-gray-50 border-b border-gray-200 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+        </svg>
+        <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Resumen y Totales</h2>
+      </div>
+
+      <div class="p-5 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+
+        <!-- ─ Col 1: Subtotales ───────────────────────────────────────── -->
+        <div class="pb-5 md:pb-0 md:pr-6">
+          <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-3">Subtotales</p>
+
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">Neto s/ IVA</span>
+            <span class="font-medium text-gray-800 tabular-nums">{{ subtotal1 | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+
+          <div class="flex justify-between items-center py-1.5 text-sm gap-3">
+            <label for="discount" class="text-gray-500 shrink-0">Descuento</label>
+            <input
+              id="discount"
+              type="number"
+              formControlName="discount"
+              min="0"
+              step="0.01"
+              class="w-28 text-right border border-gray-200 rounded-lg px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-gray-50 hover:bg-white transition tabular-nums"
+              placeholder="0.00"
+            />
+          </div>
+          @if (discountValue > 0) {
+            <div class="flex justify-between items-center px-3 py-0.5 text-xs text-green-700 bg-green-50 rounded mb-1">
+              <span>Ahorro</span>
+              <span class="tabular-nums">– {{ discountValue | currency:'ARS':'symbol':'1.2-2' }}</span>
+            </div>
+          }
+
+          <div class="flex justify-between items-center py-1.5 text-sm gap-3">
+            <label for="interest" class="text-gray-500 shrink-0">Interés / Recargo</label>
+            <input
+              id="interest"
+              type="number"
+              formControlName="interest"
+              min="0"
+              step="0.01"
+              class="w-28 text-right border border-gray-200 rounded-lg px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-gray-50 hover:bg-white transition tabular-nums"
+              placeholder="0.00"
+            />
+          </div>
+
+          <div class="flex justify-between items-center py-2 mt-1 border-t border-gray-200 text-sm">
+            <span class="font-semibold text-gray-700">Subtotal 2</span>
+            <span class="font-semibold text-gray-800 tabular-nums">{{ subtotal2 | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+        </div>
+
+        <!-- ─ Col 2: Impuestos discriminados ──────────────────────────── -->
+        <div class="py-5 md:py-0 md:px-6">
+          <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-3">Impuestos discriminados</p>
+
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">IVA 27%</span>
+            <span class="tabular-nums text-gray-700">{{ vat27Total | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">IVA 21%</span>
+            <span class="tabular-nums text-gray-700">{{ vat21Total | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">IVA 10.5%</span>
+            <span class="tabular-nums text-gray-700">{{ vat105Total | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between items-center py-1 text-xs text-gray-400">
+            <span class="italic">IVA 0%</span>
+            <span class="tabular-nums">{{ 0 | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+
+          <div class="flex justify-between items-center py-2 mt-1 border-t border-gray-200 text-sm">
+            <span class="font-medium text-gray-700">Total IVA</span>
+            <span class="font-medium tabular-nums text-indigo-600">{{ vatTotal | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">Impuesto interno</span>
+            <span class="tabular-nums text-gray-700">{{ internalTaxTotal | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+        </div>
+
+        <!-- ─ Col 3: Total final ───────────────────────────────────────── -->
+        <div class="pt-5 md:pt-0 md:pl-6 flex flex-col justify-between gap-4">
+          <div>
+            <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-3">Total factura</p>
+
+            <div class="flex justify-between items-center py-1 text-sm text-gray-500">
+              <span>Subtotal 2</span>
+              <span class="tabular-nums">{{ subtotal2 | currency:'ARS':'symbol':'1.2-2' }}</span>
+            </div>
+            <div class="flex justify-between items-center py-1 text-sm text-gray-500">
+              <span>IVA total</span>
+              <span class="tabular-nums">{{ vatTotal | currency:'ARS':'symbol':'1.2-2' }}</span>
+            </div>
+            <div class="flex justify-between items-center py-1 text-sm text-gray-500">
+              <span>Imp. interno</span>
+              <span class="tabular-nums">{{ internalTaxTotal | currency:'ARS':'symbol':'1.2-2' }}</span>
+            </div>
+
+            <div class="flex justify-between items-center py-1.5 mt-1 border-t border-gray-200 text-sm gap-3">
+              <label for="rounding" class="text-gray-500 shrink-0">Redondeo</label>
+              <input
+                id="rounding"
+                type="number"
+                formControlName="rounding"
+                step="0.01"
+                class="w-28 text-right border border-gray-200 rounded-lg px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-gray-50 hover:bg-white transition tabular-nums"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+
+          <!-- TOTAL final (sobrio) -->
+          <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-500 font-semibold uppercase tracking-widest">Total Factura</p>
+              <p class="text-xs text-gray-500">{{ totalUnits }} unidades</p>
+            </div>
+            <div class="mt-2 pt-2 border-t border-gray-200 flex items-baseline justify-between">
+              <span class="text-sm font-semibold text-gray-700">Importe final</span>
+              <span class="text-2xl font-bold text-gray-900 tabular-nums leading-none">
+                {{ total | currency:'ARS':'symbol':'1.2-2' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── AVISO CUANDO FORMULARIO INVÁLIDO ──────────────────────── -->
+    @if (isFormSubmitted && (invoiceForm.invalid || lineItemsArray.length === 0)) {
+      <div class="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 flex items-start gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+        <span>
+          @if (lineItemsArray.length === 0) {
+            Debe agregar al menos un ítem a la factura.
+          } @else {
+            Complete los campos obligatorios antes de guardar.
+          }
+        </span>
+      </div>
+    }
+
+  </form>
+</div>
