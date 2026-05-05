@@ -65,3 +65,5 @@ tmp/
 *.tmp
 *.pid
 
+prev-data/
+estructura.md

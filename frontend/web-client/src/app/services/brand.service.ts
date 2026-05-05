@@ -4,13 +4,14 @@ import { Observable } from "rxjs";
 import { IBrand } from "../model/brand.model";
 import { PageResponse } from "../model/PageResponse";
 import { UUID } from "node:crypto";
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: "root",
 })
 export class BrandService {
   private readonly http = inject(HttpClient);
-  private readonly urlBase = "http://localhost:8080/api/v1/brands";
+  private readonly urlBase = `${environment.gatewayUrl}/api/v1/brands`;
 
   // ============================
   // CREATE BRAND (multipart)

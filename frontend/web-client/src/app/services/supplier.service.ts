@@ -2,6 +2,7 @@ import { Injectable, inject } from "@angular/core";
 import { ISupplier } from "../model/supplier.model";
 import { BehaviorSubject, Observable } from "rxjs";
 import { HttpClient, HttpParams } from "@angular/common/http";
+import { environment } from '../../environments/environment';
 
 interface SupplierPayload {
   name: string;
@@ -14,7 +15,7 @@ interface SupplierPayload {
 })
 export class SupplierService {
   private readonly _http = inject(HttpClient);
-  private readonly _urlBase = "http://localhost:8080/api/v1/suppliers";
+  private readonly _urlBase = `${environment.gatewayUrl}/api/v1/suppliers`;
 
   // ============================
   // GET ALL / FILTER

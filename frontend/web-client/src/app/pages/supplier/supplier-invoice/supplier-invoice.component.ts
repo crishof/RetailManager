@@ -1,25 +1,19 @@
-import { CommonModule, NgClass } from "@angular/common";
-import { Component, Input, OnInit, inject, OnDestroy } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, OnDestroy, inject } from "@angular/core";
 import { HttpErrorResponse } from "@angular/common/http";
 import {
+  FormArray,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { Subscription } from "rxjs";
-
-import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatInputModule } from "@angular/material/input";
-import { MatNativeDateModule } from "@angular/material/core";
-
-import { InvoiceItemsComponent } from "./invoice-items/invoice-items.component";
+import { Subject } from "rxjs";
 
 import { IProduct } from "../../../model/product.model";
 import { ISupplier } from "../../../model/supplier.model";
-import { ISupplierInvoice } from "../../../model/supplier-invoice.model";
+import { ISupplierInvoice, IOtherConcept } from "../../../model/supplier-invoice.model";
 import { IInvoiceItem } from "../../../model/invoice-item.model";
 import { IBranch } from "../../../model/branch.model";
 import { ILocation } from "../../../model/location.model";
@@ -32,55 +26,39 @@ import { BranchService } from "../../../services/branch.service";
 @Component({
   selector: "app-supplier-invoice",
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgClass,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatNativeDateModule,
-    InvoiceItemsComponent,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: "./supplier-invoice.component.html",
   styleUrl: "./supplier-invoice.component.css",
 })
 export class SupplierInvoiceComponent implements OnInit, OnDestroy {
+  private readonly fb = inject(FormBuilder);
   private readonly productService = inject(ProductService);
   private readonly supplierService = inject(SupplierService);
   private readonly supplierInvoiceService = inject(SupplierInvoiceService);
   private readonly branchService = inject(BranchService);
-  private readonly fb = inject(FormBuilder);
 
-  private subscription?: Subscription;
-
-  @Input() invoice?: ISupplierInvoice;
-
-  invoiceForm!: FormGroup;
-
-  selectedComponent: "header" | "items" | "pagos" = "header";
+  private readonly destroy$ = new Subject<void>();
 
   suppliers: ISupplier[] = [];
   branches: IBranch[] = [];
   locations: ILocation[] = [];
 
   productList: IProduct[] = [];
-  invoiceItems: IInvoiceItem[] = [];
+  showProductDropdown = false;
+  productSearchQuery = '';
 
-  selectedSupplierId?: string;
-  selectedBrandId?: string;
-
-  filterByThisSupplier = false;
   isFormSubmitted = false;
 
-  totalInvoiceUnits = 0;
-  totalElements = 0;
+  readonly vatOptions = [
+    { label: '0%', value: 0 },
+    { label: '10.5%', value: 0.105 },
+    { label: '21%', value: 0.21 },
+    { label: '27%', value: 0.27 },
+  ];
 
-  readonly vat21 = 0.21;
-  readonly vat105 = 0.105;
-  readonly vat27 = 0.27;
-  readonly vat0 = 0;
+  readonly invoiceTypes = ['A', 'B', 'C', 'M', 'X'];
+
+  invoiceForm!: FormGroup;
 
   ngOnInit(): void {
     this.initForm();
@@ -89,183 +67,315 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  // ---------------- FORM ----------------
+  // ─── FORM ──────────────────────────────────────────────────────────
 
   private initForm(): void {
+    const today = new Date().toISOString().substring(0, 10);
     this.invoiceForm = this.fb.group({
-      supplierId: ["", Validators.required],
-      invoiceType: ["", Validators.required],
-      invoiceDate: [new Date(), Validators.required],
-      receptionDate: new Date(),
-      savedDate: new Date(),
-      dueDate: new Date(),
-
-      branchId: ["", Validators.required],
-      locationId: ["", Validators.required],
-
-      packingListPrefix: 0,
-      packingListNumber: 0,
-      invoicePrefix: [0, Validators.required],
-      invoiceNumber: [0, Validators.required],
-
-      saveStocks: true,
-      taxSave: true,
-      fixedAsset: false,
-      askForPriceUpdate: false,
-
-      observations: "",
-
-      subtotal1: 0,
-      discount: 0,
-      interest: 0,
-      subtotal2: 0,
-
-      netVat21: 0,
-      netVat105: 0,
-      netVat27: 0,
-      netVat0: 0,
-
-      vat21: 0,
-      vat105: 0,
-      vat27: 0,
-
-      withholdingVat: 0,
-      withholdingSuss: 0,
-      withholdingGrossReceiptsTax: 0,
-      withholdingIncome: 0,
-      stateTax: 0,
-      localTax: 0,
-      rounding: 0,
-
-      totalPrice: 0,
+      supplierId: ['', Validators.required],
+      invoiceType: ['A', Validators.required],
+      receptionDate: [today],
+      savedDate: [today],
+      invoiceDate: [today, Validators.required],
+      invoicePrefix: [1, Validators.required],
+      invoiceNumber: [null, Validators.required],
+      packingListNumbers: this.fb.array([]),
+      branchId: ['', Validators.required],
+      locationId: ['', Validators.required],
+      lineItems: this.fb.array([]),
+      discount: [0],
+      interest: [0],
+      rounding: [0],
+      observations: [''],
     });
 
-    this.invoiceForm.get("branchId")!.valueChanges.subscribe((branchId) => {
-      this.onBranchChange(branchId);
-    });
+    this.invoiceForm.get('branchId')!.valueChanges.subscribe((id) =>
+      this.onBranchChange(id)
+    );
   }
 
-  // ---------------- LOAD DATA ----------------
+  // ─── ARRAY GETTERS ─────────────────────────────────────────────────
+
+  get lineItemsArray(): FormArray {
+    return this.invoiceForm.get('lineItems') as FormArray;
+  }
+
+  get remitosArray(): FormArray {
+    return this.invoiceForm.get('packingListNumbers') as FormArray;
+  }
+
+  // ─── TOTALS ────────────────────────────────────────────────────────
+
+  private lineNetAmount(item: any): number {
+    const qty = Math.max(1, (item.boxes ?? 1) * (item.unitsPerBox ?? 1));
+    const gross = (item.price ?? 0) * qty;
+    return gross * (1 - (item.discountRate ?? 0) / 100);
+  }
+
+  lineQuantity(item: any): number {
+    return Math.max(1, (item.boxes ?? 1) * (item.unitsPerBox ?? 1));
+  }
+
+  lineSubtotal(item: any): number {
+    return this.lineNetAmount(item);
+  }
+
+  get lineItemValues(): any[] {
+    return this.lineItemsArray.controls.map((c) => c.value);
+  }
+
+  get subtotal1(): number {
+    return this.lineItemValues.reduce((acc, i) => acc + this.lineNetAmount(i), 0);
+  }
+
+  get discountValue(): number {
+    return +(this.invoiceForm.get('discount')?.value ?? 0);
+  }
+
+  get interestValue(): number {
+    return +(this.invoiceForm.get('interest')?.value ?? 0);
+  }
+
+  get subtotal2(): number {
+    return this.subtotal1 - this.discountValue + this.interestValue;
+  }
+
+  get vat21Total(): number {
+    return this.lineItemValues
+      .filter((i) => +i.taxRate === 0.21)
+      .reduce((acc, i) => acc + this.lineNetAmount(i) * 0.21, 0);
+  }
+
+  get vat105Total(): number {
+    return this.lineItemValues
+      .filter((i) => +i.taxRate === 0.105)
+      .reduce((acc, i) => acc + this.lineNetAmount(i) * 0.105, 0);
+  }
+
+  get vat27Total(): number {
+    return this.lineItemValues
+      .filter((i) => +i.taxRate === 0.27)
+      .reduce((acc, i) => acc + this.lineNetAmount(i) * 0.27, 0);
+  }
+
+  get vatTotal(): number {
+    return this.vat21Total + this.vat105Total + this.vat27Total;
+  }
+
+  get internalTaxTotal(): number {
+    return this.lineItemValues.reduce(
+      (acc, i) => acc + this.lineNetAmount(i) * ((i.internalTaxRate ?? 0) / 100),
+      0
+    );
+  }
+
+  get roundingValue(): number {
+    return +(this.invoiceForm.get('rounding')?.value ?? 0);
+  }
+
+  get total(): number {
+    return this.subtotal2 + this.vatTotal + this.internalTaxTotal + this.roundingValue;
+  }
+
+  get totalUnits(): number {
+    return this.lineItemValues.reduce((acc, i) => acc + this.lineQuantity(i), 0);
+  }
+
+  // ─── LOAD DATA ─────────────────────────────────────────────────────
 
   private loadSuppliers(): void {
     this.supplierService.getSuppliers().subscribe({
-      next: (suppliers) => (this.suppliers = suppliers),
+      next: (s) => (this.suppliers = s),
       error: (err: HttpErrorResponse) =>
-        console.error("Error loading suppliers", err),
+        console.error('Error loading suppliers', err),
     });
   }
 
   private loadBranches(): void {
     this.branchService.getBranches().subscribe({
-      next: (branches) => (this.branches = branches),
+      next: (b) => (this.branches = b),
       error: (err: HttpErrorResponse) =>
-        console.error("Error loading branches", err),
+        console.error('Error loading branches', err),
     });
   }
 
-  // ---------------- EVENTS ----------------
+  // ─── EVENTS ────────────────────────────────────────────────────────
 
   onBranchChange(branchId: string): void {
     const branch = this.branches.find((b) => b.id === branchId);
     this.locations = branch?.locations ?? [];
-    this.invoiceForm.get("locationId")!.setValue("");
+    this.invoiceForm.get('locationId')!.setValue('');
   }
 
-  onInvoiceItemChange(items: IInvoiceItem[]): void {
-    this.invoiceItems = items;
-    this.totalInvoiceUnits = items.reduce(
-      (acc, item) => acc + item.quantity,
-      0,
-    );
-  }
+  // ─── PRODUCT SEARCH ────────────────────────────────────────────────
 
-  selectProduct(product: IProduct): void {
-    this.invoiceItems.push({
-      id: product.id,
-      brandName: product.brandName,
-      model: product.model,
-      description: product.description,
-      price: product.priceResponse.purchasePrice,
-      taxRate: product.priceResponse.taxRate,
-      discountRate: product.priceResponse.discount,
-      quantity: 1,
-    });
-  }
-
-  // ---------------- PRODUCT SEARCH ----------------
-
-  handleSearch(search: string): void {
-    if (search.length < 3) {
+  onSearchInput(query: string): void {
+    this.productSearchQuery = query;
+    if (query.length < 2) {
       this.productList = [];
+      this.showProductDropdown = false;
       return;
     }
-
-    this.searchProducts({
-      search,
-      supplierId: this.filterByThisSupplier
-        ? this.invoiceForm.get("supplierId")?.value
-        : undefined,
-    });
-  }
-
-  handleSearchWithStock(search: string): void {
-    if (search.length < 3) {
-      this.productList = [];
-      return;
-    }
-
-    this.searchProducts({
-      search,
-      inStock: true,
-      supplierId: this.filterByThisSupplier
-        ? this.invoiceForm.get("supplierId")?.value
-        : undefined,
-      brandId: this.selectedBrandId,
-    });
-  }
-
-  private searchProducts(filters: {
-    supplierId?: string;
-    brandId?: string;
-    search?: string;
-    inStock?: boolean;
-  }): void {
-    this.subscription?.unsubscribe();
-
-    this.subscription = this.productService
+    this.productService
       .getProducts({
-        ...filters,
+        search: query,
+        supplierId:
+          this.invoiceForm.get('supplierId')?.value || undefined,
         page: 0,
-        size: 20,
+        size: 15,
       })
       .subscribe({
         next: (page) => {
           this.productList = page.content;
-          this.totalElements = page.totalElements;
+          this.showProductDropdown = this.productList.length > 0;
         },
-        error: (err) => console.error("Product search failed", err),
+        error: (err) => console.error('Product search failed', err),
       });
   }
 
-  // ---------------- SAVE ----------------
+  hideDropdown(): void {
+    setTimeout(() => (this.showProductDropdown = false), 200);
+  }
+
+  // ─── LINE ITEMS ────────────────────────────────────────────────────
+
+  private buildItemGroup(opts: Partial<IInvoiceItem & { type: string }>): FormGroup {
+    return this.fb.group({
+      id: [opts.id ?? ''],
+      type: [opts.type ?? 'product'],
+      brandName: [opts.brandName ?? ''],
+      model: [opts.model ?? ''],
+      description: [opts.description ?? ''],
+      price: [opts.price ?? 0],
+      taxRate: [opts.taxRate ?? 0.21],
+      internalTaxRate: [opts.internalTaxRate ?? 0],
+      discountRate: [opts.discountRate ?? 0],
+      boxes: [opts.boxes ?? 1],
+      unitsPerBox: [opts.unitsPerBox ?? 1],
+    });
+  }
+
+  addProduct(product: IProduct): void {
+    this.lineItemsArray.push(
+      this.buildItemGroup({
+        id: product.id,
+        type: 'product',
+        brandName: product.brandName,
+        model: product.model,
+        description: product.description,
+        price: product.priceResponse?.purchasePrice ?? 0,
+        taxRate: product.priceResponse?.taxRate ?? 0.21,
+        internalTaxRate: 0,
+        discountRate: 0,
+        boxes: 1,
+        unitsPerBox: 1,
+      })
+    );
+    this.productSearchQuery = '';
+    this.productList = [];
+    this.showProductDropdown = false;
+  }
+
+  addOtherConcept(): void {
+    this.lineItemsArray.push(
+      this.buildItemGroup({
+        id: '',
+        type: 'concept',
+        brandName: '',
+        model: '',
+        description: '',
+        price: 0,
+        taxRate: 0,
+        internalTaxRate: 0,
+        discountRate: 0,
+        boxes: 1,
+        unitsPerBox: 1,
+      })
+    );
+  }
+
+  removeLineItem(i: number): void {
+    this.lineItemsArray.removeAt(i);
+  }
+
+  // ─── REMITOS ───────────────────────────────────────────────────────
+
+  addRemito(): void {
+    this.remitosArray.push(this.fb.control(''));
+  }
+
+  removeRemito(i: number): void {
+    this.remitosArray.removeAt(i);
+  }
+
+  // ─── SAVE ──────────────────────────────────────────────────────────
 
   saveInvoice(): void {
-    if (this.invoiceForm.invalid || this.invoiceItems.length === 0) {
+    this.isFormSubmitted = true;
+    if (this.invoiceForm.invalid || this.lineItemsArray.length === 0) {
       this.invoiceForm.markAllAsTouched();
       return;
     }
 
-    const payload = {
-      ...this.invoiceForm.value,
-      invoiceItemsRequest: this.invoiceItems,
+    const fv = this.invoiceForm.value;
+    const allItems: any[] = this.lineItemValues;
+
+    const payload: ISupplierInvoice = {
+      supplierId: fv.supplierId,
+      invoiceType: fv.invoiceType,
+      receptionDate: fv.receptionDate,
+      savedDate: fv.savedDate,
+      invoiceDate: fv.invoiceDate,
+      invoicePrefix: fv.invoicePrefix,
+      invoiceNumber: fv.invoiceNumber,
+      packingListNumbers: fv.packingListNumbers as string[],
+      branchId: fv.branchId,
+      locationId: fv.locationId,
+      observations: fv.observations,
+      invoiceItems: allItems
+        .filter((i) => i.type === 'product')
+        .map<IInvoiceItem>((i) => ({
+          id: i.id,
+          type: 'product',
+          brandName: i.brandName,
+          model: i.model,
+          description: i.description,
+          price: i.price,
+          taxRate: i.taxRate,
+          internalTaxRate: i.internalTaxRate,
+          discountRate: i.discountRate,
+          boxes: i.boxes,
+          unitsPerBox: i.unitsPerBox,
+          quantity: i.boxes * i.unitsPerBox,
+        })),
+      otherConcepts: allItems
+        .filter((i) => i.type === 'concept')
+        .map<IOtherConcept>((i) => ({
+          description: i.description,
+          price: i.price,
+          taxRate: i.taxRate,
+          internalTaxRate: i.internalTaxRate,
+          discountRate: i.discountRate,
+        })),
+      discount: fv.discount,
+      interest: fv.interest,
+      subtotal1: this.subtotal1,
+      subtotal2: this.subtotal2,
+      vat21: this.vat21Total,
+      vat105: this.vat105Total,
+      vat27: this.vat27Total,
+      internalTax: this.internalTaxTotal,
+      rounding: fv.rounding,
+      totalPrice: this.total,
     };
 
     this.supplierInvoiceService.saveInvoice(payload).subscribe({
-      next: (res) => console.log(res.message),
-      error: (err) => console.error("Save invoice failed", err),
+      next: (res) => console.log('Invoice saved', res),
+      error: (err) => console.error('Save invoice failed', err),
     });
   }
 }

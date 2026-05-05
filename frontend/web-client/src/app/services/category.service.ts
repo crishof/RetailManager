@@ -3,6 +3,7 @@ import { Injectable, inject } from "@angular/core";
 import { Observable, Subject, tap } from "rxjs";
 import { ICategory } from "../model/category.model";
 import { PageResponse } from "../model/PageResponse";
+import { environment } from '../../environments/environment';
 
 interface CategoryMeasures {
   width?: number | null;
@@ -16,7 +17,7 @@ interface CategoryMeasures {
 })
 export class CategoryService {
   private readonly _http = inject(HttpClient);
-  private readonly _urlBase = "http://localhost:8080/api/v1/categories";
+  private readonly _urlBase = `${environment.gatewayUrl}/api/v1/categories`;
 
   private readonly categoryUpdatedSubject = new Subject<void>();
   categoryUpdated$ = this.categoryUpdatedSubject.asObservable();

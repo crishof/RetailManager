@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { ITransaction } from "../model/transaction.model";
 import { BehaviorSubject, Observable } from "rxjs";
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: "root",
@@ -9,7 +10,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 export class TransactionService {
   readonly _http = inject(HttpClient);
 
-  readonly _urlBase = "http://localhost:8080/transaction-sv/transaction";
+  readonly _urlBase = `${environment.gatewayUrl}/transaction-sv/transaction`;
 
   getTransactions(id: string): Observable<ITransaction[]> {
     return this._http.get<ITransaction[]>(
