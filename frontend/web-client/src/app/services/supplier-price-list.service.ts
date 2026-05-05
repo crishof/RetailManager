@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
-import { Observable, catchError, throwError } from "rxjs";
+import { Observable, catchError, map, throwError } from "rxjs";
 import { ISupplierProduct } from "../model/supplierProduct";
 import { environment } from '../../environments/environment';
 
@@ -89,7 +89,9 @@ export class SupplierPriceListService {
       params = params.set("filter", filter);
     }
 
-    return this.http.get<ISupplierProduct[]>(this.baseUrl, { params });
+    return this.http
+      .get<ISupplierProduct[]>(this.baseUrl, { params })
+      .pipe(map((items) => items.map((item) => this.normalizeSupplierProduct(item))));
   }
 
   // ============================
@@ -98,6 +100,7 @@ export class SupplierPriceListService {
   getById(id: string): Observable<ISupplierProduct> {
     return this.http
       .get<ISupplierProduct>(`${this.baseUrl}/${id}`)
+      .pipe(map((item) => this.normalizeSupplierProduct(item)))
       .pipe(
         catchError(() =>
           throwError(() => new Error("Error getting price item")),
@@ -122,6 +125,25 @@ export class SupplierPriceListService {
   // IMPORT PRODUCTS FROM SUPPLIER
   // ============================
   importProductsFromSupplier(productList: ISupplierProduct[]): Observable<ImportResult> {
-    return this.http.post<ImportResult>(this.productsUrl, productList);
+    const payload = productList.map((product) => {
+      const normalized = this.normalizeSupplierProduct(product);
+      return {
+        ...product,
+        code: normalized.code,
+      };
+    });
+
+    return this.http.post<ImportResult>(this.productsUrl, payload);
+  }
+
+  private normalizeSupplierProduct(product: ISupplierProduct): ISupplierProduct {
+    const supplierCode = product.supplierCode;
+    const code = product.code ?? supplierCode ?? "";
+
+    return {
+      ...product,
+      supplierCode,
+      code,
+    };
   }
 }
