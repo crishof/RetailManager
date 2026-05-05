@@ -18,6 +18,11 @@ export interface ImportResult {
   errors: ImportItemError[];
 }
 
+export interface ColumnHeaderSuggestion {
+  rawHeader: string;
+  suggestedAttribute: string | null;
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -35,14 +40,31 @@ export class SupplierPriceListService {
     file: File,
     supplierId: string,
     updateExisting = false,
+    columnMapping?: Record<string, string>,
   ): Observable<any> {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("supplierId", supplierId);
     formData.append("updateExisting", String(updateExisting));
 
+    if (columnMapping && Object.keys(columnMapping).length > 0) {
+      formData.append("columnMapping", JSON.stringify(columnMapping));
+    }
+
     // ❗ NO setear Content-Type en multipart
     return this.http.post(`${this.baseUrl}/import`, formData);
+  }
+
+  // ============================
+  // PARSE EXCEL HEADERS
+  // ============================
+  parseExcelHeaders(file: File): Observable<ColumnHeaderSuggestion[]> {
+    const formData = new FormData();
+    formData.append("file", file);
+    return this.http.post<ColumnHeaderSuggestion[]>(
+      `${this.baseUrl}/parse-headers`,
+      formData,
+    );
   }
 
   // ============================

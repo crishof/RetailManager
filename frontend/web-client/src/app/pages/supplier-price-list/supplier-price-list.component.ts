@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, inject } from "@angular/core";
-import { SupplierPriceListService, ImportResult } from "../../services/supplier-price-list.service";
+import { SupplierPriceListService, ImportResult, ColumnHeaderSuggestion } from "../../services/supplier-price-list.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import {
   FormBuilder,
@@ -25,6 +25,7 @@ type SortColumn =
   | "lastUpdate";
 
 type SortDirection = "asc" | "desc";
+type ViewMode = "catalog" | "import";
 
 // ─── Interfaces auxiliares ─────────────────────────────────────────────────────
 
@@ -92,6 +93,9 @@ export class SupplierPriceListComponent implements OnInit {
   errorMessage = "";
   successMessage = "";
   warningMessage = "";
+
+  // ── Modo de vista ─────────────────────────────────────────────────────────
+  viewMode: ViewMode = "catalog";
 
   // ── Resumen de importación Excel ───────────────────────────────────────────
   excelImportSummary: ImportSummary | null = null;
@@ -161,6 +165,7 @@ export class SupplierPriceListComponent implements OnInit {
   // INIT
   // ============================================================
   ngOnInit(): void {
+    this.syncSupplierValidationWithMode();
     this.loadSuppliers();
     this.loadBrands();
     this.searchProducts();
@@ -313,6 +318,17 @@ export class SupplierPriceListComponent implements OnInit {
     this.excelImportSummary = null;
   }
 
+  openImportWorkspace(): void {
+    this.clearFeedback();
+    this.viewMode = "import";
+  }
+
+  backToCatalog(): void {
+    this.clearFeedback();
+    this.viewMode = "catalog";
+    this.showColumnMapping = false;
+  }
+
   // ============================================================
   // ACCIONES (Nuevas — solo UI/stub)
   // ============================================================
@@ -364,19 +380,23 @@ export class SupplierPriceListComponent implements OnInit {
     }
   }
 
-  private uploadSelectedExcelFile(): void {
+  private uploadSelectedExcelFile(columnMapping?: Record<string, string>): void {
     this.clearFeedback();
 
-    if (!this.fileForm.valid || !this.selectedFile) {
-      this.warningMessage = "Proveedor y archivo Excel son obligatorios.";
+    if (!this.selectedFile) {
+      this.warningMessage = "Seleccioná un archivo Excel.";
       return;
     }
 
-    const { supplierId, updateExistingProducts } = this.fileForm.value;
+    if (!this.isImportFormValid()) {
+      return;
+    }
+
+    const { supplierId, updateExistingProducts } = this.fileForm.getRawValue();
     this.loadingUpload = true;
 
     this.priceListService
-      .uploadFile(this.selectedFile, supplierId, updateExistingProducts)
+      .uploadFile(this.selectedFile, supplierId ?? "", updateExistingProducts, columnMapping)
       .subscribe({
         next: (response) => {
           this.successMessage =
@@ -387,7 +407,11 @@ export class SupplierPriceListComponent implements OnInit {
             imported: response.imported ?? 0,
             skipped: response.skipped ?? 0,
             failed: response.failed ?? 0,
-            errorDetails: (response.errors ?? []).map((e: any) => ({ code: e.code, reason: e.reason })),
+            errorDetails: (response.errors ?? []).map((e: any) =>
+              typeof e === 'string'
+                ? { code: '', reason: e }
+                : { code: e.code ?? '', reason: e.reason ?? String(e) }
+            ),
           };
 
           this.selectedFile = null;
@@ -413,26 +437,31 @@ export class SupplierPriceListComponent implements OnInit {
   processExcelFile(): void {
     this.clearFeedback();
 
-    if (!this.fileForm.valid || !this.selectedFile) {
-      this.warningMessage = "Proveedor y archivo Excel son obligatorios.";
+    if (!this.selectedFile) {
+      this.warningMessage = "Seleccioná un archivo Excel.";
       return;
     }
 
-    this.previewColumnMapping();
-  }
-
-  /** Muestra el panel de mapeo (stub: genera columnas de ejemplo basadas en atributos). */
-  previewColumnMapping(): void {
-    // En una implementación real se llamaría al backend para parsear el Excel
-    // y obtener los encabezados detectados automáticamente.
-    // Por ahora se simulan columnas basadas en los atributos del sistema.
-    if (!this.detectedColumns.length) {
-      this.detectedColumns = this.supplierProductAttributes.map((attr) => ({
-        excelHeader: attr.label.toUpperCase(),
-        mappedAttribute: attr.value,
-      }));
+    if (!this.isImportFormValid()) {
+      return;
     }
-    this.showColumnMapping = true;
+
+    this.loadingUpload = true;
+    this.priceListService.parseExcelHeaders(this.selectedFile).subscribe({
+      next: (suggestions: ColumnHeaderSuggestion[]) => {
+        this.detectedColumns = suggestions.map((s) => ({
+          excelHeader: s.rawHeader,
+          mappedAttribute: s.suggestedAttribute ?? '',
+        }));
+        this.showColumnMapping = true;
+        this.loadingUpload = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.errorMessage =
+          err.error?.message ?? 'No se pudo leer el archivo Excel.';
+        this.loadingUpload = false;
+      },
+    });
   }
 
   updateColumnMapping(excelHeader: string, attribute: string): void {
@@ -448,7 +477,28 @@ export class SupplierPriceListComponent implements OnInit {
 
   /** Confirma el mapeo y ejecuta la importación real. */
   confirmAndUpload(): void {
-    this.uploadSelectedExcelFile();
+    if (!this.selectedFile) {
+      this.warningMessage = "Seleccioná un archivo Excel.";
+      return;
+    }
+
+    if (!this.isImportFormValid()) {
+      return;
+    }
+
+    // Construir el mapping: solo columnas con atributo asignado
+    const columnMapping: Record<string, string> = {};
+    for (const col of this.detectedColumns) {
+      if (col.mappedAttribute) {
+        columnMapping[col.excelHeader] = col.mappedAttribute;
+      }
+    }
+
+    this.uploadSelectedExcelFile(columnMapping);
+  }
+
+  onMultipleSuppliersToggle(): void {
+    this.syncSupplierValidationWithMode();
   }
 
   // ============================================================
@@ -532,6 +582,37 @@ export class SupplierPriceListComponent implements OnInit {
     this.errorMessage = "";
     this.warningMessage = "";
     this.successMessage = "";
+  }
+
+  private isImportFormValid(): boolean {
+    const multipleSuppliers = this.fileForm.get("multipleSuppliers")?.value === true;
+    const supplierId = this.fileForm.get("supplierId")?.value;
+
+    if (!multipleSuppliers && !supplierId) {
+      this.warningMessage = "Seleccioná un proveedor o activá 'varios proveedores'.";
+      this.fileForm.get("supplierId")?.markAsTouched();
+      return false;
+    }
+
+    return true;
+  }
+
+  private syncSupplierValidationWithMode(): void {
+    const supplierControl = this.fileForm.get("supplierId");
+    const multipleSuppliers = this.fileForm.get("multipleSuppliers")?.value === true;
+
+    if (!supplierControl) return;
+
+    if (multipleSuppliers) {
+      supplierControl.setValue("");
+      supplierControl.clearValidators();
+      supplierControl.disable({ emitEvent: false });
+    } else {
+      supplierControl.enable({ emitEvent: false });
+      supplierControl.setValidators([Validators.required]);
+    }
+
+    supplierControl.updateValueAndValidity({ emitEvent: false });
   }
 
   private compareProducts(a: ISupplierProduct, b: ISupplierProduct): number {
