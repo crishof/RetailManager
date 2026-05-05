@@ -32,6 +32,7 @@ type ViewMode = "catalog" | "import";
 export interface ImportSummary {
   total: number;
   imported: number;
+  updated: number;
   skipped: number;
   failed: number;
   errorDetails: { code: string; reason: string }[];
@@ -269,7 +270,8 @@ export class SupplierPriceListComponent implements OnInit {
         next: (response: ImportResult) => {
           this.selectionImportSummary = {
             total: response.total,
-            imported: response.imported,
+            imported: response.inserted ?? response.imported,
+            updated: response.updated ?? 0,
             skipped: response.skipped,
             failed: response.failed,
             errorDetails: (response.errors ?? []).map(e => ({ code: e.code, reason: e.reason })),
@@ -282,6 +284,7 @@ export class SupplierPriceListComponent implements OnInit {
           this.selectionImportSummary = {
             total: count,
             imported: 0,
+            updated: 0,
             skipped: 0,
             failed: count,
             errorDetails: [],
@@ -387,7 +390,8 @@ export class SupplierPriceListComponent implements OnInit {
 
           this.excelImportSummary = {
             total: response.total ?? 0,
-            imported: response.imported ?? 0,
+            imported: response.inserted ?? response.imported ?? 0,
+            updated: response.updated ?? 0,
             skipped: response.skipped ?? 0,
             failed: response.failed ?? 0,
             errorDetails: (response.errors ?? []).map((e: any) =>

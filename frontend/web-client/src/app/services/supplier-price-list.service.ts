@@ -13,6 +13,8 @@ export interface ImportItemError {
 export interface ImportResult {
   total: number;
   imported: number;
+  inserted?: number;
+  updated?: number;
   skipped: number;
   failed: number;
   errors: ImportItemError[];

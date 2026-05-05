@@ -189,11 +189,15 @@
                 <strong>{{ selectionImportSummary.total }}</strong>
               </li>
               <li>
-                <span class="spl-import-summary__label">Importados</span>
+                <span class="spl-import-summary__label">Importados (nuevos)</span>
                 <strong class="spl-import-summary__value--ok">{{ selectionImportSummary.imported }}</strong>
               </li>
               <li>
-                <span class="spl-import-summary__label">Ya existían</span>
+                <span class="spl-import-summary__label">Actualizados</span>
+                <strong class="spl-import-summary__value--ok">{{ selectionImportSummary.updated }}</strong>
+              </li>
+              <li>
+                <span class="spl-import-summary__label">Omitidos</span>
                 <strong class="spl-import-summary__value--muted">{{ selectionImportSummary.skipped }}</strong>
               </li>
               @if (selectionImportSummary.failed > 0) {
@@ -446,11 +450,15 @@
             <strong>{{ excelImportSummary.total }}</strong>
           </li>
           <li>
-            <span class="spl-import-summary__label">Importados</span>
+            <span class="spl-import-summary__label">Importados (nuevos)</span>
             <strong class="spl-import-summary__value--ok">{{ excelImportSummary.imported }}</strong>
           </li>
           <li>
-            <span class="spl-import-summary__label">Ya existían</span>
+            <span class="spl-import-summary__label">Actualizados</span>
+            <strong class="spl-import-summary__value--ok">{{ excelImportSummary.updated }}</strong>
+          </li>
+          <li>
+            <span class="spl-import-summary__label">Omitidos</span>
             <strong class="spl-import-summary__value--muted">{{ excelImportSummary.skipped }}</strong>
           </li>
           @if (excelImportSummary.failed > 0) {
