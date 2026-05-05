@@ -39,12 +39,19 @@ export interface ImportSummary {
 
 export interface ColumnMapping {
   excelHeader: string;
-  mappedAttribute: string;
+  mappedAttributes: string[];
 }
 
 export interface AttributeOption {
   value: string;
   label: string;
+  helperText?: string;
+  required?: boolean;
+}
+
+export interface MappingRelation {
+  attribute: AttributeOption;
+  excelHeaders: string[];
 }
 
 // ─── Componente ───────────────────────────────────────────────────────────────
@@ -106,49 +113,25 @@ export class SupplierPriceListComponent implements OnInit {
   // ── Mapeo dinámico de columnas Excel ──────────────────────────────────────
   showColumnMapping = false;
   detectedColumns: ColumnMapping[] = [];
+  selectedMappingAttribute = "";
+  private readonly mappingStorageKeyPrefix = "supplier-price-list:mapping:";
+  readonly requiredImportFields = ["brand", "model", "code"];
 
   /** Atributos del sistema disponibles para mapear desde columnas Excel */
   readonly supplierProductAttributes: AttributeOption[] = [
-    { value: "code", label: "Código propio" },
-    { value: "supplierCode", label: "Código del proveedor" },
-    { value: "barcode", label: "Código de barras" },
-    { value: "brand", label: "Marca" },
-    { value: "model", label: "Modelo" },
-    { value: "description", label: "Descripción" },
-    { value: "supplierId", label: "ID Proveedor" },
-    { value: "taxRate", label: "IVA" },
-    { value: "internalTax", label: "Impuesto interno" },
-    { value: "discountPercentage", label: "Porcentaje descuento" },
-    { value: "lastUpdate", label: "Fecha costo" },
-    { value: "longDescription", label: "Descripción larga" },
-    { value: "currency", label: "Moneda" },
-    { value: "category", label: "ID Rubro" },
-    { value: "color", label: "Color" },
-    { value: "size", label: "Talle" },
-    { value: "fobPrice", label: "Precio FOB" },
-    { value: "price", label: "Precio proveedor" },
-    { value: "wholesalePrice", label: "Precio mayorista" },
-    { value: "tradePrice", label: "Precio comercio" },
-    { value: "suggestedPrice", label: "Precio lista" },
-    { value: "offerPrice", label: "Precio oferta" },
-    { value: "altPrice1", label: "Precio alternativo 1" },
-    { value: "altPrice2", label: "Precio alternativo 2" },
-    { value: "altPrice3", label: "Precio alternativo 3" },
-    { value: "altPrice4", label: "Precio alternativo 4" },
-    { value: "altPrice5", label: "Precio alternativo 5" },
-    { value: "altPrice6", label: "Precio alternativo 6" },
-    { value: "altPrice7", label: "Precio alternativo 7" },
-    { value: "altPrice8", label: "Precio alternativo 8" },
-    { value: "altPrice9", label: "Precio alternativo 9" },
-    { value: "unitsPerBox", label: "Unidades por caja" },
-    { value: "minWholesale", label: "Venta mínima por mayor" },
-    { value: "minPurchase", label: "Compra mínima por mayor" },
-    { value: "vehicle", label: "Vehículo" },
-    { value: "height", label: "Alto" },
-    { value: "width", label: "Ancho" },
-    { value: "depth", label: "Profundidad" },
-    { value: "weight", label: "Peso" },
-    { value: "stockAvailable", label: "Stock disponible" },
+    { value: "code", label: "Código del proveedor", helperText: "Identificador del proveedor en origen.", required: true },
+    { value: "brand", label: "Marca", helperText: "Marca o fabricante del producto.", required: true },
+    { value: "model", label: "Modelo", helperText: "Modelo, referencia o variante.", required: true },
+    { value: "barcode", label: "Código de barras", helperText: "EAN, UPC o código de barras." },
+    { value: "description", label: "Descripción", helperText: "Texto descriptivo corto del artículo." },
+    { value: "category", label: "Categoría", helperText: "Rubro o agrupación comercial." },
+    { value: "price", label: "Precio", helperText: "Costo o precio informado por el proveedor." },
+    { value: "suggested-price", label: "Precio sugerido", helperText: "Precio de lista o sugerido." },
+    { value: "suggested-web-price", label: "Precio sugerido web", helperText: "Precio sugerido para canal online." },
+    { value: "currency", label: "Moneda", helperText: "Símbolo o código monetario." },
+    { value: "tax-rate", label: "IVA", helperText: "Alícuota o porcentaje de impuesto." },
+    { value: "internal-tax", label: "Impuesto interno", helperText: "Percepción o impuesto interno aplicado al producto." },
+    { value: "stock", label: "Stock", helperText: "Disponibilidad o stock informado." },
   ];
 
   // ── Formulario de carga ────────────────────────────────────────────────────
@@ -451,8 +434,12 @@ export class SupplierPriceListComponent implements OnInit {
       next: (suggestions: ColumnHeaderSuggestion[]) => {
         this.detectedColumns = suggestions.map((s) => ({
           excelHeader: s.rawHeader,
-          mappedAttribute: s.suggestedAttribute ?? '',
+          mappedAttributes: s.suggestedAttribute ? [s.suggestedAttribute] : [],
         }));
+
+        this.applySavedMappingSelection();
+        this.normalizeSingleMapping();
+        this.ensureSelectedMappingAttribute();
         this.showColumnMapping = true;
         this.loadingUpload = false;
       },
@@ -464,14 +451,8 @@ export class SupplierPriceListComponent implements OnInit {
     });
   }
 
-  updateColumnMapping(excelHeader: string, attribute: string): void {
-    const col = this.detectedColumns.find((c) => c.excelHeader === excelHeader);
-    if (col) {
-      col.mappedAttribute = attribute;
-    }
-  }
-
   cancelColumnMapping(): void {
+    this.selectedMappingAttribute = "";
     this.showColumnMapping = false;
   }
 
@@ -486,13 +467,13 @@ export class SupplierPriceListComponent implements OnInit {
       return;
     }
 
-    // Construir el mapping: solo columnas con atributo asignado
-    const columnMapping: Record<string, string> = {};
-    for (const col of this.detectedColumns) {
-      if (col.mappedAttribute) {
-        columnMapping[col.excelHeader] = col.mappedAttribute;
-      }
+    if (!this.hasRequiredFieldMappings()) {
+      return;
     }
+
+    const columnMapping = this.buildColumnMapping();
+
+    this.saveMappingSelection(columnMapping);
 
     this.uploadSelectedExcelFile(columnMapping);
   }
@@ -613,6 +594,216 @@ export class SupplierPriceListComponent implements OnInit {
     }
 
     supplierControl.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private hasRequiredFieldMappings(): boolean {
+    const mapped = new Set<string>();
+    this.detectedColumns.forEach((col) => {
+      col.mappedAttributes.forEach((attr) => mapped.add(attr));
+    });
+
+    const missing = this.requiredImportFields.filter((required) => !mapped.has(required));
+    if (missing.length > 0) {
+      const labels = missing.map((f) => this.labelForAttribute(f));
+      this.warningMessage = `Faltan campos requeridos en el mapeo: ${labels.join(", ")}.`;
+      return false;
+    }
+
+    return true;
+  }
+
+  private labelForAttribute(value: string): string {
+    return this.supplierProductAttributes.find((a) => a.value === value)?.label ?? value;
+  }
+
+  get availableMappingAttributes(): AttributeOption[] {
+    return this.supplierProductAttributes.filter((attribute) => this.getAssignedColumns(attribute.value).length === 0);
+  }
+
+  get mappingRelations(): MappingRelation[] {
+    return this.supplierProductAttributes
+      .map((attribute) => ({
+        attribute,
+        excelHeaders: this.getAssignedColumns(attribute.value),
+      }))
+      .filter((relation) => relation.excelHeaders.length > 0);
+  }
+
+  get selectedMappingAttributeOption(): AttributeOption | null {
+    return this.supplierProductAttributes.find((attribute) => attribute.value === this.selectedMappingAttribute) ?? null;
+  }
+
+  selectMappingAttribute(attribute: string): void {
+    this.selectedMappingAttribute = attribute;
+  }
+
+  getAssignedColumns(attribute: string): string[] {
+    return this.detectedColumns
+      .filter((column) => column.mappedAttributes.includes(attribute))
+      .map((column) => column.excelHeader);
+  }
+
+  isColumnAssigned(attribute: string, excelHeader: string): boolean {
+    return this.detectedColumns.some(
+      (column) => column.excelHeader === excelHeader && column.mappedAttributes.includes(attribute),
+    );
+  }
+
+  assignExcelColumn(attribute: string, excelHeader: string): void {
+    const column = this.detectedColumns.find((item) => item.excelHeader === excelHeader);
+    if (!column) {
+      return;
+    }
+
+    const alreadyAssigned = this.isColumnAssigned(attribute, excelHeader);
+    if (alreadyAssigned) {
+      return;
+    }
+
+    // Regla: un campo del sistema solo puede tener una columna de Excel.
+    this.detectedColumns.forEach((item) => {
+      item.mappedAttributes = item.mappedAttributes.filter((mapped) => mapped !== attribute);
+    });
+
+    // Una columna puede mapearse a múltiples campos del sistema.
+    column.mappedAttributes = [...column.mappedAttributes, attribute];
+    this.selectedMappingAttribute = attribute;
+    this.saveMappingSelection(this.buildColumnMapping());
+  }
+
+  removeExcelColumn(attribute: string, excelHeader: string): void {
+    const column = this.detectedColumns.find((item) => item.excelHeader === excelHeader);
+    if (!column) {
+      return;
+    }
+
+    column.mappedAttributes = column.mappedAttributes.filter((mapped) => mapped !== attribute);
+    this.saveMappingSelection(this.buildColumnMapping());
+    this.ensureSelectedMappingAttribute();
+  }
+
+  clearAttributeAssignments(attribute: string): void {
+    this.detectedColumns.forEach((column) => {
+      column.mappedAttributes = column.mappedAttributes.filter((mapped) => mapped !== attribute);
+    });
+    this.saveMappingSelection(this.buildColumnMapping());
+    this.ensureSelectedMappingAttribute();
+  }
+
+  get mappedAttributeCount(): number {
+    return this.supplierProductAttributes.filter((attribute) => this.getAssignedColumns(attribute.value).length > 0).length;
+  }
+
+  get requiredMappedCount(): number {
+    return this.requiredImportFields.filter((attribute) => this.getAssignedColumns(attribute).length > 0).length;
+  }
+
+  get excelColumnCount(): number {
+    return this.detectedColumns.length;
+  }
+
+  get isSelectedAttributeAssigned(): boolean {
+    return this.selectedMappingAttribute
+      ? this.getAssignedColumns(this.selectedMappingAttribute).length > 0
+      : false;
+  }
+
+  private ensureSelectedMappingAttribute(): void {
+    const currentIsValid = this.selectedMappingAttribute
+      && this.supplierProductAttributes.some((attribute) => attribute.value === this.selectedMappingAttribute)
+      && this.getAssignedColumns(this.selectedMappingAttribute).length === 0;
+
+    if (currentIsValid) {
+      return;
+    }
+
+    const preferredRequired = this.availableMappingAttributes.find((attribute) => attribute.required);
+    this.selectedMappingAttribute = preferredRequired?.value
+      ?? this.availableMappingAttributes[0]?.value
+      ?? "";
+  }
+
+  private mappingStorageKey(): string {
+    const { supplierId, multipleSuppliers } = this.fileForm.getRawValue();
+    const scope = multipleSuppliers ? "__MULTI__" : (supplierId || "__NO_SUPPLIER__");
+    return `${this.mappingStorageKeyPrefix}${scope}`;
+  }
+
+  private saveMappingSelection(mapping: Record<string, string>): void {
+    try {
+      localStorage.setItem(this.mappingStorageKey(), JSON.stringify(mapping));
+    } catch {
+      // noop: no bloquear importación por storage
+    }
+  }
+
+  private applySavedMappingSelection(): void {
+    try {
+      const raw = localStorage.getItem(this.mappingStorageKey());
+      if (!raw) return;
+
+      const saved = JSON.parse(raw) as Record<string, string>;
+      this.detectedColumns = this.detectedColumns.map((col) => {
+        const value = saved[col.excelHeader];
+        if (!value) return col;
+
+        // Soporta múltiples atributos por columna separados por coma.
+        const mappedAttributes = value
+          .split(/[|,]/)
+          .map((v) => v.trim())
+          .filter(Boolean);
+
+        return {
+          ...col,
+          mappedAttributes,
+        };
+      });
+
+      // Normaliza duplicados legacy (ej. STK y STOCK en el mismo atributo).
+      this.normalizeSingleMapping();
+      this.saveMappingSelection(this.buildColumnMapping());
+    } catch {
+      // noop
+    }
+  }
+
+  private normalizeSingleMapping(): void {
+    const selectedByAttribute = new Map<string, string>();
+
+    // Conserva solo una columna por atributo, con preferencia por STK para stock.
+    // Una columna puede tener múltiples atributos.
+    this.detectedColumns.forEach((column) => {
+      const attributesToKeep: string[] = [];
+      for (const attribute of column.mappedAttributes) {
+        const currentHeader = selectedByAttribute.get(attribute);
+        if (!currentHeader) {
+          selectedByAttribute.set(attribute, column.excelHeader);
+          attributesToKeep.push(attribute);
+        } else if (attribute === "stock" && !this.isPreferredStockHeader(currentHeader) && this.isPreferredStockHeader(column.excelHeader)) {
+          const previous = this.detectedColumns.find((item) => item.excelHeader === currentHeader);
+          if (previous) previous.mappedAttributes = previous.mappedAttributes.filter((a) => a !== attribute);
+          selectedByAttribute.set(attribute, column.excelHeader);
+          attributesToKeep.push(attribute);
+        }
+        // else: ya hay otra columna asignada a este atributo, descartar
+      }
+      column.mappedAttributes = attributesToKeep;
+    });
+
+  }
+
+  private isPreferredStockHeader(header: string): boolean {
+    return /^stk$/i.test(header.trim());
+  }
+
+  private buildColumnMapping(): Record<string, string> {
+    const columnMapping: Record<string, string> = {};
+    for (const col of this.detectedColumns) {
+      if (col.mappedAttributes.length > 0) {
+        columnMapping[col.excelHeader] = col.mappedAttributes.join(",");
+      }
+    }
+    return columnMapping;
   }
 
   private compareProducts(a: ISupplierProduct, b: ISupplierProduct): number {

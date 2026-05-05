@@ -543,39 +543,182 @@
     @if (showColumnMapping) {
       <div class="spl-mapping">
         <div class="spl-mapping__head">
-          <h3>Mapeo de columnas detectadas</h3>
-          <p class="spl-mapping__subtitle">Confirmá cómo se asignará cada encabezado antes de importar a SupplierProduct.</p>
+          <div>
+            <h3>Mapeo de importación</h3>
+            <p class="spl-mapping__subtitle">Comenzá por los campos del sistema disponibles. Cada campo admite una sola columna de Excel, pero la misma columna puede asignarse a varios campos.</p>
+          </div>
+          <div class="spl-mapping__stats">
+            <article>
+              <span>Atributos mapeados</span>
+              <strong>{{ mappedAttributeCount }}/{{ supplierProductAttributes.length }}</strong>
+            </article>
+            <article>
+              <span>Requeridos completos</span>
+              <strong>{{ requiredMappedCount }}/{{ requiredImportFields.length }}</strong>
+            </article>
+            <article>
+              <span>Columnas detectadas</span>
+              <strong>{{ excelColumnCount }}</strong>
+            </article>
+          </div>
         </div>
 
-        <div class="spl-mapping__table-wrap">
-          <table class="spl-mapping__table">
-            <thead>
-              <tr>
-                <th>Columna en Excel</th>
-                <th>Atributo del sistema</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (col of detectedColumns; track col.excelHeader) {
-                <tr>
-                  <td class="spl-mapping__excel-col">{{ col.excelHeader }}</td>
-                  <td>
-                    <select
-                      class="spl-mapping__select"
-                      [ngModel]="col.mappedAttribute"
-                      (ngModelChange)="updateColumnMapping(col.excelHeader, $event)"
-                      name="col_{{ col.excelHeader }}"
+        <div class="spl-mapping__board">
+          <section class="spl-mapping__panel spl-mapping__panel--available">
+            <header class="spl-mapping__panel-head">
+              <div>
+                <span class="spl-mapping__panel-kicker">A</span>
+                <h4>Campos de sistema</h4>
+              </div>
+              <small>Disponibles para asignar</small>
+            </header>
+
+            <div class="spl-mapping__panel-body">
+              @if (availableMappingAttributes.length > 0) {
+                <div class="spl-mapping__stack">
+                  @for (attr of availableMappingAttributes; track attr.value) {
+                    <button
+                      type="button"
+                      class="spl-mapping__field-card"
+                      [class.spl-mapping__field-card--selected]="selectedMappingAttribute === attr.value"
+                      [class.spl-mapping__field-card--required]="attr.required"
+                      (click)="selectMappingAttribute(attr.value)"
                     >
-                      <option value="">— Ignorar —</option>
-                      @for (attr of supplierProductAttributes; track attr.value) {
-                        <option [value]="attr.value">{{ attr.label }}</option>
+                      <div class="spl-mapping__field-card-head">
+                        <strong>{{ attr.label }}</strong>
+                        @if (attr.required) {
+                          <span class="spl-mapping__required-badge">Requerido</span>
+                        }
+                      </div>
+                      @if (attr.helperText) {
+                        <small>{{ attr.helperText }}</small>
                       }
-                    </select>
-                  </td>
-                </tr>
+                    </button>
+                  }
+                </div>
+              } @else {
+                <div class="spl-mapping__panel-empty">
+                  <span class="material-icons">task_alt</span>
+                  <p>Todos los campos visibles ya tienen al menos una relación activa.</p>
+                </div>
               }
-            </tbody>
-          </table>
+            </div>
+          </section>
+
+          <section class="spl-mapping__panel spl-mapping__panel--relations">
+            <header class="spl-mapping__panel-head">
+              <div>
+                <span class="spl-mapping__panel-kicker">B</span>
+                <h4>Relaciones activas</h4>
+              </div>
+              <small>Sugeridas o persistidas</small>
+            </header>
+
+            <div class="spl-mapping__panel-body">
+              @if (mappingRelations.length > 0) {
+                <div class="spl-mapping__stack">
+                  @for (relation of mappingRelations; track relation.attribute.value) {
+                    <article class="spl-mapping__relation-card">
+                      <div class="spl-mapping__relation-head">
+                        <div>
+                          <strong>{{ relation.attribute.label }}</strong>
+                          @if (relation.attribute.required) {
+                            <span class="spl-mapping__required-badge">Requerido</span>
+                          }
+                        </div>
+                        <button type="button" class="spl-mapping__clear-link" (click)="clearAttributeAssignments(relation.attribute.value)">
+                          Quitar relación
+                        </button>
+                      </div>
+
+                      <div class="spl-mapping__relation-list">
+                        @for (header of relation.excelHeaders; track header) {
+                          <div class="spl-mapping__relation-item">
+                            <span class="spl-mapping__relation-arrow">{{ relation.attribute.label }}</span>
+                            <span class="spl-mapping__relation-connector">→</span>
+                            <span class="spl-mapping__chip spl-mapping__chip--assigned">
+                              <span class="spl-mapping__chip-label">{{ header }}</span>
+                              <button type="button" class="spl-mapping__chip-remove" (click)="removeExcelColumn(relation.attribute.value, header)" aria-label="Quitar asignación">
+                                <span class="material-icons">close</span>
+                              </button>
+                            </span>
+                          </div>
+                        }
+                      </div>
+                    </article>
+                  }
+                </div>
+              } @else {
+                <div class="spl-mapping__panel-empty">
+                  <span class="material-icons">compare_arrows</span>
+                  <p>Todavía no hay relaciones. Elegí un campo del sistema y asignale una columna Excel.</p>
+                </div>
+              }
+            </div>
+          </section>
+
+          <section class="spl-mapping__panel spl-mapping__panel--excel">
+            <header class="spl-mapping__panel-head">
+              <div>
+                <span class="spl-mapping__panel-kicker">C</span>
+                <h4>Campos del Excel</h4>
+              </div>
+              <small>
+                @if (selectedMappingAttributeOption; as selectedAttribute) {
+                  Asignando a {{ selectedAttribute.label }}
+                } @else {
+                  Seleccioná un campo del sistema
+                }
+              </small>
+            </header>
+
+            <div class="spl-mapping__panel-body">
+              @if (selectedMappingAttributeOption; as selectedAttribute) {
+                <div class="spl-mapping__selected-target" [class.spl-mapping__selected-target--assigned]="isSelectedAttributeAssigned">
+                  <div>
+                    <strong>{{ selectedAttribute.label }}</strong>
+                    @if (selectedAttribute.helperText) {
+                      <small>{{ selectedAttribute.helperText }}</small>
+                    }
+                  </div>
+                  @if (selectedAttribute.required) {
+                    <span class="spl-mapping__required-badge">Requerido</span>
+                  }
+                </div>
+
+                <div class="spl-mapping__stack">
+                  @for (column of detectedColumns; track column.excelHeader) {
+                    <article class="spl-mapping__excel-card" [class.spl-mapping__excel-card--linked]="isColumnAssigned(selectedAttribute.value, column.excelHeader)">
+                      <div>
+                        <strong class="spl-mapping__excel-col">{{ column.excelHeader }}</strong>
+                        <small>
+                          @if (isColumnAssigned(selectedAttribute.value, column.excelHeader)) {
+                            Esta columna ya está relacionada con {{ selectedAttribute.label }}.
+                          } @else {
+                            Disponible para crear la relación.
+                          }
+                        </small>
+                      </div>
+                      @if (isColumnAssigned(selectedAttribute.value, column.excelHeader)) {
+                        <button type="button" class="spl-btn spl-btn--ghost spl-mapping__choice-btn" (click)="removeExcelColumn(selectedAttribute.value, column.excelHeader)">
+                          Quitar
+                        </button>
+                      } @else {
+                        <button type="button" class="spl-btn spl-btn--info spl-mapping__choice-btn" (click)="assignExcelColumn(selectedAttribute.value, column.excelHeader)">
+                          Asignar
+                        </button>
+                      }
+                    </article>
+                  }
+                </div>
+              } @else {
+                <div class="spl-mapping__panel-empty">
+                  <span class="material-icons">ads_click</span>
+                  <p>Seleccioná un campo en la columna A para habilitar la asignación desde las columnas detectadas.</p>
+                </div>
+              }
+            </div>
+          </section>
         </div>
 
         <div class="spl-mapping__actions">
