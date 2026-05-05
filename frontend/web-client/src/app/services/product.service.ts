@@ -3,13 +3,14 @@ import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { IProduct } from "../model/product.model";
 import { PageResponse } from "../model/PageResponse";
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: "root",
 })
 export class ProductService {
   private readonly _http = inject(HttpClient);
-  private readonly _urlBase = "http://localhost:8080/api/v1/products";
+  private readonly _urlBase = `${environment.gatewayUrl}/api/v1/products`;
 
   // ============================
   // GET ALL PRODUCTS (PAGINATED + FILTERS)

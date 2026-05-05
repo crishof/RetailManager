@@ -3,6 +3,7 @@ export interface ISupplierProduct {
   supplierId: string;
   brand: string;
   code: string;
+  supplierCode?: string;
   model: string;
   description: string;
   category: string;

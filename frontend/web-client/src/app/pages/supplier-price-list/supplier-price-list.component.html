@@ -1,21 +1,44 @@
 <section class="spl">
+
+  <!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
   <header class="spl__header">
     <div>
-      <h1 class="spl__title">Lista de Precios del Proveedor</h1>
-      <p class="spl__subtitle">Buscá por proveedor y marca, importá desde Excel y revisá el detalle completo del producto.</p>
+      <h1 class="spl__title">{{ viewMode === 'catalog' ? 'Catálogo del proveedor' : 'Importación de Excel de proveedores' }}</h1>
+      <p class="spl__subtitle">
+        {{ viewMode === 'catalog'
+          ? 'Gestioná catálogo del proveedor y enviá productos seleccionados al catálogo operativo.'
+          : 'Subí, procesá y mapeá columnas de listas de proveedores en una vista dedicada.' }}
+      </p>
     </div>
-    <div class="spl__kpis">
-      <div class="spl__kpi">
-        <span>Resultados</span>
-        <strong>{{ productList.length }}</strong>
-      </div>
-      <div class="spl__kpi spl__kpi--accent">
-        <span>Seleccionados</span>
-        <strong>{{ selectedProducts.length }}</strong>
-      </div>
+    <div class="spl__header-actions">
+      @if (viewMode === 'catalog') {
+        <button type="button" class="spl-btn spl-btn--primary" (click)="openImportWorkspace()">
+          <span class="material-icons">upload_file</span>
+          Importar Excel
+        </button>
+      } @else {
+        <button type="button" class="spl-btn spl-btn--ghost" (click)="backToCatalog()">
+          <span class="material-icons">arrow_back</span>
+          Volver al catálogo
+        </button>
+      }
+
+      @if (viewMode === 'catalog') {
+        <div class="spl__kpis">
+          <div class="spl__kpi">
+            <span>Resultados</span>
+            <strong>{{ productList.length }}</strong>
+          </div>
+          <div class="spl__kpi spl__kpi--accent">
+            <span>Seleccionados</span>
+            <strong>{{ selectedProducts.length }}</strong>
+          </div>
+        </div>
+      }
     </div>
   </header>
 
+  <!-- ═══════════════════════════════ ALERTS ═══════════════════════════════ -->
   @if (successMessage || errorMessage || warningMessage) {
     <div class="spl__alerts">
       @if (successMessage) {
@@ -30,274 +53,695 @@
     </div>
   }
 
-  <div class="spl__top-grid">
-    <article class="spl-card">
-      <div class="spl-card__head">
-        <h2>Buscador</h2>
-        <button type="button" class="spl-btn spl-btn--ghost" (click)="searchProducts()">
-          <span class="material-icons">refresh</span>
-          Actualizar
-        </button>
-      </div>
-
-      <form class="spl-filter" (ngSubmit)="searchProducts()">
-        <label class="spl-field">
-          <span>Proveedor</span>
-          <select
-            name="supplierId"
-            [ngModel]="selectedSupplierId"
-            (ngModelChange)="onSupplierChange($event)"
-          >
-            <option value="">Todos los proveedores</option>
-            @for (supplier of suppliers; track supplier.id) {
-              <option [value]="supplier.id">{{ supplier.name }}</option>
-            }
-          </select>
-        </label>
-
-        <label class="spl-field">
-          <span>Marca</span>
-          <select
-            name="brand"
-            [ngModel]="selectedBrand"
-            (ngModelChange)="onBrandChange($event)"
-          >
-            <option value="">Todas las marcas</option>
-            @for (brand of brands; track brand) {
-              <option [value]="brand">{{ brand }}</option>
-            }
-          </select>
-        </label>
-
-        <label class="spl-field spl-field--search">
-          <span>Búsqueda libre</span>
-          <div class="spl-search">
-            <span class="material-icons">search</span>
-            <input
-              type="text"
-              id="searchTerm"
-              placeholder="Código, modelo o descripción"
-              [(ngModel)]="searchTerm"
-              name="searchTerm"
-              (keyup.enter)="searchProducts()"
-            />
-          </div>
-        </label>
-
-        <div class="spl-filter__actions">
-          <button type="submit" class="spl-btn spl-btn--primary" [disabled]="loadingSearch">
-            <span class="material-icons">manage_search</span>
-            {{ loadingSearch ? 'Buscando...' : 'Buscar' }}
+  @if (viewMode === 'catalog') {
+    <article class="spl-card spl-card--toolbar">
+        <div class="spl-card__head">
+          <h2>Filtros y búsqueda</h2>
+          <button type="button" class="spl-btn spl-btn--ghost" (click)="searchProducts()">
+            <span class="material-icons">refresh</span>
+            Actualizar
           </button>
+        </div>
+
+        <form class="spl-filter" (ngSubmit)="searchProducts()">
+          <div class="spl-filter__row">
+            <label class="spl-field">
+              <span>Proveedor</span>
+              <select
+                name="supplierId"
+                [ngModel]="selectedSupplierId"
+                (ngModelChange)="onSupplierChange($event)"
+              >
+                <option value="">Todos los proveedores</option>
+                @for (supplier of suppliers; track supplier.id) {
+                  <option [value]="supplier.id">{{ supplier.name }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="spl-field">
+              <span>Marca</span>
+              <select
+                name="brand"
+                [ngModel]="selectedBrand"
+                (ngModelChange)="onBrandChange($event)"
+              >
+                <option value="">Todas las marcas</option>
+                @for (brand of brands; track brand) {
+                  <option [value]="brand">{{ brand }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="spl-field spl-field--search">
+              <span>Búsqueda libre</span>
+              <div class="spl-search">
+                <span class="material-icons">search</span>
+                <input
+                  type="text"
+                  placeholder="Marca, modelo o descripción"
+                  [(ngModel)]="searchTerm"
+                  name="searchTerm"
+                  (keyup.enter)="searchProducts()"
+                />
+              </div>
+            </label>
+          </div>
+
+          <div class="spl-filter__actions">
+            <button type="submit" class="spl-btn spl-btn--primary" [disabled]="loadingSearch">
+              <span class="material-icons">manage_search</span>
+              {{ loadingSearch ? 'Buscando...' : 'Buscar' }}
+            </button>
+          </div>
+        </form>
+      </article>
+
+    <!-- ═══════════════════════════ WORKSPACE ═══════════════════════════════ -->
+    <div class="spl__workspace">
+
+      <!-- ── TABLA DE CATÁLOGO ── -->
+      <article class="spl-card spl-card--table">
+        <div class="spl-selection-bar">
+          <div class="spl-selection-bar__info">
+            <strong>{{ selectedProducts.length }}</strong>
+            <span>artículos seleccionados para importar a Products</span>
+          </div>
+          <div class="spl-selection-bar__actions">
+            <button
+              type="button"
+              class="spl-btn spl-btn--success"
+              [disabled]="loadingImportSelection || selectedProducts.length === 0"
+              (click)="importSelectedProducts()"
+            >
+              <span class="material-icons">publish</span>
+              {{ loadingImportSelection ? 'Importando...' : 'Importar seleccionados' }}
+            </button>
+
+            <button
+              type="button"
+              class="spl-btn spl-btn--warning"
+              [disabled]="selectedProducts.length === 0"
+              title="Próximamente: comparar precio de costo vs. catálogo del proveedor"
+              (click)="openComparePrices()"
+            >
+              <span class="material-icons">compare_arrows</span>
+              Comparar precios
+            </button>
+
+            <button
+              type="button"
+              class="spl-btn spl-btn--info"
+              [disabled]="selectedProducts.length === 0"
+              title="Próximamente: añadir ítems seleccionados a una factura de compra"
+              (click)="openInvoice()"
+            >
+              <span class="material-icons">receipt_long</span>
+              Facturar
+            </button>
+
+            <button
+              type="button"
+              class="spl-btn"
+              [disabled]="selectedProducts.length === 0"
+              (click)="relateProducts()"
+            >
+              <span class="material-icons">link</span>
+              Relacionar artículos
+            </button>
+          </div>
+        </div>
+
+        @if (selectionImportSummary) {
+          <div class="spl-import-summary spl-import-summary--inline">
+            <div class="spl-import-summary__header">
+              <h3 class="spl-import-summary__title">
+                <span class="material-icons">{{ selectionImportSummary.failed > 0 && selectionImportSummary.imported === 0 ? 'error_outline' : 'check_circle' }}</span>
+                Resultado de la importación
+              </h3>
+              <button type="button" class="spl-btn spl-btn--ghost spl-btn--xs" (click)="clearSelectionImportSummary()">
+                <span class="material-icons">close</span>
+              </button>
+            </div>
+            <ul class="spl-import-summary__list">
+              <li>
+                <span class="spl-import-summary__label">Enviados</span>
+                <strong>{{ selectionImportSummary.total }}</strong>
+              </li>
+              <li>
+                <span class="spl-import-summary__label">Importados (nuevos)</span>
+                <strong class="spl-import-summary__value--ok">{{ selectionImportSummary.imported }}</strong>
+              </li>
+              <li>
+                <span class="spl-import-summary__label">Actualizados</span>
+                <strong class="spl-import-summary__value--ok">{{ selectionImportSummary.updated }}</strong>
+              </li>
+              <li>
+                <span class="spl-import-summary__label">Omitidos</span>
+                <strong class="spl-import-summary__value--muted">{{ selectionImportSummary.skipped }}</strong>
+              </li>
+              @if (selectionImportSummary.failed > 0) {
+                <li>
+                  <span class="spl-import-summary__label">Con error</span>
+                  <strong class="spl-import-summary__value--warn">{{ selectionImportSummary.failed }}</strong>
+                </li>
+              }
+              @if (selectionImportSummary.errorDetails.length > 0) {
+                <li class="spl-import-summary__errors">
+                  <details>
+                    <summary>Ver detalle de errores ({{ selectionImportSummary.errorDetails.length }})</summary>
+                    <ul class="spl-import-summary__error-list">
+                      @for (err of selectionImportSummary.errorDetails; track err.code) {
+                        <li><strong>{{ err.code }}</strong> — {{ err.reason }}</li>
+                      }
+                    </ul>
+                  </details>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        <div class="spl-table-wrap">
+          <table class="spl-table">
+            <thead>
+              <tr>
+                <th>
+                  <input type="checkbox" [checked]="allSelected" (change)="selectAllProducts($event)" />
+                </th>
+                <th>
+                  <button type="button" class="spl-table__sort" (click)="sortBy('brand')">
+                    Marca <span class="material-icons">{{ sortIcon('brand') }}</span>
+                  </button>
+                </th>
+                <th>
+                  <button type="button" class="spl-table__sort" (click)="sortBy('code')">
+                    Código <span class="material-icons">{{ sortIcon('code') }}</span>
+                  </button>
+                </th>
+                <th>
+                  <button type="button" class="spl-table__sort" (click)="sortBy('model')">
+                    Modelo <span class="material-icons">{{ sortIcon('model') }}</span>
+                  </button>
+                </th>
+                <th>Descripción</th>
+                <th>
+                  <button type="button" class="spl-table__sort" (click)="sortBy('category')">
+                    Categoría <span class="material-icons">{{ sortIcon('category') }}</span>
+                  </button>
+                </th>
+                <th>
+                  <button type="button" class="spl-table__sort" (click)="sortBy('price')">
+                    Precio costo <span class="material-icons">{{ sortIcon('price') }}</span>
+                  </button>
+                </th>
+                <th>
+                  <button type="button" class="spl-table__sort" (click)="sortBy('suggestedPrice')">
+                    P. sugerido <span class="material-icons">{{ sortIcon('suggestedPrice') }}</span>
+                  </button>
+                </th>
+                <th>
+                  <button type="button" class="spl-table__sort" (click)="sortBy('lastUpdate')">
+                    Actualización <span class="material-icons">{{ sortIcon('lastUpdate') }}</span>
+                  </button>
+                </th>
+                <th>Stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (loadingSearch) {
+                <tr>
+                  <td colspan="10" class="spl-table__empty">Buscando productos...</td>
+                </tr>
+              } @else if (productList.length === 0) {
+                <tr>
+                  <td colspan="10" class="spl-table__empty">Sin resultados para los filtros seleccionados.</td>
+                </tr>
+              }
+
+              @for (product of pagedProducts; track trackByProductId($index, product)) {
+                <tr
+                  tabindex="0"
+                  [class.spl-table__row--active]="selectedProduct?.id === product.id"
+                  [class.spl-table__row--selected]="isSelected(product)"
+                  (click)="handleRowClick(product)"
+                  (keydown.enter)="handleRowClick(product)"
+                >
+                  <td (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+                    <input
+                      type="checkbox"
+                      [checked]="isSelected(product)"
+                      (change)="toggleSelection($event, product)"
+                    />
+                  </td>
+                  <td>{{ product.brand }}</td>
+                  <td>{{ product.code }}</td>
+                  <td>{{ product.model }}</td>
+                  <td class="spl-table__desc">{{ product.description }}</td>
+                  <td>{{ product.category }}</td>
+                  <td>{{ product.price | currency:'ARS':'symbol':'1.0-0' }}</td>
+                  <td>{{ product.suggestedPrice | currency:'ARS':'symbol':'1.0-0' }}</td>
+                  <td>{{ product.lastUpdate | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ product.stockAvailable }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <footer class="spl-table__footer">
+          <div class="spl-table__meta">
+            Mostrando {{ pageStart }}-{{ pageEnd }} de {{ productList.length }}
+          </div>
+          <div class="spl-table__pager">
+            <label>
+              <span>Filas</span>
+              <select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+                @for (size of pageSizeOptions; track size) {
+                  <option [value]="size">{{ size }}</option>
+                }
+              </select>
+            </label>
+            <button type="button" (click)="previousPage()" [disabled]="pageIndex === 0">Anterior</button>
+            <span>Página {{ pageIndex + 1 }} / {{ totalPages }}</span>
+            <button type="button" (click)="nextPage()" [disabled]="pageIndex >= totalPages - 1">Siguiente</button>
+          </div>
+        </footer>
+      </article>
+
+      <!-- ── PANEL DETALLE ── -->
+      <article class="spl-card spl-card--detail">
+        <div class="spl-card__head">
+          <h2>Detalle del producto</h2>
+          @if (selectedProduct) {
+            <span class="spl-badge">{{ selectedProduct.brand }}</span>
+          }
+        </div>
+
+        @if (selectedProduct) {
+          <div class="spl-detail">
+            <div class="spl-detail__title">
+              <strong>{{ selectedProduct.brand }} {{ selectedProduct.model }}</strong>
+              <span>{{ selectedProduct.code }}</span>
+            </div>
+
+            <dl class="spl-detail__grid">
+              <div><dt>ID</dt><dd>{{ selectedProduct.id }}</dd></div>
+              <div><dt>Proveedor</dt><dd>{{ supplierNameById(selectedProduct.supplierId) }}</dd></div>
+              <div><dt>Categoría</dt><dd>{{ selectedProduct.category }}</dd></div>
+              <div><dt>Moneda</dt><dd>{{ selectedProduct.currency }}</dd></div>
+              <div><dt>Código de barras</dt><dd>{{ selectedProduct.barcode || '—' }}</dd></div>
+              <div><dt>IVA</dt><dd>{{ selectedProduct.taxRate * 100 | number:'1.0-2' }}%</dd></div>
+              <div><dt>Stock</dt><dd>{{ selectedProduct.stockAvailable }}</dd></div>
+              <div><dt>Última actualización</dt><dd>{{ selectedProduct.lastUpdate | date:'dd/MM/yyyy HH:mm' }}</dd></div>
+            </dl>
+
+            <div class="spl-detail__prices">
+              <p class="spl-detail__prices-title">Precios</p>
+              <dl class="spl-detail__price-grid">
+                <div>
+                  <dt>Costo</dt>
+                  <dd>{{ selectedProduct.price | currency:'ARS':'symbol':'1.0-0' }}</dd>
+                </div>
+                <div>
+                  <dt>Sugerido</dt>
+                  <dd>{{ selectedProduct.suggestedPrice | currency:'ARS':'symbol':'1.0-0' }}</dd>
+                </div>
+                <div>
+                  <dt>Web</dt>
+                  <dd>{{ selectedProduct.suggestedWebPrice | currency:'ARS':'symbol':'1.0-0' }}</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="spl-detail__description">
+              <h3>Descripción</h3>
+              <p>{{ selectedProduct.description }}</p>
+            </div>
+
+            <div class="spl-detail__actions">
+              <button
+                type="button"
+                class="spl-btn"
+                (click)="relateProduct(selectedProduct)"
+              >
+                <span class="material-icons">link</span>
+                Relacionar
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div class="spl-detail__empty">
+            <span class="material-icons">inventory_2</span>
+            <p>Seleccioná un producto para ver su detalle completo.</p>
+          </div>
+        }
+      </article>
+    </div>
+  }
+
+  @if (viewMode === 'import') {
+    <article class="spl-card spl-card--import-hub">
+      <div class="spl-import-hub">
+        <div class="spl-import-hub__step">
+          <span>1</span>
+          <div>
+            <strong>Subí el archivo del proveedor</strong>
+            <p>Cargá la lista original, aunque tenga textos previos, enlaces o encabezados desplazados.</p>
+          </div>
+        </div>
+        <div class="spl-import-hub__step">
+          <span>2</span>
+          <div>
+            <strong>Procesá y confirmá mapeo</strong>
+            <p>Validá cómo se interpreta cada columna para evitar errores de catálogo.</p>
+          </div>
+        </div>
+        <div class="spl-import-hub__step">
+          <span>3</span>
+          <div>
+            <strong>Importá al catálogo del proveedor</strong>
+            <p>El resultado mostrará procesados, importados, existentes y errores.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="spl-card spl-card--upload">
+    <div class="spl-card__head">
+      <h2>Importar lista de precios en Excel</h2>
+      @if (excelImportSummary) {
+        <button type="button" class="spl-btn spl-btn--ghost" (click)="clearExcelImportSummary()">
+          <span class="material-icons">close</span>
+          Limpiar resumen
+        </button>
+      }
+    </div>
+
+    @if (excelImportSummary) {
+      <div class="spl-import-summary">
+        <h3 class="spl-import-summary__title">
+          <span class="material-icons">check_circle</span>
+          Resumen de importación a SupplierProduct
+        </h3>
+        <ul class="spl-import-summary__list">
+          <li>
+            <span class="spl-import-summary__label">Procesados</span>
+            <strong>{{ excelImportSummary.total }}</strong>
+          </li>
+          <li>
+            <span class="spl-import-summary__label">Importados (nuevos)</span>
+            <strong class="spl-import-summary__value--ok">{{ excelImportSummary.imported }}</strong>
+          </li>
+          <li>
+            <span class="spl-import-summary__label">Actualizados</span>
+            <strong class="spl-import-summary__value--ok">{{ excelImportSummary.updated }}</strong>
+          </li>
+          <li>
+            <span class="spl-import-summary__label">Omitidos</span>
+            <strong class="spl-import-summary__value--muted">{{ excelImportSummary.skipped }}</strong>
+          </li>
+          @if (excelImportSummary.failed > 0) {
+            <li>
+              <span class="spl-import-summary__label">Con errores / ignorados</span>
+              <strong class="spl-import-summary__value--warn">{{ excelImportSummary.failed }}</strong>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    @if (!showColumnMapping) {
+      <form class="spl-upload" [formGroup]="fileForm">
+        <div class="spl-upload__layout">
+          <div class="spl-upload__main">
+            <div class="spl-upload__supplier-row">
+              <label class="spl-field">
+                <span>Proveedor</span>
+                <select formControlName="supplierId" [disabled]="fileForm.get('multipleSuppliers')?.value === true">
+                  <option value="">Seleccionar proveedor</option>
+                  @for (supplier of suppliers; track supplier.id) {
+                    <option [value]="supplier.id">{{ supplier.name }}</option>
+                  }
+                </select>
+              </label>
+              <label class="spl-check spl-upload__multi-check">
+                <input type="checkbox" formControlName="multipleSuppliers" (change)="onMultipleSuppliersToggle()" />
+                <span>El archivo contiene artículos de varios proveedores</span>
+              </label>
+            </div>
+
+            <label class="spl-upload__dropzone" for="supplierPriceFile">
+              <input
+                id="supplierPriceFile"
+                type="file"
+                accept=".xlsx,.xls"
+                (change)="onFileSelected($event)"
+              />
+              <span class="material-icons">upload_file</span>
+              <strong>Arrastrá o elegí un archivo Excel</strong>
+              <small>Formatos permitidos: .xlsx y .xls</small>
+              @if (selectedFileName) {
+                <em>{{ selectedFileName }}</em>
+              }
+            </label>
+          </div>
+
+          <div class="spl-upload__options">
+            <p class="spl-upload__options-title">Opciones de importación</p>
+
+            <label class="spl-check">
+              <input type="checkbox" formControlName="updateExistingProducts" />
+              <span>Actualizar productos existentes</span>
+            </label>
+
+            <label class="spl-check">
+              <input type="checkbox" formControlName="dividePriceByUnitsPerBox" />
+              <span>Dividir precio por unidades por caja</span>
+            </label>
+
+            <label class="spl-check">
+              <input type="checkbox" formControlName="copyToRelatedProducts" />
+              <span>Copiar datos también en artículos relacionados</span>
+            </label>
+
+            <label class="spl-check">
+              <input type="checkbox" formControlName="truncateLongFields" />
+              <span>Truncar campos de texto demasiado largos</span>
+            </label>
+
+
+          </div>
+        </div>
+
+        <div class="spl-upload__actions">
           <button
             type="button"
-            class="spl-btn spl-btn--success"
-            [disabled]="loadingImportSelection || selectedProducts.length === 0"
-            (click)="importSelectedProducts()"
+            class="spl-btn spl-btn--primary"
+            [disabled]="!selectedFile || loadingUpload"
+            (click)="processExcelFile()"
           >
-            <span class="material-icons">publish</span>
-            {{ loadingImportSelection ? 'Importando...' : 'Importar seleccionados' }}
+            <span class="material-icons">settings_suggest</span>
+            {{ loadingUpload ? 'Procesando...' : 'Procesar' }}
           </button>
         </div>
       </form>
-    </article>
+    }
 
-    <article class="spl-card">
-      <div class="spl-card__head">
-        <h2>Importar Excel</h2>
-      </div>
-
-      <form [formGroup]="fileForm" (submit)="uploadFile($event)" class="spl-upload" enctype="multipart/form-data">
-        <label class="spl-field">
-          <span>Proveedor</span>
-          <select formControlName="supplierId">
-            <option value="">Seleccionar proveedor</option>
-            @for (supplier of suppliers; track supplier.id) {
-              <option [value]="supplier.id">{{ supplier.name }}</option>
-            }
-          </select>
-        </label>
-
-        <label class="spl-upload__dropzone" for="supplierPriceFile">
-          <input
-            id="supplierPriceFile"
-            type="file"
-            accept=".xlsx,.xls"
-            (change)="onFileSelected($event)"
-          />
-          <span class="material-icons">upload_file</span>
-          <strong>Arrastrá o elegí un archivo Excel</strong>
-          <small>Formatos permitidos: .xlsx y .xls</small>
-          @if (selectedFileName) {
-            <em>{{ selectedFileName }}</em>
-          }
-        </label>
-
-        <label class="spl-check">
-          <input type="checkbox" formControlName="updateExistingProducts" />
-          <span>Actualizar productos existentes</span>
-        </label>
-
-        <button type="submit" class="spl-btn spl-btn--primary" [disabled]="loadingUpload || !selectedFile">
-          <span class="material-icons">file_upload</span>
-          {{ loadingUpload ? 'Subiendo...' : 'Importar archivo' }}
-        </button>
-      </form>
-    </article>
-  </div>
-
-  <div class="spl__workspace">
-    <article class="spl-card spl-card--table">
-      <div class="spl-table-wrap">
-        <table class="spl-table">
-          <thead>
-            <tr>
-              <th>
-                <input type="checkbox" [checked]="allSelected" (change)="selectAllProducts($event)" />
-              </th>
-              <th>
-                <button type="button" class="spl-table__sort" (click)="sortBy('brand')">
-                  Marca
-                  <span class="material-icons">{{ sortIcon('brand') }}</span>
-                </button>
-              </th>
-              <th>
-                <button type="button" class="spl-table__sort" (click)="sortBy('code')">
-                  Código
-                  <span class="material-icons">{{ sortIcon('code') }}</span>
-                </button>
-              </th>
-              <th>
-                <button type="button" class="spl-table__sort" (click)="sortBy('model')">
-                  Modelo
-                  <span class="material-icons">{{ sortIcon('model') }}</span>
-                </button>
-              </th>
-              <th>Descripción</th>
-              <th>
-                <button type="button" class="spl-table__sort" (click)="sortBy('category')">
-                  Categoría
-                  <span class="material-icons">{{ sortIcon('category') }}</span>
-                </button>
-              </th>
-              <th>
-                <button type="button" class="spl-table__sort" (click)="sortBy('price')">
-                  Precio costo
-                  <span class="material-icons">{{ sortIcon('price') }}</span>
-                </button>
-              </th>
-              <th>
-                <button type="button" class="spl-table__sort" (click)="sortBy('suggestedPrice')">
-                  Precio sugerido
-                  <span class="material-icons">{{ sortIcon('suggestedPrice') }}</span>
-                </button>
-              </th>
-              <th>
-                <button type="button" class="spl-table__sort" (click)="sortBy('lastUpdate')">
-                  Actualización
-                  <span class="material-icons">{{ sortIcon('lastUpdate') }}</span>
-                </button>
-              </th>
-              <th>Stock</th>
-            </tr>
-          </thead>
-          <tbody>
-            @if (loadingSearch) {
-              <tr>
-                <td colspan="10" class="spl-table__empty">Buscando productos...</td>
-              </tr>
-            } @else if (productList.length === 0) {
-              <tr>
-                <td colspan="10" class="spl-table__empty">Sin resultados para los filtros seleccionados.</td>
-              </tr>
-            }
-
-            @for (product of pagedProducts; track trackByProductId($index, product)) {
-              <tr
-                tabindex="0"
-                [class.spl-table__row--active]="selectedProduct?.id === product.id"
-                (click)="selectProduct(product)"
-                (keydown.enter)="selectProduct(product)"
-              >
-                <td>
-                  <input
-                    type="checkbox"
-                    [checked]="isSelected(product)"
-                    (change)="toggleSelection($event, product)"
-                  />
-                </td>
-                <td>{{ product.brand }}</td>
-                <td>{{ product.code }}</td>
-                <td>{{ product.model }}</td>
-                <td class="spl-table__desc">{{ product.description }}</td>
-                <td>{{ product.category }}</td>
-                <td>{{ product.price | currency:'ARS':'symbol':'1.0-0' }}</td>
-                <td>{{ product.suggestedPrice | currency:'ARS':'symbol':'1.0-0' }}</td>
-                <td>{{ product.lastUpdate | date:'dd/MM/yyyy' }}</td>
-                <td>{{ product.stockAvailable }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
-      <footer class="spl-table__footer">
-        <div class="spl-table__meta">
-          Mostrando {{ pageStart }}-{{ pageEnd }} de {{ productList.length }}
+    @if (showColumnMapping) {
+      <div class="spl-mapping">
+        <div class="spl-mapping__head">
+          <div>
+            <h3>Mapeo de importación</h3>
+            <p class="spl-mapping__subtitle">Comenzá por los campos del sistema disponibles. Cada campo admite una sola columna de Excel, pero la misma columna puede asignarse a varios campos.</p>
+          </div>
+          <div class="spl-mapping__stats">
+            <article>
+              <span>Atributos mapeados</span>
+              <strong>{{ mappedAttributeCount }}/{{ supplierProductAttributes.length }}</strong>
+            </article>
+            <article>
+              <span>Requeridos completos</span>
+              <strong>{{ requiredMappedCount }}/{{ requiredImportFields.length }}</strong>
+            </article>
+            <article>
+              <span>Columnas detectadas</span>
+              <strong>{{ excelColumnCount }}</strong>
+            </article>
+          </div>
         </div>
-        <div class="spl-table__pager">
-          <label>
-            <span>Filas</span>
-            <select [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
-              @for (size of pageSizeOptions; track size) {
-                <option [value]="size">{{ size }}</option>
+
+        <div class="spl-mapping__board">
+          <section class="spl-mapping__panel spl-mapping__panel--available">
+            <header class="spl-mapping__panel-head">
+              <div>
+                <span class="spl-mapping__panel-kicker">A</span>
+                <h4>Campos de sistema</h4>
+              </div>
+              <small>Disponibles para asignar</small>
+            </header>
+
+            <div class="spl-mapping__panel-body">
+              @if (availableMappingAttributes.length > 0) {
+                <div class="spl-mapping__stack">
+                  @for (attr of availableMappingAttributes; track attr.value) {
+                    <button
+                      type="button"
+                      class="spl-mapping__field-card"
+                      [class.spl-mapping__field-card--selected]="selectedMappingAttribute === attr.value"
+                      [class.spl-mapping__field-card--required]="attr.required"
+                      (click)="selectMappingAttribute(attr.value)"
+                    >
+                      <div class="spl-mapping__field-card-head">
+                        <strong>{{ attr.label }}</strong>
+                        @if (attr.required) {
+                          <span class="spl-mapping__required-badge">Requerido</span>
+                        }
+                      </div>
+                      @if (attr.helperText) {
+                        <small>{{ attr.helperText }}</small>
+                      }
+                    </button>
+                  }
+                </div>
+              } @else {
+                <div class="spl-mapping__panel-empty">
+                  <span class="material-icons">task_alt</span>
+                  <p>Todos los campos visibles ya tienen al menos una relación activa.</p>
+                </div>
               }
-            </select>
-          </label>
-          <button type="button" (click)="previousPage()" [disabled]="pageIndex === 0">Anterior</button>
-          <span>Página {{ pageIndex + 1 }} / {{ totalPages }}</span>
-          <button type="button" (click)="nextPage()" [disabled]="pageIndex >= totalPages - 1">Siguiente</button>
-        </div>
-      </footer>
-    </article>
+            </div>
+          </section>
 
-    <article class="spl-card spl-card--detail">
-      <div class="spl-card__head">
-        <h2>Detalle del producto</h2>
+          <section class="spl-mapping__panel spl-mapping__panel--relations">
+            <header class="spl-mapping__panel-head">
+              <div>
+                <span class="spl-mapping__panel-kicker">B</span>
+                <h4>Relaciones activas</h4>
+              </div>
+              <small>Sugeridas o persistidas</small>
+            </header>
+
+            <div class="spl-mapping__panel-body">
+              @if (mappingRelations.length > 0) {
+                <div class="spl-mapping__stack">
+                  @for (relation of mappingRelations; track relation.attribute.value) {
+                    <article class="spl-mapping__relation-card">
+                      <div class="spl-mapping__relation-head">
+                        <div>
+                          <strong>{{ relation.attribute.label }}</strong>
+                          @if (relation.attribute.required) {
+                            <span class="spl-mapping__required-badge">Requerido</span>
+                          }
+                        </div>
+                        <button type="button" class="spl-mapping__clear-link" (click)="clearAttributeAssignments(relation.attribute.value)">
+                          Quitar relación
+                        </button>
+                      </div>
+
+                      <div class="spl-mapping__relation-list">
+                        @for (header of relation.excelHeaders; track header) {
+                          <div class="spl-mapping__relation-item">
+                            <span class="spl-mapping__relation-arrow">{{ relation.attribute.label }}</span>
+                            <span class="spl-mapping__relation-connector">→</span>
+                            <span class="spl-mapping__chip spl-mapping__chip--assigned">
+                              <span class="spl-mapping__chip-label">{{ header }}</span>
+                              <button type="button" class="spl-mapping__chip-remove" (click)="removeExcelColumn(relation.attribute.value, header)" aria-label="Quitar asignación">
+                                <span class="material-icons">close</span>
+                              </button>
+                            </span>
+                          </div>
+                        }
+                      </div>
+                    </article>
+                  }
+                </div>
+              } @else {
+                <div class="spl-mapping__panel-empty">
+                  <span class="material-icons">compare_arrows</span>
+                  <p>Todavía no hay relaciones. Elegí un campo del sistema y asignale una columna Excel.</p>
+                </div>
+              }
+            </div>
+          </section>
+
+          <section class="spl-mapping__panel spl-mapping__panel--excel">
+            <header class="spl-mapping__panel-head">
+              <div>
+                <span class="spl-mapping__panel-kicker">C</span>
+                <h4>Campos del Excel</h4>
+              </div>
+              <small>
+                @if (selectedMappingAttributeOption; as selectedAttribute) {
+                  Asignando a {{ selectedAttribute.label }}
+                } @else {
+                  Seleccioná un campo del sistema
+                }
+              </small>
+            </header>
+
+            <div class="spl-mapping__panel-body">
+              @if (selectedMappingAttributeOption; as selectedAttribute) {
+                <div class="spl-mapping__selected-target" [class.spl-mapping__selected-target--assigned]="isSelectedAttributeAssigned">
+                  <div>
+                    <strong>{{ selectedAttribute.label }}</strong>
+                    @if (selectedAttribute.helperText) {
+                      <small>{{ selectedAttribute.helperText }}</small>
+                    }
+                  </div>
+                  @if (selectedAttribute.required) {
+                    <span class="spl-mapping__required-badge">Requerido</span>
+                  }
+                </div>
+
+                <div class="spl-mapping__stack">
+                  @for (column of detectedColumns; track column.excelHeader) {
+                    <article class="spl-mapping__excel-card" [class.spl-mapping__excel-card--linked]="isColumnAssigned(selectedAttribute.value, column.excelHeader)">
+                      <div>
+                        <strong class="spl-mapping__excel-col">{{ column.excelHeader }}</strong>
+                        <small>
+                          @if (isColumnAssigned(selectedAttribute.value, column.excelHeader)) {
+                            Esta columna ya está relacionada con {{ selectedAttribute.label }}.
+                          } @else {
+                            Disponible para crear la relación.
+                          }
+                        </small>
+                      </div>
+                      @if (isColumnAssigned(selectedAttribute.value, column.excelHeader)) {
+                        <button type="button" class="spl-btn spl-btn--ghost spl-mapping__choice-btn" (click)="removeExcelColumn(selectedAttribute.value, column.excelHeader)">
+                          Quitar
+                        </button>
+                      } @else {
+                        <button type="button" class="spl-btn spl-btn--info spl-mapping__choice-btn" (click)="assignExcelColumn(selectedAttribute.value, column.excelHeader)">
+                          Asignar
+                        </button>
+                      }
+                    </article>
+                  }
+                </div>
+              } @else {
+                <div class="spl-mapping__panel-empty">
+                  <span class="material-icons">ads_click</span>
+                  <p>Seleccioná un campo en la columna A para habilitar la asignación desde las columnas detectadas.</p>
+                </div>
+              }
+            </div>
+          </section>
+        </div>
+
+        <div class="spl-mapping__actions">
+          <button type="button" class="spl-btn spl-btn--ghost" (click)="cancelColumnMapping()">
+            <span class="material-icons">arrow_back</span>
+            Volver
+          </button>
+          <button type="button" class="spl-btn spl-btn--primary" [disabled]="loadingUpload" (click)="confirmAndUpload()">
+            <span class="material-icons">file_upload</span>
+            {{ loadingUpload ? 'Importando...' : 'Importar' }}
+          </button>
+        </div>
       </div>
-
-      @if (selectedProduct) {
-        <div class="spl-detail">
-          <div class="spl-detail__title">
-            <strong>{{ selectedProduct.brand }} {{ selectedProduct.model }}</strong>
-            <span>{{ selectedProduct.code }}</span>
-          </div>
-
-          <dl class="spl-detail__grid">
-            <div><dt>ID</dt><dd>{{ selectedProduct.id }}</dd></div>
-            <div><dt>Proveedor</dt><dd>{{ supplierNameById(selectedProduct.supplierId) }}</dd></div>
-            <div><dt>Categoría</dt><dd>{{ selectedProduct.category }}</dd></div>
-            <div><dt>Moneda</dt><dd>{{ selectedProduct.currency }}</dd></div>
-            <div><dt>Precio costo</dt><dd>{{ selectedProduct.price | currency:'ARS':'symbol':'1.0-0' }}</dd></div>
-            <div><dt>Precio sugerido</dt><dd>{{ selectedProduct.suggestedPrice | currency:'ARS':'symbol':'1.0-0' }}</dd></div>
-            <div><dt>Precio web</dt><dd>{{ selectedProduct.suggestedWebPrice | currency:'ARS':'symbol':'1.0-0' }}</dd></div>
-            <div><dt>IVA</dt><dd>{{ selectedProduct.taxRate * 100 | number:'1.0-2' }}%</dd></div>
-            <div><dt>Stock</dt><dd>{{ selectedProduct.stockAvailable }}</dd></div>
-            <div><dt>Código de barras</dt><dd>{{ selectedProduct.barcode || '—' }}</dd></div>
-            <div><dt>Última actualización</dt><dd>{{ selectedProduct.lastUpdate | date:'dd/MM/yyyy HH:mm' }}</dd></div>
-          </dl>
-
-          <div class="spl-detail__description">
-            <h3>Descripción</h3>
-            <p>{{ selectedProduct.description }}</p>
-          </div>
-        </div>
-      } @else {
-        <div class="spl-detail__empty">
-          <span class="material-icons">inventory_2</span>
-          <p>Seleccioná un producto para ver su detalle completo.</p>
-        </div>
-      }
+    }
     </article>
-  </div>
+  }
+
 </section>
