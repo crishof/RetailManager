@@ -1,5 +1,5 @@
-import { CommonModule, NgClass } from "@angular/common";
-import { Component, OnInit, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Component, OnDestroy, OnInit, inject } from "@angular/core";
 import {
   FormBuilder,
   FormControl,
@@ -8,13 +8,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { MatNativeDateModule } from "@angular/material/core";
-import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatInputModule } from "@angular/material/input";
-import { ProductListComponent } from "../../product/product-list/product-list.component";
-import { ProductSearchComponent } from "../../product/product-search/product-search.component";
-import { InvoiceItemsComponent } from "../../supplier/supplier-invoice/invoice-items/invoice-items.component";
 import { IBranch } from "../../../model/branch.model";
 import { ILocation } from "../../../model/location.model";
 import { IInvoiceItem } from "../../../model/invoice-item.model";
@@ -26,23 +19,11 @@ import { BranchService } from "../../../services/branch.service";
 
 @Component({
   selector: "app-customer-invoice",
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatNativeDateModule,
-    ProductSearchComponent,
-    ProductListComponent,
-    InvoiceItemsComponent,
-    NgClass,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: "./customer-invoice.component.html",
   styleUrl: "./customer-invoice.component.css",
 })
-export class CustomerInvoiceComponent implements OnInit {
+export class CustomerInvoiceComponent implements OnInit, OnDestroy {
   private subscription?: Subscription;
   private readonly _productService = inject(ProductService);
   private readonly _customerInvoiceService = inject(CustomerInvoiceService);
@@ -54,8 +35,9 @@ export class CustomerInvoiceComponent implements OnInit {
 
   productList: IProduct[] = [];
   isFormSubmitted: boolean = false;
+  productSearchQuery: string = "";
+  showProductDropdown: boolean = false;
 
-  selectedComponent: string = "header";
   selectedBranchId: string = "";
 
   branches: IBranch[] = [];
@@ -73,6 +55,10 @@ export class CustomerInvoiceComponent implements OnInit {
     this.loadBranches();
     this.dateControl.setValue(new Date());
     this.initForm();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 
   initForm(): void {
@@ -100,7 +86,7 @@ export class CustomerInvoiceComponent implements OnInit {
 
       invoiceDate: [new Date(), Validators.required],
 
-      invoiceType: "",
+      invoiceType: "A",
       packingListPrefix: 0,
       packingListNumber: 0,
       invoicePrefix: [0, Validators.required],
@@ -141,11 +127,6 @@ export class CustomerInvoiceComponent implements OnInit {
     });
   }
 
-  onInvoiceItemChange(updatedItems: IInvoiceItem[]): void {
-    this.invoiceItems = updatedItems;
-    this.getTotalInvoiceUnits();
-  }
-
   getTotalInvoiceUnits(): void {
     this.totalInvoiceUnits = Number(
       this.invoiceItems.reduce((total, item) => total + item.quantity, 0),
@@ -159,9 +140,7 @@ export class CustomerInvoiceComponent implements OnInit {
       return total + discountedPrice * item.quantity;
     }, 0);
 
-    this.invoiceForm.patchValue({
-      subtotal1: subtotal1,
-    });
+    this.invoiceForm.patchValue({ subtotal1: subtotal1 }, { emitEvent: false });
 
     return subtotal1;
   }
@@ -183,9 +162,7 @@ export class CustomerInvoiceComponent implements OnInit {
       subtotal2 *= 1 + interestPercentage;
     }
 
-    this.invoiceForm.patchValue({
-      subtotal2: subtotal2,
-    });
+    this.invoiceForm.patchValue({ subtotal2: subtotal2 }, { emitEvent: false });
 
     return subtotal2;
   }
@@ -205,7 +182,7 @@ export class CustomerInvoiceComponent implements OnInit {
     const total = this.invoiceItems.reduce((acc, item) => {
       if (item.taxRate == vat) {
         const itemDiscount = item.discountRate ?? 0;
-        return acc + item.price * ((100 - itemDiscount) / 100);
+        return acc + item.price * item.quantity * ((100 - itemDiscount) / 100);
       } else {
         return acc;
       }
@@ -215,24 +192,16 @@ export class CustomerInvoiceComponent implements OnInit {
 
     switch (vat) {
       case this.vat21:
-        this.invoiceForm.patchValue({
-          netVat21: netVat,
-        });
+        this.invoiceForm.patchValue({ netValue21: netVat }, { emitEvent: false });
         break;
       case this.vat105:
-        this.invoiceForm.patchValue({
-          netVat105: netVat,
-        });
+        this.invoiceForm.patchValue({ netValue105: netVat }, { emitEvent: false });
         break;
       case this.vat27:
-        this.invoiceForm.patchValue({
-          netVat27: netVat,
-        });
+        this.invoiceForm.patchValue({ netValue27: netVat }, { emitEvent: false });
         break;
       case this.vat0:
-        this.invoiceForm.patchValue({
-          netVat0: netVat,
-        });
+        this.invoiceForm.patchValue({ netValue0: netVat }, { emitEvent: false });
         break;
     }
 
@@ -245,31 +214,29 @@ export class CustomerInvoiceComponent implements OnInit {
 
   calculateVat(vat: number): number {
     const netVat: number = this.getNetVat(vat);
-    const calculatedVat: number = (netVat * ((100 + vat) / 100) - netVat) * 100;
+    const calculatedVat: number = netVat * vat;
 
     switch (vat) {
       case this.vat21:
-        this.invoiceForm.patchValue({
-          vat21: calculatedVat,
-        });
+        this.invoiceForm.patchValue({ vat21: calculatedVat }, { emitEvent: false });
         break;
       case this.vat105:
-        this.invoiceForm.patchValue({
-          vat105: calculatedVat,
-        });
+        this.invoiceForm.patchValue({ vat105: calculatedVat }, { emitEvent: false });
         break;
       case this.vat27:
-        this.invoiceForm.patchValue({
-          vat27: calculatedVat,
-        });
+        this.invoiceForm.patchValue({ vat27: calculatedVat }, { emitEvent: false });
         break;
     }
 
     return calculatedVat;
   }
 
-  getInternalTax() {
-    //TODO implement method
+  getInternalTax(): number {
+    return this.invoiceItems.reduce((total, item) => {
+      const internalTaxRate = item.internalTaxRate ?? 0;
+      const lineNet = item.price * item.quantity;
+      return total + lineNet * (internalTaxRate / 100);
+    }, 0);
   }
 
   getInvoiceTotal() {
@@ -290,24 +257,23 @@ export class CustomerInvoiceComponent implements OnInit {
       Number.parseFloat(this.invoiceForm.get("localTax")?.value || "0") +
       Number.parseFloat(this.invoiceForm.get("rounding")?.value || "0");
 
-    this.invoiceForm.patchValue({
-      totalPrice: total,
-    });
+    this.invoiceForm.patchValue({ totalPrice: total }, { emitEvent: false });
     return total;
   }
 
   saveInvoice() {
+    this.isFormSubmitted = true;
     const formData = this.invoiceForm.value;
     formData.invoiceItemsRequest = this.invoiceItems;
     if (this.invoiceForm.valid && this.invoiceItems.length > 0) {
-      this._customerInvoiceService.saveInvoice(formData).subscribe(
-        (response) => {
+      this._customerInvoiceService.saveInvoice(formData).subscribe({
+        next: (response) => {
           console.log(response);
         },
-        (error) => {
+        error: (error) => {
           console.error(error.message);
         },
-      );
+      });
     } else {
       // El formulario no es válido, imprime los campos inválidos y sus errores
       console.log("El formulario no es válido. Campos inválidos:");
@@ -336,70 +302,78 @@ export class CustomerInvoiceComponent implements OnInit {
       price: product.priceResponse.purchasePrice,
       taxRate: product.priceResponse.taxRate,
       discountRate: product.priceResponse.discount,
+      internalTaxRate: 0,
       quantity: 1,
     };
     this.invoiceItems.push(invoiceItem);
+    this.productSearchQuery = "";
+    this.productList = [];
+    this.showProductDropdown = false;
+    this.getTotalInvoiceUnits();
   }
 
-  private loadProducts(params: {
-    search?: string;
-    supplierId?: string;
-    inStock?: boolean;
-  }): void {
-    this.subscription?.unsubscribe();
-
-    this.subscription = this._productService
-      .getProducts({ ...params, page: 0, size: 20 })
-      .subscribe({
-        next: (page) => (this.productList = page.content),
-        error: (err) => console.error(err),
-      });
+  removeItem(index: number): void {
+    this.invoiceItems.splice(index, 1);
+    this.getTotalInvoiceUnits();
   }
 
-  handleSearch(searchTerm: string): void {
+  updateItem(
+    index: number,
+    field: "price" | "taxRate" | "discountRate" | "quantity",
+    value: number,
+  ): void {
+    const numericValue = Number(value);
+    if (Number.isNaN(numericValue)) {
+      return;
+    }
+
+    const item = this.invoiceItems[index];
+
+    if (!item) {
+      return;
+    }
+
+    if (field === "price") {
+      item.price = Math.max(numericValue, 0);
+      return;
+    }
+
+    if (field === "taxRate") {
+      item.taxRate = Math.max(numericValue, 0);
+      return;
+    }
+
+    if (field === "discountRate") {
+      item.discountRate = Math.min(Math.max(numericValue, 0), 100);
+      return;
+    }
+
+    item.quantity = Math.max(numericValue, 1);
+    this.getTotalInvoiceUnits();
+  }
+
+  onSearchInput(searchTerm: string): void {
+    this.productSearchQuery = searchTerm;
     this.isFormSubmitted = true;
-    if (searchTerm.length >= 3) {
-      this.searchProducts(searchTerm); // sin supplierId
-    } else {
-      this.productList = [];
+
+    if (searchTerm.length >= 2) {
+      this.searchProductsWithStock(searchTerm);
+      this.showProductDropdown = true;
+      return;
     }
+
+    this.productList = [];
+    this.showProductDropdown = false;
   }
 
-  handleSearchWithStock(searchTerm: string): void {
-    this.isFormSubmitted = true;
-    if (searchTerm.length >= 3) {
-      this.searchProductsWithStock(searchTerm); // sin supplierId
-    } else {
-      this.productList = [];
-    }
-  }
-
-  searchProducts(searchTerm: string, supplierId?: string): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-
-    this.subscription = this._productService
-      .getProducts({
-        search: searchTerm,
-        supplierId: supplierId,
-        page: 0,
-        size: 20,
-      })
-      .subscribe({
-        next: (page) => {
-          this.productList = page.content;
-        },
-        error: (err) => {
-          console.error("Failed to load products", err);
-        },
-      });
+  hideDropdown(): void {
+    setTimeout(() => {
+      this.showProductDropdown = false;
+    }, 200);
   }
 
   searchProductsWithStock(searchTerm: string, supplierId?: string): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.subscription?.unsubscribe();
 
     this.subscription = this._productService
       .getProducts({
@@ -420,17 +394,22 @@ export class CustomerInvoiceComponent implements OnInit {
   }
 
   loadBranches() {
-    this._branchService.getBranches().subscribe(
-      (branches: IBranch[]) => {
+    this._branchService.getBranches().subscribe({
+      next: (branches: IBranch[]) => {
         this.branches = branches;
       },
-      (error) => {
+      error: (error) => {
         console.log("Error loading branches list", error);
       },
-    );
+    });
   }
 
   onBranchChange(branchId: string) {
+    if (!branchId) {
+      this.locations = [];
+      return;
+    }
+
     this.selectedBranchId = branchId;
     this.getLocations(branchId);
     this.invoiceForm.get("locationId")!.setValue("");

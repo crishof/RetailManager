@@ -1,577 +1,479 @@
-<form
-  [formGroup]="invoiceForm"
-  (submit)="saveInvoice()"
-  class="mb-3 text-center"
-  >
-  <div class="row">
-    <!-- CUSTOMER -->
-
-    <div class="col d-flex justify-content-center">
-      <!-- Button trigger modal -->
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#exampleModal"
+<div class="min-h-screen bg-gray-50">
+  <div class="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
+    <div class="max-w-screen-xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div>
+        <h1 class="text-lg font-semibold text-gray-800">Nueva Factura de Venta</h1>
+        <p class="text-xs text-gray-400">Cargue cliente, items y totales para emitir el comprobante</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-gray-500 hidden md:inline">
+          {{ invoiceItems.length }} item(s)
+          &nbsp;-&nbsp;
+          <span class="font-semibold text-indigo-700">Total: {{ getInvoiceTotal() | currency:'ARS':'symbol':'1.2-2' }}</span>
+        </span>
+        <button
+          type="button"
+          (click)="saveInvoice()"
+          [disabled]="isFormSubmitted && invoiceForm.invalid"
+          class="px-5 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-        Search Customer
-      </button>
+          Guardar factura
+        </button>
+      </div>
     </div>
+  </div>
 
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-      >
-      <div class="modal-dialog custom-modal-width">
-        <div class="modal-content">
-          <div class="modal-header">
-            <app-product-search
-              class="col"
-              (search)="handleSearch($event)"
-              (searchStock)="handleSearchWithStock($event)"
-            ></app-product-search>
+  <form [formGroup]="invoiceForm" (ngSubmit)="saveInvoice()" class="max-w-screen-xl mx-auto px-4 md:px-6 py-6 space-y-6">
+    <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-3.5 bg-gray-50 border-b border-gray-200 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+        </svg>
+        <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Datos Generales</h2>
+      </div>
 
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+      <div class="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-4">
+        <div class="sm:col-span-2">
+          <p class="block text-xs font-medium text-gray-600 mb-1">Cliente</p>
+          <div class="w-full border border-gray-200 rounded-lg px-3 py-2.5 bg-gray-50 text-sm">
+            <p class="font-medium text-gray-800">{{ invoiceForm.value.customerRequest.name }} {{ invoiceForm.value.customerRequest.lastname }}</p>
+            <p class="text-xs text-gray-500 mt-0.5">DNI {{ invoiceForm.value.customerRequest.dni }} - CUIT {{ invoiceForm.value.customerRequest.taxId }}</p>
           </div>
-          <div class="modal-body">
-            @if(productList.length == 0 && isFormSubmitted){
-              <div class="card bg-light">
-                <h4>No elements found in this search</h4>
-              </div>
-              }@else{
+        </div>
 
-              <app-product-list
-                [productList]="productList"
-                selectionMode="dblclick"
-                (selectProduct)="selectProduct($event)"
-                >
-              </app-product-list>
-
-            }
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
+        <div class="sm:col-span-2">
+          <p class="text-xs font-medium text-gray-600 mb-1">
+            Comprobante <span class="text-red-500">*</span>
+          </p>
+          <div class="flex items-end gap-1.5">
+            <div class="flex flex-col gap-0.5">
+              <label for="invoiceType" class="text-[10px] text-gray-400 font-medium leading-none">Tipo</label>
+              <select
+                id="invoiceType"
+                formControlName="invoiceType"
+                class="border border-gray-300 rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition w-28"
               >
-              Close
-            </button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+                <option [value]="'A'">Factura A</option>
+                <option [value]="'B'">Factura B</option>
+                <option [value]="'C'">Factura C</option>
+              </select>
+            </div>
+
+            <span class="text-gray-300 font-light text-lg pb-1.5 select-none">-</span>
+
+            <div class="flex flex-col gap-0.5">
+              <label for="invoicePrefix" class="text-[10px] text-gray-400 font-medium leading-none">Pref.</label>
+              <input
+                id="invoicePrefix"
+                type="number"
+                formControlName="invoicePrefix"
+                min="1"
+                max="9999"
+                class="w-16 text-center border border-gray-300 rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                placeholder="0001"
+              />
+            </div>
+
+            <span class="text-gray-300 font-light text-lg pb-1.5 select-none">-</span>
+
+            <div class="flex flex-col gap-0.5 flex-1">
+              <label for="invoiceNumber" class="text-[10px] text-gray-400 font-medium leading-none">Numero</label>
+              <input
+                id="invoiceNumber"
+                type="number"
+                formControlName="invoiceNumber"
+                min="1"
+                class="w-full text-center border rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                [class.border-red-400]="invoiceForm.get('invoiceNumber')?.invalid && (invoiceForm.get('invoiceNumber')?.touched || isFormSubmitted)"
+                [class.border-gray-300]="!(invoiceForm.get('invoiceNumber')?.invalid && (invoiceForm.get('invoiceNumber')?.touched || isFormSubmitted))"
+                placeholder="00000001"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div>
+            <label for="invoiceDate" class="block text-xs font-medium text-gray-600 mb-1">
+              Fecha emision <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="invoiceDate"
+              type="date"
+              formControlName="invoiceDate"
+              class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+              [class.border-red-400]="invoiceForm.get('invoiceDate')?.invalid && (invoiceForm.get('invoiceDate')?.touched || isFormSubmitted)"
+              [class.border-gray-300]="!(invoiceForm.get('invoiceDate')?.invalid && (invoiceForm.get('invoiceDate')?.touched || isFormSubmitted))"
+            />
+          </div>
+
+          <div>
+            <label for="packingListPrefix" class="block text-xs font-medium text-gray-600 mb-1">Remito</label>
+            <div class="flex items-center gap-2">
+              <input
+                id="packingListPrefix"
+                type="number"
+                formControlName="packingListPrefix"
+                class="w-16 text-center border border-gray-300 rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                placeholder="001"
+              />
+              <span class="text-gray-300">-</span>
+              <input
+                id="packingListNumber"
+                type="number"
+                formControlName="packingListNumber"
+                class="flex-1 text-center border border-gray-300 rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+                placeholder="0000001"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div>
+            <label for="branchId" class="block text-xs font-medium text-gray-600 mb-1">
+              Sucursal <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="branchId"
+              formControlName="branchId"
+              class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+              [class.border-red-400]="invoiceForm.get('branchId')?.invalid && (invoiceForm.get('branchId')?.touched || isFormSubmitted)"
+              [class.border-gray-300]="!(invoiceForm.get('branchId')?.invalid && (invoiceForm.get('branchId')?.touched || isFormSubmitted))"
+            >
+              <option value="">Seleccionar sucursal...</option>
+              @for (branch of branches; track branch.id) {
+                <option [value]="branch.id">{{ branch.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div>
+            <label for="locationId" class="block text-xs font-medium text-gray-600 mb-1">
+              Deposito / Ubicacion <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="locationId"
+              formControlName="locationId"
+              class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+              [class.border-red-400]="invoiceForm.get('locationId')?.invalid && (invoiceForm.get('locationId')?.touched || isFormSubmitted)"
+              [class.border-gray-300]="!(invoiceForm.get('locationId')?.invalid && (invoiceForm.get('locationId')?.touched || isFormSubmitted))"
+            >
+              <option value="">Seleccionar ubicacion...</option>
+              @for (location of locations; track location.id) {
+                <option [value]="location.id">{{ location.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="observations" class="block text-xs font-medium text-gray-600 mb-1">Observaciones</label>
+          <textarea
+            id="observations"
+            formControlName="observations"
+            rows="2"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition resize-none"
+            placeholder="Notas comerciales o logisticas..."
+          ></textarea>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="taxSave" class="block text-xs font-medium text-gray-600 mb-1">Opciones</label>
+          <label class="inline-flex items-center gap-2 text-sm text-gray-600 border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+            <input id="taxSave" type="checkbox" formControlName="taxSave" class="h-4 w-4 text-indigo-600 rounded border-gray-300" />
+            Discriminar impuestos en comprobante
+          </label>
+          <p class="text-xs text-gray-400 mt-2">Unidades cargadas: <span class="font-medium text-gray-600">{{ totalInvoiceUnits }}</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-3.5 bg-gray-50 border-b border-gray-200 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+          <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
+        </svg>
+        <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Items de Factura</h2>
+      </div>
+
+      <div class="p-6">
+        <div class="relative mb-6">
+          <label for="productSearch" class="block text-xs font-medium text-gray-600 mb-1">Agregar producto</label>
+          <div class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              id="productSearch"
+              type="text"
+              [value]="productSearchQuery"
+              (input)="onSearchInput($any($event.target).value)"
+              (blur)="hideDropdown()"
+              autocomplete="off"
+              class="w-full border border-gray-300 rounded-lg pl-9 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
+              placeholder="Buscar por marca, modelo o descripcion (min. 2 caracteres)..."
+            />
+          </div>
+
+          @if (showProductDropdown && productList.length > 0) {
+            <div class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-64 overflow-y-auto">
+              @for (product of productList; track product.id) {
+                <button
+                  type="button"
+                  (mousedown)="selectProduct(product)"
+                  class="w-full text-left px-4 py-2.5 hover:bg-indigo-50 transition-colors border-b border-gray-100 last:border-0 flex items-center justify-between gap-4"
+                >
+                  <div>
+                    <span class="text-sm font-semibold text-gray-800">{{ product.brandName }}</span>
+                    <span class="text-sm text-gray-600 ml-1">{{ product.model }}</span>
+                    <span class="block text-xs text-gray-400 truncate max-w-xs">{{ product.description }}</span>
+                  </div>
+                  <span class="text-xs font-semibold text-indigo-600 whitespace-nowrap shrink-0">
+                    {{ product.priceResponse.sellingPrice | currency:'ARS':'symbol':'1.2-2' }}
+                  </span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        @if (invoiceItems.length === 0) {
+          <div class="text-center py-12 text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto mb-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <p class="text-sm font-medium">Sin items cargados</p>
+            <p class="text-xs mt-1">Busque un producto para comenzar.</p>
+          </div>
+        } @else {
+          <div class="overflow-x-auto rounded-lg border border-gray-200">
+            <table class="w-full text-xs">
+              <thead>
+                <tr class="bg-gray-50 text-gray-500 uppercase text-left select-none">
+                  <th class="px-3 py-2.5 font-semibold w-8 text-center">#</th>
+                  <th class="px-3 py-2.5 font-semibold min-w-[180px]">Producto</th>
+                  <th class="px-3 py-2.5 font-semibold text-right w-28">Precio</th>
+                  <th class="px-3 py-2.5 font-semibold text-center w-20">IVA %</th>
+                  <th class="px-3 py-2.5 font-semibold text-center w-20">Desc %</th>
+                  <th class="px-3 py-2.5 font-semibold text-center w-20">Cant.</th>
+                  <th class="px-3 py-2.5 font-semibold text-right w-32">Subtotal</th>
+                  <th class="px-2 py-2.5 w-8"></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for (item of invoiceItems; track item.id + '-' + $index; let i = $index) {
+                  <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td class="px-3 py-2.5 text-center text-gray-400 font-medium">{{ i + 1 }}</td>
+
+                    <td class="px-3 py-2.5">
+                      <div class="font-semibold text-gray-800 leading-tight">
+                        {{ item.brandName }}
+                        <span class="font-normal text-gray-500 ml-1">{{ item.model }}</span>
+                      </div>
+                      <div class="text-gray-400 truncate max-w-[240px] mt-0.5">{{ item.description }}</div>
+                    </td>
+
+                    <td class="px-2 py-2">
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        [ngModel]="item.price"
+                        [ngModelOptions]="{ standalone: true }"
+                        (ngModelChange)="updateItem(i, 'price', $event)"
+                        class="w-full text-right border border-gray-200 rounded px-2 py-1.5 text-xs focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-gray-50 hover:bg-white transition"
+                      />
+                    </td>
+
+                    <td class="px-2 py-2">
+                      <input
+                        type="number"
+                        min="0"
+                        max="27"
+                        step="0.1"
+                        [ngModel]="(item.taxRate || 0) * 100"
+                        [ngModelOptions]="{ standalone: true }"
+                        (ngModelChange)="updateItem(i, 'taxRate', $event / 100)"
+                        class="w-full text-center border border-gray-200 rounded px-2 py-1.5 text-xs focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-gray-50 hover:bg-white transition"
+                      />
+                    </td>
+
+                    <td class="px-2 py-2">
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="0.1"
+                        [ngModel]="item.discountRate || 0"
+                        [ngModelOptions]="{ standalone: true }"
+                        (ngModelChange)="updateItem(i, 'discountRate', $event)"
+                        class="w-full text-center border border-gray-200 rounded px-2 py-1.5 text-xs focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-gray-50 hover:bg-white transition"
+                      />
+                    </td>
+
+                    <td class="px-2 py-2">
+                      <input
+                        type="number"
+                        min="1"
+                        step="1"
+                        [ngModel]="item.quantity"
+                        [ngModelOptions]="{ standalone: true }"
+                        (ngModelChange)="updateItem(i, 'quantity', $event)"
+                        class="w-full text-center border border-gray-200 rounded px-2 py-1.5 text-xs focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-gray-50 hover:bg-white transition"
+                      />
+                    </td>
+
+                    <td class="px-3 py-2.5 text-right font-semibold text-gray-800 tabular-nums">
+                      {{ (item.price * item.quantity * (1 - ((item.discountRate || 0) / 100))) | currency:'ARS':'symbol':'1.2-2' }}
+                    </td>
+
+                    <td class="px-2 py-2 text-center">
+                      <button type="button" (click)="removeItem(i)" class="text-gray-300 hover:text-red-500 transition" title="Eliminar item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-3.5 bg-gray-50 border-b border-gray-200 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+        </svg>
+        <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Resumen y Totales</h2>
+      </div>
+
+      <div class="p-5 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+        <div class="pb-5 md:pb-0 md:pr-6">
+          <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-3">Subtotales</p>
+
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">Subtotal 1</span>
+            <span class="font-medium text-gray-800 tabular-nums">{{ getSubtotal1() | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+
+          <div class="flex justify-between items-center py-1.5 text-sm gap-3">
+            <label for="discount" class="text-gray-500 shrink-0">Descuento %</label>
+            <input
+              id="discount"
+              type="number"
+              formControlName="discount"
+              min="0"
+              max="100"
+              step="0.01"
+              class="w-28 text-right border border-gray-200 rounded-lg px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-gray-50 hover:bg-white transition tabular-nums"
+            />
+          </div>
+
+          <div class="flex justify-between items-center py-1.5 text-sm gap-3">
+            <label for="interest" class="text-gray-500 shrink-0">Interes %</label>
+            <input
+              id="interest"
+              type="number"
+              formControlName="interest"
+              min="0"
+              step="0.01"
+              class="w-28 text-right border border-gray-200 rounded-lg px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-gray-50 hover:bg-white transition tabular-nums"
+            />
+          </div>
+
+          <div class="flex justify-between items-center py-2 mt-1 border-t border-gray-200 text-sm">
+            <span class="font-semibold text-gray-700">Subtotal 2</span>
+            <span class="font-semibold text-gray-800 tabular-nums">{{ getSubtotal2() | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+        </div>
+
+        <div class="py-5 md:py-0 md:px-6">
+          <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-3">Impuestos</p>
+
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">IVA 21%</span>
+            <span class="tabular-nums text-gray-700">{{ getVatAmount(vat21) | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">IVA 10.5%</span>
+            <span class="tabular-nums text-gray-700">{{ getVatAmount(vat105) | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">IVA 27%</span>
+            <span class="tabular-nums text-gray-700">{{ getVatAmount(vat27) | currency:'ARS':'symbol':'1.2-2' }}</span>
+          </div>
+
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">Ret. IVA</span>
+            <input type="number" formControlName="withholdingVat" class="w-24 text-right border border-gray-200 rounded px-2 py-1 bg-gray-50" />
+          </div>
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">Ret. SUSS</span>
+            <input type="number" formControlName="withholdingSuss" class="w-24 text-right border border-gray-200 rounded px-2 py-1 bg-gray-50" />
+          </div>
+          <div class="flex justify-between items-center py-1.5 text-sm">
+            <span class="text-gray-500">Ret. IIBB</span>
+            <input type="number" formControlName="withholdingGrossReceiptsTax" class="w-24 text-right border border-gray-200 rounded px-2 py-1 bg-gray-50" />
+          </div>
+        </div>
+
+        <div class="pt-5 md:pt-0 md:pl-6">
+          <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-3">Total final</p>
+
+          <div class="space-y-2">
+            <div class="flex justify-between items-center text-sm text-gray-600">
+              <span>Ret. Ganancias</span>
+              <input type="number" formControlName="withholdingIncome" class="w-24 text-right border border-gray-200 rounded px-2 py-1 bg-gray-50" />
+            </div>
+            <div class="flex justify-between items-center text-sm text-gray-600">
+              <span>Imp. provincial</span>
+              <input type="number" formControlName="stateTax" class="w-24 text-right border border-gray-200 rounded px-2 py-1 bg-gray-50" />
+            </div>
+            <div class="flex justify-between items-center text-sm text-gray-600">
+              <span>Imp. municipal</span>
+              <input type="number" formControlName="localTax" class="w-24 text-right border border-gray-200 rounded px-2 py-1 bg-gray-50" />
+            </div>
+            <div class="flex justify-between items-center text-sm text-gray-600 border-t border-gray-200 pt-2 mt-2">
+              <label for="rounding">Redondeo</label>
+              <input id="rounding" type="number" formControlName="rounding" class="w-24 text-right border border-gray-200 rounded px-2 py-1 bg-gray-50" />
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 mt-4">
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-500 font-semibold uppercase tracking-widest">Total Factura</p>
+              <p class="text-xs text-gray-500">{{ totalInvoiceUnits }} unidades</p>
+            </div>
+            <div class="mt-2 pt-2 border-t border-gray-200 flex items-baseline justify-between">
+              <span class="text-sm font-semibold text-gray-700">Importe final</span>
+              <span class="text-2xl font-bold text-gray-900 tabular-nums leading-none">{{ getInvoiceTotal() | currency:'ARS':'symbol':'1.2-2' }}</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <p>Customer</p>
-
-    <!-- BOTON -->
-    <div class="col">
-      <button type="submit" class="btn btn-outline-primary btn-sm">
-        Save Invoice
-      </button>
-    </div>
-  </div>
-
-  <!-- Pestañas -->
-
-  <div
-    class="btn-group btn-group-sm mb-3"
-    role="group"
-    aria-label="Basic outlined example"
-    >
-    <button
-      type="button"
-      class="btn btn-outline-secondary"
-      [ngClass]="{ active: selectedComponent === 'header' }"
-      (click)="selectedComponent = 'header'"
-      >
-      Header
-    </button>
-    <button
-      type="button"
-      class="btn btn-outline-secondary"
-      [ngClass]="{ active: selectedComponent === 'items' }"
-      (click)="selectedComponent = 'items'"
-      >
-      Items
-    </button>
-    <button
-      type="button"
-      class="btn btn-outline-secondary"
-      [ngClass]="{ active: selectedComponent === 'pagos' }"
-      (click)="selectedComponent = 'pagos'"
-      >
-      Pagos
-    </button>
-  </div>
-
-  <div class="container" id="tag-container">
-    @switch (selectedComponent) {
-      @case ('header') {
-        <div>
-          <div class="container">
-            <div class="row mb-3">
-              <!-- Columna 1 -->
-              <div class="col-md-3">
-                <div class="mb-3">
-                  <label for="invoiceType" class="form-label">Invoice Type</label>
-                  <select
-                    class="form-select"
-                    id="invoiceType"
-                    formControlName="invoiceType"
-                    >
-                    <option [value]="'invoiceType A'">Factura A</option>
-                    <option [value]="'invoiceType B'">Factura B</option>
-                    <option [value]="'invoiceType C'">Factura C</option>
-                  </select>
-                  @if (
-                    invoiceForm.get('invoiceType')?.invalid &&
-                    invoiceForm.get('invoiceType')?.touched
-                    ) {
-                    <div
-                      class="text-danger"
-                      >
-                      Invoice Type is required
-                    </div>
-                  }
-                </div>
-              </div>
-              <!-- Columna 2 -->
-              <div class="col-md-3">
-                <div class="mb-3">
-                  <select
-                    class="form-control form-control-sm mb-2 col-md-4"
-                    name="branchId"
-                    id="branchId"
-                    formControlName="branchId"
-                    required
-                    >
-                    <option value="">Select Branch</option>
-                    @for (branch of branches; track branch) {
-                      <option [value]="branch.id">
-                        {{ branch.name }}
-                      </option>
-                    }
-                  </select>
-                  @if (
-                    invoiceForm.get('branchId')?.invalid &&
-                    invoiceForm.get('branchId')?.touched
-                    ) {
-                    <div
-                      class="text-danger"
-                      >
-                      Branch is required
-                    </div>
-                  }
-                </div>
-                <div class="mb-3">
-                  <select
-                    class="form-control form-control-sm mb-2 col-md-4"
-                    name="locationId"
-                    id="locationId"
-                    formControlName="locationId"
-                    required
-                    >
-                    <option value="">Select Location</option>
-                    @for (location of locations; track location) {
-                      <option
-                        [value]="location.id"
-                        >
-                        {{ location.name }}
-                      </option>
-                    }
-                  </select>
-                  @if (
-                    invoiceForm.get('locationId')?.invalid &&
-                    invoiceForm.get('locationId')?.touched
-                    ) {
-                    <div
-                      class="text-danger"
-                      >
-                      Location is required
-                    </div>
-                  }
-                </div>
-                <div class="mb-3">
-                  <label for="packingListPrefix" class="form-label"
-                    >N° Remito</label
-                    >
-                    <div class="input-group">
-                      <input
-                        type="text"
-                        class="form-control me-3"
-                        id="packingListPrefix"
-                        formControlName="packingListPrefix"
-                        placeholder="001"
-                        />
-                      <span> - </span>
-                      <label for="packingListNumber" class="form-label"></label>
-                      <input
-                        type="text"
-                        class="form-control ms-3"
-                        id="packingListNumber"
-                        formControlName="packingListNumber"
-                        placeholder="0000001"
-                        />
-                    </div>
-                  </div>
-                  <div class="mb-3">
-                    <label for="invoicePrefix" class="form-label"
-                      >N° Comprobante</label
-                      >
-                      <div class="input-group">
-                        <input
-                          type="text"
-                          class="form-control me-3"
-                          id="invoicePrefix"
-                          formControlName="invoicePrefix"
-                          placeholder="001"
-                          />
-                        <span> - </span>
-                        <label for="invoiceNumber" class="form-label"></label>
-                        <input
-                          type="text"
-                          class="form-control ms-3"
-                          id="invoiceNumber"
-                          formControlName="invoiceNumber"
-                          placeholder="000001"
-                          />
-                      </div>
-                    </div>
-                    @if (
-                      invoiceForm.get('invoiceType')?.invalid &&
-                      invoiceForm.get('invoiceNumber')?.invalid &&
-                      invoiceForm.get('invoiceType')?.touched &&
-                      invoiceForm.get('invoiceNumber')?.touched
-                      ) {
-                      <div
-                        class="text-danger"
-                        >
-                        Both Invoice Prefix and Number are required
-                      </div>
-                    }
-                  </div>
-                  <!-- Columna 3 -->
-                  <div class="col-md-3">
-                    <div class="mb-3 form-check">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="taxSave"
-                        checked
-                        formControlName="taxSave"
-                        />
-                      <label for="taxSave" class="form-check-label">Tax B/W</label>
-                    </div>
-                    <div class="mb-3">
-                      <p class="mb-3">Cantidad de items: {{ invoiceItems.length }}</p>
-                      <p class="mb-3">
-                        Cantidad de unidades: {{ totalInvoiceUnits }}
-                      </p>
-                    </div>
-                  </div>
-                  <!-- Columna 4 -->
-                  <div class="col-md-3">
-                    <div class="mb-3">
-                      <label for="observations" class="form-label"
-                        >Observations</label
-                        >
-                        <textarea
-                          class="form-control"
-                          id="observations"
-                          formControlName="observations"
-                          rows="3"
-                        ></textarea>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
-            @case ('items') {
-              <div>
-                <div class="row mb-3">
-                  <div class="col d-flex justify-content-center">
-                    <!-- Button trigger modal -->
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-primary"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      >
-                      Search products
-                    </button>
-                  </div>
-                  <!-- SEARCH BOX -->
-                  @if(invoiceItems.length == 0 ){
-                    <div class="card bg-light">
-                      <h4>Add invoice products</h4>
-                      <div class="text-danger">Item list cannot be empty</div>
-                    </div>
-                    }@else{
-                    <!-- ITEMS LIST -->
-                    <app-invoice-items
-                      [invoiceItems]="invoiceItems"
-                      (invoiceItemsChange)="onInvoiceItemChange($event)"
-                    ></app-invoice-items>
-                  }
-                </div>
-                <hr />
-                <!-- TOTALES -->
-                <div class="container">
-                  <div class="row mb-3">
-                    <!-- Columna 1 -->
-                    <div class="col-md-2">
-                      <div class="mb-3">
-                        <p>Subtotal: {{ getSubtotal1() | number : "1.2-2" }}</p>
-                      </div>
-                      <div class="mb-3 d-flex align-items-center gap-3">
-                        <label for="discount" class="form-label">Discount: </label>
-                        <div class="input-group">
-                          <input
-                            type="text"
-                            class="form-control me-3"
-                            id="discount"
-                            formControlName="discount"
-                            placeholder="0"
-                            />
-                        </div>
-                      </div>
-                      <div class="mb-3 d-flex align-items-center gap-3">
-                        <label for="interest" class="form-label">Interest: </label>
-                        <div class="input-group">
-                          <input
-                            type="text"
-                            class="form-control me-3"
-                            id="interest"
-                            formControlName="interest"
-                            placeholder="0"
-                            />
-                        </div>
-                      </div>
-                      <div class="mb-3">
-                        <p>Subtotal: {{ getSubtotal2() | number : "1.2-2" }}</p>
-                      </div>
-                    </div>
-                    <!-- Columna 2 -->
-                    <div class="col-md-3">
-                      <div class="mb-3">
-                        <p>
-                          Net value Vat 21: {{ getNetVat(vat21) | number : "1.2-2" }}
-                        </p>
-                      </div>
-                      <div class="mb-3">
-                        <p>
-                          Net value Vat 10,5: {{ getNetVat(vat105) | number : "1.2-2" }}
-                        </p>
-                      </div>
-                      <div class="mb-3">
-                        <p>
-                          Net value Vat 27: {{ getNetVat(vat27) | number : "1.2-2" }}
-                        </p>
-                      </div>
-                      <div class="mb-3">
-                        <p>
-                          Net exempt value: {{ getNetVat(vat0) | number : "1.2-2" }}
-                        </p>
-                      </div>
-                    </div>
-                    <!-- Columna 3 -->
-                    <div class="col-md-3">
-                      <div class="mb-3">
-                        <p>
-                          Vat Amount 21: {{ getVatAmount(vat21) | number : "1.2-2" }}
-                        </p>
-                      </div>
-                      <div class="mb-3">
-                        <p>
-                          Vat Amount 10,5: {{ getVatAmount(vat105) | number : "1.2-2" }}
-                        </p>
-                      </div>
-                      <div class="mb-3">
-                        <p>
-                          Vat Amount 27:: {{ getVatAmount(vat27) | number : "1.2-2" }}
-                        </p>
-                      </div>
-                      <div class="mb-3">
-                        <p>Internal Tax: {{ getInternalTax() }}</p>
-                      </div>
-                    </div>
-                    <!-- Columna 4 -->
-                    <div class="col-md-3">
-                      <div class="mb-3 d-flex align-items-center gap-3">
-                        <label for="withholdingVat" class="form-label"
-                          >VAT withholding:
-                        </label>
-                        <div class="input-group">
-                          <input
-                            type="withholdingVat"
-                            class="form-control me-3"
-                            id="withholdingVat"
-                            formControlName="withholdingVat"
-                            placeholder="0"
-                            />
-                        </div>
-                      </div>
-                      <div class="mb-3 d-flex align-items-center gap-3">
-                        <label for="withholdingSuss" class="form-label"
-                          >SUSS withholding:
-                        </label>
-                        <div class="input-group">
-                          <input
-                            type="withholdingSuss"
-                            class="form-control me-3"
-                            id="withholdingSuss"
-                            formControlName="withholdingSuss"
-                            placeholder="0"
-                            />
-                        </div>
-                      </div>
-                      <div class="mb-3 d-flex align-items-center gap-3">
-                        <label for="withholdingGrossReceiptsTax" class="form-label"
-                          >GrossReceiptsTax withholding:
-                        </label>
-                        <div class="input-group">
-                          <input
-                            type="withholdingGrossReceiptsTax"
-                            class="form-control me-3"
-                            id="withholdingGrossReceiptsTax"
-                            formControlName="withholdingGrossReceiptsTax"
-                            placeholder="0"
-                            />
-                        </div>
-                      </div>
-                      <div class="mb-3 d-flex align-items-center gap-3">
-                        <label for="withholdingIncome" class="form-label"
-                          >Income withholding:
-                        </label>
-                        <div class="input-group">
-                          <input
-                            type="withholdingIncome"
-                            class="form-control me-3"
-                            id="withholdingIncome"
-                            formControlName="withholdingIncome"
-                            placeholder="0"
-                            />
-                        </div>
-                      </div>
-                      <div class="mb-3 d-flex align-items-center gap-3">
-                        <label for="localTax" class="form-label">Local Tax: </label>
-                        <div class="input-group">
-                          <input
-                            type="localTax"
-                            class="form-control me-3"
-                            id="localTax"
-                            formControlName="localTax"
-                            placeholder="0"
-                            />
-                        </div>
-                      </div>
-                      <div class="mb-3 d-flex align-items-center gap-3">
-                        <label for="stateTax" class="form-label">State Tax: </label>
-                        <div class="input-group">
-                          <input
-                            type="stateTax"
-                            class="form-control me-3"
-                            id="stateTax"
-                            formControlName="stateTax"
-                            placeholder="0"
-                            />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- Columna 3 -->
-                    <div class="col-md-3">
-                      <div class="mb-3 d-flex align-items-center gap-3">
-                        <label for="rounding" class="form-label">Rounding: </label>
-                        <div class="input-group">
-                          <input
-                            type="rounding"
-                            class="form-control me-3"
-                            id="rounding"
-                            formControlName="rounding"
-                            placeholder="0"
-                            />
-                        </div>
-                      </div>
-                      <div class="mb-3">
-                        <h4>TOTAL: ${{ getInvoiceTotal() | number : "1.2-2" }}</h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Modal -->
-                <div
-                  class="modal fade"
-                  id="exampleModal"
-                  tabindex="-1"
-                  aria-labelledby="exampleModalLabel"
-                  aria-hidden="true"
-                  >
-                  <div class="modal-dialog custom-modal-width">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <app-product-search
-                          class="col"
-                          (search)="handleSearch($event)"
-                          (searchStock)="handleSearchWithStock($event)"
-                        ></app-product-search>
-                        <button
-                          type="button"
-                          class="btn-close"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                      <div class="modal-body">
-                        @if(productList.length == 0 && isFormSubmitted){
-                          <div class="card bg-light">
-                            <h4>No elements found in this search</h4>
-                          </div>
-                          }@else{
-                          <app-product-list
-                            [productList]="productList"
-                            selectionMode="dblclick"
-                            (selectProduct)="selectProduct($event)"
-                            >
-                          </app-product-list>
-                        }
-                      </div>
-                      <div class="modal-footer">
-                        <button
-                          type="button"
-                          class="btn btn-secondary"
-                          data-bs-dismiss="modal"
-                          >
-                          Close
-                        </button>
-                        <button type="button" class="btn btn-primary">
-                          Save changes
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!--
-                @case ('pagos') {
-                  <div>
-                    <p>Pagos</p>
-                  </div>
-                }
-                -->
-              </div>
-            }
+    @if (isFormSubmitted && (invoiceForm.invalid || invoiceItems.length === 0)) {
+      <div class="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 flex items-start gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+        <span>
+          @if (invoiceItems.length === 0) {
+            Debe agregar al menos un item a la factura.
+          } @else {
+            Complete los campos obligatorios antes de guardar.
           }
-        </div>
-      </form>
-      <hr />
+        </span>
+      </div>
+    }
+  </form>
+</div>
