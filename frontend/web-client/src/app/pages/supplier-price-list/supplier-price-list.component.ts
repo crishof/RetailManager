@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, inject } from "@angular/core";
-import { SupplierPriceListService, ImportResult, ColumnHeaderSuggestion } from "../../services/supplier-price-list.service";
+import { SupplierPriceListService, ImportResult, ColumnHeaderSuggestion, ImportJobRecord } from "../../services/supplier-price-list.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import {
   FormBuilder,
@@ -104,6 +104,11 @@ export class SupplierPriceListComponent implements OnInit {
 
   // ── Modo de vista ─────────────────────────────────────────────────────────
   viewMode: ViewMode = "catalog";
+
+  // ── Historial de importaciones ─────────────────────────────────────────────
+  importHistory: ImportJobRecord[] = [];
+  loadingHistory = false;
+  showHistory = false;
 
   // ── Resumen de importación Excel ───────────────────────────────────────────
   excelImportSummary: ImportSummary | null = null;
@@ -307,12 +312,15 @@ export class SupplierPriceListComponent implements OnInit {
   openImportWorkspace(): void {
     this.clearFeedback();
     this.viewMode = "import";
+    this.showHistory = false;
+    this.loadImportHistory();
   }
 
   backToCatalog(): void {
     this.clearFeedback();
     this.viewMode = "catalog";
     this.showColumnMapping = false;
+    this.showHistory = false;
   }
 
   // ============================================================
@@ -337,6 +345,51 @@ export class SupplierPriceListComponent implements OnInit {
   /** Relacionar un artículo individual. */
   relateProduct(_product: ISupplierProduct): void {
     this.warningMessage = "Relacionar artículo: funcionalidad próximamente disponible.";
+  }
+
+  // ============================================================
+  // HISTORIAL DE IMPORTACIONES
+  // ============================================================
+  loadImportHistory(): void {
+    this.loadingHistory = true;
+    const supplierId = this.fileForm.get('supplierId')?.value || undefined;
+    this.priceListService.getImportHistory(supplierId).subscribe({
+      next: (jobs: ImportJobRecord[]) => {
+        const sorted = [...jobs].sort((a: ImportJobRecord, b: ImportJobRecord) =>
+          new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime()
+        );
+        this.importHistory = sorted;
+        this.loadingHistory = false;
+      },
+      error: () => { this.loadingHistory = false; },
+    });
+  }
+
+  toggleHistory(): void {
+    this.showHistory = !this.showHistory;
+    if (this.showHistory && this.importHistory.length === 0) {
+      this.loadImportHistory();
+    }
+  }
+
+  jobStatusLabel(status: string): string {
+    switch (status) {
+      case 'COMPLETED': return 'Completado';
+      case 'RUNNING':   return 'En curso';
+      case 'PENDING':   return 'Pendiente';
+      case 'FAILED':    return 'Fallido';
+      default:          return status;
+    }
+  }
+
+  jobStatusClass(status: string): string {
+    switch (status) {
+      case 'COMPLETED': return 'status-active';
+      case 'RUNNING':   return 'status-running';
+      case 'PENDING':   return 'status-pending';
+      case 'FAILED':    return 'status-inactive';
+      default:          return '';
+    }
   }
 
   // ============================================================

@@ -63,6 +63,9 @@
         @if (isColumnVisible('model')) {
           <td class="plist__td plist__td--model">
             <p class="plist__model">{{ product.model }}</p>
+            @if (product.priceAlerts && product.priceAlerts.length > 0) {
+              <app-price-alerts-with-history [alerts]="product.priceAlerts"></app-price-alerts-with-history>
+            }
           </td>
         }
         @if (isColumnVisible('description')) {

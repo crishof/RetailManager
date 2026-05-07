@@ -1,5 +1,6 @@
 import { IPrice } from './price.model';
 import { IStock } from './stock.model';
+import { IProductPriceLink } from './product-price-link.model';
 
 export interface IProduct {
   id: string;
@@ -16,4 +17,5 @@ export interface IProduct {
   dimensionId: string;
   stockResponses: IStock[];
   invoiceQuantity: number;
+  priceAlerts?: IProductPriceLink[];
 }

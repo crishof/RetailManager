@@ -742,6 +742,73 @@
       </div>
     }
     </article>
+
+    <!-- ════ HISTORIAL DE IMPORTACIONES ════ -->
+    <article class="spl-card spl-card--history">
+      <div class="spl-card__head">
+        <h2>
+          <span class="material-icons">history</span>
+          Historial de importaciones
+        </h2>
+        <button type="button" class="spl-btn spl-btn--ghost" (click)="toggleHistory()">
+          <span class="material-icons">{{ showHistory ? 'expand_less' : 'expand_more' }}</span>
+          {{ showHistory ? 'Ocultar' : 'Ver historial' }}
+        </button>
+      </div>
+
+      @if (showHistory) {
+        @if (loadingHistory) {
+          <div class="spl-history__loading">
+            <span class="material-icons spl-spin">autorenew</span>
+            Cargando historial...
+          </div>
+        } @else if (importHistory.length === 0) {
+          <div class="spl-history__empty">
+            <span class="material-icons">inbox</span>
+            <p>Todavía no se realizaron importaciones.</p>
+          </div>
+        } @else {
+          <div class="spl-history__table-wrapper">
+            <table class="spl-history__table">
+              <thead>
+                <tr>
+                  <th>Archivo</th>
+                  <th>Proveedor</th>
+                  <th>Estado</th>
+                  <th>Procesados</th>
+                  <th>Nuevos</th>
+                  <th>Actualizados</th>
+                  <th>Errores</th>
+                  <th>Inicio</th>
+                  <th>Fin</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (job of importHistory; track job.id) {
+                  <tr>
+                    <td class="spl-history__filename" [title]="job.fileName ?? ''">
+                      {{ job.fileName ?? '—' }}
+                    </td>
+                    <td>{{ supplierNameById(job.supplierId) }}</td>
+                    <td>
+                      <span class="spl-status-chip" [class]="jobStatusClass(job.status)">
+                        {{ jobStatusLabel(job.status) }}
+                      </span>
+                    </td>
+                    <td>{{ job.totalItems }}</td>
+                    <td class="spl-history__ok">{{ job.inserted }}</td>
+                    <td class="spl-history__ok">{{ job.updated }}</td>
+                    <td class="spl-history__err">{{ job.failed > 0 ? job.failed : '—' }}</td>
+                    <td>{{ job.startedAt | date:'dd/MM/yy HH:mm' }}</td>
+                    <td>{{ job.finishedAt ? (job.finishedAt | date:'dd/MM/yy HH:mm') : '—' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      }
+    </article>
   }
 
 </section>

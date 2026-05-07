@@ -1,0 +1,26 @@
+.price-alert-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+  margin: 0.15rem 0.1rem;
+}
+
+.price-alert-badge .material-icons {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.status-up    { background: #fff3cd; color: #856404; }
+.status-down  { background: #d4edda; color: #155724; }
+.status-new   { background: #d1ecf1; color: #0c5460; }
+.status-same  { background: #e2e3e5; color: #383d41; }
+
+.price {
+  font-weight: 700;
+  margin-left: 0.25rem;
+}

@@ -1307,3 +1307,117 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+/* ══════════════════════════════════════════
+   HISTORIAL DE IMPORTACIONES
+══════════════════════════════════════════ */
+.spl-card--history {
+  margin-top: 1.5rem;
+}
+
+.spl-card--history .spl-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spl-card--history .spl-card__head h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.spl-history__loading,
+.spl-history__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: var(--text-muted);
+}
+
+.spl-history__loading .material-icons,
+.spl-history__empty .material-icons {
+  font-size: 2rem;
+  opacity: 0.4;
+}
+
+.spl-spin {
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spl-history__table-wrapper {
+  overflow-x: auto;
+  margin-top: 0.75rem;
+}
+
+.spl-history__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.spl-history__table thead th {
+  background: var(--bg-subtle, #f5f5f5);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  white-space: nowrap;
+}
+
+.spl-history__table tbody tr {
+  border-bottom: 1px solid var(--border-color, #f0f0f0);
+  transition: background 0.15s;
+}
+
+.spl-history__table tbody tr:hover {
+  background: var(--bg-hover, #f9fafb);
+}
+
+.spl-history__table tbody td {
+  padding: 0.5rem 0.75rem;
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.spl-history__filename {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.spl-history__ok {
+  color: var(--color-success, #22863a);
+  font-weight: 500;
+}
+
+.spl-history__err {
+  color: var(--color-danger, #d73a49);
+  font-weight: 500;
+}
+
+.spl-status-chip {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-active   { background: #d4edda; color: #155724; }
+.status-running  { background: #cce5ff; color: #004085; }
+.status-pending  { background: #fff3cd; color: #856404; }
+.status-inactive { background: #f8d7da; color: #721c24; }
