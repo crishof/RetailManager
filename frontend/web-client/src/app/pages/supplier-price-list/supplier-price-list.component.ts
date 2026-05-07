@@ -12,6 +12,7 @@ import {
 import { ISupplierProduct } from "../../model/supplierProduct";
 import { SupplierService } from "../../services/supplier.service";
 import { ISupplier } from "../../model/supplier.model";
+import { LinkProductModalComponent } from "./link-product-modal/link-product-modal.component";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -60,7 +61,7 @@ export interface MappingRelation {
 @Component({
   selector: "app-supplier-price-list",
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, LinkProductModalComponent],
   templateUrl: "./supplier-price-list.component.html",
   styleUrl: "./supplier-price-list.component.css",
 })
@@ -337,14 +338,35 @@ export class SupplierPriceListComponent implements OnInit {
     this.warningMessage = "Facturar: funcionalidad próximamente disponible.";
   }
 
-  /** Relacionar artículos seleccionados con productos del sistema. */
+  // ── Modal de vinculación ───────────────────────────────────────────────────
+  showLinkModal = false;
+  productToLink: ISupplierProduct | null = null;
+
+  /** Relacionar artículos seleccionados: abre modal con el primero seleccionado. */
   relateProducts(): void {
-    this.warningMessage = "Relacionar artículos: funcionalidad próximamente disponible.";
+    if (!this.selectedProducts.length) {
+      this.warningMessage = "Seleccioná al menos un artículo para vincular.";
+      return;
+    }
+    this.relateProduct(this.selectedProducts[0]);
   }
 
   /** Relacionar un artículo individual. */
-  relateProduct(_product: ISupplierProduct): void {
-    this.warningMessage = "Relacionar artículo: funcionalidad próximamente disponible.";
+  relateProduct(product: ISupplierProduct): void {
+    this.clearFeedback();
+    this.productToLink = product;
+    this.showLinkModal = true;
+  }
+
+  onLinkConfirmed(): void {
+    this.showLinkModal = false;
+    this.productToLink = null;
+    this.successMessage = 'Artículo vinculado correctamente.';
+  }
+
+  onLinkCancelled(): void {
+    this.showLinkModal = false;
+    this.productToLink = null;
   }
 
   // ============================================================

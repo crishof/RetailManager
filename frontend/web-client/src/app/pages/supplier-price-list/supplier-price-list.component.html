@@ -812,3 +812,11 @@
   }
 
 </section>
+
+<!-- Modal: vincular artículo de proveedor con producto interno -->
+<app-link-product-modal
+  [supplierProduct]="productToLink"
+  [isOpen]="showLinkModal"
+  (linked)="onLinkConfirmed()"
+  (cancel)="onLinkCancelled()"
+></app-link-product-modal>
