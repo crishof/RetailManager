@@ -116,10 +116,11 @@ export class SidebarComponent {
     {
       title: 'Configuración',
       items: [
-        { label: 'General',           icon: 'settings',     route: '/configuracion/general'  },
-        { label: 'Usuarios',          icon: 'manage_accounts', route: '/configuracion/usuarios'},
-        { label: 'Archivos maestros', icon: 'folder_open',  route: '/configuracion/archivos' },
-        { label: 'Importaciones',     icon: 'upload_file',  route: '/importaciones'          },
+        { label: 'General',             icon: 'settings',        route: '/configuracion/general'           },
+        { label: 'Sucursales y Depós.', icon: 'store',           route: '/configuracion/general/sucursales'},
+        { label: 'Usuarios',            icon: 'manage_accounts', route: '/configuracion/usuarios'          },
+        { label: 'Archivos maestros',   icon: 'folder_open',     route: '/configuracion/archivos'          },
+        { label: 'Importaciones',       icon: 'upload_file',     route: '/importaciones'                   },
       ],
     },
   ];

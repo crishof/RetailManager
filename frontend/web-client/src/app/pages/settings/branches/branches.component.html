@@ -1,0 +1,257 @@
+<section class="branches">
+  <header class="branches__header">
+    <div>
+      <h1 class="branches__title">Sucursales y Depósitos</h1>
+      <p class="branches__subtitle">Gestioná las sucursales de la empresa y sus depósitos o ubicaciones de stock.</p>
+    </div>
+    <button class="btn btn--primary" type="button" (click)="openCreateBranch()">
+      <span class="material-icons">add_business</span>
+      Nueva sucursal
+    </button>
+  </header>
+
+  @if (successMessage) {
+    <div class="alert alert--success">{{ successMessage }}</div>
+  }
+  @if (errorMessage) {
+    <div class="alert alert--error">{{ errorMessage }}</div>
+  }
+
+  <div class="branches__workspace">
+    <!-- Panel izquierdo: lista de sucursales -->
+    <aside class="branch-list">
+      <h2 class="branch-list__heading">Sucursales</h2>
+
+      @if (loading) {
+        <p class="branch-list__empty">Cargando...</p>
+      } @else if (!branches.length) {
+        <p class="branch-list__empty">No hay sucursales registradas.</p>
+      } @else {
+        <ul class="branch-list__items">
+          @for (branch of branches; track branch.id) {
+            <li
+              class="branch-list__item"
+              [class.branch-list__item--active]="selectedBranch?.id === branch.id"
+              (click)="selectBranch(branch)"
+            >
+              <span class="branch-list__item-badge" [class.badge--inactive]="!branch.active">
+                {{ branch.code }}
+              </span>
+              <div class="branch-list__item-info">
+                <span class="branch-list__item-name">{{ branch.name }}</span>
+                @if (branch.address) {
+                  <span class="branch-list__item-address">{{ branch.address }}</span>
+                }
+              </div>
+              <div class="branch-list__item-actions">
+                <button
+                  class="icon-btn"
+                  title="Editar"
+                  (click)="openEditBranch(branch); $event.stopPropagation()"
+                >
+                  <span class="material-icons">edit</span>
+                </button>
+                <button
+                  class="icon-btn icon-btn--danger"
+                  title="Eliminar"
+                  (click)="confirmDeleteBranch(branch, $event)"
+                >
+                  <span class="material-icons">delete</span>
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </aside>
+
+    <!-- Panel derecho: detalle de sucursal y depósitos -->
+    <main class="branch-detail">
+      @if (!selectedBranch) {
+        <div class="branch-detail__empty">
+          <span class="material-icons">store</span>
+          <p>Seleccioná una sucursal para ver sus depósitos.</p>
+        </div>
+      } @else {
+        <div class="branch-detail__header">
+          <div>
+            <h2 class="branch-detail__name">{{ selectedBranch.name }}</h2>
+            <span class="branch-detail__meta">
+              Código: <strong>{{ selectedBranch.code }}</strong> &nbsp;·&nbsp;
+              Estado: <strong>{{ selectedBranch.active ? 'Activa' : 'Inactiva' }}</strong>
+              @if (selectedBranch.address) {
+                &nbsp;·&nbsp; {{ selectedBranch.address }}
+              }
+            </span>
+          </div>
+          <button class="btn btn--primary btn--sm" type="button" (click)="openCreateLocation()">
+            <span class="material-icons">add</span>
+            Nuevo depósito
+          </button>
+        </div>
+
+        <table class="locations-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (!selectedBranch.locations.length) {
+              <tr>
+                <td colspan="5" class="locations-table__empty">Sin depósitos registrados.</td>
+              </tr>
+            }
+            @for (loc of selectedBranch.locations; track loc.id) {
+              <tr>
+                <td><code>{{ loc.code }}</code></td>
+                <td>{{ loc.name }}</td>
+                <td>{{ locationTypeLabel(loc.locationType) }}</td>
+                <td>
+                  <span class="status-chip" [class.status-chip--inactive]="!loc.active">
+                    {{ loc.active ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td class="locations-table__actions">
+                  <button class="icon-btn" title="Editar" (click)="openEditLocation(loc)">
+                    <span class="material-icons">edit</span>
+                  </button>
+                  <button class="icon-btn icon-btn--danger" title="Eliminar" (click)="confirmDeleteLocation(loc)">
+                    <span class="material-icons">delete</span>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </main>
+  </div>
+</section>
+
+<!-- ── Modal: Sucursal ──────────────────────────────────────────────────── -->
+@if (branchModalOpen) {
+  <div class="modal-overlay" (click)="branchModalOpen = false">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <header class="modal__header">
+        <h3>{{ branchModalMode === 'create' ? 'Nueva sucursal' : 'Editar sucursal' }}</h3>
+        <button class="icon-btn" (click)="branchModalOpen = false">
+          <span class="material-icons">close</span>
+        </button>
+      </header>
+      <form class="modal__body" [formGroup]="branchForm" (ngSubmit)="saveBranch()">
+        <label class="field">
+          <span class="field__label">Código *</span>
+          <input
+            type="text"
+            formControlName="code"
+            class="field__input"
+            placeholder="Ej: SU01"
+            maxlength="20"
+          />
+        </label>
+        <label class="field">
+          <span class="field__label">Nombre *</span>
+          <input type="text" formControlName="name" class="field__input" placeholder="Ej: Casa Central" />
+        </label>
+        <label class="field">
+          <span class="field__label">Dirección</span>
+          <input type="text" formControlName="address" class="field__input" placeholder="Av. Corrientes 1234" />
+        </label>
+        <label class="field field--checkbox">
+          <input type="checkbox" formControlName="active" />
+          <span class="field__label">Activa</span>
+        </label>
+        <footer class="modal__footer">
+          <button type="button" class="btn btn--ghost" (click)="branchModalOpen = false">Cancelar</button>
+          <button type="submit" class="btn btn--primary" [disabled]="branchForm.invalid || saving">
+            {{ saving ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- ── Modal: Depósito ──────────────────────────────────────────────────── -->
+@if (locationModalOpen) {
+  <div class="modal-overlay" (click)="locationModalOpen = false">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <header class="modal__header">
+        <h3>{{ locationModalMode === 'create' ? 'Nuevo depósito' : 'Editar depósito' }}</h3>
+        <button class="icon-btn" (click)="locationModalOpen = false">
+          <span class="material-icons">close</span>
+        </button>
+      </header>
+      <form class="modal__body" [formGroup]="locationForm" (ngSubmit)="saveLocation()">
+        <label class="field">
+          <span class="field__label">Código *</span>
+          <input type="text" formControlName="code" class="field__input" placeholder="Ej: DEP01" maxlength="20" />
+        </label>
+        <label class="field">
+          <span class="field__label">Nombre *</span>
+          <input type="text" formControlName="name" class="field__input" placeholder="Ej: Depósito Principal" />
+        </label>
+        <label class="field">
+          <span class="field__label">Tipo *</span>
+          <select formControlName="locationType" class="field__input">
+            @for (t of locationTypes; track t.value) {
+              <option [value]="t.value">{{ t.label }}</option>
+            }
+          </select>
+        </label>
+        <label class="field field--checkbox">
+          <input type="checkbox" formControlName="active" />
+          <span class="field__label">Activo</span>
+        </label>
+        <footer class="modal__footer">
+          <button type="button" class="btn btn--ghost" (click)="locationModalOpen = false">Cancelar</button>
+          <button type="submit" class="btn btn--primary" [disabled]="locationForm.invalid || saving">
+            {{ saving ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- ── Confirm: Eliminar sucursal ───────────────────────────────────────── -->
+@if (deletingBranch) {
+  <div class="modal-overlay" (click)="deletingBranch = null">
+    <div class="modal modal--confirm" (click)="$event.stopPropagation()">
+      <header class="modal__header">
+        <h3>Eliminar sucursal</h3>
+      </header>
+      <div class="modal__body">
+        <p>¿Estás seguro que querés eliminar la sucursal <strong>{{ deletingBranch.name }}</strong>?
+        Esta acción eliminará también todos sus depósitos.</p>
+      </div>
+      <footer class="modal__footer">
+        <button type="button" class="btn btn--ghost" (click)="deletingBranch = null">Cancelar</button>
+        <button type="button" class="btn btn--danger" (click)="deleteBranch()">Eliminar</button>
+      </footer>
+    </div>
+  </div>
+}
+
+<!-- ── Confirm: Eliminar depósito ───────────────────────────────────────── -->
+@if (deletingLocation) {
+  <div class="modal-overlay" (click)="deletingLocation = null">
+    <div class="modal modal--confirm" (click)="$event.stopPropagation()">
+      <header class="modal__header">
+        <h3>Eliminar depósito</h3>
+      </header>
+      <div class="modal__body">
+        <p>¿Eliminar el depósito <strong>{{ deletingLocation.name }}</strong>?</p>
+      </div>
+      <footer class="modal__footer">
+        <button type="button" class="btn btn--ghost" (click)="deletingLocation = null">Cancelar</button>
+        <button type="button" class="btn btn--danger" (click)="deleteLocation()">Eliminar</button>
+      </footer>
+    </div>
+  </div>
+}

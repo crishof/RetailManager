@@ -11,11 +11,11 @@ export class CustomerInvoiceService {
   private readonly _http = inject(HttpClient);
   private readonly _urlBase = `${environment.gatewayUrl}/api/v1/sales`;
 
-  getAll(): Observable<ICustomerInvoice> {
-    return this._http.get<ICustomerInvoice[]>(`${this._urlBase}/getAll`);
+  getAll(): Observable<ICustomerInvoice[]> {
+    return this._http.get<ICustomerInvoice[]>(this._urlBase);
   }
 
-  saveInvoice(formData: FormData): Observable<any> {
-    return this._http.post(`${this._urlBase}/save`, formData);
+  saveInvoice(invoice: ICustomerInvoice): Observable<ICustomerInvoice> {
+    return this._http.post<ICustomerInvoice>(this._urlBase, invoice);
   }
 }

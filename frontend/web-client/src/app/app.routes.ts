@@ -17,6 +17,7 @@ import { StatementOfAccountComponent } from './pages/supplier/statement-of-accou
 import { SupplierPriceListComponent } from './pages/supplier-price-list/supplier-price-list.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CustomerInvoiceComponent } from './pages/customer/customer-invoice/customer-invoice.component';
+import { BranchesComponent } from './pages/settings/branches/branches.component';
 import { EnConstruccionComponent } from './shared/en-construccion/en-construccion.component';
 
 export const routes: Routes = [
@@ -85,10 +86,11 @@ export const routes: Routes = [
   { path: 'contabilidad/libro-mayor', component: EnConstruccionComponent, data: { titulo: 'Libro Mayor' } },
 
   // ── Configuración ──────────────────────────────────
-  { path: 'configuracion/general',  component: EnConstruccionComponent, data: { titulo: 'Configuración General' } },
-  { path: 'configuracion/usuarios', component: EnConstruccionComponent, data: { titulo: 'Usuarios' } },
-  { path: 'configuracion/archivos', component: EnConstruccionComponent, data: { titulo: 'Archivos Maestros' } },
-  { path: 'importaciones',          component: EnConstruccionComponent, data: { titulo: 'Importaciones' } },
+  { path: 'configuracion/general',              component: EnConstruccionComponent, data: { titulo: 'Configuración General' } },
+  { path: 'configuracion/general/sucursales',   component: BranchesComponent },
+  { path: 'configuracion/usuarios',             component: EnConstruccionComponent, data: { titulo: 'Usuarios' } },
+  { path: 'configuracion/archivos',             component: EnConstruccionComponent, data: { titulo: 'Archivos Maestros' } },
+  { path: 'importaciones',                      component: EnConstruccionComponent, data: { titulo: 'Importaciones' } },
 
   // ── Fallback ───────────────────────────────────────
   { path: '**', redirectTo: '', pathMatch: 'full' },

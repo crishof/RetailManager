@@ -12,10 +12,10 @@ export class SupplierInvoiceService {
   private readonly _urlBase = `${environment.gatewayUrl}/api/v1/purchases`;
 
   getAll(): Observable<ISupplierInvoice[]> {
-    return this._http.get<ISupplierInvoice[]>(`${this._urlBase}/getAll`);
+    return this._http.get<ISupplierInvoice[]>(this._urlBase);
   }
 
-  saveInvoice(payload: ISupplierInvoice): Observable<any> {
-    return this._http.post(`${this._urlBase}/save`, payload);
+  saveInvoice(payload: ISupplierInvoice): Observable<ISupplierInvoice> {
+    return this._http.post<ISupplierInvoice>(this._urlBase, payload);
   }
 }
