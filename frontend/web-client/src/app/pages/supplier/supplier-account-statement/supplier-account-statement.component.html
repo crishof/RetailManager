@@ -1,0 +1,110 @@
+<!-- Toolbar -->
+<div class="sas-toolbar">
+  <div class="sas-filters">
+    <select [(ngModel)]="filterType" (change)="applyFilters()" class="sas-select">
+      <option value="ALL">Todos</option>
+      <option value="INVOICE">Facturas</option>
+      <option value="PAYMENT">Pagos</option>
+    </select>
+    <input type="date" [(ngModel)]="filterFrom" (change)="applyFilters()" class="sas-input" placeholder="Desde" />
+    <input type="date" [(ngModel)]="filterTo"   (change)="applyFilters()" class="sas-input" placeholder="Hasta" />
+  </div>
+  <button class="btn btn--primary btn--sm" (click)="openPaymentForm()">+ Registrar pago</button>
+</div>
+
+<!-- Saldo -->
+<div class="sas-balance" [class.sas-balance--debt]="balance > 0" [class.sas-balance--ok]="balance <= 0">
+  <span class="sas-balance__label">Saldo actual:</span>
+  <span class="sas-balance__value">${{ balance | number:'1.2-2' }}</span>
+  <span class="sas-balance__hint">{{ balance > 0 ? 'Deuda pendiente' : balance < 0 ? 'Saldo a favor' : 'Sin deuda' }}</span>
+</div>
+
+<!-- Payment form -->
+@if (showPaymentForm) {
+  <form class="sas-form" [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
+    <h4 class="sas-form__title">Registrar pago</h4>
+    <div class="sas-form__grid">
+      <div class="sas-form__field">
+        <label>Fecha <span class="req">*</span></label>
+        <input type="date" formControlName="paymentDate" />
+      </div>
+      <div class="sas-form__field">
+        <label>Importe <span class="req">*</span></label>
+        <input type="number" step="0.01" min="0" formControlName="amount" />
+      </div>
+      <div class="sas-form__field">
+        <label>Medio de pago <span class="req">*</span></label>
+        <select formControlName="paymentMethod">
+          <option value="">-- Seleccionar --</option>
+          <option value="CASH">Efectivo</option>
+          <option value="TRANSFER">Transferencia</option>
+          <option value="CHECK">Cheque</option>
+          <option value="CARD">Tarjeta</option>
+          <option value="OTHER">Otro</option>
+        </select>
+      </div>
+      <div class="sas-form__field">
+        <label>Referencia</label>
+        <input type="text" formControlName="reference" />
+      </div>
+      <div class="sas-form__field sas-form__field--full">
+        <label>Descripción</label>
+        <input type="text" formControlName="description" />
+      </div>
+    </div>
+    @if (saveError) {
+      <p class="sas-form__error">{{ saveError }}</p>
+    }
+    <div class="sas-form__actions">
+      <button type="button" class="btn btn--ghost btn--sm" (click)="cancelPayment()">Cancelar</button>
+      <button type="submit" class="btn btn--primary btn--sm" [disabled]="isSaving">
+        {{ isSaving ? 'Guardando...' : 'Confirmar pago' }}
+      </button>
+    </div>
+  </form>
+}
+
+<!-- Movements -->
+@if (loading) {
+  <p class="sas-msg">Cargando movimientos...</p>
+} @else if (errorMessage) {
+  <p class="sas-msg sas-msg--error">{{ errorMessage }}</p>
+} @else if (filtered.length === 0) {
+  <p class="sas-msg">Sin movimientos para el período seleccionado.</p>
+} @else {
+  <table class="sas-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Referencia</th>
+        <th>Descripción</th>
+        <th class="sas-table__num">Débito</th>
+        <th class="sas-table__num">Crédito</th>
+        <th class="sas-table__num">Saldo</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (m of filtered; track m.id) {
+        <tr [class.sas-table__row--invoice]="m.type === 'INVOICE'"
+            [class.sas-table__row--payment]="m.type === 'PAYMENT'">
+          <td>{{ m.date | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <span class="sas-badge" [class.sas-badge--invoice]="m.type === 'INVOICE'"
+                                    [class.sas-badge--payment]="m.type === 'PAYMENT'">
+              {{ m.type === 'INVOICE' ? 'Factura' : m.type === 'PAYMENT' ? 'Pago' : 'Ajuste' }}
+            </span>
+          </td>
+          <td>{{ m.reference ?? '—' }}</td>
+          <td class="sas-table__desc">{{ m.description ?? '—' }}</td>
+          <td class="sas-table__num sas-table__debit">{{ m.amount > 0 ? (m.amount | number:'1.2-2') : '' }}</td>
+          <td class="sas-table__num sas-table__credit">{{ m.amount < 0 ? ((-m.amount) | number:'1.2-2') : '' }}</td>
+          <td class="sas-table__num" [class.sas-table__bal--pos]="m.balance > 0"
+                                     [class.sas-table__bal--neg]="m.balance < 0">
+            ${{ m.balance | number:'1.2-2' }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

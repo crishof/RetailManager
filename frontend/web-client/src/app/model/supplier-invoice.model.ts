@@ -9,6 +9,7 @@ export interface IOtherConcept {
 }
 
 export interface ISupplierInvoice {
+  id?: string;
   supplierId: string;
   invoiceType: string;
   invoiceDate: string;
@@ -16,12 +17,15 @@ export interface ISupplierInvoice {
   savedDate: string;
   invoicePrefix: number;
   invoiceNumber: number;
-  packingListNumbers: string[];
+  packingListPrefix?: number;
+  packingListNumber?: number;
+  packingListNumbers?: string[];
   branchId: string;
   locationId: string;
   observations: string;
-  invoiceItems: IInvoiceItem[];
+  invoiceItemsRequest: IInvoiceItem[];
   otherConcepts: IOtherConcept[];
+  saveStocks: boolean;
   discount: number;
   interest: number;
   subtotal1: number;

@@ -1,1 +1,131 @@
-<p>customer works!</p>
+<div class="cust-layout">
+
+  <!-- ── LEFT: Lista ───────────────────────────────────────────── -->
+  <aside class="cust-sidebar">
+    <div class="cust-sidebar__search">
+      <input
+        type="text"
+        placeholder="Buscar cliente..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        (keydown.enter)="onSearch()"
+        class="cust-search-input"
+      />
+    </div>
+
+    <div class="cust-sidebar__actions">
+      <button class="btn btn--primary btn--sm" (click)="openNew()">+ Nuevo</button>
+    </div>
+
+    @if (loading) {
+      <p class="cust-sidebar__msg">Cargando...</p>
+    } @else if (errorMessage) {
+      <p class="cust-sidebar__msg cust-sidebar__msg--error">{{ errorMessage }}</p>
+    } @else if (customers.length === 0) {
+      <p class="cust-sidebar__msg">Sin resultados.</p>
+    } @else {
+      <ul class="cust-list">
+        @for (c of customers; track trackById($index, c)) {
+          <li
+            class="cust-list__item"
+            [class.cust-list__item--selected]="currentCustomer?.id === c.id"
+            (click)="selectCustomer(c)"
+          >
+            <span class="cust-list__name">{{ c.name }} {{ c.lastname }}</span>
+            <span class="cust-list__dni">{{ c.dni }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </aside>
+
+  <!-- ── RIGHT: Detalle / Formulario ──────────────────────────── -->
+  <main class="cust-main">
+
+    @if (showForm) {
+      <!-- FORM -->
+      <form class="cust-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <h3 class="cust-form__title">{{ editingId ? 'Editar cliente' : 'Nuevo cliente' }}</h3>
+
+        <div class="cust-form__grid">
+          <div class="cust-form__field">
+            <label>Nombre <span class="req">*</span></label>
+            <input formControlName="name" type="text" />
+          </div>
+          <div class="cust-form__field">
+            <label>Apellido <span class="req">*</span></label>
+            <input formControlName="lastname" type="text" />
+          </div>
+          <div class="cust-form__field">
+            <label>DNI</label>
+            <input formControlName="dni" type="text" />
+          </div>
+          <div class="cust-form__field">
+            <label>CUIT / Tax ID</label>
+            <input formControlName="taxId" type="text" />
+          </div>
+          <div class="cust-form__field">
+            <label>Email</label>
+            <input formControlName="email" type="email" />
+          </div>
+          <div class="cust-form__field">
+            <label>Teléfono</label>
+            <input formControlName="phone" type="text" />
+          </div>
+        </div>
+
+        @if (saveError) {
+          <p class="cust-form__error">{{ saveError }}</p>
+        }
+
+        <div class="cust-form__actions">
+          <button type="button" class="btn btn--ghost" (click)="cancelForm()">Cancelar</button>
+          <button type="submit" class="btn btn--primary" [disabled]="isSaving">
+            {{ isSaving ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+
+    } @else if (currentCustomer) {
+      <!-- DETALLE -->
+      <section class="cust-detail">
+        <header class="cust-detail__header">
+          <div>
+            <h3>{{ currentCustomer.name }} {{ currentCustomer.lastname }}</h3>
+            <span class="cust-detail__id">ID {{ currentCustomer.id }}</span>
+          </div>
+          <div class="cust-detail__header-actions">
+            <button class="btn btn--ghost btn--sm" (click)="openEdit()">Editar</button>
+            <button class="btn btn--danger btn--sm" (click)="deleteCustomer()">Eliminar</button>
+          </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="cust-tabs">
+          <button class="cust-tab" [class.cust-tab--active]="activeTab === 'datos'" (click)="activeTab = 'datos'">Datos</button>
+          <button class="cust-tab" [class.cust-tab--active]="activeTab === 'ventas'" (click)="activeTab = 'ventas'">Historial de ventas</button>
+        </div>
+
+        @if (activeTab === 'datos') {
+          <dl class="cust-detail__dl">
+            <div><dt>DNI</dt><dd>{{ currentCustomer.dni || '—' }}</dd></div>
+            <div><dt>CUIT / Tax ID</dt><dd>{{ currentCustomer.taxId || '—' }}</dd></div>
+            <div><dt>Email</dt><dd>{{ currentCustomer.email || '—' }}</dd></div>
+            <div><dt>Teléfono</dt><dd>{{ currentCustomer.phone || '—' }}</dd></div>
+          </dl>
+        }
+
+        @if (activeTab === 'ventas') {
+          <app-customer-sale-history [customerId]="currentCustomer.id ?? null" />
+        }
+      </section>
+
+    } @else {
+      <div class="cust-empty">
+        <span class="material-icons">person_outline</span>
+        <p>Seleccioná un cliente o creá uno nuevo.</p>
+      </div>
+    }
+
+  </main>
+</div>

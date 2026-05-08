@@ -17,6 +17,8 @@ import { StatementOfAccountComponent } from './pages/supplier/statement-of-accou
 import { SupplierPriceListComponent } from './pages/supplier-price-list/supplier-price-list.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CustomerInvoiceComponent } from './pages/customer/customer-invoice/customer-invoice.component';
+import { CustomerComponent } from './pages/customer/customer/customer.component';
+import { CashComponent } from './pages/cash/cash.component';
 import { BranchesComponent } from './pages/settings/branches/branches.component';
 import { EnConstruccionComponent } from './shared/en-construccion/en-construccion.component';
 
@@ -56,14 +58,14 @@ export const routes: Routes = [
   { path: 'statementAccount/:id', component: StatementOfAccountComponent },
 
   // ── Clientes ───────────────────────────────────────
-  { path: 'clientes', component: EnConstruccionComponent, data: { titulo: 'Clientes' } },
+  { path: 'clientes', component: CustomerComponent },
 
   // ── Almacén ────────────────────────────────────────
   { path: 'almacen/remito',     component: EnConstruccionComponent, data: { titulo: 'Remito' } },
   { path: 'almacen/inventario', component: EnConstruccionComponent, data: { titulo: 'Inventario' } },
 
   // ── Caja ───────────────────────────────────────────
-  { path: 'caja', component: EnConstruccionComponent, data: { titulo: 'Caja Diaria' } },
+  { path: 'caja', component: CashComponent },
 
   // ── Ecommerce ──────────────────────────────────────
   { path: 'ecommerce/ordenes',   component: EnConstruccionComponent, data: { titulo: 'Órdenes Ecommerce' } },

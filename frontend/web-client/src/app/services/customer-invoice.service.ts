@@ -15,6 +15,10 @@ export class CustomerInvoiceService {
     return this._http.get<ICustomerInvoice[]>(this._urlBase);
   }
 
+  getByCustomerId(customerId: string): Observable<ICustomerInvoice[]> {
+    return this._http.get<ICustomerInvoice[]>(`${this._urlBase}/customer/${customerId}`);
+  }
+
   saveInvoice(invoice: ICustomerInvoice): Observable<ICustomerInvoice> {
     return this._http.post<ICustomerInvoice>(this._urlBase, invoice);
   }

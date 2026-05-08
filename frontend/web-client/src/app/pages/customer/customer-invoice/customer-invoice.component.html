@@ -11,13 +11,23 @@
           &nbsp;-&nbsp;
           <span class="font-semibold text-indigo-700">Total: {{ getInvoiceTotal() | currency:'ARS':'symbol':'1.2-2' }}</span>
         </span>
+        @if (saveSuccess) {
+          <span class="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+            ✓ Venta guardada correctamente.
+          </span>
+        }
+        @if (saveError) {
+          <span class="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+            {{ saveError }}
+          </span>
+        }
         <button
           type="button"
           (click)="saveInvoice()"
-          [disabled]="isFormSubmitted && invoiceForm.invalid"
+          [disabled]="isSaving"
           class="px-5 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Guardar factura
+          {{ isSaving ? 'Guardando...' : 'Guardar factura' }}
         </button>
       </div>
     </div>

@@ -1,0 +1,74 @@
+@if (loading) {
+  <div class="ph__loading">
+    <span class="material-icons rotating">sync</span>
+    <p>Cargando facturas...</p>
+  </div>
+} @else if (errorMessage) {
+  <div class="ph__error">
+    <span class="material-icons">error_outline</span>
+    {{ errorMessage }}
+  </div>
+} @else if (invoices.length === 0) {
+  <div class="ph__empty">
+    <span class="material-icons">receipt_long</span>
+    <p>No hay facturas registradas para este proveedor.</p>
+  </div>
+} @else {
+  <div class="ph__header">
+    <h4>Historial de compras <span class="ph__badge">{{ invoices.length }}</span></h4>
+  </div>
+  <div class="ph__list">
+    @for (inv of invoices; track trackByInvoiceId($index, inv)) {
+      <div class="ph__item" [class.ph__item--expanded]="expandedInvoiceId === inv.id">
+        <button class="ph__item-header" (click)="toggleExpand(inv.id!)">
+          <div class="ph__item-meta">
+            <span class="ph__type">{{ inv.invoiceType }}</span>
+            <span class="ph__number">{{ inv.invoiceNumber }}</span>
+            <span class="ph__date">{{ inv.invoiceDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="ph__item-summary">
+            <span class="ph__items-count">{{ inv.invoiceItemsRequest.length }} ítem(s)</span>
+            <span class="ph__total">${{ inv.totalPrice | number:'1.2-2' }}</span>
+            <span class="material-icons ph__chevron">
+              {{ expandedInvoiceId === inv.id ? 'expand_less' : 'expand_more' }}
+            </span>
+          </div>
+        </button>
+
+        @if (expandedInvoiceId === inv.id) {
+          <div class="ph__item-body">
+            @if (inv.invoiceItemsRequest && inv.invoiceItemsRequest.length > 0) {
+              <table class="ph__table">
+                <thead>
+                  <tr>
+                    <th>Producto ID</th>
+                    <th>Cantidad</th>
+                    <th>Precio unit.</th>
+                    <th>IVA %</th>
+                    <th>Desc. %</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of inv.invoiceItemsRequest; track item.id) {
+                    <tr>
+                      <td class="ph__product-id">{{ item.id }}</td>
+                      <td>{{ item.quantity }}</td>
+                      <td>${{ item.price | number:'1.2-2' }}</td>
+                      <td>{{ item.taxRate }}%</td>
+                      <td>{{ item.discountRate }}%</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            } @else {
+              <p class="ph__no-items">Sin ítems registrados.</p>
+            }
+            @if (inv.observations) {
+              <p class="ph__obs"><strong>Observaciones:</strong> {{ inv.observations }}</p>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

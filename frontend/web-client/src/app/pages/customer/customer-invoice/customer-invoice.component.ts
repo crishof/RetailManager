@@ -46,6 +46,10 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
   invoiceItems: IInvoiceItem[] = [];
   totalInvoiceUnits: number = 0;
 
+  isSaving = false;
+  saveSuccess = false;
+  saveError = '';
+
   vat21: number = 0.21;
   vat105: number = 0.105;
   vat27: number = 0.27;
@@ -263,34 +267,30 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
 
   saveInvoice() {
     this.isFormSubmitted = true;
-    const formData = this.invoiceForm.value;
-    formData.invoiceItemsRequest = this.invoiceItems;
-    if (this.invoiceForm.valid && this.invoiceItems.length > 0) {
-      this._customerInvoiceService.saveInvoice(formData).subscribe({
-        next: (response) => {
-          console.log(response);
-        },
-        error: (error) => {
-          console.error(error.message);
-        },
-      });
-    } else {
-      // El formulario no es válido, imprime los campos inválidos y sus errores
-      console.log("El formulario no es válido. Campos inválidos:");
-      Object.keys(this.invoiceForm.controls).forEach((key) => {
-        const control = this.invoiceForm.get(key);
-        if (control?.errors) {
-          console.log(key + ":", control.errors);
-        }
-      });
-
-      // Marca los campos inválidos como tocados para mostrar mensajes de error en el HTML
-      Object.values(this.invoiceForm.controls).forEach((control) => {
-        if (control instanceof FormControl) {
-          control.markAsTouched();
-        }
-      });
+    if (!this.invoiceForm.valid || this.invoiceItems.length === 0) {
+      Object.values(this.invoiceForm.controls).forEach(c => c.markAsTouched());
+      return;
     }
+
+    this.isSaving = true;
+    this.saveError = '';
+    this.saveSuccess = false;
+
+    const formData = { ...this.invoiceForm.value, invoiceItemsRequest: this.invoiceItems };
+    this._customerInvoiceService.saveInvoice(formData).subscribe({
+      next: () => {
+        this.isSaving = false;
+        this.saveSuccess = true;
+        this.invoiceItems = [];
+        this.invoiceForm.reset();
+        this.initForm();
+        setTimeout(() => (this.saveSuccess = false), 4000);
+      },
+      error: (err) => {
+        this.isSaving = false;
+        this.saveError = err?.error?.message ?? 'Error al guardar la venta.';
+      }
+    });
   }
 
   selectProduct(product: IProduct): void {

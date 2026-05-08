@@ -48,6 +48,9 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
   productSearchQuery = '';
 
   isFormSubmitted = false;
+  isSaving = false;
+  saveSuccess = false;
+  saveError = '';
 
   readonly vatOptions = [
     { label: '0%', value: 0 },
@@ -91,6 +94,7 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
       interest: [0],
       rounding: [0],
       observations: [''],
+      saveStocks: [true],
     });
 
     this.invoiceForm.get('branchId')!.valueChanges.subscribe((id) =>
@@ -336,7 +340,8 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
       branchId: fv.branchId,
       locationId: fv.locationId,
       observations: fv.observations,
-      invoiceItems: allItems
+      saveStocks: fv.saveStocks ?? true,
+      invoiceItemsRequest: allItems
         .filter((i) => i.type === 'product')
         .map<IInvoiceItem>((i) => ({
           id: i.id,
@@ -373,9 +378,24 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
       totalPrice: this.total,
     };
 
+    this.isSaving = true;
+    this.saveSuccess = false;
+    this.saveError = '';
+
     this.supplierInvoiceService.saveInvoice(payload).subscribe({
-      next: (res) => console.log('Invoice saved', res),
-      error: (err) => console.error('Save invoice failed', err),
+      next: () => {
+        this.isSaving = false;
+        this.saveSuccess = true;
+        this.invoiceForm.reset();
+        this.lineItemsArray.clear();
+        this.isFormSubmitted = false;
+        setTimeout(() => (this.saveSuccess = false), 4000);
+      },
+      error: (err) => {
+        this.isSaving = false;
+        this.saveError = err?.error?.message ?? 'Error al guardar la factura.';
+        console.error('Save invoice failed', err);
+      },
     });
   }
 }

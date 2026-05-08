@@ -100,7 +100,7 @@
           [ngClass]="{ 'sup-tabs__btn--active': selectedComponent === tab }"
           (click)="selectedComponent = tab"
         >
-          {{ tab | titlecase }}
+          {{ tabLabels[tab] }}
         </button>
       </div>
 
@@ -108,6 +108,12 @@
         @switch (selectedComponent) {
           @case ("supplier") {
             <app-supplier-details [supplier]="currentSupplier"></app-supplier-details>
+          }
+          @case ("compras") {
+            <app-supplier-purchase-history [supplierId]="currentSupplier?.id ?? null"></app-supplier-purchase-history>
+          }
+          @case ("cuenta-corriente") {
+            <app-supplier-account-statement [supplierId]="currentSupplier?.id ?? null"></app-supplier-account-statement>
           }
           @case ("margenes") {
             <div class="sup-placeholder">
