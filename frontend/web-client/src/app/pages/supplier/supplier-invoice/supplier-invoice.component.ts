@@ -81,11 +81,12 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
     this.invoiceForm = this.fb.group({
       supplierId: ['', Validators.required],
       invoiceType: ['A', Validators.required],
+      dueDate: [today, Validators.required],
       receptionDate: [today],
       savedDate: [today],
       invoiceDate: [today, Validators.required],
-      invoicePrefix: [1, Validators.required],
-      invoiceNumber: [null, Validators.required],
+      invoicePrefix: ['00001', [Validators.required, Validators.pattern(/^\d{5}$/)]],
+      invoiceNumber: ['00000001', [Validators.required, Validators.pattern(/^\d{8}$/)]],
       packingListNumbers: this.fb.array([]),
       branchId: ['', Validators.required],
       locationId: ['', Validators.required],
@@ -95,6 +96,9 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
       rounding: [0],
       observations: [''],
       saveStocks: [true],
+      taxSave: [true],
+      fixedAsset: [true],
+      askForPriceUpdate: [true],
     });
 
     this.invoiceForm.get('branchId')!.valueChanges.subscribe((id) =>
@@ -110,6 +114,45 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
 
   get remitosArray(): FormArray {
     return this.invoiceForm.get('packingListNumbers') as FormArray;
+  }
+
+  private normalizeNumberSegment(value: string | number | null | undefined, length: number): string {
+    return String(value ?? '')
+      .replaceAll(/\D/g, '')
+      .slice(-length)
+      .padStart(length, '0');
+  }
+
+  formatInvoicePrefix(): void {
+    const control = this.invoiceForm.get('invoicePrefix');
+    control?.setValue(this.normalizeNumberSegment(control.value, 5));
+  }
+
+  formatInvoiceNumber(): void {
+    const control = this.invoiceForm.get('invoiceNumber');
+    control?.setValue(this.normalizeNumberSegment(control.value, 8));
+  }
+
+  private normalizeDocumentNumber(value: string | null | undefined): string {
+    const raw = String(value ?? '').trim();
+    if (!raw) {
+      return '';
+    }
+
+    const parts = raw.split('-').map((part) => part.replaceAll(/\D/g, ''));
+    const normalizedPrefix = this.normalizeNumberSegment(parts[0], 5);
+
+    const numericTail = raw.replaceAll(/\D/g, '');
+    const rawNumber = parts.length > 1 ? parts[1] : numericTail.slice(5);
+    const normalizedNumber = this.normalizeNumberSegment(rawNumber, 8);
+
+    return `${normalizedPrefix} - ${normalizedNumber}`;
+  }
+
+  onRemitoBlur(index: number): void {
+    const control = this.remitosArray.at(index);
+    const normalizedValue = this.normalizeDocumentNumber(control.value);
+    control.setValue(normalizedValue);
   }
 
   // ─── TOTALS ────────────────────────────────────────────────────────
@@ -168,6 +211,30 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
 
   get vatTotal(): number {
     return this.vat21Total + this.vat105Total + this.vat27Total;
+  }
+
+  get netValue21(): number {
+    return this.lineItemValues
+      .filter((i) => +i.taxRate === 0.21)
+      .reduce((acc, i) => acc + this.lineNetAmount(i), 0);
+  }
+
+  get netValue105(): number {
+    return this.lineItemValues
+      .filter((i) => +i.taxRate === 0.105)
+      .reduce((acc, i) => acc + this.lineNetAmount(i), 0);
+  }
+
+  get netValue27(): number {
+    return this.lineItemValues
+      .filter((i) => +i.taxRate === 0.27)
+      .reduce((acc, i) => acc + this.lineNetAmount(i), 0);
+  }
+
+  get netValue0(): number {
+    return this.lineItemValues
+      .filter((i) => +i.taxRate === 0)
+      .reduce((acc, i) => acc + this.lineNetAmount(i), 0);
   }
 
   get internalTaxTotal(): number {
@@ -309,7 +376,7 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
   // ─── REMITOS ───────────────────────────────────────────────────────
 
   addRemito(): void {
-    this.remitosArray.push(this.fb.control(''));
+    this.remitosArray.push(this.fb.control('', Validators.pattern(/^\d{5}\s-\s\d{8}$/)));
   }
 
   removeRemito(i: number): void {
@@ -327,20 +394,36 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
 
     const fv = this.invoiceForm.value;
     const allItems: any[] = this.lineItemValues;
+    const locationName =
+      this.locations.find((loc) => loc.id === fv.locationId)?.name?.trim() ?? '';
+
+    const packingListNumbers = ((fv.packingListNumbers as string[]) ?? [])
+      .map((remito) => this.normalizeDocumentNumber(remito))
+      .filter((remito) => remito.length > 0);
+
+    const [packingListPrefix, packingListNumber] =
+      packingListNumbers.length > 0 ? packingListNumbers[0].split(' - ') : ['', ''];
 
     const payload: ISupplierInvoice = {
       supplierId: fv.supplierId,
+      location: locationName,
       invoiceType: fv.invoiceType,
+      dueDate: fv.dueDate,
       receptionDate: fv.receptionDate,
       savedDate: fv.savedDate,
       invoiceDate: fv.invoiceDate,
-      invoicePrefix: fv.invoicePrefix,
-      invoiceNumber: fv.invoiceNumber,
-      packingListNumbers: fv.packingListNumbers as string[],
+      invoicePrefix: this.normalizeNumberSegment(fv.invoicePrefix, 5),
+      invoiceNumber: this.normalizeNumberSegment(fv.invoiceNumber, 8),
+      packingListPrefix: packingListPrefix || undefined,
+      packingListNumber: packingListNumber || undefined,
+      packingListNumbers,
       branchId: fv.branchId,
       locationId: fv.locationId,
       observations: fv.observations,
       saveStocks: fv.saveStocks ?? true,
+      taxSave: fv.taxSave ?? true,
+      fixedAsset: fv.fixedAsset ?? true,
+      askForPriceUpdate: fv.askForPriceUpdate ?? true,
       invoiceItemsRequest: allItems
         .filter((i) => i.type === 'product')
         .map<IInvoiceItem>((i) => ({
@@ -370,10 +453,20 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
       interest: fv.interest,
       subtotal1: this.subtotal1,
       subtotal2: this.subtotal2,
+      netValue21: this.netValue21,
       vat21: this.vat21Total,
+      netValue105: this.netValue105,
       vat105: this.vat105Total,
+      netValue27: this.netValue27,
       vat27: this.vat27Total,
+      netValue0: this.netValue0,
       internalTax: this.internalTaxTotal,
+      withholdingVat: 0,
+      withholdingSuss: 0,
+      withholdingGrossReceiptsTax: 0,
+      withholdingIncome: 0,
+      stateTax: 0,
+      localTax: 0,
       rounding: fv.rounding,
       totalPrice: this.total,
     };
@@ -384,10 +477,32 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
 
     this.supplierInvoiceService.saveInvoice(payload).subscribe({
       next: () => {
+        const today = new Date().toISOString().substring(0, 10);
         this.isSaving = false;
         this.saveSuccess = true;
-        this.invoiceForm.reset();
         this.lineItemsArray.clear();
+        this.remitosArray.clear();
+        this.locations = [];
+        this.invoiceForm.reset({
+          supplierId: '',
+          invoiceType: 'A',
+          dueDate: today,
+          receptionDate: today,
+          savedDate: today,
+          invoiceDate: today,
+          invoicePrefix: '00001',
+          invoiceNumber: '00000001',
+          branchId: '',
+          locationId: '',
+          discount: 0,
+          interest: 0,
+          rounding: 0,
+          observations: '',
+          saveStocks: true,
+          taxSave: true,
+          fixedAsset: true,
+          askForPriceUpdate: true,
+        });
         this.isFormSubmitted = false;
         setTimeout(() => (this.saveSuccess = false), 4000);
       },
