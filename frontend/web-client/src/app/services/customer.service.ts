@@ -12,9 +12,10 @@ export class CustomerService {
   private readonly urlBase = `${environment.gatewayUrl}/api/v1/customers`;
 
   getAll(search?: string): Observable<ICustomer[]> {
-    let params = new HttpParams();
-    if (search) params = params.set('search', search);
-    return this.http.get<ICustomer[]>(this.urlBase, { params });
+    if (search) {
+      return this.http.get<ICustomer[]>(`${this.urlBase}/search`, { params: { search } });
+    }
+    return this.http.get<ICustomer[]>(this.urlBase);
   }
 
   getById(id: string): Observable<ICustomer> {

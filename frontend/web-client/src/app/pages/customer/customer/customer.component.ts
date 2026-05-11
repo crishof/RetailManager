@@ -63,11 +63,13 @@ export class CustomerComponent implements OnInit, OnDestroy {
   }
 
   onSearch(): void {
-    if (!this.searchTerm.trim()) { this.loadAll(); return; }
+    const term = this.searchTerm.trim();
+    if (!term) { this.loadAll(); return; }
+    if (term.length < 2) { return; }
     this.loading = true;
     this.errorMessage = '';
     this.sub?.unsubscribe();
-    this.sub = this.customerService.getAll(this.searchTerm.trim()).subscribe({
+    this.sub = this.customerService.getAll(term).subscribe({
       next: (data) => { this.customers = data; this.loading = false; },
       error: () => { this.errorMessage = 'Error en búsqueda.'; this.loading = false; }
     });

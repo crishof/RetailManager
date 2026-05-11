@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +40,17 @@ public class CustomerController {
     public CustomerResponse create(@RequestBody CustomerRequest customerRequest) {
         log.info("Creating customer : {}", customerRequest);
         return customerService.create(customerRequest);
+    }
+
+    // ============================
+    // SEARCH CUSTOMERS
+    // ============================
+    @Operation(summary = "Search customers by term")
+    @ApiResponse(responseCode = "200", description = "Customers found successfully")
+    @GetMapping("/search")
+    public ResponseEntity<List<CustomerResponse>> search(@RequestParam String search) {
+        log.info("Searching customers with term: {}", search);
+        return ResponseEntity.ok(customerService.search(search));
     }
 
     // ============================

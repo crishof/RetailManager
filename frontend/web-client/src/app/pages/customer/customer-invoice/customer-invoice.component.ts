@@ -12,10 +12,12 @@ import { IBranch } from "../../../model/branch.model";
 import { ILocation } from "../../../model/location.model";
 import { IInvoiceItem } from "../../../model/invoice-item.model";
 import { IProduct } from "../../../model/product.model";
+import { ICustomer } from "../../../model/customer.model";
 import { CustomerInvoiceService } from "../../../services/customer-invoice.service";
 import { Subscription } from "rxjs";
 import { ProductService } from "../../../services/product.service";
 import { BranchService } from "../../../services/branch.service";
+import { CustomerService } from "../../../services/customer.service";
 
 @Component({
   selector: "app-customer-invoice",
@@ -28,6 +30,7 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
   private readonly _productService = inject(ProductService);
   private readonly _customerInvoiceService = inject(CustomerInvoiceService);
   private readonly _branchService = inject(BranchService);
+  private readonly _customerService = inject(CustomerService);
 
   dateControl = new FormControl(new Date());
   invoiceForm!: FormGroup;
@@ -50,6 +53,18 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
   saveSuccess = false;
   saveError = '';
 
+  customerSearchQuery = '';
+  showCustomerDropdown = false;
+  customerList: ICustomer[] = [];
+  selectedCustomer: ICustomer | null = null;
+  showCustomerForm = false;
+  customerForm!: FormGroup;
+  isSavingCustomer = false;
+  customerSaveError = '';
+  customerSaveSuccess = false;
+  customerSearchLoading = false;
+  customerSearchError = '';
+
   vat21: number = 0.21;
   vat105: number = 0.105;
   vat27: number = 0.27;
@@ -59,6 +74,7 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
     this.loadBranches();
     this.dateControl.setValue(new Date());
     this.initForm();
+    this.initCustomerForm();
   }
 
   ngOnDestroy(): void {
@@ -418,5 +434,135 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
   getLocations(branchId: string) {
     const branch = this.branches.find((branch) => branch.id == branchId);
     this.locations = branch ? branch.locations : [];
+  }
+
+  initCustomerForm(): void {
+    this.customerForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      lastname: ['', Validators.required],
+      dni: [''],
+      taxId: [''],
+      email: [''],
+      phone: [''],
+    });
+  }
+
+  onCustomerSearchInput(searchTerm: string): void {
+    this.customerSearchQuery = searchTerm;
+    if (searchTerm.length >= 2) {
+      this.searchCustomers(searchTerm);
+      this.showCustomerDropdown = true;
+      return;
+    }
+    this.customerList = [];
+    this.showCustomerDropdown = false;
+  }
+
+  hideCustomerDropdown(): void {
+    setTimeout(() => {
+      this.showCustomerDropdown = false;
+    }, 200);
+  }
+
+  searchCustomers(searchTerm: string): void {
+    this.customerSearchLoading = true;
+    this.customerSearchError = '';
+    this.subscription?.unsubscribe();
+    this.subscription = this._customerService.getAll(searchTerm).subscribe({
+      next: (customers) => {
+        this.customerList = customers;
+        this.customerSearchLoading = false;
+      },
+      error: (err) => {
+        this.customerSearchLoading = false;
+        this.customerSearchError = 'Error al buscar clientes';
+        console.error('Failed to load customers', err);
+      },
+    });
+  }
+
+  selectCustomer(customer: ICustomer): void {
+    this.selectedCustomer = customer;
+    this.customerSearchQuery = '';
+    this.customerList = [];
+    this.showCustomerDropdown = false;
+    this.invoiceForm.patchValue({
+      customerId: customer.id,
+      customerRequest: {
+        name: customer.name,
+        lastname: customer.lastname,
+        dni: customer.dni,
+        taxId: customer.taxId,
+        email: customer.email,
+        phone: customer.phone,
+        addressRequest: {
+          street: '',
+          houseNumber: '',
+          city: '',
+          state: '',
+          postalCode: '',
+          country: '',
+        },
+      },
+    });
+  }
+
+  clearSelectedCustomer(): void {
+    this.selectedCustomer = null;
+    this.invoiceForm.patchValue({
+      customerId: '',
+      customerRequest: {
+        name: '',
+        lastname: '',
+        dni: '',
+        taxId: '',
+        email: '',
+        phone: '',
+        addressRequest: {
+          street: '',
+          houseNumber: '',
+          city: '',
+          state: '',
+          postalCode: '',
+          country: '',
+        },
+      },
+    });
+  }
+
+  openCustomerForm(): void {
+    this.initCustomerForm();
+    this.customerSaveError = '';
+    this.customerSaveSuccess = false;
+    this.showCustomerForm = true;
+  }
+
+  cancelCustomerForm(): void {
+    this.showCustomerForm = false;
+    this.customerSaveError = '';
+  }
+
+  saveCustomer(): void {
+    if (this.customerForm.invalid) {
+      this.customerForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSavingCustomer = true;
+    this.customerSaveError = '';
+
+    this._customerService.create(this.customerForm.value).subscribe({
+      next: (customer) => {
+        this.isSavingCustomer = false;
+        this.showCustomerForm = false;
+        this.customerSaveSuccess = true;
+        this.selectCustomer(customer);
+        setTimeout(() => (this.customerSaveSuccess = false), 3000);
+      },
+      error: (err) => {
+        this.isSavingCustomer = false;
+        this.customerSaveError = err?.error?.message ?? 'Error al guardar el cliente.';
+      },
+    });
   }
 }

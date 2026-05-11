@@ -54,4 +54,14 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
     @Modifying
     @Query(value = "DELETE FROM tbl_customers WHERE id = :id", nativeQuery = true)
     int forceDelete(@Param("id") UUID id);
+
+    @Query(value = """
+            SELECT * FROM tbl_customers
+            WHERE deleted = false
+            AND (LOWER(name) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(lastname) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(dni) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(tax_id) LIKE LOWER(CONCAT('%', :search, '%')))
+            """, nativeQuery = true)
+    java.util.List<Customer> searchByTerm(@Param("search") String search);
 }

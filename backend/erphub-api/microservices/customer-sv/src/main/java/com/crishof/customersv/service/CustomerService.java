@@ -28,4 +28,6 @@ public interface CustomerService {
     CustomerResponse restore(UUID id);
 
     CustomerMergeResponse mergeCustomerInto(@NotNull UUID id, @NotNull UUID targetCustomerId);
+
+    java.util.List<CustomerResponse> search(String searchTerm);
 }

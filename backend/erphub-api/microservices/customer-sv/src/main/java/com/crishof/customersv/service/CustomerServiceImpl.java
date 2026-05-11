@@ -172,6 +172,14 @@ public class CustomerServiceImpl implements CustomerService {
         return new CustomerMergeResponse(sourceCustomerId, targetCustomerId, result.affectedOrders());
     }
 
+    @Override
+    public java.util.List<CustomerResponse> search(String searchTerm) {
+        log.debug("Searching customers | term={}", searchTerm);
+        return customerRepository.searchByTerm(searchTerm).stream()
+                .map(customerMapper::toDto)
+                .toList();
+    }
+
     // =========================
     // PRIVATE HELPERS
     // =========================
