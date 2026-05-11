@@ -54,4 +54,8 @@ export class SupplierInvoiceService {
   savePayment(supplierId: string, payment: ISupplierPaymentRequest): Observable<any> {
     return this._http.post(`${this._urlBase}/supplier/${supplierId}/payments`, payment);
   }
+
+  getInvoiceById(invoiceId: string): Observable<any> {
+    return this._http.get(`${this._urlBase}/${invoiceId}`);
+  }
 }

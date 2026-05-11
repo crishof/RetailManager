@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
 import java.util.UUID;
 
 @FeignClient(name = "inventory-sv", path = "/internal/inventory")
@@ -17,4 +18,7 @@ public interface InventoryClient {
 
     @PostMapping("/movements")
     void registerMovement(@RequestBody StockMovementRequest request);
+
+    @GetMapping("/product/{productId}")
+    List<com.crishof.productsv.dto.StockResponse> getProductStock(@PathVariable UUID productId);
 }

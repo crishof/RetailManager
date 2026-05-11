@@ -61,13 +61,14 @@ public class ProductServiceImpl implements ProductService {
         // TODO Replace per-product pricing calls with a batch endpoint in pricing-sv to avoid N+1 on paginated lists.
         return productRepository.findAll(spec, pageable)
             .map(productMapper::toResponse)
-            .map(this::enrichWithPrice);
+            .map(this::enrichWithPrice)
+            .map(this::enrichWithStock);
     }
 
     @Override
     @Transactional(readOnly = true)
     public ProductResponse getById(UUID id) {
-        return enrichWithPrice(productMapper.toResponse(getProductOrThrow(id)));
+        return enrichWithStock(enrichWithPrice(productMapper.toResponse(getProductOrThrow(id))));
     }
 
     @Override
@@ -75,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse create(ProductRequest productRequest) {
         Product product = productMapper.toEntity(productRequest);
         Product savedProduct = productRepository.save(product);
-        return enrichWithPrice(productMapper.toResponse(savedProduct));
+        return enrichWithStock(enrichWithPrice(productMapper.toResponse(savedProduct)));
     }
 
     @Override
@@ -84,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
         Product existingProduct = getProductOrThrow(id);
         productMapper.updateEntityFromRequest(productRequest, existingProduct);
         Product updatedProduct = productRepository.save(existingProduct);
-        return enrichWithPrice(productMapper.toResponse(updatedProduct));
+        return enrichWithStock(enrichWithPrice(productMapper.toResponse(updatedProduct)));
     }
 
     @Transactional
@@ -155,7 +156,7 @@ public class ProductServiceImpl implements ProductService {
         Product restored = productRepository.findById(id).orElseThrow(
                 () -> new IllegalStateException("Product restored by not found"));
 
-        return enrichWithPrice(productMapper.toResponse(restored));
+        return enrichWithStock(enrichWithPrice(productMapper.toResponse(restored)));
 
     }
 
@@ -249,6 +250,14 @@ public class ProductServiceImpl implements ProductService {
 
         response.setPriceResponse(resolvePrice(response.getId()));
         response.setPriceAlerts(priceLinkService.getPriceAlertsForProduct(response.getId()));
+        return response;
+    }
+
+    private ProductResponse enrichWithStock(ProductResponse response) {
+        if (response == null || response.getId() == null) {
+            return response;
+        }
+        response.setStockResponses(inventoryClient.getProductStock(response.getId()));
         return response;
     }
 

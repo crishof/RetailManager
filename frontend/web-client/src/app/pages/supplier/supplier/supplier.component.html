@@ -54,7 +54,6 @@
         <table class="sup-table">
           <thead>
             <tr>
-              <th>#Id</th>
               <th>Nombre</th>
               <th>Razón social</th>
               <th>CUIT</th>
@@ -64,11 +63,11 @@
           <tbody>
             @if (loading) {
               <tr>
-                <td colspan="4" class="sup-table__empty">Cargando proveedores...</td>
+                <td colspan="3" class="sup-table__empty">Cargando proveedores...</td>
               </tr>
             } @else if (supplierList.length === 0) {
               <tr>
-                <td colspan="4" class="sup-table__empty">Sin resultados para los filtros actuales.</td>
+                <td colspan="3" class="sup-table__empty">Sin resultados para los filtros actuales.</td>
               </tr>
             }
 
@@ -80,7 +79,6 @@
                 (dblclick)="navigate(supplier.id)"
                 (keydown.enter)="selectSupplier(supplier)"
               >
-                <td>{{ supplier.id }}</td>
                 <td>{{ supplier.name }}</td>
                 <td>{{ supplier.legalName }}</td>
                 <td>{{ supplier.taxId }}</td>

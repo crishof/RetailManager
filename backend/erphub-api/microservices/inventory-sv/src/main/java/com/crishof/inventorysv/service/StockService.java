@@ -15,5 +15,7 @@ public interface StockService {
 
     List<Stock> getProductStock(UUID productId);
 
+    List<Stock> getProductsStock(List<UUID> productIds);
+
     List<StockMovementResponse> getMovementsByReference(UUID referenceId);
 }

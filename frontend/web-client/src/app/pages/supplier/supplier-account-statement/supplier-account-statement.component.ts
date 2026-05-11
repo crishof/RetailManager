@@ -1,7 +1,43 @@
-import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, OnChanges, SimpleChanges, inject, OnDestroy } from '@angular/core';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IAccountMovement, ISupplierPaymentRequest, SupplierInvoiceService } from '../../../services/supplier-invoice.service';
+import { Subject } from 'rxjs';
+import { SupplierInvoiceService, IAccountMovement, ISupplierPaymentRequest } from '../../../services/supplier-invoice.service';
+
+interface IInvoiceDetail {
+  id: string;
+  supplierId: string;
+  invoiceType: string;
+  invoiceDate: string;
+  dueDate: string;
+  receptionDate: string;
+  savedDate: string;
+  invoiceNumber: string;
+  packingListNumber?: string;
+  observations?: string;
+  currency: string;
+  subtotal1: number;
+  discount: number;
+  interest: number;
+  subtotal2: number;
+  netValue21: number;
+  vat21: number;
+  netValue105: number;
+  vat105: number;
+  netValue27: number;
+  vat27: number;
+  netValue0: number;
+  internalTax: number;
+  rounding: number;
+  totalPrice: number;
+  invoiceItems: Array<{
+    productId: string;
+    quantity: number;
+    price: number;
+    taxRate: number;
+    discountRate: number;
+  }>;
+}
 
 @Component({
   selector: 'app-supplier-account-statement',
@@ -10,27 +46,30 @@ import { IAccountMovement, ISupplierPaymentRequest, SupplierInvoiceService } fro
   templateUrl: './supplier-account-statement.component.html',
   styleUrl: './supplier-account-statement.component.css'
 })
-export class SupplierAccountStatementComponent implements OnChanges {
+export class SupplierAccountStatementComponent implements OnChanges, OnDestroy {
   @Input() supplierId: string | null = null;
 
   private readonly svc = inject(SupplierInvoiceService);
   private readonly fb = inject(FormBuilder);
+  private readonly destroy$ = new Subject<void>();
 
   movements: IAccountMovement[] = [];
   filtered: IAccountMovement[] = [];
   loading = false;
   errorMessage = '';
 
-  // Filters
   filterType: 'ALL' | 'INVOICE' | 'PAYMENT' = 'ALL';
   filterFrom = '';
   filterTo = '';
 
-  // Payment form
   showPaymentForm = false;
   isSaving = false;
   saveError = '';
   paymentForm!: FormGroup;
+
+  invoiceDetail: IInvoiceDetail | null = null;
+  showInvoiceModal = false;
+  loadingInvoice = false;
 
   get balance(): number {
     return this.movements.length > 0 ? this.movements[this.movements.length - 1].balance : 0;
@@ -44,6 +83,11 @@ export class SupplierAccountStatementComponent implements OnChanges {
       this.movements = [];
       this.filtered = [];
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   initPaymentForm(): void {
@@ -110,5 +154,50 @@ export class SupplierAccountStatementComponent implements OnChanges {
         this.saveError = err?.error?.message ?? 'Error al registrar el pago.';
       }
     });
+  }
+
+  openInvoice(invoiceId: string): void {
+    this.loadingInvoice = true;
+    this.showInvoiceModal = true;
+    this.invoiceDetail = null;
+    this.svc.getInvoiceById(invoiceId).subscribe({
+      next: (data: any) => {
+        this.invoiceDetail = data;
+        this.loadingInvoice = false;
+      },
+      error: () => {
+        this.loadingInvoice = false;
+      }
+    });
+  }
+
+  closeInvoice(): void {
+    this.showInvoiceModal = false;
+    this.invoiceDetail = null;
+  }
+
+  formatInvoiceNumber(num: string): string {
+    if (!num) return '';
+    const parts = num.split(' - ');
+    return parts.length === 2 ? `00001-${parts[1]}` : num;
+  }
+
+  calcLineSubtotal(item: any): number {
+    const qty = item.quantity ?? 1;
+    const gross = (item.price ?? 0) * qty;
+    return gross * (1 - (item.discountRate ?? 0) / 100);
+  }
+
+  get invoiceSubtotal(): number {
+    if (!this.invoiceDetail) return 0;
+    return (this.invoiceDetail.invoiceItems ?? []).reduce((acc, i) => acc + this.calcLineSubtotal(i), 0);
+  }
+
+  get invoiceCurrency(): string {
+    return this.invoiceDetail?.currency || 'ARS';
+  }
+
+  trackByMovementId(_: number, m: IAccountMovement): string {
+    return m.id;
   }
 }

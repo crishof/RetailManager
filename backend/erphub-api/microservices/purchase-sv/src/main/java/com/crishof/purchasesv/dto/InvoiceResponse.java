@@ -56,4 +56,6 @@ public class InvoiceResponse {
     private double rounding;
 
     private double totalPrice;
+
+    private String currency;
 }

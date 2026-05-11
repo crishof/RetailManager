@@ -6,6 +6,8 @@ import com.crishof.purchasesv.dto.*;
 import com.crishof.purchasesv.exception.InvoiceNotFoundException;
 import com.crishof.purchasesv.model.Invoice;
 import com.crishof.purchasesv.model.InvoiceItem;
+import com.crishof.purchasesv.model.OtherConcept;
+import com.crishof.purchasesv.model.StockMovementReason;
 import com.crishof.purchasesv.model.SupplierPayment;
 import com.crishof.purchasesv.repository.InvoiceRepository;
 import com.crishof.purchasesv.repository.SupplierPaymentRepository;
@@ -67,7 +69,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                             .branchId(invoiceRequest.getBranchId())
                             .locationId(invoiceRequest.getLocationId())
                             .quantity(item.getQuantity())
-                            .reason("INVOICE")
+                            .reason(StockMovementReason.INVOICE)
                             .referenceId(saved.getId())
                             .build());
                 } catch (Exception ex) {
@@ -138,6 +140,11 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .invoiceItems(invoiceRequest.getInvoiceItemsRequest().stream()
                         .map(this::toInvoiceItem).toList())
 
+                .otherConcepts(invoiceRequest.getOtherConceptsRequest() != null
+                        ? invoiceRequest.getOtherConceptsRequest().stream()
+                        .map(this::toOtherConcept).toList()
+                        : new ArrayList<>())
+
                 .taxSave(invoiceRequest.isTaxSave())
                 .fixedAsset(invoiceRequest.isFixedAsset())
                 .observations(invoiceRequest.getObservations())
@@ -165,6 +172,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .rounding(invoiceRequest.getRounding())
 
                 .totalPrice(invoiceRequest.getTotalPrice())
+                .currency(invoiceRequest.getCurrency())
 
                 .build();
     }
@@ -187,6 +195,16 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .discountRate(invoiceItem.getDiscountRate())
                 .taxRate(invoiceItem.getTaxRate())
                 .quantity(invoiceItem.getQuantity())
+                .build();
+    }
+
+    private OtherConcept toOtherConcept(OtherConceptRequest request) {
+        return OtherConcept.builder()
+                .description(request.getDescription())
+                .price(request.getPrice())
+                .taxRate(request.getTaxRate())
+                .internalTaxRate(request.getInternalTaxRate())
+                .discountRate(request.getDiscountRate())
                 .build();
     }
 
@@ -237,6 +255,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .rounding(invoice.getRounding())
 
                 .totalPrice(invoice.getTotalPrice())
+                .currency(invoice.getCurrency())
 
                 .build();
     }

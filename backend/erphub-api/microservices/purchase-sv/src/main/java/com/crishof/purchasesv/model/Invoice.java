@@ -21,6 +21,10 @@ public class Invoice {
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     List<InvoiceItem> invoiceItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
+    List<OtherConcept> otherConcepts = new ArrayList<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -66,5 +70,6 @@ public class Invoice {
 
     private double totalPrice;
 
+    private String currency;
 
 }

@@ -35,6 +35,7 @@ public class ProductResponse {
     private List<ProductPriceLinkResponse> priceAlerts = new ArrayList<>();
     private Instant createdAt;
     private Instant updatedAt;
+    private java.util.List<com.crishof.productsv.dto.StockResponse> stockResponses = new java.util.ArrayList<>();
 
     // ----------- Commercial codes -----------
 

@@ -1,6 +1,5 @@
-package com.crishof.purchasesv.apiClient;
+package com.crishof.productsv.dto;
 
-import com.crishof.purchasesv.model.StockMovementReason;
 import lombok.*;
 
 import java.util.UUID;
@@ -10,12 +9,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StockMovementRequest {
-
+public class StockResponse {
+    private UUID id;
     private UUID productId;
     private UUID branchId;
     private UUID locationId;
     private int quantity;
-    private StockMovementReason reason;
-    private UUID referenceId;
+    private Integer max;
+    private Integer min;
 }

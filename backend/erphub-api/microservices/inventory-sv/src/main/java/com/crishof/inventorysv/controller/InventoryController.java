@@ -30,4 +30,9 @@ public class InventoryController {
     public List<Stock> getProductStock(@PathVariable UUID productId) {
         return stockService.getProductStock(productId);
     }
+
+    @GetMapping("/products/stock")
+    public ResponseEntity<List<Stock>> getProductsStock(@RequestParam("productIds") List<UUID> productIds) {
+        return ResponseEntity.ok(stockService.getProductsStock(productIds));
+    }
 }

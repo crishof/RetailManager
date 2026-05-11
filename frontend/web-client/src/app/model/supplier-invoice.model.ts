@@ -51,4 +51,5 @@ export interface ISupplierInvoice {
   localTax: number;
   rounding: number;
   totalPrice: number;
+  currency?: string;
 }

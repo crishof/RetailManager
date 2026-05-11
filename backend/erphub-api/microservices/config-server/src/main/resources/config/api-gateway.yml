@@ -58,6 +58,11 @@ spring:
               predicates:
                 - Path=/api/v1/inventory/**
 
+            - id: inventory-sv-internal
+              uri: lb://INVENTORY-SV
+              predicates:
+                - Path=/internal/inventory/**
+
             - id: location-sv
               uri: lb://LOCATION-SV
               predicates:

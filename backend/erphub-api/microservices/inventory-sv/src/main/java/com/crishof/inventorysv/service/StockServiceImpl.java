@@ -51,6 +51,12 @@ public class StockServiceImpl implements StockService {
         return stockRepository.findByProductId(productId);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Stock> getProductsStock(List<UUID> productIds) {
+        return stockRepository.findByProductIdIn(productIds);
+    }
+
     @Transactional
     public Stock createStock(StockMovementRequest req) {
         return stockRepository.save(Stock.builder().productId(req.getProductId()).branchId(req.getBranchId()).locationId(req.getLocationId()).quantity(0).updatedAt(Instant.now()).build());

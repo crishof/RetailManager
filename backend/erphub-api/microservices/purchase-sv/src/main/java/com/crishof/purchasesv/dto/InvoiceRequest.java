@@ -52,6 +52,8 @@ public class InvoiceRequest {
     @Valid
     private List<InvoiceItemRequest> invoiceItemsRequest;
 
+    private List<OtherConceptRequest> otherConceptsRequest;
+
     @NotNull(message = "saveStocks no puede ser nulo")
     private boolean saveStocks;
 
@@ -63,6 +65,8 @@ public class InvoiceRequest {
 
     @NotNull(message = "askForPriceUpdate no puede ser nulo")
     private boolean askForPriceUpdate;
+
+    private String currency;
 
     private String observations;
 

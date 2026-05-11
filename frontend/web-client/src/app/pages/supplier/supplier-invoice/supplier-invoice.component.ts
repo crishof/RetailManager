@@ -46,6 +46,8 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
   productList: IProduct[] = [];
   showProductDropdown = false;
   productSearchQuery = '';
+  searchAllSuppliers = false;
+  pendingPriceUpdates: Map<number, { currentPrice: number; newPrice: number }> = new Map();
 
   isFormSubmitted = false;
   isSaving = false;
@@ -60,6 +62,8 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
   ];
 
   readonly invoiceTypes = ['A', 'B', 'C', 'M', 'X'];
+
+  readonly currencies = ['ARS', 'USD', 'EUR'];
 
   invoiceForm!: FormGroup;
 
@@ -94,11 +98,13 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
       discount: [0],
       interest: [0],
       rounding: [0],
+      currency: ['ARS'],
       observations: [''],
       saveStocks: [true],
       taxSave: [true],
-      fixedAsset: [true],
+      fixedAsset: [false],
       askForPriceUpdate: [true],
+      searchAllSuppliers: [false],
     });
 
     this.invoiceForm.get('branchId')!.valueChanges.subscribe((id) =>
@@ -131,6 +137,14 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
   formatInvoiceNumber(): void {
     const control = this.invoiceForm.get('invoiceNumber');
     control?.setValue(this.normalizeNumberSegment(control.value, 8));
+  }
+
+  onNumberFocus(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const placeholder = input.dataset['placeholder'] || '';
+    if (input.value === placeholder) {
+      input.value = '';
+    }
   }
 
   private normalizeDocumentNumber(value: string | null | undefined): string {
@@ -256,6 +270,10 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
     return this.lineItemValues.reduce((acc, i) => acc + this.lineQuantity(i), 0);
   }
 
+  get currency(): string {
+    return this.invoiceForm.get('currency')?.value || 'ARS';
+  }
+
   // ─── LOAD DATA ─────────────────────────────────────────────────────
 
   private loadSuppliers(): void {
@@ -295,7 +313,7 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
       .getProducts({
         search: query,
         supplierId:
-          this.invoiceForm.get('supplierId')?.value || undefined,
+          this.invoiceForm.get('searchAllSuppliers')?.value ? undefined : (this.invoiceForm.get('supplierId')?.value || undefined),
         page: 0,
         size: 15,
       })
@@ -310,6 +328,13 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
 
   hideDropdown(): void {
     setTimeout(() => (this.showProductDropdown = false), 200);
+  }
+
+  onToggleSearchAllSuppliers(): void {
+    this.searchAllSuppliers = this.invoiceForm.get('searchAllSuppliers')?.value ?? false;
+    if (this.productSearchQuery.length >= 2) {
+      this.onSearchInput(this.productSearchQuery);
+    }
   }
 
   // ─── LINE ITEMS ────────────────────────────────────────────────────
@@ -451,6 +476,7 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
         })),
       discount: fv.discount,
       interest: fv.interest,
+      currency: fv.currency,
       subtotal1: this.subtotal1,
       subtotal2: this.subtotal2,
       netValue21: this.netValue21,
@@ -497,11 +523,13 @@ export class SupplierInvoiceComponent implements OnInit, OnDestroy {
           discount: 0,
           interest: 0,
           rounding: 0,
+          currency: 'ARS',
           observations: '',
           saveStocks: true,
           taxSave: true,
-          fixedAsset: true,
+          fixedAsset: false,
           askForPriceUpdate: true,
+          searchAllSuppliers: false,
         });
         this.isFormSubmitted = false;
         setTimeout(() => (this.saveSuccess = false), 4000);
