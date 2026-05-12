@@ -511,21 +511,21 @@ initForm(): void {
     this.cashSessionError = '';
     this.currentCashSession = null;
     this.noCashOpen = true;
-    this.invoiceForm.disable();
+    this.invoiceForm.disable({ emitEvent: false });
 
     this._cashService.getCurrentSession(branchId).subscribe({
       next: (session) => {
         this.currentCashSession = session;
         this.noCashOpen = false;
-        this.invoiceForm.enable();
+        this.invoiceForm.enable({ emitEvent: false });
         // Siempre mantener invoicePrefix y invoiceNumber deshabilitados
-        this.invoiceForm.get('invoicePrefix')?.disable();
-        this.invoiceForm.get('invoiceNumber')?.disable();
+        this.invoiceForm.get('invoicePrefix')?.disable({ emitEvent: false });
+        this.invoiceForm.get('invoiceNumber')?.disable({ emitEvent: false });
       },
       error: () => {
         this.cashSessionError = '⚠️ Debe abrir la caja diaria para poder crear facturas';
         this.noCashOpen = true;
-        this.invoiceForm.disable();
+        this.invoiceForm.disable({ emitEvent: false });
       }
     });
   }
