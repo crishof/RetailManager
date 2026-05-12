@@ -1,5 +1,5 @@
 server:
-  port: 9006
+  port: ${PORT:9006}
 
 spring:
   cloud:
@@ -28,6 +28,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mail:
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH:true}
+          starttls:
+            enable: ${MAIL_SMTP_STARTTLS_ENABLE:true}
   openfeign:
     circuitbreaker:
       enabled: true
@@ -56,6 +67,32 @@ management:
   endpoint:
     health:
       show-details: always
+
+# JWT Configuration
+jwt:
+  secret_key: ${BASE64_SECRET_KEY:}
+  expiration: ${JWT_EXPIRATION:900000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+
+# Application Configuration
+app:
+  mail:
+    enabled: ${MAIL_ENABLED:false}
+    from: ${MAIL_FROM:${MAIL_USERNAME:no-reply@mail.local}}
+    provider: ${MAIL_PROVIDER:smtp}
+    brevo:
+      api-url: ${BREVO_API_URL:https://api.brevo.com/v3}
+      api-key: ${BREVO_API_KEY:}
+      timeout-seconds: ${BREVO_API_TIMEOUT_SECONDS:15}
+  email-verification:
+    code-ttl-minutes: ${EMAIL_VERIFICATION_CODE_TTL_MINUTES:10}
+  reset-password:
+    base-url: ${RESET_PASSWORD_BASE_URL:http://localhost:5173/reset-password}
+  accept-invite:
+    base-url: ${ACCEPT_INVITE_BASE_URL:http://localhost:5173/accept-invite}
+  security:
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:4200,http://localhost:5173,http://127.0.0.1:3000}
 
 
 resilience4j:
