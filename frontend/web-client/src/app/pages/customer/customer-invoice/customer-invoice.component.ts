@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit, inject } from "@angular/core";
+import { RouterLink } from "@angular/router";
 import {
   FormBuilder,
   FormControl,
@@ -18,10 +19,11 @@ import { Subscription } from "rxjs";
 import { ProductService } from "../../../services/product.service";
 import { BranchService } from "../../../services/branch.service";
 import { CustomerService } from "../../../services/customer.service";
+import { CashService, ICashSessionResponse } from "../../../services/cash.service";
 
 @Component({
   selector: "app-customer-invoice",
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: "./customer-invoice.component.html",
   styleUrl: "./customer-invoice.component.css",
 })
@@ -31,6 +33,7 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
   private readonly _customerInvoiceService = inject(CustomerInvoiceService);
   private readonly _branchService = inject(BranchService);
   private readonly _customerService = inject(CustomerService);
+  private readonly _cashService = inject(CashService);
 
   dateControl = new FormControl(new Date());
   invoiceForm!: FormGroup;
@@ -65,6 +68,17 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
   customerSearchLoading = false;
   customerSearchError = '';
 
+  currentCashSession: ICashSessionResponse | null = null;
+  cashSessionError = '';
+  isCheckingCash = false;
+  noCashOpen = false;
+
+  nextInvoiceNumbers: Record<string, { prefix: number; number: number }> = {
+    A: { prefix: 1, number: 1 },
+    B: { prefix: 1, number: 1 },
+    C: { prefix: 1, number: 1 },
+  };
+
   vat21: number = 0.21;
   vat105: number = 0.105;
   vat27: number = 0.27;
@@ -81,36 +95,37 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
     this.subscription?.unsubscribe();
   }
 
-  initForm(): void {
+initForm(): void {
+    const currentYear = new Date().getFullYear();
     this.invoiceForm = this.formBuilder.group({
       customerId: "",
 
       customerRequest: {
-        name: "Pepe",
-        lastname: "Sanchez",
-        dni: "30123543",
-        taxId: "20-30123543-9",
-        email: "pepe@mail.com",
-        phone: "666453456",
-        AddressRequest: {
-          street: "Calle ancha",
-          houseNumber: "3",
-          city: "Fuengirola",
-          state: "Málaga",
-          postalCode: "44123",
-          country: "España",
+        name: "",
+        lastname: "",
+        dni: "",
+        taxId: "",
+        email: "",
+        phone: "",
+        addressRequest: {
+          street: "",
+          houseNumber: "",
+          city: "",
+          state: "",
+          postalCode: "",
+          country: "",
         },
       },
       branchId: ["", Validators.required],
       locationId: ["", Validators.required],
 
-      invoiceDate: [new Date(), Validators.required],
+      invoiceDate: [new Date().toISOString().split('T')[0], Validators.required],
 
-      invoiceType: "A",
-      packingListPrefix: 0,
-      packingListNumber: 0,
-      invoicePrefix: [0, Validators.required],
-      invoiceNumber: [0, Validators.required],
+      invoiceType: ["A", Validators.required],
+      packingListPrefix: [0],
+      packingListNumber: [0],
+      invoicePrefix: [{ value: 1, disabled: true }],
+      invoiceNumber: [{ value: this.nextInvoiceNumbers['A'].number, disabled: true }],
 
       taxSave: true,
 
@@ -141,10 +156,21 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
       totalPrice: 0,
     });
 
-    // Suscribirse a los cambios en el control branchId
     this.invoiceForm.get("branchId")!.valueChanges.subscribe((branchId) => {
       this.onBranchChange(branchId);
     });
+
+    this.invoiceForm.get("invoiceType")!.valueChanges.subscribe((type) => {
+      this.updateInvoiceNumber(type);
+    });
+  }
+
+  updateInvoiceNumber(type: string): void {
+    const next = this.nextInvoiceNumbers[type] || { prefix: 1, number: 1 };
+    this.invoiceForm.patchValue({
+      invoicePrefix: next.prefix,
+      invoiceNumber: next.number
+    }, { emitEvent: false });
   }
 
   getTotalInvoiceUnits(): void {
@@ -288,13 +314,55 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const branchId = this.invoiceForm.get('branchId')?.value;
+    if (!branchId) {
+      this.saveError = 'Debe seleccionar una sucursal.';
+      return;
+    }
+
+    this.isCheckingCash = true;
+    this._cashService.getCurrentSession(branchId).subscribe({
+      next: (session) => {
+        this.currentCashSession = session;
+        this.isCheckingCash = false;
+        this.processSaveInvoice();
+      },
+      error: () => {
+        this.isCheckingCash = false;
+        this.saveError = 'No hay una caja abierta para esta sucursal. Abra la caja diaria primero.';
+      }
+    });
+  }
+
+  private processSaveInvoice(): void {
+    if (!this.currentCashSession) {
+      this.saveError = 'No hay una caja abierta para esta sucursal.';
+      return;
+    }
+
     this.isSaving = true;
     this.saveError = '';
     this.saveSuccess = false;
 
+    const totalAmount = this.getInvoiceTotal();
+    const invoiceNumber = `${this.invoiceForm.value.invoicePrefix}-${this.invoiceForm.value.invoiceNumber}`;
+    const customerName = this.invoiceForm.value.customerRequest?.name 
+      ? `${this.invoiceForm.value.customerRequest.name} ${this.invoiceForm.value.customerRequest.lastname}`
+      : 'Venta';
+
     const formData = { ...this.invoiceForm.value, invoiceItemsRequest: this.invoiceItems };
     this._customerInvoiceService.saveInvoice(formData).subscribe({
-      next: () => {
+      next: (invoice) => {
+        this._cashService.addMovement(this.currentCashSession!.id, {
+          type: 'SALE',
+          amount: totalAmount,
+          description: `Venta ${invoiceNumber} - ${customerName}`,
+          reference: invoice.id
+        }).subscribe({
+          next: () => {},
+          error: () => {}
+        });
+
         this.isSaving = false;
         this.saveSuccess = true;
         this.invoiceItems = [];
@@ -413,6 +481,11 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
     this._branchService.getBranches().subscribe({
       next: (branches: IBranch[]) => {
         this.branches = branches;
+        if (this.branches.length > 0) {
+          const firstBranchId = this.branches[0].id;
+          this.invoiceForm.patchValue({ branchId: firstBranchId });
+          this.checkCashSession(firstBranchId);
+        }
       },
       error: (error) => {
         console.log("Error loading branches list", error);
@@ -423,13 +496,41 @@ export class CustomerInvoiceComponent implements OnInit, OnDestroy {
   onBranchChange(branchId: string) {
     if (!branchId) {
       this.locations = [];
+      this.currentCashSession = null;
+      this.cashSessionError = '';
       return;
     }
 
     this.selectedBranchId = branchId;
     this.getLocations(branchId);
     this.invoiceForm.get("locationId")!.setValue("");
+    this.checkCashSession(branchId);
   }
+
+  checkCashSession(branchId: string): void {
+    this.cashSessionError = '';
+    this.currentCashSession = null;
+    this.noCashOpen = true;
+    this.invoiceForm.disable();
+
+    this._cashService.getCurrentSession(branchId).subscribe({
+      next: (session) => {
+        this.currentCashSession = session;
+        this.noCashOpen = false;
+        this.invoiceForm.enable();
+        // Siempre mantener invoicePrefix y invoiceNumber deshabilitados
+        this.invoiceForm.get('invoicePrefix')?.disable();
+        this.invoiceForm.get('invoiceNumber')?.disable();
+      },
+      error: () => {
+        this.cashSessionError = '⚠️ Debe abrir la caja diaria para poder crear facturas';
+        this.noCashOpen = true;
+        this.invoiceForm.disable();
+      }
+    });
+  }
+
+  // setFormDisabled ya no es necesario, la lógica se maneja con enable()/disable() del formGroup completo
 
   getLocations(branchId: string) {
     const branch = this.branches.find((branch) => branch.id == branchId);
