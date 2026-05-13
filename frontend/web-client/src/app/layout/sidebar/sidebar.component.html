@@ -1,14 +1,18 @@
 <aside class="sidebar" [class.sidebar--collapsed]="collapsed" aria-label="Menú de navegación principal">
 
   <!-- Logo / Brand -->
-  <div class="sidebar__header">
+  <a class="sidebar__header" [routerLink]="['/']" title="Ir a la landing">
     <div class="sidebar__logo">
-      <span class="material-icons sidebar__logo-icon">storefront</span>
+      <div class="sidebar__logo-icon-wrap">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/>
+        </svg>
+      </div>
       @if (!collapsed) {
-        <span class="sidebar__logo-text">RetailManager</span>
+        <span class="sidebar__logo-text">Retail<span class="sidebar__logo-accent">Manager</span></span>
       }
     </div>
-  </div>
+  </a>
 
   <!-- Nav content -->
   <nav class="sidebar__nav">

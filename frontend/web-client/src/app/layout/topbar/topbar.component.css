@@ -38,7 +38,10 @@
   font-size: .9rem;
   color: var(--color-primary);
   display: none;
+  text-decoration: none;
+  transition: color .15s;
 }
+.topbar__brand:hover { color: var(--color-primary-dark); }
 
 .topbar__spacer { flex: 1; }
 

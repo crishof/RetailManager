@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
+import { LandingComponent } from './pages/landing/landing.component';
 import { ProductsComponent } from './pages/product/products/products.component';
 import { ProductDetailsComponent } from './pages/product/product-details/product-details.component';
 import { ProductEditComponent } from './pages/product/product-edit/product-edit.component';
@@ -23,8 +24,9 @@ import { BranchesComponent } from './pages/settings/branches/branches.component'
 import { EnConstruccionComponent } from './shared/en-construccion/en-construccion.component';
 
 export const routes: Routes = [
-  // ── Principal ──────────────────────────────────────
-  { path: '',        component: HomeComponent },
+  // ── Público ────────────────────────────────────────
+  { path: '',       component: LandingComponent },
+  { path: 'inicio', component: HomeComponent },
   { path: 'dashboard', component: DashboardComponent },
 
   // ── Catálogo ───────────────────────────────────────
