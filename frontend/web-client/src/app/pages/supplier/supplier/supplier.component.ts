@@ -6,10 +6,12 @@ import { SupplierService } from "../../../services/supplier.service";
 import { SupplierNavbarComponent } from "../supplier-navbar/supplier-navbar.component";
 import { SupplierDetailsComponent } from "../supplier-details/supplier-details.component";
 import { SupplierFormComponent } from "../supplier-form/supplier-form.component";
+import { SupplierPurchaseHistoryComponent } from "../supplier-purchase-history/supplier-purchase-history.component";
+import { SupplierAccountStatementComponent } from "../supplier-account-statement/supplier-account-statement.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Subscription } from "rxjs";
 
-type SupplierTab = "supplier" | "margenes" | "contactos" | "inscripciones";
+type SupplierTab = "supplier" | "margenes" | "contactos" | "inscripciones" | "compras" | "cuenta-corriente";
 
 @Component({
   selector: "app-supplier",
@@ -19,6 +21,8 @@ type SupplierTab = "supplier" | "margenes" | "contactos" | "inscripciones";
     SupplierNavbarComponent,
     SupplierDetailsComponent,
     SupplierFormComponent,
+    SupplierPurchaseHistoryComponent,
+    SupplierAccountStatementComponent,
     FormsModule,
     ReactiveFormsModule,
     NgClass,
@@ -44,10 +48,21 @@ export class SupplierComponent implements OnInit, OnDestroy {
 
   readonly tabs: SupplierTab[] = [
     "supplier",
+    "compras",
+    "cuenta-corriente",
     "margenes",
     "contactos",
     "inscripciones",
   ];
+
+  readonly tabLabels: Record<SupplierTab, string> = {
+    "supplier": "Proveedor",
+    "compras": "Compras",
+    "cuenta-corriente": "Cuenta corriente",
+    "margenes": "Márgenes",
+    "contactos": "Contactos",
+    "inscripciones": "Inscripciones",
+  };
 
   private subscription?: Subscription;
 

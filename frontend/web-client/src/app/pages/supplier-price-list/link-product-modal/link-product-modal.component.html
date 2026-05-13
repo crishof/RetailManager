@@ -1,0 +1,77 @@
+@if (isOpen) {
+  <div class="modal-backdrop" (click)="onCancel()">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="modal-icon">🔗</span>
+          <span>Vincular artículo a producto interno</span>
+        </div>
+        <button class="close-btn" (click)="onCancel()" aria-label="Cerrar">✕</button>
+      </div>
+
+      <!-- Supplier product info -->
+      @if (supplierProduct) {
+        <div class="supplier-info">
+          <span class="supplier-label">Artículo proveedor:</span>
+          <span class="supplier-value">{{ supplierProduct.brand }} — {{ supplierProduct.model }}</span>
+          <span class="supplier-code">Cód. {{ supplierProduct.supplierCode ?? supplierProduct.code }}</span>
+        </div>
+      }
+
+      <!-- Search -->
+      <div class="search-row">
+        <input
+          class="search-input"
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Buscar por marca, modelo, código..."
+          (keyup.enter)="searchProducts()"
+        />
+        <button class="btn-search" (click)="searchProducts()" [disabled]="loading">
+          {{ loading ? 'Buscando...' : 'Buscar' }}
+        </button>
+      </div>
+
+      <!-- Error -->
+      @if (errorMessage) {
+        <div class="alert-error">{{ errorMessage }}</div>
+      }
+
+      <!-- Product list -->
+      <div class="product-list">
+        @if (loading) {
+          <div class="loading-msg">Cargando productos...</div>
+        } @else if (products.length === 0) {
+          <div class="empty-msg">No se encontraron productos.</div>
+        } @else {
+          @for (product of products; track product.id) {
+            <button
+              class="product-row"
+              [class.selected]="selectedProduct?.id === product.id"
+              (click)="selectProduct(product)"
+            >
+              <span class="product-brand">{{ product.brandName }}</span>
+              <span class="product-model">{{ product.model }}</span>
+              <span class="product-code">{{ product.code }}</span>
+            </button>
+          }
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="onCancel()">Cancelar</button>
+        <button
+          class="btn-confirm"
+          (click)="confirmLink()"
+          [disabled]="!selectedProduct || linking"
+        >
+          {{ linking ? 'Vinculando...' : 'Confirmar vínculo' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

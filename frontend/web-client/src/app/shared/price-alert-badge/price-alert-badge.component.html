@@ -1,0 +1,9 @@
+@for (alert of alerts; track alert.id) {
+  <div class="price-alert-badge" [class]="'status-' + alert.priceChangeStatus.toLowerCase()">
+    <span class="material-icons">{{ getIcon(alert.priceChangeStatus) }}</span>
+    <span class="text">{{ getLabel(alert.priceChangeStatus) }}</span>
+    @if (alert.lastImportedPrice) {
+      <span class="price">${{ alert.lastImportedPrice | number: '1.2-2' }}</span>
+    }
+  </div>
+}

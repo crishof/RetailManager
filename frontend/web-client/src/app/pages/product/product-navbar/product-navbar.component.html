@@ -1,14 +1,26 @@
 <div class="pnav">
   <div class="pnav__group">
-    <button class="pnav__btn pnav__btn--primary" (click)="newProduct.emit()" title="Nuevo producto">
+    <button
+      class="pnav__btn pnav__btn--primary"
+      (click)="newProduct.emit()"
+      title="Nuevo producto"
+    >
       <span class="material-icons">add</span>
       <span class="pnav__btn-label">Nuevo</span>
     </button>
-    <button class="pnav__btn" (click)="editProduct.emit()" title="Editar producto">
+    <button
+      class="pnav__btn"
+      (click)="editProduct.emit()"
+      title="Editar producto"
+    >
       <span class="material-icons">edit</span>
       <span class="pnav__btn-label">Editar</span>
     </button>
-    <button class="pnav__btn pnav__btn--danger" (click)="deleteProduct.emit()" title="Eliminar producto">
+    <button
+      class="pnav__btn pnav__btn--danger"
+      (click)="deleteProduct.emit()"
+      title="Eliminar producto"
+    >
       <span class="material-icons">delete_outline</span>
       <span class="pnav__btn-label">Eliminar</span>
     </button>
@@ -16,59 +28,149 @@
 
   <div class="pnav__separator"></div>
 
-  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'modificaciones'">
+  <div
+    class="pnav__dropdown"
+    [class.pnav__dropdown--open]="openMenu === 'modificaciones'"
+  >
     <button class="pnav__btn" (click)="toggleMenu('modificaciones')">
       <span class="material-icons">tune</span>
       <span class="pnav__btn-label">Modificaciones</span>
       <span class="material-icons pnav__chevron">expand_more</span>
     </button>
     <div class="pnav__menu">
-      <button class="pnav__menu-item"><span class="material-icons">bolt</span>Modificación rápida de artículos</button>
-      <button class="pnav__menu-item"><span class="material-icons">tune</span>Modificación rápida de especificaciones</button>
-      <button class="pnav__menu-item"><span class="material-icons">inventory</span>Modificación de paquete</button>
-      <button class="pnav__menu-item"><span class="material-icons">library_add</span>Crear paquetes relacionados</button>
-      <button class="pnav__menu-item"><span class="material-icons">precision_manufacturing</span>Modificación de la fabricación propia</button>
-      <button class="pnav__menu-item"><span class="material-icons">qr_code_scanner</span>Cargar códigos de barra EAN</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">bolt</span>Modificación rápida de artículos
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">tune</span>Modificación rápida de
+        especificaciones
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">inventory</span>Modificación de paquete
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">library_add</span>Crear paquetes
+        relacionados
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">precision_manufacturing</span>Modificación
+        de la fabricación propia
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">qr_code_scanner</span>Cargar códigos de
+        barra EAN
+      </button>
       <div class="pnav__menu-divider"></div>
       <div class="pnav__menu-heading">Artículos complementarios</div>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Por artículo</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Por categoría</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Por artículo
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Por
+        categoría
+      </button>
       <div class="pnav__menu-divider"></div>
       <div class="pnav__menu-heading">Fotografías</div>
-      <button class="pnav__menu-item"><span class="material-icons">photo_camera</span>Cargar fotografía</button>
-      <button class="pnav__menu-item"><span class="material-icons">collections</span>Cargar fotografía por marca</button>
-      <button class="pnav__menu-item"><span class="material-icons">folder_open</span>Cargar fotografía desde carpeta</button>
-      <button class="pnav__menu-item"><span class="material-icons">perm_media</span>ABM fotografías</button>
-      <button class="pnav__menu-item"><span class="material-icons">image</span>Grabar imágenes como archivos JPEG</button>
-      <button class="pnav__menu-item"><span class="material-icons">photo_size_select_large</span>Personalizar tamaños</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">photo_camera</span>Cargar fotografía
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">collections</span>Cargar fotografía por
+        marca
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">folder_open</span>Cargar fotografía desde
+        carpeta
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">perm_media</span>ABM fotografías
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">image</span>Grabar imágenes como archivos
+        JPEG
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">photo_size_select_large</span>Personalizar
+        tamaños
+      </button>
       <div class="pnav__menu-divider"></div>
       <div class="pnav__menu-heading">Actualizaciones masivas</div>
-      <button class="pnav__menu-item"><span class="material-icons">attach_money</span>Asignar redondeo a artículos dolarizados</button>
-      <button class="pnav__menu-item"><span class="material-icons">shopping_bag</span>Cantidades mínimas de venta por mayor</button>
-      <button class="pnav__menu-item"><span class="material-icons">percent</span>Comisiones</button>
-      <button class="pnav__menu-item"><span class="material-icons">sell</span>Descuentos</button>
-      <button class="pnav__menu-item"><span class="material-icons">receipt</span>Impuestos internos</button>
-      <button class="pnav__menu-item"><span class="material-icons">bar_chart</span>Porcentajes de markup por categoría</button>
-      <button class="pnav__menu-item"><span class="material-icons">price_change</span>Precios</button>
-      <button class="pnav__menu-item"><span class="material-icons">format_list_numbered</span>Precios: redondear</button>
-      <button class="pnav__menu-item"><span class="material-icons">local_offer</span>Promociones</button>
-      <button class="pnav__menu-item"><span class="material-icons">straighten</span>Tabla de talles</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">attach_money</span>Asignar redondeo a
+        artículos dolarizados
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">shopping_bag</span>Cantidades mínimas de
+        venta por mayor
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">percent</span>Comisiones
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">sell</span>Descuentos
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">receipt</span>Impuestos internos
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">bar_chart</span>Porcentajes de markup por
+        categoría
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">price_change</span>Precios
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">format_list_numbered</span>Precios:
+        redondear
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">local_offer</span>Promociones
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">straighten</span>Tabla de talles
+      </button>
       <div class="pnav__menu-divider"></div>
-      <button class="pnav__menu-item"><span class="material-icons">trending_up</span>Aumento por porcentaje o precio</button>
-      <button class="pnav__menu-item"><span class="material-icons">inventory_2</span>Control de stock</button>
-      <button class="pnav__menu-item"><span class="material-icons">tag</span>Nuevos números de serie</button>
-      <button class="pnav__menu-item"><span class="material-icons">compress</span>Combinar artículos</button>
-      <button class="pnav__menu-item"><span class="material-icons">remove_circle</span>Baja de artículos</button>
-      <button class="pnav__menu-item"><span class="material-icons">link</span>Relacionar mis artículos con los del proveedor</button>
-      <button class="pnav__menu-item"><span class="material-icons">merge_type</span>Unificar artículos repetidos</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">trending_up</span>Aumento por porcentaje o
+        precio
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">inventory_2</span>Control de stock
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">tag</span>Nuevos números de serie
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">compress</span>Combinar artículos
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">remove_circle</span>Baja de artículos
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">link</span>Relacionar mis artículos con los
+        del proveedor
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">merge_type</span>Unificar artículos
+        repetidos
+      </button>
       <div class="pnav__menu-divider"></div>
-      <button class="pnav__menu-item"><span class="material-icons">view_column</span>Editar vista de columnas de artículos</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">view_column</span>Editar vista de columnas
+        de artículos
+      </button>
       <div class="pnav__menu-divider"></div>
-      <button class="pnav__menu-item"><span class="material-icons">public</span>Publicar mi lista de artículos de venta al comercio</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">public</span>Publicar mi lista de artículos
+        de venta al comercio
+      </button>
     </div>
   </div>
 
-  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'varios'">
+  <div
+    class="pnav__dropdown"
+    [class.pnav__dropdown--open]="openMenu === 'varios'"
+  >
     <button class="pnav__btn" (click)="toggleMenu('varios')">
       <span class="material-icons">apps</span>
       <span class="pnav__btn-label">Varios</span>
@@ -76,139 +178,284 @@
     </button>
     <div class="pnav__menu">
       <div class="pnav__menu-heading">Precios y costos</div>
-      <button class="pnav__menu-item"><span class="material-icons">currency_exchange</span>Cambiar costos por moneda</button>
-      <button class="pnav__menu-item"><span class="material-icons">price_change</span>Actualizar precios de venta</button>
-      <button class="pnav__menu-item"><span class="material-icons">discount</span>Ajustar precios</button>
-      <button class="pnav__menu-item"><span class="material-icons">receipt_long</span>Actualizar IVA</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">currency_exchange</span>Cambiar costos por
+        moneda
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">price_change</span>Actualizar precios de
+        venta
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">discount</span>Ajustar precios
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">receipt_long</span>Actualizar IVA
+      </button>
       <div class="pnav__menu-divider"></div>
       <div class="pnav__menu-heading">Datos del artículo</div>
-      <button class="pnav__menu-item"><span class="material-icons">qr_code</span>Actualizar código</button>
-      <button class="pnav__menu-item"><span class="material-icons">label</span>Actualizar marca</button>
-      <button class="pnav__menu-item"><span class="material-icons">category</span>Actualizar rubro</button>
-      <button class="pnav__menu-item"><span class="material-icons">description</span>Actualizar observaciones</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">qr_code</span>Actualizar código
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">label</span>Actualizar marca
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">category</span>Actualizar rubro
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">description</span>Actualizar observaciones
+      </button>
       <div class="pnav__menu-divider"></div>
-      <button class="pnav__menu-item"><span class="material-icons">send</span>Pedido de artículo al proveedor</button>
-      <button class="pnav__menu-item"><span class="material-icons">build</span>Enviar artículo al service</button>
-      <button class="pnav__menu-item"><span class="material-icons">move_to_inbox</span>Recepción en consignación</button>
-      <button class="pnav__menu-item"><span class="material-icons">payments</span>Comisión especial por este artículo</button>
-      <button class="pnav__menu-item"><span class="material-icons">search</span>Buscar artículos por acopio</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">send</span>Pedido de artículo al proveedor
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">build</span>Enviar artículo al service
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">move_to_inbox</span>Recepción en
+        consignación
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">payments</span>Comisión especial por este
+        artículo
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">search</span>Buscar artículos por acopio
+      </button>
       <div class="pnav__menu-divider"></div>
-      <button class="pnav__menu-item" routerLink="/brand"><span class="material-icons">label</span>Marcas</button>
-      <button class="pnav__menu-item" routerLink="/category"><span class="material-icons">category</span>Categorías</button>
+      <button class="pnav__menu-item" routerLink="/brand">
+        <span class="material-icons">label</span>Marcas
+      </button>
+      <button class="pnav__menu-item" routerLink="/category">
+        <span class="material-icons">category</span>Categorías
+      </button>
       <div class="pnav__menu-divider"></div>
       <div class="pnav__menu-heading">Asignaciones</div>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Proveedor por marca</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Categorías</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Marcas</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Proveedor
+        por marca
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Categorías
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Marcas
+      </button>
       <div class="pnav__menu-divider"></div>
       <div class="pnav__menu-heading">Departamentos</div>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>ABM</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Asignar artículos</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>ABM
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Asignar
+        artículos
+      </button>
       <div class="pnav__menu-divider"></div>
-      <button class="pnav__menu-item"><span class="material-icons">upload_file</span>Importar artículos desde Excel</button>
-      <button class="pnav__menu-item"><span class="material-icons">list_alt</span>Listado de precios</button>
-      <button class="pnav__menu-item"><span class="material-icons">manage_search</span>Auditar precios</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">upload_file</span>Importar artículos desde
+        Excel
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">list_alt</span>Listado de precios
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">manage_search</span>Auditar precios
+      </button>
     </div>
   </div>
 
-  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'stock'">
+  <div
+    class="pnav__dropdown"
+    [class.pnav__dropdown--open]="openMenu === 'stock'"
+  >
     <button class="pnav__btn" (click)="toggleMenu('stock')">
       <span class="material-icons">warehouse</span>
       <span class="pnav__btn-label">Stock</span>
       <span class="material-icons pnav__chevron">expand_more</span>
     </button>
     <div class="pnav__menu">
-      <button class="pnav__menu-item"><span class="material-icons">swap_horiz</span>Movimiento de stock</button>
-      <button class="pnav__menu-item"><span class="material-icons">group_work</span>Movimiento por grupo de artículos</button>
-      <button class="pnav__menu-item"><span class="material-icons">precision_manufacturing</span>Movimiento por fabricación</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">swap_horiz</span>Movimiento de stock
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">group_work</span>Movimiento por grupo de
+        artículos
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">precision_manufacturing</span>Movimiento
+        por fabricación
+      </button>
       <div class="pnav__menu-divider"></div>
       <div class="pnav__menu-heading">Stock de vehículo</div>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Ver seleccionado</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Buscar</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Importación masiva</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Ver
+        seleccionado
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Buscar
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Importación
+        masiva
+      </button>
       <div class="pnav__menu-divider"></div>
-      <button class="pnav__menu-item"><span class="material-icons">assignment</span>Inventario físico</button>
-      <button class="pnav__menu-item"><span class="material-icons">bar_chart</span>Reporte de stock</button>
-      <button class="pnav__menu-item"><span class="material-icons">history</span>Ver movimiento de stock</button>
-      <button class="pnav__menu-item"><span class="material-icons">history_toggle_off</span>Ver movimiento por grupo de artículos</button>
-      <button class="pnav__menu-item"><span class="material-icons">local_shipping</span>Ver stock de despacho a plaza</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">assignment</span>Inventario físico
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">bar_chart</span>Reporte de stock
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">history</span>Ver movimiento de stock
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">history_toggle_off</span>Ver movimiento por
+        grupo de artículos
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">local_shipping</span>Ver stock de despacho
+        a plaza
+      </button>
       <div class="pnav__menu-divider"></div>
       <div class="pnav__menu-heading">Stock reservado</div>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Artículo seleccionado</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Todos los artículos</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Reservar manualmente desde CSV</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Artículo
+        seleccionado
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Todos los
+        artículos
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Reservar
+        manualmente desde CSV
+      </button>
       <div class="pnav__menu-divider"></div>
-      <button class="pnav__menu-item"><span class="material-icons">tag</span>Ver stock de número de serie</button>
-      <button class="pnav__menu-item"><span class="material-icons">playlist_add_check</span>Artículos vendidos a reponer</button>
-      <button class="pnav__menu-item"><span class="material-icons">timeline</span>Historial de precios de compra</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">tag</span>Ver stock de número de serie
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">playlist_add_check</span>Artículos vendidos
+        a reponer
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">timeline</span>Historial de precios de
+        compra
+      </button>
       <div class="pnav__menu-divider"></div>
-      <button class="pnav__menu-item"><span class="material-icons">restart_alt</span>Volver el stock a cero</button>
-      <button class="pnav__menu-item"><span class="material-icons">calculate</span>Total de stock</button>
-      <button class="pnav__menu-item"><span class="material-icons">fact_check</span>Realización de inventario</button>
-      <button class="pnav__menu-item"><span class="material-icons">warning</span>Movilizar stock negativo</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">restart_alt</span>Volver el stock a cero
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">calculate</span>Total de stock
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">fact_check</span>Realización de inventario
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">warning</span>Movilizar stock negativo
+      </button>
     </div>
   </div>
 
-  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'listados'">
+  <div
+    class="pnav__dropdown"
+    [class.pnav__dropdown--open]="openMenu === 'listados'"
+  >
     <button class="pnav__btn" (click)="toggleMenu('listados')">
       <span class="material-icons">list_alt</span>
       <span class="pnav__btn-label">Listados</span>
       <span class="material-icons pnav__chevron">expand_more</span>
     </button>
     <div class="pnav__menu">
-      <button class="pnav__menu-item"><span class="material-icons">inventory_2</span>Artículos</button>
-      <button class="pnav__menu-item"><span class="material-icons">view_list</span>Listado simple</button>
-      <button class="pnav__menu-item"><span class="material-icons">science</span>Listado de insumos</button>
-      <button class="pnav__menu-item"><span class="material-icons">inventory</span>Listado de paquetes y sus componentes</button>
-      <button class="pnav__menu-item"><span class="material-icons">sell</span>Listado solo de precios</button>
-      <button class="pnav__menu-item"><span class="material-icons">place</span>Listado de ubicaciones</button>
-      <button class="pnav__menu-item"><span class="material-icons">directions_car</span>Listado de vehículos</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">inventory_2</span>Artículos
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">view_list</span>Listado simple
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">science</span>Listado de insumos
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">inventory</span>Listado de paquetes y sus
+        componentes
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">sell</span>Listado solo de precios
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">place</span>Listado de ubicaciones
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">directions_car</span>Listado de vehículos
+      </button>
       <div class="pnav__menu-divider"></div>
-      <button class="pnav__menu-item"><span class="material-icons">insights</span>Informe de ventas</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">insights</span>Informe de ventas
+      </button>
       <div class="pnav__menu-divider"></div>
       <div class="pnav__menu-heading">Impresión de etiquetas</div>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Código de barras</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Impresora estándar</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Código de
+        barras
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Impresora
+        estándar
+      </button>
       <div class="pnav__menu-divider"></div>
       <div class="pnav__menu-heading">Stock</div>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Stock por sucursales</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Stock por depósitos</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Despachos a plaza</button>
-      <button class="pnav__menu-item"><span class="material-icons">subdirectory_arrow_right</span>Informe de productos unificado</button>
-    </div>
-  </div>
-
-  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'articulos'">
-    <button class="pnav__btn" (click)="toggleMenu('articulos')">
-      <span class="material-icons">point_of_sale</span>
-      <span class="pnav__btn-label">Artículos</span>
-      <span class="material-icons pnav__chevron">expand_more</span>
-    </button>
-    <div class="pnav__menu">
-      <button class="pnav__menu-item"><span class="material-icons">lock_open</span>Apertura de caja</button>
-      <button class="pnav__menu-item"><span class="material-icons">rule</span>Arqueo de caja</button>
-      <button class="pnav__menu-item"><span class="material-icons">lock</span>Cerrar caja</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Stock por
+        sucursales
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Stock por
+        depósitos
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Despachos a
+        plaza
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">subdirectory_arrow_right</span>Informe de
+        productos unificado
+      </button>
     </div>
   </div>
 
   <div class="pnav__spacer"></div>
 
   <div class="pnav__group">
-    <button class="pnav__btn" routerLink="/supplierPriceList" title="Lista proveedor">
+    <button
+      class="pnav__btn"
+      routerLink="/supplierPriceList"
+      title="Lista proveedor"
+    >
       <span class="material-icons">request_quote</span>
       <span class="pnav__btn-label">Lista proveedor</span>
     </button>
   </div>
 
-  <div class="pnav__dropdown" [class.pnav__dropdown--open]="openMenu === 'ocultos'">
+  <div
+    class="pnav__dropdown"
+    [class.pnav__dropdown--open]="openMenu === 'ocultos'"
+  >
     <button class="pnav__btn" (click)="toggleMenu('ocultos')">
       <span class="material-icons">visibility_off</span>
       <span class="pnav__btn-label">Ocultos</span>
       <span class="material-icons pnav__chevron">expand_more</span>
     </button>
     <div class="pnav__menu">
-      <button class="pnav__menu-item"><span class="material-icons">hide_source</span>Ocultar este artículo</button>
-      <button class="pnav__menu-item"><span class="material-icons">settings</span>Administración de ocultos</button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">hide_source</span>Ocultar este artículo
+      </button>
+      <button class="pnav__menu-item">
+        <span class="material-icons">settings</span>Administración de ocultos
+      </button>
     </div>
   </div>
 

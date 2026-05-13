@@ -1,12 +1,17 @@
-<app-sidebar [collapsed]="sidebarCollapsed"></app-sidebar>
+@if (!isLanding()) {
+  <app-sidebar [collapsed]="sidebarCollapsed"></app-sidebar>
+}
 
-<div class="app-shell" [class.app-shell--collapsed]="sidebarCollapsed">
-  <app-topbar
-    [sidebarCollapsed]="sidebarCollapsed"
-    (toggleSidebar)="toggleSidebar()"
-  ></app-topbar>
+<div [class]="isLanding() ? '' : 'app-shell'" [class.app-shell--collapsed]="!isLanding() && sidebarCollapsed">
+  @if (!isLanding()) {
+    <app-topbar
+      [sidebarCollapsed]="sidebarCollapsed"
+      (toggleSidebar)="toggleSidebar()"
+    ></app-topbar>
+  }
 
-  <main class="app-shell__content">
+  <main [class]="isLanding() ? '' : 'app-shell__content'">
     <router-outlet></router-outlet>
   </main>
 </div>
+
