@@ -1,130 +1,102 @@
 # RetailManager
 
-RetailManager is a modular, microservices-based **commercial management system** designed to support retail and wholesale business operations at scale.
-
-The platform focuses on product lifecycle management, pricing, stock control, and commercial workflows, with a strong emphasis on extensibility and future growth.
+A modular, microservices-based commercial management system for retail and wholesale operations.
 
 ---
 
-## 🚀 Key Features
-
-### Product & Catalog Management
-- Brand and category management (hierarchical categories)
-- Product lifecycle control (draft, published, highlighted, etc.)
-- Image management via **Cloudinary**
-- Slug-based SEO-friendly identifiers
-
-### Supplier Price Lists
-- Bulk import of supplier price lists via **Excel**
-- Price items stored independently from active products
-- Controlled import of price items into active products
-- Historical price list retention for audit and comparison
-
-### Inventory & Stock
-- Stock management across multiple warehouses and branches
-- Support for stock transfers between warehouses
-- Designed for future **multi-tenant** expansion
-
-### Commercial Documents
-- Support for different document types:
-    - Delivery notes (remitos)
-    - Invoices
-    - Internal stock transfers
-- Extensible document model for future fiscal integrations
-
-### Integrations
-- Image management service (Cloudinary)
-- Currency exchange rates service
-- Inter-service communication via REST
-
----
-
-## 🧱 Architecture Overview
-
-RetailManager follows a **microservices architecture**, where each service owns its data and domain logic.
-
-- Each microservice:
-    - Has its own PostgreSQL database
-    - Uses JPA repositories with a mix of JPQL and native queries
-    - Exposes a REST API
-- Services are routed through an **Nginx API Gateway**
-- Centralized Swagger UI for API discovery (in progress)
-
-### Current Services (non-exhaustive)
-- Brand Service
-- Category Service
-- Product Service
-- Supplier & Price List Service
-- Inventory Service
-- Sales Service
-- Exchange Rate Service
-- Image Service
-
----
-
-## 🛠️ Technology Stack
-
-### Backend
-- **Java 25**
-- **Spring Boot 4**
-- Spring Data JPA
-- Spring Web / WebClient
-- PostgreSQL (one database per service)
-
-> While the project is built on Java 25 and Spring Boot 4, not all version-specific features are currently in use. The stack was chosen to ensure long-term support and future scalability.
-
-### Infrastructure
-- Docker & Docker Compose
-- Nginx (API Gateway)
-- Health checks via Spring Actuator
-
----
-
-## 📦 Data Management
-
-- Database-per-service approach
-- PostgreSQL as the primary datastore
-- Schema initialization via Docker
-- Soft delete strategies where applicable
-- Strong emphasis on data ownership per bounded context
-
----
-
-## 🔐 Security (Planned)
-
-The following features are planned and **not yet implemented**:
-
-- User management and roles
-- JWT-based authentication
-- OAuth2 authorization
-- Fine-grained access control per service
-
----
-
-## 🧩 Future Roadmap
-
-RetailManager is designed to grow into a full-featured ERP-like platform. Planned features include:
-
-- User and staff management
-- Authentication & authorization (JWT / OAuth2)
-- Web storefront with shopping cart
-- Accounting and financial management
-- Real-time messaging and notifications
-- PDF report generation
-- Email notifications
-- Technical service management:
-    - Product repairs
-    - Appointment scheduling
-    - Customer communication
-- Vehicle and delivery fleet management
-- Advanced reporting and analytics
-
----
-
-## 🐳 Running the Project (Development)
-
-The backend can be started using Docker Compose.
+## Quick Start
 
 ```bash
-cd backend/docker
-docker compose up --build
+# Start infrastructure (PostgreSQL, RabbitMQ, Gateway)
+cd docker/compose
+docker compose up -d
+
+# Frontend
+cd frontend/web-client
+npm install && npm start
+
+# Backend (individual service)
+cd backend/erphub-api/microservices/brand-sv
+mvn spring-boot:run -Dspring-boot.run.arguments='--spring.profiles.active=dev'
+```
+
+---
+
+## Architecture
+
+- **Backend**: Spring Boot 4 microservices (Java 25)
+- **Frontend**: Angular 17
+- **Gateway**: Spring Cloud Gateway + Eureka
+- **Database**: PostgreSQL (one database per service)
+- **Messaging**: RabbitMQ
+
+### Microservices
+
+| Service | Path | Description |
+|---------|------|-------------|
+| api-gateway | microservices/api-gateway | Entry point, routes to services |
+| service-registry | microservices/service-registry | Eureka service discovery |
+| config-server | microservices/config-server | Centralized configuration |
+| brand-sv | microservices/brand-sv | Brand management |
+| category-sv | microservices/category-sv | Category hierarchy |
+| product-sv | microservices/product-sv | Product lifecycle |
+| supplier-sv | microservices/supplier-sv | Supplier management |
+| inventory-sv | microservices/inventory-sv | Stock control |
+| purchase-sv | microservices/purchase-sv | Purchase orders |
+| sales-sv | microservices/sales-sv | Sales management |
+| cash-sv | microservices/cash-sv | Cash flow |
+| customer-sv | microservices/customer-sv | Customer data |
+| location-sv | microservices/location-sv | Warehouses/branches |
+| pricing-sv | microservices/pricing-sv | Pricing rules |
+| image-sv | microservices/image-sv | Cloudinary integration |
+| exchange-sv | microservices/exchange-sv | Currency rates |
+| reporting-sv | microservices/reporting-sv | Reports |
+
+---
+
+## Documentation
+
+- [Architecture Overview](docs/architecture.md)
+- [Local Development Setup](docs/local-development.md)
+- [Docker & Infrastructure](docs/docker.md)
+- [Security Guidelines](docs/security.md)
+- [Troubleshooting Guide](docs/troubleshooting.md)
+
+### For AI Agents
+
+See [docs/agents/AGENTS.md](docs/agents/AGENTS.md) for detailed agent instructions.
+
+---
+
+## Key Features
+
+- Multi-warehouse inventory management
+- Supplier price list import (Excel)
+- Purchase and sales workflow
+- Customer account management
+- Cash drawer operations
+- Multi-branch support
+- Image management (Cloudinary)
+- Currency exchange rates
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-------------|
+| Backend | Java 25, Spring Boot 4 |
+| API | REST, Feign Client |
+| Circuit Breaker | Resilience4j |
+| Discovery | Eureka |
+| Config | Spring Cloud Config |
+| Frontend | Angular 17, TypeScript |
+| Database | PostgreSQL |
+| Messaging | RabbitMQ |
+| Container | Docker Compose |
+
+---
+
+## License
+
+MIT

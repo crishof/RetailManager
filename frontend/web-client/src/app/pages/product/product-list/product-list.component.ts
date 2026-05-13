@@ -2,6 +2,7 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IProduct } from '../../../model/product.model';
 import { IStock } from '../../../model/stock.model';
+import { PriceAlertsWithHistoryComponent } from '../../../shared/price-alerts-with-history/price-alerts-with-history.component';
 
 type ProductColumnKey =
   | 'id'
@@ -17,7 +18,7 @@ type ProductColumnKey =
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe],
+  imports: [CommonModule, CurrencyPipe, PriceAlertsWithHistoryComponent],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
 })

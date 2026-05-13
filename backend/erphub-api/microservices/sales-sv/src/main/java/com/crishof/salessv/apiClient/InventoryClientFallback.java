@@ -1,0 +1,14 @@
+package com.crishof.salessv.apiClient;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+@Slf4j
+@Component
+public class InventoryClientFallback implements InventoryClient {
+
+    @Override
+    public void registerMovement(StockMovementRequest request) {
+        log.warn("inventory-sv unavailable — stock movement not registered for product={}", request.getProductId());
+    }
+}

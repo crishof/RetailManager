@@ -1,0 +1,58 @@
+@if (isOpen) {
+  <button class="modal-overlay" 
+          (click)="onClose()"
+          type="button"
+          aria-label="Cerrar modal"></button>
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>Historial de Precios</h2>
+      @if (link) {
+        <p class="modal-subtitle">{{ link.productName }} - {{ link.supplierCode }}</p>
+      }
+      <button class="modal-close" (click)="onClose()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      @if (loading) {
+        <div class="loading">Cargando historial...</div>
+      } @else if (error) {
+        <div class="error">{{ error }}</div>
+      } @else if (history.length === 0) {
+        <div class="empty">Sin cambios de precio registrados</div>
+      } @else {
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Precio Anterior</th>
+              <th>Precio Nuevo</th>
+              <th>Cambio %</th>
+              <th>Tipo</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of history; track item.id) {
+              <tr class="history-row" [class]="getStatusClass(item.changeType)">
+                <td>
+                  {{ item.recordedAt | date: 'short' }}
+                </td>
+                <td class="price">${{ item.priceFrom | number: '1.2-2' }}</td>
+                <td class="price">${{ item.priceTo | number: '1.2-2' }}</td>
+                <td class="change" [class.positive]="(item.changePercent ?? 0) > 0" [class.negative]="(item.changePercent ?? 0) < 0">
+                  {{ (item.changePercent ?? 0) > 0 ? '+' : '' }}{{ item.changePercent | number: '1.2-2' }}%
+                </td>
+                <td class="type">{{ getStatusLabel(item.changeType) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-close" (click)="onClose()">Cerrar</button>
+    </div>
+  </div>
+}

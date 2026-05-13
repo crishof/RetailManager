@@ -25,6 +25,23 @@ export interface ColumnHeaderSuggestion {
   suggestedAttribute: string | null;
 }
 
+export type ImportJobStatus = 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED';
+
+export interface ImportJobRecord {
+  id: string;
+  supplierId: string;
+  status: ImportJobStatus;
+  totalItems: number;
+  processedItems: number;
+  inserted: number;
+  updated: number;
+  failed: number;
+  startedAt: string;
+  finishedAt: string | null;
+  error: string | null;
+  fileName: string | null;
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -34,6 +51,8 @@ export class SupplierPriceListService {
   private readonly baseUrl = `${environment.gatewayUrl}/api/v1/price-items`;
   private readonly productsUrl =
     `${environment.gatewayUrl}/api/v1/products/import/supplier`;
+  private readonly importJobsUrl =
+    `${environment.gatewayUrl}/api/v1/import-jobs`;
 
   // ============================
   // IMPORT PRICE ITEMS
@@ -134,6 +153,21 @@ export class SupplierPriceListService {
     });
 
     return this.http.post<ImportResult>(this.productsUrl, payload);
+  }
+
+  // ============================
+  // IMPORT JOB HISTORY
+  // ============================
+  getImportHistory(supplierId?: string): Observable<ImportJobRecord[]> {
+    let params = new HttpParams();
+    if (supplierId) {
+      params = params.set('supplierId', supplierId);
+    }
+    return this.http.get<ImportJobRecord[]>(this.importJobsUrl, { params });
+  }
+
+  getImportJobStatus(jobId: string): Observable<ImportJobRecord> {
+    return this.http.get<ImportJobRecord>(`${this.importJobsUrl}/${jobId}`);
   }
 
   private normalizeSupplierProduct(product: ISupplierProduct): ISupplierProduct {

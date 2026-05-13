@@ -10,12 +10,10 @@ import { environment } from '../../environments/environment';
 export class TransactionService {
   readonly _http = inject(HttpClient);
 
-  readonly _urlBase = `${environment.gatewayUrl}/transaction-sv/transaction`;
+  private readonly _urlBase = `${environment.gatewayUrl}/api/v1/transactions`;
 
-  getTransactions(id: string): Observable<ITransaction[]> {
-    return this._http.get<ITransaction[]>(
-      `${this._urlBase}/getAllBySupplier/${id}`,
-    );
+  getTransactions(supplierId: string): Observable<ITransaction[]> {
+    return this._http.get<ITransaction[]>(`${this._urlBase}/supplier/${supplierId}`);
   }
 
   readonly transactionSource = new BehaviorSubject<ITransaction | null>(null);

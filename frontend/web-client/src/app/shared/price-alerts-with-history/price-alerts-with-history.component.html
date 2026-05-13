@@ -1,0 +1,16 @@
+<div class="price-alerts-container">
+  @for (alert of alerts; track alert.id) {
+    <button class="alert-item clickable" 
+            (click)="onBadgeClick(alert)"
+            type="button"
+            [attr.aria-label]="'Ver historial de ' + alert.productName">
+      <app-price-alert-badge [alerts]="[alert]"></app-price-alert-badge>
+    </button>
+  }
+</div>
+
+<app-price-history-modal 
+  [link]="selectedLink" 
+  [isOpen]="showHistoryModal"
+  (closeModal)="onCloseModal()">
+</app-price-history-modal>

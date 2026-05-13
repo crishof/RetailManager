@@ -1,0 +1,41 @@
+.price-alerts-container {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.alert-item {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  font-size: inherit;
+}
+
+.alert-item:hover {
+  transform: scale(1.05);
+  opacity: 0.8;
+}
+
+.alert-item.clickable {
+  position: relative;
+}
+
+.alert-item.clickable::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.alert-item.clickable:hover::after {
+  opacity: 0.5;
+}

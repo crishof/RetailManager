@@ -1,0 +1,174 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  width: 90%;
+  max-width: 700px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.modal-subtitle {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: #000;
+}
+
+.modal-close .material-icons {
+  font-size: 1.5rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.loading, .error, .empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #666;
+}
+
+.error {
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.empty {
+  color: #999;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.history-table thead {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+.history-table th {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+.history-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.history-row.status-up {
+  background-color: #fffbf0;
+}
+
+.history-row.status-down {
+  background-color: #f0f8f5;
+}
+
+.history-row.status-new {
+  background-color: #f0f7ff;
+}
+
+.history-row.status-same {
+  background-color: #fafafa;
+}
+
+.price {
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+.change {
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+.change.positive {
+  color: #d32f2f;
+}
+
+.change.negative {
+  color: #388e3c;
+}
+
+.type {
+  font-weight: 500;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-close {
+  padding: 0.5rem 1.5rem;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-close:hover {
+  background: #e0e0e0;
+  border-color: #999;
+}

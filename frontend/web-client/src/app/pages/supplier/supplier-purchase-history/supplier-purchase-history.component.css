@@ -1,0 +1,162 @@
+.ph__loading,
+.ph__empty,
+.ph__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.ph__error { color: #ef4444; }
+
+.ph__loading .material-icons,
+.ph__empty .material-icons,
+.ph__error .material-icons {
+  font-size: 2rem;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.rotating { animation: spin 1s linear infinite; }
+
+.ph__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.ph__header h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.ph__badge {
+  background: #e2e8f0;
+  color: #475569;
+  border-radius: 9999px;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.ph__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ph__item {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #fff;
+}
+
+.ph__item--expanded {
+  border-color: #6366f1;
+}
+
+.ph__item-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  gap: 1rem;
+  transition: background 0.15s;
+}
+
+.ph__item-header:hover { background: #f8fafc; }
+
+.ph__item-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ph__type {
+  background: #e0e7ff;
+  color: #4338ca;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ph__number { font-weight: 600; font-size: 0.9rem; color: #1e293b; }
+.ph__date { font-size: 0.85rem; color: #64748b; }
+
+.ph__item-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.ph__items-count { font-size: 0.8rem; color: #64748b; }
+
+.ph__total {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1e293b;
+}
+
+.ph__chevron { color: #94a3b8; font-size: 1.25rem; }
+
+.ph__item-body {
+  padding: 0.75rem 1rem 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.ph__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.ph__table th {
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ph__table td {
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.ph__product-id {
+  font-family: monospace;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ph__no-items {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  padding: 0.5rem;
+}
+
+.ph__obs {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #475569;
+}

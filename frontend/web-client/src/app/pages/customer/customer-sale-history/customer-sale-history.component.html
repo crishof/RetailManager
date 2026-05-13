@@ -1,0 +1,53 @@
+@if (loading) {
+  <p class="csh-msg">Cargando historial...</p>
+} @else if (errorMessage) {
+  <p class="csh-msg csh-msg--error">{{ errorMessage }}</p>
+} @else if (sales.length === 0) {
+  <p class="csh-msg">Sin ventas registradas para este cliente.</p>
+} @else {
+  <ul class="csh-list">
+    @for (sale of sales; track sale.id) {
+      <li class="csh-item">
+        <button class="csh-item__header" (click)="toggle(sale.id)">
+          <div class="csh-item__meta">
+            <span class="csh-item__number">{{ sale.saleNumber ?? sale.invoiceNumber }}</span>
+            <span class="csh-item__date">{{ (sale.saleDate ?? sale.invoiceDate) | date:'dd/MM/yyyy' }}</span>
+            <span class="csh-item__type">{{ sale.saleType ?? sale.invoiceType }}</span>
+          </div>
+          <div class="csh-item__total">${{ sale.totalPrice | number:'1.2-2' }}</div>
+        </button>
+
+        @if (expandedId === sale.id) {
+          <div class="csh-item__body">
+            @if (sale.items && sale.items.length > 0) {
+              <table class="csh-table">
+                <thead>
+                  <tr>
+                    <th>Producto ID</th>
+                    <th>Cant.</th>
+                    <th>Precio</th>
+                    <th>Desc.%</th>
+                    <th>IVA%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of sale.items; track item.id) {
+                    <tr>
+                      <td class="csh-table__mono">{{ item.id }}</td>
+                      <td>{{ item.quantity }}</td>
+                      <td>${{ item.price | number:'1.2-2' }}</td>
+                      <td>{{ item.discountRate }}</td>
+                      <td>{{ item.taxRate }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            } @else {
+              <p class="csh-item__no-items">Sin detalle disponible.</p>
+            }
+          </div>
+        }
+      </li>
+    }
+  </ul>
+}

@@ -1,0 +1,22 @@
+package com.crishof.branchsv.dto;
+
+import com.crishof.branchsv.model.StockLocation;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.UUID;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class LocationResponse {
+
+    private UUID id;
+    private String code;
+    private String name;
+    private StockLocation.LocationType locationType;
+    private boolean active;
+}
