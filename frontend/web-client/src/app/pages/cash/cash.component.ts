@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   CashService,
+  ICashQueryTarget,
   ICashSessionResponse,
   ICashMovementResponse,
+  TCurrencyCode,
 } from '../../services/cash.service';
 import { BranchService } from '../../services/branch.service';
 import { IBranch } from '../../model/branch.model';
@@ -17,12 +19,13 @@ import { IBranch } from '../../model/branch.model';
   styleUrls: ['./cash.component.css'],
 })
 export class CashComponent implements OnInit {
-  private cashService = inject(CashService);
-  private branchService = inject(BranchService);
-  private fb = inject(FormBuilder);
+  private readonly cashService = inject(CashService);
+  private readonly branchService = inject(BranchService);
+  private readonly fb = inject(FormBuilder);
 
   branches: IBranch[] = [];
   selectedBranchId: string = '';
+  selectedCashType: 'CENTRAL' | 'BRANCH' = 'CENTRAL';
 
   currentSession: ICashSessionResponse | null = null;
   movements: ICashMovementResponse[] = [];
@@ -56,6 +59,8 @@ export class CashComponent implements OnInit {
   movementForm: FormGroup = this.fb.group({
     type: ['INCOME', Validators.required],
     amount: [0, [Validators.required, Validators.min(0.01)]],
+    currency: ['ARS', Validators.required],
+    exchangeRateToArs: [1, [Validators.required, Validators.min(0.000001)]],
     description: ['', Validators.required],
     reference: [''],
   });
@@ -64,10 +69,32 @@ export class CashComponent implements OnInit {
   movementSuccess = false;
 
   activeView: 'session' | 'history' = 'session';
+  selectedArqueoCurrency: TCurrencyCode = 'ARS';
+
+  readonly currencies: TCurrencyCode[] = ['ARS', 'USD', 'EUR'];
+  readonly exchangeRatesToArs: Record<TCurrencyCode, number> = {
+    ARS: 1,
+    USD: 1100,
+    EUR: 1200,
+  };
+
+  readonly denominations: Record<TCurrencyCode, number[]> = {
+    ARS: [20000, 10000, 2000, 1000, 500, 200, 100, 50, 20, 10],
+    USD: [100, 50, 20, 10, 5, 1],
+    EUR: [500, 200, 100, 50, 20, 10, 5],
+  };
+
+  readonly arqueoCounts: Record<TCurrencyCode, Record<number, number>> = {
+    ARS: {},
+    USD: {},
+    EUR: {},
+  };
 
   readonly movementTypes = [
     { value: 'INCOME', label: 'Ingreso' },
     { value: 'EXPENSE', label: 'Egreso' },
+    { value: 'CUSTOMER_PAYMENT', label: 'Cobro recibido' },
+    { value: 'SUPPLIER_PAYMENT', label: 'Pago realizado' },
   ];
 
   readonly typeLabels: Record<string, string> = {
@@ -81,13 +108,16 @@ export class CashComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.closeForm.get('closingBalance')?.disable({ emitEvent: false });
+    this.refreshExchangeRates();
+
     this.branchService.getBranches().subscribe({
       next: (branches) => {
         this.branches = branches.filter((b) => b.active);
         if (this.branches.length > 0) {
           this.selectedBranchId = this.branches[0].id;
-          this.loadCurrentSession();
         }
+        this.loadCurrentSession();
       },
       error: () => {
         this.errorMessage = 'No se pudieron cargar las sucursales.';
@@ -95,18 +125,21 @@ export class CashComponent implements OnInit {
     });
   }
 
+  onCashTypeChange(event: Event): void {
+    this.selectedCashType = (event.target as HTMLSelectElement).value as 'CENTRAL' | 'BRANCH';
+    this.resetStateAndLoad();
+  }
+
   onBranchChange(event: Event): void {
     this.selectedBranchId = (event.target as HTMLSelectElement).value;
-    this.currentSession = null;
-    this.movements = [];
-    this.errorMessage = '';
-    this.loadCurrentSession();
+    this.resetStateAndLoad();
   }
 
   loadCurrentSession(): void {
-    if (!this.selectedBranchId) return;
+    if (this.selectedCashType === 'BRANCH' && !this.selectedBranchId) return;
+
     this.loading = true;
-    this.cashService.getCurrentSession(this.selectedBranchId).subscribe({
+    this.cashService.getCurrentSession(this.getQueryTarget()).subscribe({
       next: (session) => {
         this.currentSession = session;
         this.loading = false;
@@ -114,6 +147,7 @@ export class CashComponent implements OnInit {
       },
       error: () => {
         this.currentSession = null;
+        this.movements = [];
         this.loading = false;
       },
     });
@@ -126,9 +160,19 @@ export class CashComponent implements OnInit {
   }
 
   loadHistory(): void {
-    if (!this.selectedBranchId) return;
-    this.cashService.getAllSessions(this.selectedBranchId).subscribe({
-      next: (sessions) => (this.historySessions = sessions),
+    if (this.selectedCashType === 'BRANCH' && !this.selectedBranchId) return;
+
+    this.cashService.getAllSessions(this.getQueryTarget()).subscribe({
+      next: (sessions) => {
+        this.historySessions = sessions;
+        if (
+          this.selectedHistorySession &&
+          !sessions.some((session) => session.id === this.selectedHistorySession!.id)
+        ) {
+          this.selectedHistorySession = null;
+          this.historyMovements = [];
+        }
+      },
     });
   }
 
@@ -149,18 +193,26 @@ export class CashComponent implements OnInit {
   // Open session
   onOpenSession(): void {
     if (this.openForm.invalid) return;
+    if (this.selectedCashType === 'BRANCH' && !this.selectedBranchId) {
+      this.openError = 'Seleccione una sucursal para abrir caja.';
+      return;
+    }
+
     this.isOpening = true;
     this.openError = '';
+
+    const request = {
+      openingBalance: this.openForm.value.openingBalance,
+      notes: this.openForm.value.notes || undefined,
+      ...(this.selectedCashType === 'BRANCH' ? { branchId: this.selectedBranchId } : {}),
+    };
+
     this.cashService
-      .openSession({
-        branchId: this.selectedBranchId,
-        openingBalance: this.openForm.value.openingBalance,
-        notes: this.openForm.value.notes || undefined,
-      })
+      .openSession(request)
       .subscribe({
         next: (session) => {
           this.currentSession = session;
-          this.movements = [];
+          this.loadMovements(session.id);
           this.showOpenForm = false;
           this.openForm.reset({ openingBalance: 0, notes: '' });
           this.isOpening = false;
@@ -174,12 +226,30 @@ export class CashComponent implements OnInit {
 
   // Close session
   onCloseSession(): void {
-    if (!this.currentSession || this.closeForm.invalid) return;
+    if (!this.currentSession) return;
+
+    const closingBalance = this.arqueoTotalArs;
+    this.closeForm.get('closingBalance')?.setValue(closingBalance, { emitEvent: false });
+
+    if (closingBalance < 0) {
+      this.closeError = 'El arqueo no puede ser negativo.';
+      return;
+    }
+
     this.isClosing = true;
     this.closeError = '';
+
+    const countedTotalsByCurrency: Partial<Record<TCurrencyCode, number>> = {
+      ARS: this.getCurrencyTotal('ARS'),
+      USD: this.getCurrencyTotal('USD'),
+      EUR: this.getCurrencyTotal('EUR'),
+    };
+
     this.cashService
       .closeSession(this.currentSession.id, {
-        closingBalance: this.closeForm.value.closingBalance,
+        closingBalance,
+        countedTotalsByCurrency,
+        exchangeRatesToArs: this.exchangeRatesToArs,
         notes: this.closeForm.value.notes || undefined,
       })
       .subscribe({
@@ -188,6 +258,8 @@ export class CashComponent implements OnInit {
           this.movements = [];
           this.showCloseForm = false;
           this.closeForm.reset({ closingBalance: 0, notes: '' });
+          this.closeForm.get('closingBalance')?.disable({ emitEvent: false });
+          this.resetArqueo();
           this.isClosing = false;
           this.loadHistory();
         },
@@ -208,6 +280,8 @@ export class CashComponent implements OnInit {
       .addMovement(this.currentSession.id, {
         type: this.movementForm.value.type,
         amount: this.movementForm.value.amount,
+        currency: this.selectedMovementCurrency,
+        exchangeRateToArs: this.selectedMovementRate,
         description: this.movementForm.value.description,
         reference: this.movementForm.value.reference || undefined,
       })
@@ -215,7 +289,14 @@ export class CashComponent implements OnInit {
         next: (mv) => {
           this.movements.push(mv);
           this.movementSuccess = true;
-          this.movementForm.reset({ type: 'INCOME', amount: 0, description: '', reference: '' });
+          this.movementForm.reset({
+            type: 'INCOME',
+            amount: 0,
+            currency: 'ARS',
+            exchangeRateToArs: 1,
+            description: '',
+            reference: '',
+          });
           this.showMovementForm = false;
           this.isSavingMovement = false;
           // Refresh session totals
@@ -237,5 +318,199 @@ export class CashComponent implements OnInit {
 
   trackById(_: number, item: { id: string }): string {
     return item.id;
+  }
+
+  onMovementCurrencyChange(event: Event): void {
+    const currency = (event.target as HTMLSelectElement).value as TCurrencyCode;
+    this.movementForm.patchValue({
+      currency,
+      exchangeRateToArs: currency === 'ARS' ? 1 : this.exchangeRatesToArs[currency],
+    });
+  }
+
+  onRateChange(currency: TCurrencyCode, event: Event): void {
+    const value = Number((event.target as HTMLInputElement).value);
+    if (!Number.isFinite(value) || value <= 0) {
+      return;
+    }
+    this.exchangeRatesToArs[currency] = value;
+    if (this.selectedMovementCurrency === currency) {
+      this.movementForm.patchValue({ exchangeRateToArs: value });
+    }
+  }
+
+  refreshExchangeRates(): void {
+    this.cashService.getExchangeRatesToArs().subscribe({
+      next: (rates) => {
+        if (rates.USD && rates.USD > 0) {
+          this.exchangeRatesToArs.USD = rates.USD;
+        }
+        if (rates.EUR && rates.EUR > 0) {
+          this.exchangeRatesToArs.EUR = rates.EUR;
+        }
+
+        if (this.selectedMovementCurrency !== 'ARS') {
+          this.movementForm.patchValue({
+            exchangeRateToArs: this.exchangeRatesToArs[this.selectedMovementCurrency],
+          });
+        }
+      },
+      error: () => {
+        // Fallback ya cargado en exchangeRatesToArs; no cortamos el flujo de caja.
+      },
+    });
+  }
+
+  onArqueoCountChange(currency: TCurrencyCode, denomination: number, event: Event): void {
+    const qty = Math.max(0, Math.floor(Number((event.target as HTMLInputElement).value) || 0));
+    this.arqueoCounts[currency][denomination] = qty;
+    this.closeForm.get('closingBalance')?.setValue(this.arqueoTotalArs, { emitEvent: false });
+  }
+
+  selectArqueoCurrency(currency: TCurrencyCode): void {
+    this.selectedArqueoCurrency = currency;
+  }
+
+  getDenominationsFor(currency: TCurrencyCode): number[] {
+    return this.denominations[currency];
+  }
+
+  getCount(currency: TCurrencyCode, denomination: number): number {
+    return this.arqueoCounts[currency][denomination] ?? 0;
+  }
+
+  getSubtotalForDenomination(currency: TCurrencyCode, denomination: number): number {
+    return this.getCount(currency, denomination) * denomination;
+  }
+
+  getCurrencyTotal(currency: TCurrencyCode): number {
+    return this.denominations[currency].reduce(
+      (acc, denomination) => acc + this.getSubtotalForDenomination(currency, denomination),
+      0
+    );
+  }
+
+  get arqueoTotalArs(): number {
+    return this.currencies.reduce((acc, currency) => {
+      const subtotal = this.getCurrencyTotal(currency);
+      return acc + subtotal * this.exchangeRatesToArs[currency];
+    }, 0);
+  }
+
+  get selectedMovementCurrency(): TCurrencyCode {
+    return (this.movementForm.value.currency as TCurrencyCode) ?? 'ARS';
+  }
+
+  get selectedMovementRate(): number {
+    const rate = Number(this.movementForm.value.exchangeRateToArs) || 0;
+    if (this.selectedMovementCurrency === 'ARS') {
+      return 1;
+    }
+    return rate > 0 ? rate : this.exchangeRatesToArs[this.selectedMovementCurrency];
+  }
+
+  get movementArsAmount(): number {
+    const amount = Number(this.movementForm.value.amount) || 0;
+    return amount * this.selectedMovementRate;
+  }
+
+  get closeDifference(): number {
+    const expected = this.currentSession?.expectedBalance ?? 0;
+    return this.arqueoTotalArs - expected;
+  }
+
+  get hasSelectedHistoryArqueo(): boolean {
+    return this.currencies.some((currency) => this.getHistoryCountedTotal(currency) > 0);
+  }
+
+  get historyArqueoTotalArs(): number {
+    if (!this.selectedHistorySession) {
+      return 0;
+    }
+
+    if (!this.hasSelectedHistoryArqueo) {
+      return this.selectedHistorySession.closingBalance;
+    }
+
+    return this.currencies.reduce((acc, currency) => acc + this.getHistoryConvertedTotal(currency), 0);
+  }
+
+  get historyCloseDifference(): number {
+    if (!this.selectedHistorySession) {
+      return 0;
+    }
+    return this.historyArqueoTotalArs - this.selectedHistorySession.expectedBalance;
+  }
+
+  getHistoryCountedTotal(currency: TCurrencyCode): number {
+    if (!this.selectedHistorySession?.countedTotalsByCurrency) {
+      return 0;
+    }
+    return Number(this.selectedHistorySession.countedTotalsByCurrency[currency] ?? 0);
+  }
+
+  getHistoryRate(currency: TCurrencyCode): number {
+    if (currency === 'ARS') {
+      return 1;
+    }
+    return Number(this.selectedHistorySession?.exchangeRatesToArs?.[currency] ?? 0);
+  }
+
+  getHistoryConvertedTotal(currency: TCurrencyCode): number {
+    return this.getHistoryCountedTotal(currency) * this.getHistoryRate(currency);
+  }
+
+  get showBranchSelector(): boolean {
+    return this.selectedCashType === 'BRANCH';
+  }
+
+  get currentCashLabel(): string {
+    if (this.selectedCashType === 'CENTRAL') {
+      return 'Caja central de empresa';
+    }
+    return 'Caja de sucursal';
+  }
+
+  get currentTargetName(): string {
+    if (this.selectedCashType === 'CENTRAL') {
+      return 'Caja central';
+    }
+    return this.branches.find((branch) => branch.id === this.selectedBranchId)?.name ?? 'Sucursal';
+  }
+
+  private resetStateAndLoad(): void {
+    this.currentSession = null;
+    this.movements = [];
+    this.historySessions = [];
+    this.selectedHistorySession = null;
+    this.historyMovements = [];
+    this.errorMessage = '';
+    this.showOpenForm = false;
+    this.showCloseForm = false;
+    this.showMovementForm = false;
+    this.resetArqueo();
+    this.loadCurrentSession();
+    if (this.activeView === 'history') {
+      this.loadHistory();
+    }
+  }
+
+  private getQueryTarget(): ICashQueryTarget {
+    if (this.selectedCashType === 'CENTRAL') {
+      return { central: true };
+    }
+
+    return {
+      central: false,
+      branchId: this.selectedBranchId,
+    };
+  }
+
+  private resetArqueo(): void {
+    this.selectedArqueoCurrency = 'ARS';
+    this.arqueoCounts.ARS = {};
+    this.arqueoCounts.USD = {};
+    this.arqueoCounts.EUR = {};
+    this.closeForm.get('closingBalance')?.setValue(0, { emitEvent: false });
   }
 }

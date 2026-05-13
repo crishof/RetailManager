@@ -12,5 +12,9 @@ public interface CashSessionRepository extends JpaRepository<CashSession, UUID> 
 
     Optional<CashSession> findFirstByBranchIdAndStatusOrderByOpenedAtDesc(UUID branchId, SessionStatus status);
 
+    Optional<CashSession> findFirstByBranchIdIsNullAndStatusOrderByOpenedAtDesc(SessionStatus status);
+
     List<CashSession> findAllByBranchIdOrderByOpenedAtDesc(UUID branchId);
+
+    List<CashSession> findAllByBranchIdIsNullOrderByOpenedAtDesc();
 }

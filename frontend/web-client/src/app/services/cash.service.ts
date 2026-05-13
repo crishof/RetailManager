@@ -3,9 +3,11 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+export type TCurrencyCode = 'ARS' | 'USD' | 'EUR';
+
 export interface ICashSessionResponse {
   id: string;
-  branchId: string;
+  branchId: string | null;
   userId: string;
   sessionDate: string;
   openedAt: string;
@@ -17,10 +19,12 @@ export interface ICashSessionResponse {
   totalIncome: number;
   totalExpense: number;
   expectedBalance: number;
+  countedTotalsByCurrency?: Partial<Record<TCurrencyCode, number>>;
+  exchangeRatesToArs?: Partial<Record<TCurrencyCode, number>>;
 }
 
 export interface IOpenSessionRequest {
-  branchId: string;
+  branchId?: string;
   userId?: string;
   openingBalance: number;
   notes?: string;
@@ -29,6 +33,8 @@ export interface IOpenSessionRequest {
 export interface ICloseSessionRequest {
   closingBalance: number;
   notes?: string;
+  countedTotalsByCurrency?: Partial<Record<TCurrencyCode, number>>;
+  exchangeRatesToArs?: Partial<Record<TCurrencyCode, number>>;
 }
 
 export interface ICashMovementResponse {
@@ -36,6 +42,9 @@ export interface ICashMovementResponse {
   sessionId: string;
   type: 'INCOME' | 'EXPENSE' | 'SALE' | 'CUSTOMER_PAYMENT' | 'SUPPLIER_PAYMENT' | 'OPENING' | 'CLOSING';
   amount: number;
+  currency: TCurrencyCode;
+  originalAmount: number;
+  exchangeRateToArs: number;
   description: string;
   reference: string | null;
   createdAt: string;
@@ -44,8 +53,15 @@ export interface ICashMovementResponse {
 export interface ICashMovementRequest {
   type: string;
   amount: number;
+  currency?: TCurrencyCode;
+  exchangeRateToArs?: number;
   description: string;
   reference?: string;
+}
+
+export interface ICashQueryTarget {
+  branchId?: string;
+  central?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -62,15 +78,29 @@ export class CashService {
     return this._http.put<ICashSessionResponse>(`${this._base}/sessions/${sessionId}/close`, request);
   }
 
-  getCurrentSession(branchId: string): Observable<ICashSessionResponse> {
+  getCurrentSession(target: ICashQueryTarget): Observable<ICashSessionResponse> {
+    const params: Record<string, string> = {
+      central: target.central ? 'true' : 'false',
+    };
+    if (!target.central && target.branchId) {
+      params['branchId'] = target.branchId;
+    }
+
     return this._http.get<ICashSessionResponse>(`${this._base}/sessions/current`, {
-      params: { branchId }
+      params,
     });
   }
 
-  getAllSessions(branchId: string): Observable<ICashSessionResponse[]> {
+  getAllSessions(target: ICashQueryTarget): Observable<ICashSessionResponse[]> {
+    const params: Record<string, string> = {
+      central: target.central ? 'true' : 'false',
+    };
+    if (!target.central && target.branchId) {
+      params['branchId'] = target.branchId;
+    }
+
     return this._http.get<ICashSessionResponse[]>(`${this._base}/sessions`, {
-      params: { branchId }
+      params,
     });
   }
 
@@ -85,5 +115,9 @@ export class CashService {
 
   getMovements(sessionId: string): Observable<ICashMovementResponse[]> {
     return this._http.get<ICashMovementResponse[]>(`${this._base}/sessions/${sessionId}/movements`);
+  }
+
+  getExchangeRatesToArs(): Observable<Record<TCurrencyCode, number>> {
+    return this._http.get<Record<TCurrencyCode, number>>(`${this._base}/exchange-rates`);
   }
 }

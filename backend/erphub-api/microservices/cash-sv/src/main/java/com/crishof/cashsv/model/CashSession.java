@@ -32,5 +32,11 @@ public class CashSession {
     @Enumerated(EnumType.STRING)
     private SessionStatus status;
 
+    @Column(columnDefinition = "TEXT")
+    private String countedTotalsByCurrencyJson;
+
+    @Column(columnDefinition = "TEXT")
+    private String exchangeRatesToArsJson;
+
     private String notes;
 }

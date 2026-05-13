@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -33,13 +35,23 @@ public class CashController {
     }
 
     @GetMapping("/sessions/current")
-    public ResponseEntity<CashSessionResponse> getCurrentSession(@RequestParam UUID branchId) {
-        return ResponseEntity.ok(cashService.getCurrentSession(branchId));
+    public ResponseEntity<CashSessionResponse> getCurrentSession(
+            @RequestParam(required = false) UUID branchId,
+            @RequestParam(defaultValue = "false") boolean central) {
+        if (!central && branchId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "branchId es obligatorio para caja de sucursal");
+        }
+        return ResponseEntity.ok(cashService.getCurrentSession(branchId, central));
     }
 
     @GetMapping("/sessions")
-    public ResponseEntity<List<CashSessionResponse>> getAllSessions(@RequestParam UUID branchId) {
-        return ResponseEntity.ok(cashService.getAllSessions(branchId));
+    public ResponseEntity<List<CashSessionResponse>> getAllSessions(
+            @RequestParam(required = false) UUID branchId,
+            @RequestParam(defaultValue = "false") boolean central) {
+        if (!central && branchId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "branchId es obligatorio para caja de sucursal");
+        }
+        return ResponseEntity.ok(cashService.getAllSessions(branchId, central));
     }
 
     @GetMapping("/sessions/{sessionId}")
@@ -60,5 +72,10 @@ public class CashController {
     @GetMapping("/sessions/{sessionId}/movements")
     public ResponseEntity<List<CashMovementResponse>> getMovements(@PathVariable UUID sessionId) {
         return ResponseEntity.ok(cashService.getMovements(sessionId));
+    }
+
+    @GetMapping("/exchange-rates")
+    public ResponseEntity<Map<String, Double>> getExchangeRatesToArs() {
+        return ResponseEntity.ok(cashService.getRatesToArs());
     }
 }

@@ -321,7 +321,7 @@ initForm(): void {
     }
 
     this.isCheckingCash = true;
-    this._cashService.getCurrentSession(branchId).subscribe({
+    this._cashService.getCurrentSession({ branchId, central: false }).subscribe({
       next: (session) => {
         this.currentCashSession = session;
         this.isCheckingCash = false;
@@ -513,7 +513,7 @@ initForm(): void {
     this.noCashOpen = true;
     this.invoiceForm.disable({ emitEvent: false });
 
-    this._cashService.getCurrentSession(branchId).subscribe({
+    this._cashService.getCurrentSession({ branchId, central: false }).subscribe({
       next: (session) => {
         this.currentCashSession = session;
         this.noCashOpen = false;

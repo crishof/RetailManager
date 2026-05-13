@@ -24,6 +24,10 @@ public class CashMovement {
     @Enumerated(EnumType.STRING)
     private MovementType type;
 
+    private String currency;
+    private double originalAmount;
+    private double exchangeRateToArs;
+
     private double amount;
     private String description;
     private String reference;

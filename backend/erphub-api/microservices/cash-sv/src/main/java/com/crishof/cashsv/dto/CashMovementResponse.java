@@ -14,6 +14,9 @@ public class CashMovementResponse {
     private UUID sessionId;
     private MovementType type;
     private double amount;
+    private String currency;
+    private double originalAmount;
+    private double exchangeRateToArs;
     private String description;
     private String reference;
     private LocalDateTime createdAt;

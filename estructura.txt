@@ -152,188 +152,188 @@ Navbar
 Detalle de los menus del navbar:
 
 Articulos:
-Abre ventana con un navbar
-    Nuevo
-        Articulo
-            Abre formulario completo para crear artículo
-        Paquete
-            Abre ventana para crear un paquete (Un paquete es un conjunto de productos, ej teclado, funda, y soporte. El stock del paquete lo determina el stock dispoible de estos productos. Permite asignar un precio o descuento al grupo y al facturar descuenta los stock individuales)
-        Fabricación propia
-            Abre formulario para crear producto de fabricacion propia: Marca modelo y descripción
-    Eliminar
-        Elimina el producto seleccionado en la lista (OCULTA el producto)
-    Editar
-        Abre formulario para edicion completa del producto seleccionado
-    Modificaciones
-        Modificación rapida de articulos
-            Abre ventana para modificar muchos articulos al mismo tiempo.
-            Tiene un buscador con todos los filtros disponibles, marca, stock, proveedor, etiqueta, tipo de articulo, etc
-            Los artículos se muestran en una lista en formato tabla de excel, permitiendo edicion manual de todos los campos excepto los que sean entidades (marca, categoría, etc. En este caso es un select que permite cambiar)
-            Se editan los artículos y se guardan todos los cambios juntos
-            Sobre la lista hay una barra de menus:
-                Modificaciones
-                    botones para ABM de artículo (Abre la misma ventana anterior)
-                    Cargar fotografías
-                    Marcas
-                        Alta
-                        Ver
-                    Rubros y grupos
-                    Especificaciones
-                    Administrador de etiquetas
-                Mercadolibre
-                    Abre ventana de publicación masiva
-                Textos
-                    Botones que aplican modificaciones a todas las celdas seleccionadas de la lista (Se deben poder elegir filas y columnas y funcionar como excel con selección mutiples con ctrl shift click)
-                    Los botones son: quitar guiones, Convertir a minusculas, mayusculas, Quitar espacios multiples, Nombre propio, Quitar marca, quitar rubro, Unir modelo + descripción, Descripción + modelo, anteponer palabra, agregar palabra al final, reemplazar
-                Cambiar marca a seleccionados
-                Exportar a excel
-                Seteo de columnas (Abre pantalla para eleguir que columnas quiero ver en la lista y en en que orden)
-                Redondear
-                    Abre ventana con los parametros para redondear seleccionados
-                Extraer y mover
-                    Abre ventana para extraer un dato de una posición y moverlo a otra posicion de la misma o diferente celda
-                Ver movimiento de stock
+    Abre ventana con un navbar
+        Nuevo
+            Articulo
+                Abre formulario completo para crear artículo
+            Paquete
+                Abre ventana para crear un paquete (Un paquete es un conjunto de productos, ej teclado, funda, y soporte. El stock del paquete lo determina el stock dispoible de estos productos. Permite asignar un precio o descuento al grupo y al facturar descuenta los stock individuales)
+            Fabricación propia
+                Abre formulario para crear producto de fabricacion propia: Marca modelo y descripción
+        Eliminar
+            Elimina el producto seleccionado en la lista (OCULTA el producto)
+        Editar
+            Abre formulario para edicion completa del producto seleccionado
+        Modificaciones
+            Modificación rapida de articulos
+                Abre ventana para modificar muchos articulos al mismo tiempo.
+                Tiene un buscador con todos los filtros disponibles, marca, stock, proveedor, etiqueta, tipo de articulo, etc
+                Los artículos se muestran en una lista en formato tabla de excel, permitiendo edicion manual de todos los campos excepto los que sean entidades (marca, categoría, etc. En este caso es un select que permite cambiar)
+                Se editan los artículos y se guardan todos los cambios juntos
+                Sobre la lista hay una barra de menus:
+                    Modificaciones
+                        botones para ABM de artículo (Abre la misma ventana anterior)
+                        Cargar fotografías
+                        Marcas
+                            Alta
+                            Ver
+                        Rubros y grupos
+                        Especificaciones
+                        Administrador de etiquetas
+                    Mercadolibre
+                        Abre ventana de publicación masiva
+                    Textos
+                        Botones que aplican modificaciones a todas las celdas seleccionadas de la lista (Se deben poder elegir filas y columnas y funcionar como excel con selección mutiples con ctrl shift click)
+                        Los botones son: quitar guiones, Convertir a minusculas, mayusculas, Quitar espacios multiples, Nombre propio, Quitar marca, quitar rubro, Unir modelo + descripción, Descripción + modelo, anteponer palabra, agregar palabra al final, reemplazar
+                    Cambiar marca a seleccionados
+                    Exportar a excel
+                    Seteo de columnas (Abre pantalla para eleguir que columnas quiero ver en la lista y en en que orden)
+                    Redondear
+                        Abre ventana con los parametros para redondear seleccionados
+                    Extraer y mover
+                        Abre ventana para extraer un dato de una posición y moverlo a otra posicion de la misma o diferente celda
+                    Ver movimiento de stock
+                    Promociones
+                        Abre selector de promociones disponibles y asigna a seleccionados
+                    Impresion de etiquetas
+                    Ver en artículos
+                        LLeva a la pantalla artículos mostrando los seleccionados
+
+            Modificación rapida de especificaciones
+            Modificacion de Paquete
+            Crear paquetes relacionados
+            Modificacion de la fabricación propia
+            Cargar ccodigos de barra
+            Articulos complementarios
+                Por artículo
+                Por Rubros
+            Fotografías
+                Cargar Fotografía
+                Cargar fotografías por marca
+                Cargar fotografía desde carpeta
+                ABM fotografías
+                Grabar imagenes como archivos jpg
+                Personalizar tamaños
+            Actualizaciones masivas
+                Asignar redondeo a artículos dolarizados
+                Cantidades minimas de venta por mayor
+                Comisiones
+                Descuentos
+                Impuestos internos
+                Porcentajes. de markup por Rubros
+                Precios
+                Precios: redondear
                 Promociones
-                    Abre selector de promociones disponibles y asigna a seleccionados
-                Impresion de etiquetas
-                Ver en artículos
-                    LLeva a la pantalla artículos mostrando los seleccionados
-
-        Modificación rapida de especificaciones
-        Modificacion de Paquete
-        Crear paquetes relacionados
-        Modificacion de la fabricación propia
-        Cargar ccodigos de barra
-        Articulos complementarios
-            Por artículo
-            Por Rubros
-        Fotografías
-            Cargar Fotografía
-            Cargar fotografías por marca
-            Cargar fotografía desde carpeta
-            ABM fotografías
-            Grabar imagenes como archivos jpg
-            Personalizar tamaños
-        Actualizaciones masivas
-            Asignar redondeo a artículos dolarizados
-            Cantidades minimas de venta por mayor
-            Comisiones
-            Descuentos
-            Impuestos internos
-            Porcentajes. de markup por Rubros
-            Precios
-            Precios: redondear
-            Promociones
-            Tabla de talles
-        Relacionar mis artículos con los del proveedor
-        Unificar artículos repetidos
-        Editar vista de colummna de artículos
-        Publicar mi lista de artículos de venta al comercio
-    Varios
-        Pedido de artículo al proveedor
-        Eviar artículo al service
-        Recepción de mercadería en consignación
-        Marcas
-        Rubros y grupos
-        Asignaciones
-            Proveedor por marca
-            Rubros
+                Tabla de talles
+            Relacionar mis artículos con los del proveedor
+            Unificar artículos repetidos
+            Editar vista de colummna de artículos
+            Publicar mi lista de artículos de venta al comercio
+        Varios
+            Pedido de artículo al proveedor
+            Eviar artículo al service
+            Recepción de mercadería en consignación
             Marcas
-        Importar artículos desde excel
-        Comisiones especiales
-        Buscar artículos por acopio
-        Departamentos
-            ABM
-            Asignar artículos
-            Listado
-        Listados de precios
-        Auditar precios
-            Artículos con precio menor a...
-    Stock
-        Realizar movimiento de stock
-            Artículo seleccionado
-            Grupo de Artículos
-            Fabricación
-        Stock de vehículo
-            Ver seleccionado
-            Buscar
-            Importación masiva
-        Ver movimiento de stock
-            Artículo seleccionado
-            Grupo de artículos
-        Ver stock de despacho a plaza
-        Ver stock reservado
-            Artículo seleccionado
-            Todos los artículos
-            Reservar manualmente desde csv
-        Ver stock de numero de serie
-        Artículos vendidos a reponer
-        Historia de los precios de compra
-        Realización de inventario
-        Movilizar stock negativo
-        Volver el stock a cero
-        Total de stock
-        Comunicar mi stock a Import Music
-    Listados
-        Artículos
-        Listado simple
-        Listado de consignaciones entregadas
-        Listado de insumos
-        Listado de paquetes y sus componentes
-        Listado solo de precios
-        Listado de ubicaciones
-        Listado de vehículos
-        Informe de ventas
-        Impresion de Etiquetas
+            Rubros y grupos
+            Asignaciones
+                Proveedor por marca
+                Rubros
+                Marcas
+            Importar artículos desde excel
+            Comisiones especiales
+            Buscar artículos por acopio
+            Departamentos
+                ABM
+                Asignar artículos
+                Listado
+            Listados de precios
+            Auditar precios
+                Artículos con precio menor a...
         Stock
-            Por sucursales
-            por depositos
-            Despachos a plaza
-        Informe de productos unificado
-    Lista del proveedor
-    Ocultos
-        Ocultar este artículo
-        Administración de Ocultos
-    Facturar
+            Realizar movimiento de stock
+                Artículo seleccionado
+                Grupo de Artículos
+                Fabricación
+            Stock de vehículo
+                Ver seleccionado
+                Buscar
+                Importación masiva
+            Ver movimiento de stock
+                Artículo seleccionado
+                Grupo de artículos
+            Ver stock de despacho a plaza
+            Ver stock reservado
+                Artículo seleccionado
+                Todos los artículos
+                Reservar manualmente desde csv
+            Ver stock de numero de serie
+            Artículos vendidos a reponer
+            Historia de los precios de compra
+            Realización de inventario
+            Movilizar stock negativo
+            Volver el stock a cero
+            Total de stock
+            Comunicar mi stock a Import Music
+        Listados
+            Artículos
+            Listado simple
+            Listado de consignaciones entregadas
+            Listado de insumos
+            Listado de paquetes y sus componentes
+            Listado solo de precios
+            Listado de ubicaciones
+            Listado de vehículos
+            Informe de ventas
+            Impresion de Etiquetas
+            Stock
+                Por sucursales
+                por depositos
+                Despachos a plaza
+            Informe de productos unificado
+        Lista del proveedor
+        Ocultos
+            Ocultar este artículo
+            Administración de Ocultos
+        Facturar
 
-Debajo del navbar tiene pestañas:
+    Debajo del navbar tiene pestañas:
 
-Articulo:
-    Muestra marca, modelo, descripción y categoría del artículo y los precios marcados comoo principales
-Ficha tecnica
-    Descripción larga del producto (editable) y fotografías (editables)
-Proveedor
-    Datos del proveedor
-Varios
-    otra sección de pestañas:
-        codigos
-            muestra todos los codigos 
-        habilitaciones
-            Checks para publicado en web, doble unidad de stock, Etiqueta de gondola, Insumo, Destacado en web,Fraccionable, LLeva numero de serie, Servicio, Precio visible en web,Se vende por mayor,Fabricación propia, vehículo
-        Etiquetas y notas internas
-            campo Etiquetas y campo notas internas
-         Otros datos
-            Moneda, fecha de costo, dimensiones, comisiones, garantias,venta minima por mayor, Factor de doble unidad de stock, Venta minima por menor,  compra minima por mayor,unidades por caja
-        
-Stock
-    otra sección de pestañas:
-        Sucursales y depositos
-            Muestra el stock de las sucursales y depositos
-        consignaciones
-            Muestra las consignaciones recibidas y entregadas a cada consignatario
-        Pedidos
-            Muestra una columna con los pedidos hechos y otra con los pedidos recibidos
-        Reservas
-            Mustra todas las sucursales y depositos con sus reservas de los diferentes canales, y la suma
-Pago con tarjetas
-    Selector de tarjeta
-    Selector de precio sobre el que calcula
-    Input de importe para calcular
-    Boton calcular
-    Boton configurar tarjetas
-    Lista que muestra las diferentes financiaciones de la tarjeta elegida, con sus recargos, valor de cuota y precio total
-especificaciones
-    Muestra tabla con nombre de característica y dato
-    editar
-Mercado Libre
-    Panel para crear publicación en ML
+    Articulo:
+        Muestra marca, modelo, descripción y categoría del artículo y los precios marcados comoo principales
+    Ficha tecnica
+        Descripción larga del producto (editable) y fotografías (editables)
+    Proveedor
+        Datos del proveedor
+    Varios
+        otra sección de pestañas:
+            codigos
+                muestra todos los codigos 
+            habilitaciones
+                Checks para publicado en web, doble unidad de stock, Etiqueta de gondola, Insumo, Destacado en web,Fraccionable, LLeva numero de serie, Servicio, Precio visible en web,Se vende por mayor,Fabricación propia, vehículo
+            Etiquetas y notas internas
+                campo Etiquetas y campo notas internas
+            Otros datos
+                Moneda, fecha de costo, dimensiones, comisiones, garantias,venta minima por mayor, Factor de doble unidad de stock, Venta minima por menor,  compra minima por mayor,unidades por caja
+            
+    Stock
+        otra sección de pestañas:
+            Sucursales y depositos
+                Muestra el stock de las sucursales y depositos
+            consignaciones
+                Muestra las consignaciones recibidas y entregadas a cada consignatario
+            Pedidos
+                Muestra una columna con los pedidos hechos y otra con los pedidos recibidos
+            Reservas
+                Mustra todas las sucursales y depositos con sus reservas de los diferentes canales, y la suma
+    Pago con tarjetas
+        Selector de tarjeta
+        Selector de precio sobre el que calcula
+        Input de importe para calcular
+        Boton calcular
+        Boton configurar tarjetas
+        Lista que muestra las diferentes financiaciones de la tarjeta elegida, con sus recargos, valor de cuota y precio total
+    especificaciones
+        Muestra tabla con nombre de característica y dato
+        editar
+    Mercado Libre
+        Panel para crear publicación en ML

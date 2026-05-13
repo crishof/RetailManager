@@ -164,11 +164,10 @@
               <label for="invoicePrefix" class="text-[10px] text-gray-400 font-medium leading-none">Pref.</label>
               <input
                 id="invoicePrefix"
-                type="number"
+                type="text"
                 formControlName="invoicePrefix"
-                min="1"
-                max="9999"
-                class="w-16 text-center border border-gray-300 rounded-lg px-2 py-2 text-sm bg-gray-50"
+                readonly
+                class="w-16 text-center border border-gray-300 rounded-lg px-2 py-2 text-sm bg-gray-50 font-mono"
                 placeholder="0001"
               />
             </div>
@@ -179,10 +178,10 @@
               <label for="invoiceNumber" class="text-[10px] text-gray-400 font-medium leading-none">Numero</label>
               <input
                 id="invoiceNumber"
-                type="number"
+                type="text"
                 formControlName="invoiceNumber"
-                min="1"
-                class="w-full text-center border rounded-lg px-2 py-2 text-sm bg-gray-50"
+                readonly
+                class="w-full text-center border rounded-lg px-2 py-2 text-sm bg-gray-50 font-mono"
                 [class.border-red-400]="invoiceForm.get('invoiceNumber')?.invalid && (invoiceForm.get('invoiceNumber')?.touched || isFormSubmitted)"
                 [class.border-gray-300]="!(invoiceForm.get('invoiceNumber')?.invalid && (invoiceForm.get('invoiceNumber')?.touched || isFormSubmitted))"
                 placeholder="00000001"
@@ -211,18 +210,20 @@
             <div class="flex items-center gap-2">
               <input
                 id="packingListPrefix"
-                type="number"
+                type="text"
+                inputmode="numeric"
                 formControlName="packingListPrefix"
-                class="w-16 text-center border border-gray-300 rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-                placeholder="001"
+                class="w-16 text-center border border-gray-300 rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition font-mono"
+                placeholder="0001"
               />
               <span class="text-gray-300">-</span>
               <input
                 id="packingListNumber"
-                type="number"
+                type="text"
+                inputmode="numeric"
                 formControlName="packingListNumber"
-                class="flex-1 text-center border border-gray-300 rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition"
-                placeholder="0000001"
+                class="flex-1 text-center border border-gray-300 rounded-lg px-2 py-2 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition font-mono"
+                placeholder="00000001"
               />
             </div>
           </div>
@@ -498,7 +499,8 @@
 
                     <td class="px-2 py-2">
                       <input
-                        type="number"
+                        type="text"
+                        inputmode="decimal"
                         min="0"
                         step="0.01"
                         [ngModel]="item.price"
@@ -509,21 +511,23 @@
                     </td>
 
                     <td class="px-2 py-2">
-                      <input
-                        type="number"
-                        min="0"
-                        max="27"
-                        step="0.1"
-                        [ngModel]="(item.taxRate || 0) * 100"
+                      <select
+                        [ngModel]="item.taxRate"
                         [ngModelOptions]="{ standalone: true }"
-                        (ngModelChange)="updateItem(i, 'taxRate', $event / 100)"
+                        (ngModelChange)="updateItem(i, 'taxRate', $event)"
                         class="w-full text-center border border-gray-200 rounded px-2 py-1.5 text-xs focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-gray-50 hover:bg-white transition"
-                      />
+                      >
+                        <option [value]="0">0%</option>
+                        <option [value]="0.105">10.5%</option>
+                        <option [value]="0.21">21%</option>
+                        <option [value]="0.27">27%</option>
+                      </select>
                     </td>
 
                     <td class="px-2 py-2">
                       <input
-                        type="number"
+                        type="text"
+                        inputmode="decimal"
                         min="0"
                         max="100"
                         step="0.1"
@@ -536,9 +540,10 @@
 
                     <td class="px-2 py-2">
                       <input
-                        type="number"
+                        type="text"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
                         min="1"
-                        step="1"
                         [ngModel]="item.quantity"
                         [ngModelOptions]="{ standalone: true }"
                         (ngModelChange)="updateItem(i, 'quantity', $event)"

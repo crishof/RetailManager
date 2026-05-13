@@ -4,12 +4,19 @@
   <div class="cash-header">
     <h1 class="cash-title">Caja</h1>
     <div class="cash-controls">
-      <label class="branch-label">Sucursal:</label>
-      <select class="branch-select" (change)="onBranchChange($event)">
-        @for (branch of branches; track branch.id) {
-          <option [value]="branch.id">{{ branch.name }}</option>
-        }
+      <label class="branch-label" for="cash-type-select">Tipo:</label>
+      <select id="cash-type-select" class="branch-select" (change)="onCashTypeChange($event)">
+        <option value="CENTRAL" [selected]="selectedCashType === 'CENTRAL'">Caja central</option>
+        <option value="BRANCH" [selected]="selectedCashType === 'BRANCH'">Caja por sucursal</option>
       </select>
+      @if (showBranchSelector) {
+        <label class="branch-label" for="cash-branch-select">Sucursal:</label>
+        <select id="cash-branch-select" class="branch-select" (change)="onBranchChange($event)">
+          @for (branch of branches; track branch.id) {
+            <option [value]="branch.id" [selected]="branch.id === selectedBranchId">{{ branch.name }}</option>
+          }
+        </select>
+      }
       <div class="view-tabs">
         <button class="view-tab" [class.view-tab--active]="activeView === 'session'" (click)="switchView('session')">
           Sesión actual
@@ -32,10 +39,15 @@
   <!-- SESSION VIEW -->
   @if (activeView === 'session') {
 
+    <div class="cash-context">
+      <span class="cash-context__label">Ámbito:</span>
+      <span class="cash-context__value">{{ currentCashLabel }} - {{ currentTargetName }}</span>
+    </div>
+
     @if (!currentSession) {
       <!-- No open session -->
       <div class="no-session">
-        <p class="no-session__msg">No hay caja abierta para esta sucursal.</p>
+        <p class="no-session__msg">No hay caja abierta en {{ currentTargetName }}.</p>
         <button class="btn btn--primary" (click)="showOpenForm = !showOpenForm">
           {{ showOpenForm ? 'Cancelar' : 'Abrir caja' }}
         </button>
@@ -45,12 +57,12 @@
             <h3 class="form-title">Apertura de caja</h3>
             <div class="form-grid">
               <div class="form-field">
-                <label>Saldo inicial ($)</label>
-                <input type="number" formControlName="openingBalance" min="0" step="0.01" />
+                <label for="opening-balance">Saldo inicial ($)</label>
+                <input id="opening-balance" type="number" formControlName="openingBalance" min="0" step="0.01" />
               </div>
               <div class="form-field">
-                <label>Notas</label>
-                <input type="text" formControlName="notes" placeholder="Observaciones..." />
+                <label for="opening-notes">Notas</label>
+                <input id="opening-notes" type="text" formControlName="notes" placeholder="Observaciones..." />
               </div>
             </div>
             @if (openError) {
@@ -113,24 +125,46 @@
           <h3 class="form-title">Registrar movimiento</h3>
           <div class="form-grid">
             <div class="form-field">
-              <label>Tipo</label>
-              <select formControlName="type">
+              <label for="movement-type">Tipo</label>
+              <select id="movement-type" formControlName="type">
                 @for (t of movementTypes; track t.value) {
                   <option [value]="t.value">{{ t.label }}</option>
                 }
               </select>
             </div>
             <div class="form-field">
-              <label>Importe ($)</label>
-              <input type="number" formControlName="amount" min="0.01" step="0.01" />
-            </div>
-            <div class="form-field form-field--full">
-              <label>Descripción</label>
-              <input type="text" formControlName="description" placeholder="Descripción del movimiento..." />
+              <label for="movement-amount">Importe ($)</label>
+              <input id="movement-amount" type="number" formControlName="amount" min="0.01" step="0.01" />
             </div>
             <div class="form-field">
-              <label>Referencia</label>
-              <input type="text" formControlName="reference" placeholder="Nro. comprobante, etc." />
+              <label for="movement-currency">Moneda</label>
+              <select id="movement-currency" formControlName="currency" (change)="onMovementCurrencyChange($event)">
+                @for (currency of currencies; track currency) {
+                  <option [value]="currency">{{ currency }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="movement-rate">Cotización a ARS</label>
+              <input
+                id="movement-rate"
+                type="number"
+                formControlName="exchangeRateToArs"
+                min="0.000001"
+                step="0.000001"
+                [readonly]="selectedMovementCurrency === 'ARS'" />
+            </div>
+            <div class="form-field form-field--full">
+              <label for="movement-description">Descripción</label>
+              <input id="movement-description" type="text" formControlName="description" placeholder="Descripción del movimiento..." />
+            </div>
+            <div class="form-field">
+              <label for="movement-reference">Referencia</label>
+              <input id="movement-reference" type="text" formControlName="reference" placeholder="Nro. comprobante, etc." />
+            </div>
+            <div class="form-field">
+              <span class="label">Equivalente ARS</span>
+              <span class="diff">${{ movementArsAmount | number:'1.2-2' }}</span>
             </div>
           </div>
           @if (movementError) {
@@ -150,21 +184,108 @@
       <!-- Close session form -->
       @if (showCloseForm) {
         <form class="cash-form cash-form--danger" [formGroup]="closeForm" (ngSubmit)="onCloseSession()">
-          <h3 class="form-title">Cierre de caja</h3>
+          <h3 class="form-title">Cierre de caja y arqueo multimoneda</h3>
+
+          <div class="arqueo-layout">
+            <div class="arqueo-main">
+              <div class="arqueo-tabs" role="tablist" aria-label="Moneda de arqueo">
+                @for (currency of currencies; track currency) {
+                  <button
+                    type="button"
+                    class="arqueo-tab"
+                    [class.arqueo-tab--active]="selectedArqueoCurrency === currency"
+                    (click)="selectArqueoCurrency(currency)">
+                    {{ currency }}
+                  </button>
+                }
+              </div>
+
+              <div class="arqueo-grid">
+                <div class="arqueo-grid__header">Denominación</div>
+                <div class="arqueo-grid__header">Cantidad</div>
+                <div class="arqueo-grid__header">Subtotal</div>
+
+                @for (denomination of getDenominationsFor(selectedArqueoCurrency); track denomination) {
+                  <div class="arqueo-grid__cell">{{ selectedArqueoCurrency }} {{ denomination | number:'1.0-2' }}</div>
+                  <div class="arqueo-grid__cell">
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      [value]="getCount(selectedArqueoCurrency, denomination)"
+                      (change)="onArqueoCountChange(selectedArqueoCurrency, denomination, $event)" />
+                  </div>
+                  <div class="arqueo-grid__cell arqueo-grid__cell--amount">
+                    {{ selectedArqueoCurrency }} {{ getSubtotalForDenomination(selectedArqueoCurrency, denomination) | number:'1.2-2' }}
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="arqueo-summary">
+              <h4 class="arqueo-summary__title">Resumen de arqueo</h4>
+
+              <div class="form-actions form-actions--start">
+                <button type="button" class="btn btn--secondary" (click)="refreshExchangeRates()">
+                  Actualizar cotizaciones
+                </button>
+              </div>
+
+              <div class="form-field">
+                <label for="rate-usd">Cotización USD a ARS</label>
+                <input
+                  id="rate-usd"
+                  type="number"
+                  min="0.000001"
+                  step="0.000001"
+                  [value]="exchangeRatesToArs.USD"
+                  (change)="onRateChange('USD', $event)" />
+              </div>
+
+              <div class="form-field">
+                <label for="rate-eur">Cotización EUR a ARS</label>
+                <input
+                  id="rate-eur"
+                  type="number"
+                  min="0.000001"
+                  step="0.000001"
+                  [value]="exchangeRatesToArs.EUR"
+                  (change)="onRateChange('EUR', $event)" />
+              </div>
+
+              <div class="summary-row">
+                <span>ARS</span>
+                <span>{{ getCurrencyTotal('ARS') | number:'1.2-2' }}</span>
+              </div>
+              <div class="summary-row">
+                <span>USD</span>
+                <span>{{ getCurrencyTotal('USD') | number:'1.2-2' }}</span>
+              </div>
+              <div class="summary-row">
+                <span>EUR</span>
+                <span>{{ getCurrencyTotal('EUR') | number:'1.2-2' }}</span>
+              </div>
+              <div class="summary-row summary-row--strong">
+                <span>Total arqueado en ARS</span>
+                <span>${{ arqueoTotalArs | number:'1.2-2' }}</span>
+              </div>
+            </div>
+          </div>
+
           <div class="form-grid">
             <div class="form-field">
-              <label>Saldo contado ($)</label>
-              <input type="number" formControlName="closingBalance" min="0" step="0.01" />
+              <label for="closing-balance">Saldo contado ($)</label>
+              <input id="closing-balance" type="number" formControlName="closingBalance" min="0" step="0.01" readonly />
             </div>
             <div class="form-field">
-              <label>Diferencia</label>
-              <span class="diff" [class.diff--neg]="closeForm.value.closingBalance < currentSession.expectedBalance">
-                ${{ (closeForm.value.closingBalance - currentSession.expectedBalance) | number:'1.2-2' }}
+              <span class="label">Diferencia</span>
+              <span class="diff" [class.diff--neg]="closeDifference < 0">
+                ${{ closeDifference | number:'1.2-2' }}
               </span>
             </div>
             <div class="form-field form-field--full">
-              <label>Observaciones</label>
-              <input type="text" formControlName="notes" placeholder="Notas de cierre..." />
+              <label for="closing-notes">Observaciones</label>
+              <input id="closing-notes" type="text" formControlName="notes" placeholder="Notas de cierre..." />
             </div>
           </div>
           @if (closeError) {
@@ -189,6 +310,9 @@
               <tr>
                 <th>Hora</th>
                 <th>Tipo</th>
+                <th>Moneda</th>
+                <th class="amount-col">Monto original</th>
+                <th class="amount-col">Cotiz. ARS</th>
                 <th>Descripción</th>
                 <th>Referencia</th>
                 <th class="amount-col">Ingreso</th>
@@ -200,6 +324,9 @@
                 <tr [class.row--income]="isIncome(mv.type)" [class.row--expense]="!isIncome(mv.type)">
                   <td>{{ mv.createdAt | date:'HH:mm' }}</td>
                   <td><span class="badge badge--{{ mv.type.toLowerCase() }}">{{ typeLabels[mv.type] }}</span></td>
+                  <td>{{ mv.currency }}</td>
+                  <td class="amount-col">{{ mv.originalAmount | number:'1.2-2' }}</td>
+                  <td class="amount-col">{{ mv.exchangeRateToArs | number:'1.2-4' }}</td>
                   <td>{{ mv.description }}</td>
                   <td>{{ mv.reference ?? '-' }}</td>
                   <td class="amount-col text-green">{{ isIncome(mv.type) ? ('$' + (mv.amount | number:'1.2-2')) : '' }}</td>
@@ -217,12 +344,13 @@
   @if (activeView === 'history') {
     <div class="history-layout">
       <div class="history-list">
-        <h3 class="section-title">Sesiones anteriores</h3>
+        <h3 class="section-title">Sesiones anteriores - {{ currentTargetName }}</h3>
         @if (historySessions.length === 0) {
           <p class="empty-state">Sin sesiones registradas.</p>
         } @else {
           @for (session of historySessions; track session.id) {
-            <div
+            <button
+              type="button"
               class="history-item"
               [class.history-item--selected]="selectedHistorySession?.id === session.id"
               [class.history-item--open]="session.status === 'OPEN'"
@@ -235,7 +363,7 @@
                 </span>
               </div>
               <div class="history-item__balance">${{ session.expectedBalance | number:'1.2-2' }}</div>
-            </div>
+            </button>
           }
         }
       </div>
@@ -287,6 +415,48 @@
             </div>
           </div>
 
+          @if (selectedHistorySession.status === 'CLOSED') {
+            <div class="history-arqueo">
+              <h3 class="section-title">Detalle de arqueo de cierre</h3>
+
+              @if (!hasSelectedHistoryArqueo) {
+                <p class="empty-state">Esta caja cerrada no tiene desglose de arqueo guardado. Se muestra el saldo contado final.</p>
+              } @else {
+                <table class="mvt-table">
+                  <thead>
+                    <tr>
+                      <th>Moneda</th>
+                      <th class="amount-col">Total contado</th>
+                      <th class="amount-col">Cotización a ARS</th>
+                      <th class="amount-col">Equivalente ARS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (currency of currencies; track currency) {
+                      <tr>
+                        <td>{{ currency }}</td>
+                        <td class="amount-col">{{ getHistoryCountedTotal(currency) | number:'1.2-2' }}</td>
+                        <td class="amount-col">{{ getHistoryRate(currency) | number:'1.2-4' }}</td>
+                        <td class="amount-col">${{ getHistoryConvertedTotal(currency) | number:'1.2-2' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              }
+
+              <div class="history-arqueo__totals">
+                <div class="summary-row summary-row--strong">
+                  <span>Total arqueado ARS</span>
+                  <span>${{ historyArqueoTotalArs | number:'1.2-2' }}</span>
+                </div>
+                <div class="summary-row" [class.text-red]="historyCloseDifference < 0" [class.text-green]="historyCloseDifference >= 0">
+                  <span>Diferencia vs esperado</span>
+                  <span>${{ historyCloseDifference | number:'1.2-2' }}</span>
+                </div>
+              </div>
+            </div>
+          }
+
           <div class="movements-section">
             <h3 class="section-title">Movimientos</h3>
             @if (historyMovements.length === 0) {
@@ -297,6 +467,9 @@
                   <tr>
                     <th>Hora</th>
                     <th>Tipo</th>
+                    <th>Moneda</th>
+                    <th class="amount-col">Monto original</th>
+                    <th class="amount-col">Cotiz. ARS</th>
                     <th>Descripción</th>
                     <th>Referencia</th>
                     <th class="amount-col">Ingreso</th>
@@ -308,6 +481,9 @@
                     <tr [class.row--income]="isIncome(mv.type)" [class.row--expense]="!isIncome(mv.type)">
                       <td>{{ mv.createdAt | date:'HH:mm' }}</td>
                       <td><span class="badge badge--{{ mv.type.toLowerCase() }}">{{ typeLabels[mv.type] }}</span></td>
+                      <td>{{ mv.currency }}</td>
+                      <td class="amount-col">{{ mv.originalAmount | number:'1.2-2' }}</td>
+                      <td class="amount-col">{{ mv.exchangeRateToArs | number:'1.2-4' }}</td>
                       <td>{{ mv.description }}</td>
                       <td>{{ mv.reference ?? '-' }}</td>
                       <td class="amount-col text-green">{{ isIncome(mv.type) ? ('$' + (mv.amount | number:'1.2-2')) : '' }}</td>
