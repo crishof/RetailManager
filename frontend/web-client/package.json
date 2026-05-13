@@ -1,13 +1,18 @@
 {
-  "name": "stocksuite",
+  "name": "retailmanager",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "vercel-build": "npm run build:prod",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:stocksuite": "node dist/stocksuite/server/server.mjs"
+    "serve:ssr:retailmanager": "node dist/retailmanager/server/server.mjs"
+  },
+  "engines": {
+    "node": ">=20.19.0"
   },
   "private": true,
   "dependencies": {
